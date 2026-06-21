@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "relationTypes": [
+    "requires", "provides", "precedes", "follows", "triggers", "produces",
+    "consumes", "enriches", "constrains", "validates", "handoff",
+    "parallel-with", "complements", "alternative-to", "scoped-alternative",
+    "fallback-for", "conflicts-with", "replaces", "supersedes",
+    "implemented-by", "adapted-for"
+  ],
+  "relations": [
+    {"from": "skill.curated.ci-cd-and-automation", "type": "provides", "to": "capability.ci-cd"},
+    {"from": "skill.curated.deprecation-and-migration", "type": "provides", "to": "capability.lifecycle-migration"},
+    {"from": "skill.curated.observability-and-instrumentation", "type": "provides", "to": "capability.observability"},
+    {"from": "skill.curated.performance-optimization", "type": "provides", "to": "capability.performance"},
+    {"from": "skill.curated.shipping-and-launch", "type": "provides", "to": "capability.production-launch"},
+    {"from": "capability.observability", "type": "precedes", "to": "capability.performance", "condition": "production behavior must be measurable"},
+    {"from": "capability.performance", "type": "precedes", "to": "capability.production-launch", "condition": "a performance objective or budget applies"},
+    {"from": "capability.ci-cd", "type": "precedes", "to": "capability.production-launch"},
+    {"from": "capability.observability", "type": "precedes", "to": "capability.production-launch"},
+    {"from": "capability.lifecycle-migration", "type": "precedes", "to": "capability.production-launch", "condition": "the launch replaces or retires an existing contract"},
+    {"from": "capability.observability", "type": "enriches", "to": "capability.debugging"},
+    {"from": "capability.observability", "type": "enriches", "to": "capability.performance"},
+    {"from": "capability.performance", "type": "handoff", "to": "capability.debugging", "condition": "the root cause is unknown or intermittent"},
+    {"from": "capability.lifecycle-migration", "type": "handoff", "to": "capability.production-launch", "condition": "migration evidence is ready for GO/NO-GO"},
+    {"from": "capability.security-scan", "type": "complements", "to": "capability.review"},
+    {"from": "capability.privacy-governance", "type": "constrains", "to": "capability.observability", "condition": "telemetry may contain personal, confidential, regulated, or secret data"},
+    {"from": "capability.privacy-governance", "type": "constrains", "to": "capability.production-launch", "condition": "launch monitoring expands data collection or access"},
+    {"from": "capability.browser-runtime", "type": "complements", "to": "capability.performance"},
+    {"from": "capability.product-design", "type": "precedes", "to": "capability.browser-runtime", "condition": "a user interface is implemented"},
+    {"from": "capability.tdd", "type": "validates", "to": "capability.lifecycle-migration"}
+  ]
+}

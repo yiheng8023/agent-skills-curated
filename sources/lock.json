@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "sources": [
+    {
+      "id": "github:addyosmani/agent-skills",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "revision": "17214a29c429a19f7a9607f2c06f9d650ea87eb0",
+      "license": "MIT",
+      "status": "intake-reviewed",
+      "approvedForRuntime": false,
+      "notes": [
+        "Upstream structural validators passed for 24 Skills and 8 commands.",
+        "Executable hooks require separate portability and security adjudication.",
+        "The upstream meta-router must not compete with the canonical capability router."
+      ]
+    }
+  ]
+}

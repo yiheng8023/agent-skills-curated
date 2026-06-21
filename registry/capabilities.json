@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "capabilities": [
+    {"id": "capability.routing", "canonicalOwner": "external:codex-user-config/capability-router"},
+    {"id": "capability.tdd", "canonicalOwner": "skill.curated.tdd"},
+    {"id": "capability.debugging", "canonicalOwner": "skill.curated.diagnose"},
+    {"id": "capability.review", "canonicalOwner": "skill.curated.review"},
+    {"id": "capability.planning", "canonicalOwner": "external:superpowers/writing-plans"},
+    {"id": "capability.browser-runtime", "canonicalOwner": "external:environment-browser-capability"},
+    {"id": "capability.product-design", "canonicalOwner": "external:product-design"},
+    {"id": "capability.security-scan", "canonicalOwner": "external:codex-security"},
+    {"id": "capability.privacy-governance", "canonicalOwner": "external:organization-privacy-policy"},
+    {"id": "capability.ci-cd", "canonicalOwner": "skill.curated.ci-cd-and-automation"},
+    {"id": "capability.lifecycle-migration", "canonicalOwner": "skill.curated.deprecation-and-migration"},
+    {"id": "capability.observability", "canonicalOwner": "skill.curated.observability-and-instrumentation"},
+    {"id": "capability.performance", "canonicalOwner": "skill.curated.performance-optimization"},
+    {"id": "capability.production-launch", "canonicalOwner": "skill.curated.shipping-and-launch"}
+  ]
+}

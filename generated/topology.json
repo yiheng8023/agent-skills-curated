@@ -1,0 +1,600 @@
+{
+  "capabilities": [
+    {
+      "canonicalOwner": "external:codex-user-config/capability-router",
+      "id": "capability.routing"
+    },
+    {
+      "canonicalOwner": "skill.curated.tdd",
+      "id": "capability.tdd"
+    },
+    {
+      "canonicalOwner": "skill.curated.diagnose",
+      "id": "capability.debugging"
+    },
+    {
+      "canonicalOwner": "skill.curated.review",
+      "id": "capability.review"
+    },
+    {
+      "canonicalOwner": "external:superpowers/writing-plans",
+      "id": "capability.planning"
+    },
+    {
+      "canonicalOwner": "external:environment-browser-capability",
+      "id": "capability.browser-runtime"
+    },
+    {
+      "canonicalOwner": "external:product-design",
+      "id": "capability.product-design"
+    },
+    {
+      "canonicalOwner": "external:codex-security",
+      "id": "capability.security-scan"
+    },
+    {
+      "canonicalOwner": "external:organization-privacy-policy",
+      "id": "capability.privacy-governance"
+    },
+    {
+      "canonicalOwner": "skill.curated.ci-cd-and-automation",
+      "id": "capability.ci-cd"
+    },
+    {
+      "canonicalOwner": "skill.curated.deprecation-and-migration",
+      "id": "capability.lifecycle-migration"
+    },
+    {
+      "canonicalOwner": "skill.curated.observability-and-instrumentation",
+      "id": "capability.observability"
+    },
+    {
+      "canonicalOwner": "skill.curated.performance-optimization",
+      "id": "capability.performance"
+    },
+    {
+      "canonicalOwner": "skill.curated.shipping-and-launch",
+      "id": "capability.production-launch"
+    }
+  ],
+  "conflicts": [
+    {
+      "defaultOwner": "external:codex-user-config/capability-router",
+      "id": "conflict.router",
+      "members": [
+        "external:codex-user-config/capability-router",
+        "upstream:addy/using-agent-skills",
+        "external:superpowers/using-superpowers"
+      ],
+      "resolution": "One global router. Plugin routers are scoped to explicit plugin workflows; Addy's router is excluded."
+    },
+    {
+      "defaultOwner": "skill.curated.tdd",
+      "id": "conflict.tdd",
+      "members": [
+        "skill.curated.tdd",
+        "external:superpowers/test-driven-development",
+        "upstream:addy/test-driven-development"
+      ],
+      "resolution": "Use curated tdd by default. Superpowers is scoped to an explicit Superpowers workflow; Addy is merged, not installed."
+    },
+    {
+      "defaultOwner": "skill.curated.diagnose",
+      "id": "conflict.debugging",
+      "members": [
+        "skill.curated.diagnose",
+        "external:superpowers/systematic-debugging",
+        "upstream:addy/debugging-and-error-recovery"
+      ],
+      "resolution": "Use diagnose by default; Superpowers is explicitly scoped; Addy is merged, not installed."
+    },
+    {
+      "defaultOwner": "skill.curated.review",
+      "id": "conflict.review",
+      "members": [
+        "skill.curated.review",
+        "external:superpowers/requesting-code-review",
+        "external:codex-security/security-diff-scan",
+        "upstream:addy/code-review-and-quality"
+      ],
+      "resolution": "Review owns general change review; requesting-code-review owns the request stage; security-diff-scan owns security only; Addy is merged."
+    },
+    {
+      "defaultOwner": "external:superpowers/writing-plans",
+      "id": "conflict.planning",
+      "members": [
+        "external:superpowers/writing-plans",
+        "skill.curated.to-issues",
+        "skill.curated.request-refactor-plan",
+        "upstream:addy/planning-and-task-breakdown"
+      ],
+      "resolution": "Writing-plans owns implementation planning; to-issues publishes work; request-refactor-plan is refactor-specific; Addy is merged."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "recipe.telemetry-safety",
+      "steps": [
+        {
+          "capability": "capability.privacy-governance"
+        },
+        {
+          "capability": "capability.observability",
+          "when": "collection purpose, minimization, redaction, retention, and access are defined"
+        },
+        {
+          "capability": "capability.security-scan",
+          "when": "telemetry crosses a new trust or external-service boundary"
+        }
+      ],
+      "trigger": "Logs, metrics, traces, alerts, or launch monitoring may contain sensitive data"
+    },
+    {
+      "authorization": "Every merge, push, release, deploy, data migration, or rollback remains separately authorized.",
+      "id": "recipe.production-launch",
+      "steps": [
+        {
+          "capability": "capability.observability",
+          "when": "production behavior needs evidence"
+        },
+        {
+          "capability": "capability.performance",
+          "when": "a performance target or regression risk exists"
+        },
+        {
+          "capability": "capability.ci-cd",
+          "when": "automated delivery gates are required"
+        },
+        {
+          "capability": "capability.security-scan",
+          "when": "the change crosses a security boundary"
+        },
+        {
+          "capability": "capability.production-launch",
+          "when": "readiness evidence is available"
+        }
+      ],
+      "trigger": "A product or service change is approaching production"
+    },
+    {
+      "id": "recipe.contract-retirement",
+      "steps": [
+        {
+          "capability": "capability.lifecycle-migration"
+        },
+        {
+          "capability": "capability.tdd"
+        },
+        {
+          "capability": "capability.observability"
+        },
+        {
+          "capability": "capability.ci-cd"
+        },
+        {
+          "capability": "capability.production-launch"
+        }
+      ],
+      "trigger": "An API, dependency, feature, or data contract is replaced or retired"
+    }
+  ],
+  "relations": [
+    {
+      "from": "skill.curated.ci-cd-and-automation",
+      "to": "capability.ci-cd",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.deprecation-and-migration",
+      "to": "capability.lifecycle-migration",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.observability-and-instrumentation",
+      "to": "capability.observability",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.performance-optimization",
+      "to": "capability.performance",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.shipping-and-launch",
+      "to": "capability.production-launch",
+      "type": "provides"
+    },
+    {
+      "condition": "production behavior must be measurable",
+      "from": "capability.observability",
+      "to": "capability.performance",
+      "type": "precedes"
+    },
+    {
+      "condition": "a performance objective or budget applies",
+      "from": "capability.performance",
+      "to": "capability.production-launch",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.ci-cd",
+      "to": "capability.production-launch",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.observability",
+      "to": "capability.production-launch",
+      "type": "precedes"
+    },
+    {
+      "condition": "the launch replaces or retires an existing contract",
+      "from": "capability.lifecycle-migration",
+      "to": "capability.production-launch",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.observability",
+      "to": "capability.debugging",
+      "type": "enriches"
+    },
+    {
+      "from": "capability.observability",
+      "to": "capability.performance",
+      "type": "enriches"
+    },
+    {
+      "condition": "the root cause is unknown or intermittent",
+      "from": "capability.performance",
+      "to": "capability.debugging",
+      "type": "handoff"
+    },
+    {
+      "condition": "migration evidence is ready for GO/NO-GO",
+      "from": "capability.lifecycle-migration",
+      "to": "capability.production-launch",
+      "type": "handoff"
+    },
+    {
+      "from": "capability.security-scan",
+      "to": "capability.review",
+      "type": "complements"
+    },
+    {
+      "condition": "telemetry may contain personal, confidential, regulated, or secret data",
+      "from": "capability.privacy-governance",
+      "to": "capability.observability",
+      "type": "constrains"
+    },
+    {
+      "condition": "launch monitoring expands data collection or access",
+      "from": "capability.privacy-governance",
+      "to": "capability.production-launch",
+      "type": "constrains"
+    },
+    {
+      "from": "capability.browser-runtime",
+      "to": "capability.performance",
+      "type": "complements"
+    },
+    {
+      "condition": "a user interface is implemented",
+      "from": "capability.product-design",
+      "to": "capability.browser-runtime",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.tdd",
+      "to": "capability.lifecycle-migration",
+      "type": "validates"
+    }
+  ],
+  "schema": 1,
+  "skills": [
+    {
+      "description": ">",
+      "directory": "caveman",
+      "id": "skill.curated.caveman",
+      "name": "caveman",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Use when designing or modifying CI/CD pipelines, automated quality gates, test runners, staged delivery, or deployment safeguards; not for diagnosing an already-failing GitHub Actions run.",
+      "directory": "ci-cd-and-automation",
+      "id": "skill.curated.ci-cd-and-automation",
+      "name": "ci-cd-and-automation",
+      "phase": "ship",
+      "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Use when replacing, retiring, or consolidating systems, APIs, features, dependencies, or data contracts and a measured compatibility, migration, or removal plan is required.",
+      "directory": "deprecation-and-migration",
+      "id": "skill.curated.deprecation-and-migration",
+      "name": "deprecation-and-migration",
+      "phase": "evolve",
+      "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions \"design it twice\".",
+      "directory": "design-an-interface",
+      "id": "skill.curated.design-an-interface",
+      "name": "design-an-interface",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce \u2192 minimise \u2192 hypothesise \u2192 instrument \u2192 fix \u2192 regression-test. Use when user says \"diagnose this\" / \"debug this\", reports a bug, says something is broken/throwing/failing, or describes a performance regression.",
+      "directory": "diagnose",
+      "id": "skill.curated.diagnose",
+      "name": "diagnose",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Edit and improve articles by restructuring sections, improving clarity, and tightening prose. Use when user wants to edit, revise, or improve an article draft.",
+      "directory": "edit-article",
+      "id": "skill.curated.edit-article",
+      "name": "edit-article",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Set up hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Works in any agent environment or manual terminal workflow. Use when the user wants to prevent destructive git operations or add git safety guardrails.",
+      "directory": "git-guardrails-claude-code",
+      "id": "skill.curated.git-guardrails-claude-code",
+      "name": "git-guardrails",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions \"grill me\".",
+      "directory": "grill-me",
+      "id": "skill.curated.grill-me",
+      "name": "grill-me",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.",
+      "directory": "grill-with-docs",
+      "id": "skill.curated.grill-with-docs",
+      "name": "grill-with-docs",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+      "directory": "handoff",
+      "id": "skill.curated.handoff",
+      "name": "handoff",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Find deepening opportunities in a codebase, informed by the domain language in CONTEXT.md and the decisions in docs/adr/. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable.",
+      "directory": "improve-codebase-architecture",
+      "id": "skill.curated.improve-codebase-architecture",
+      "name": "improve-codebase-architecture",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Replace unsafe `as` type assertions in TypeScript test files with type-safe alternatives. Use when user wants to replace `as` in tests, pass partial test data safely, or test with intentionally wrong types without losing autocomplete.",
+      "directory": "migrate-to-shoehorn",
+      "id": "skill.curated.migrate-to-shoehorn",
+      "name": "migrate-to-shoehorn",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Use when production behavior is not sufficiently visible, or when adding or reviewing logs, metrics, traces, alerts, service-level indicators, retries, queues, jobs, or external integrations.",
+      "directory": "observability-and-instrumentation",
+      "id": "skill.curated.observability-and-instrumentation",
+      "name": "observability-and-instrumentation",
+      "phase": "operate",
+      "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Search, create, and manage notes in an Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.",
+      "directory": "obsidian-vault",
+      "id": "skill.curated.obsidian-vault",
+      "name": "obsidian-vault",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Use when defining a performance budget, measuring a known performance concern, or optimizing latency, throughput, resource use, load time, responsiveness, or scalability after evidence identifies a target or bottleneck.",
+      "directory": "performance-optimization",
+      "id": "skill.curated.performance-optimization",
+      "name": "performance-optimization",
+      "phase": "verify",
+      "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Build a throwaway prototype to flesh out a design before committing to it. Routes between two branches \u2014 a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route. Use when the user wants to prototype, sanity-check a data model or state machine, mock up a UI, explore design options, or says \"prototype this\", \"let me play with it\", \"try a few designs\".",
+      "directory": "prototype",
+      "id": "skill.curated.prototype",
+      "name": "prototype",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wants to report bugs, do QA, file issues conversationally, or mentions \"QA session\".",
+      "directory": "qa",
+      "id": "skill.curated.qa",
+      "name": "qa",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.",
+      "directory": "request-refactor-plan",
+      "id": "skill.curated.request-refactor-plan",
+      "name": "request-refactor-plan",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes \u2014 Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\".",
+      "directory": "review",
+      "id": "skill.curated.review",
+      "name": "review",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.",
+      "directory": "scaffold-exercises",
+      "id": "skill.curated.scaffold-exercises",
+      "name": "scaffold-exercises",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Sets up an `## Agent skills` block in the repo's agent config file and `docs/agents/` so engineering skills know this repo's issue tracker (GitHub, GitLab, or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` \u2014 or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.",
+      "directory": "setup-matt-pocock-skills",
+      "id": "skill.curated.setup-matt-pocock-skills",
+      "name": "setup-project-skills",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests in the current repo. Use when user wants to add pre-commit hooks, set up Husky, configure lint-staged, or add commit-time formatting/typechecking/testing.",
+      "directory": "setup-pre-commit",
+      "id": "skill.curated.setup-pre-commit",
+      "name": "setup-pre-commit",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Use when preparing a production launch, staged rollout, migration, beta, release-readiness decision, monitoring plan, rollback plan, or post-launch verification; not for ordinary Git branch publication.",
+      "directory": "shipping-and-launch",
+      "id": "skill.curated.shipping-and-launch",
+      "name": "shipping-and-launch",
+      "phase": "ship",
+      "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions \"red-green-refactor\", wants integration tests, or asks for test-first development.",
+      "directory": "tdd",
+      "id": "skill.curated.tdd",
+      "name": "tdd",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Teach the user a new skill or concept, within this workspace.",
+      "directory": "teach",
+      "id": "skill.curated.teach",
+      "name": "teach",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.",
+      "directory": "to-issues",
+      "id": "skill.curated.to-issues",
+      "name": "to-issues",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context.",
+      "directory": "to-prd",
+      "id": "skill.curated.to-prd",
+      "name": "to-prd",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Triage issues through a state machine driven by triage roles. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.",
+      "directory": "triage",
+      "id": "skill.curated.triage",
+      "name": "triage",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domain terms, build a glossary, harden terminology, create a ubiquitous language, or mentions \"domain model\" or \"DDD\".",
+      "directory": "ubiquitous-language",
+      "id": "skill.curated.ubiquitous-language",
+      "name": "ubiquitous-language",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.",
+      "directory": "write-a-skill",
+      "id": "skill.curated.write-a-skill",
+      "name": "write-a-skill",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Shape an article as a journey of beats, choose-your-own-adventure style. The user picks a starting beat from the raw material, you write only that beat, then offer options for where to pivot next, beat by beat, until the article reaches a natural end. Use when the user has raw material and wants to assemble it as a narrative rather than an argument.",
+      "directory": "writing-beats",
+      "id": "skill.curated.writing-beats",
+      "name": "writing-beats",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Grilling session that mines the user for fragments \u2014 heterogeneous nuggets of writing (claims, vignettes, sharp sentences, half-thoughts) \u2014 and appends them to a single document as raw material for a future article. Use when the user wants to develop ideas before imposing structure, or mentions \"fragments\", \"ideate\", or \"raw material\" for writing.",
+      "directory": "writing-fragments",
+      "id": "skill.curated.writing-fragments",
+      "name": "writing-fragments",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Take a markdown file of raw material and shape it into an article through a conversational session \u2014 drafting candidate openings, growing the piece paragraph by paragraph, arguing about format (lists, tables, callouts, quotes) at each step. Use when the user has a pile of notes, fragments, or a rough draft and wants help turning it into something publishable.",
+      "directory": "writing-shape",
+      "id": "skill.curated.writing-shape",
+      "name": "writing-shape",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    },
+    {
+      "description": "Tell the agent to zoom out and give broader context or a higher-level perspective. Use when you're unfamiliar with a section of code or need to understand how it fits into the bigger picture.",
+      "directory": "zoom-out",
+      "id": "skill.curated.zoom-out",
+      "name": "zoom-out",
+      "phase": "general",
+      "source": "local:reviewed-baseline",
+      "status": "approved"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "id": "conflict.router",
+      "defaultOwner": "external:codex-user-config/capability-router",
+      "members": ["external:codex-user-config/capability-router", "upstream:addy/using-agent-skills", "external:superpowers/using-superpowers"],
+      "resolution": "One global router. Plugin routers are scoped to explicit plugin workflows; Addy's router is excluded."
+    },
+    {
+      "id": "conflict.tdd",
+      "defaultOwner": "skill.curated.tdd",
+      "members": ["skill.curated.tdd", "external:superpowers/test-driven-development", "upstream:addy/test-driven-development"],
+      "resolution": "Use curated tdd by default. Superpowers is scoped to an explicit Superpowers workflow; Addy is merged, not installed."
+    },
+    {
+      "id": "conflict.debugging",
+      "defaultOwner": "skill.curated.diagnose",
+      "members": ["skill.curated.diagnose", "external:superpowers/systematic-debugging", "upstream:addy/debugging-and-error-recovery"],
+      "resolution": "Use diagnose by default; Superpowers is explicitly scoped; Addy is merged, not installed."
+    },
+    {
+      "id": "conflict.review",
+      "defaultOwner": "skill.curated.review",
+      "members": ["skill.curated.review", "external:superpowers/requesting-code-review", "external:codex-security/security-diff-scan", "upstream:addy/code-review-and-quality"],
+      "resolution": "Review owns general change review; requesting-code-review owns the request stage; security-diff-scan owns security only; Addy is merged."
+    },
+    {
+      "id": "conflict.planning",
+      "defaultOwner": "external:superpowers/writing-plans",
+      "members": ["external:superpowers/writing-plans", "skill.curated.to-issues", "skill.curated.request-refactor-plan", "upstream:addy/planning-and-task-breakdown"],
+      "resolution": "Writing-plans owns implementation planning; to-issues publishes work; request-refactor-plan is refactor-specific; Addy is merged."
+    }
+  ]
+}

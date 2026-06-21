@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "recipes": [
+    {
+      "id": "recipe.telemetry-safety",
+      "trigger": "Logs, metrics, traces, alerts, or launch monitoring may contain sensitive data",
+      "steps": [
+        {"capability": "capability.privacy-governance"},
+        {"capability": "capability.observability", "when": "collection purpose, minimization, redaction, retention, and access are defined"},
+        {"capability": "capability.security-scan", "when": "telemetry crosses a new trust or external-service boundary"}
+      ]
+    },
+    {
+      "id": "recipe.production-launch",
+      "trigger": "A product or service change is approaching production",
+      "steps": [
+        {"capability": "capability.observability", "when": "production behavior needs evidence"},
+        {"capability": "capability.performance", "when": "a performance target or regression risk exists"},
+        {"capability": "capability.ci-cd", "when": "automated delivery gates are required"},
+        {"capability": "capability.security-scan", "when": "the change crosses a security boundary"},
+        {"capability": "capability.production-launch", "when": "readiness evidence is available"}
+      ],
+      "authorization": "Every merge, push, release, deploy, data migration, or rollback remains separately authorized."
+    },
+    {
+      "id": "recipe.contract-retirement",
+      "trigger": "An API, dependency, feature, or data contract is replaced or retired",
+      "steps": [
+        {"capability": "capability.lifecycle-migration"},
+        {"capability": "capability.tdd"},
+        {"capability": "capability.observability"},
+        {"capability": "capability.ci-cd"},
+        {"capability": "capability.production-launch"}
+      ]
+    }
+  ]
+}

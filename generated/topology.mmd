@@ -1,0 +1,21 @@
+flowchart LR
+  skill_curated_ci_cd_and_automation -- provides --> capability_ci_cd
+  skill_curated_deprecation_and_migration -- provides --> capability_lifecycle_migration
+  skill_curated_observability_and_instrumentation -- provides --> capability_observability
+  skill_curated_performance_optimization -- provides --> capability_performance
+  skill_curated_shipping_and_launch -- provides --> capability_production_launch
+  capability_observability -- precedes --> capability_performance
+  capability_performance -- precedes --> capability_production_launch
+  capability_ci_cd -- precedes --> capability_production_launch
+  capability_observability -- precedes --> capability_production_launch
+  capability_lifecycle_migration -- precedes --> capability_production_launch
+  capability_observability -- enriches --> capability_debugging
+  capability_observability -- enriches --> capability_performance
+  capability_performance -- handoff --> capability_debugging
+  capability_lifecycle_migration -- handoff --> capability_production_launch
+  capability_security_scan -- complements --> capability_review
+  capability_privacy_governance -- constrains --> capability_observability
+  capability_privacy_governance -- constrains --> capability_production_launch
+  capability_browser_runtime -- complements --> capability_performance
+  capability_product_design -- precedes --> capability_browser_runtime
+  capability_tdd -- validates --> capability_lifecycle_migration
