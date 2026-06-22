@@ -495,7 +495,81 @@ git commit -m "test: add adversarial lifecycle routing simulation"
 
 ---
 
-### Task 6: Make `codex-user-config` Consume The Routing Projection
+### Task 6: Fill Only Verified Lifecycle Gaps From Reviewed Third-Party Sources
+
+**Files:**
+- Modify as evidence requires: `sources/lock.json`
+- Create per source: `sources/<source-id>/selection.json`
+- Create per source: `audits/<source-id>/<revision>/security.md`
+- Create per source: `audits/<source-id>/<revision>/portability.md`
+- Create per source: `audits/<source-id>/<revision>/overlap.md`
+- Create per approved Skill: `skills/<neutral-name>/SKILL.md`
+- Modify: `registry/admissions.json`
+- Modify: `registry/skills.json`
+- Modify: `registry/routing.json`
+- Modify: `registry/capabilities.json`
+- Modify: `registry/relations.json`
+- Modify as composition requires: `registry/recipes.json`
+- Modify: `registry/scenarios.json`
+- Test: `tests/test_gap_intake.py`
+
+- [ ] **Step 1: Write the failing gap-intake test**
+
+Fail when a lifecycle node remains `gap` without a dated search decision, or
+when an approved newly sourced Skill lacks source pin, license, provenance,
+security, sensitive-data review, neutralization, portability, native/runtime
+overlap, existing-curated overlap, naming, Skill TDD, and routing scenarios.
+
+- [ ] **Step 2: Confirm whether discovery is necessary**
+
+Run the complete lifecycle and routing simulation. For every `gap`, evaluate in
+order: native-sufficient, visible runtime-resolved, existing curated mapping,
+and Recipe composition. Search externally only when all four fail.
+
+- [ ] **Step 3: Perform targeted GitHub discovery for each remaining gap**
+
+Use capability-specific searches and trusted source evidence. Record candidate
+repository, immutable commit, license, maintenance posture, and the exact gap
+it may fill. Do not clone or install a candidate into the live Agent
+environment during discovery.
+
+- [ ] **Step 4: Apply the complete third-party intake gate**
+
+Inspect every executable surface and instruction boundary. Remove credentials,
+personal data, author-specific paths, organization assumptions, vendor lock-in,
+and Agent-specific commands that are not essential. Preserve license,
+provenance, safety, permission, and real environment constraints. Rename using
+a neutral verb-first or capability-specific name and record the upstream name
+as provenance, not runtime identity.
+
+- [ ] **Step 5: Choose one disposition per candidate**
+
+Use only `approve`, `merge`, `recipe-only`, `adapter-only`, or `reject`.
+Approval requires a distinct native increment and full validation. Prefer merge
+or Recipe when a new Skill body would duplicate an existing workflow.
+
+- [ ] **Step 6: Test each approved Skill independently**
+
+For each approved candidate, run baseline routing scenarios before adding the
+Skill, observe the expected gap, add the minimal neutralized Skill, rerun the
+same scenarios, add negative and overlap scenarios, then run the full suite.
+
+- [ ] **Step 7: Iterate until coverage closes or human authority is explicit**
+
+Repeat Tasks 2-6 when new conflicts or gaps appear. A node may finish as
+`human-authority`, `native-sufficient`, or `runtime-resolved`; a Skill is not
+required merely to eliminate the word `gap`.
+
+- [ ] **Step 8: Commit each independently reviewed source batch**
+
+```powershell
+git add sources audits skills registry tests
+git commit -m "feat: fill reviewed lifecycle capability gap"
+```
+
+---
+
+### Task 7: Make `codex-user-config` Consume The Routing Projection
 
 **Files:**
 - Modify: `AGENTS.md`
@@ -564,7 +638,7 @@ git commit -m "feat: consume curated capability routing projection"
 
 ---
 
-### Task 7: Publish Curated Release And Pin Configuration
+### Task 8: Publish Curated Release And Pin Configuration
 
 **Files:**
 - Modify: `C:/Projects/codex-user-config/config/skills-source.json`
@@ -622,7 +696,7 @@ git push origin main
 
 ---
 
-### Task 8: Install Live Configuration With Backup And Rollback Evidence
+### Task 9: Install Live Configuration With Backup And Rollback Evidence
 
 **Files affected outside repositories:**
 - `~/.codex/AGENTS.md`
@@ -672,7 +746,7 @@ closure workflow after restart.
 
 ---
 
-### Task 9: Run Strict Fresh-Agent Natural-Language Simulation
+### Task 10: Run Strict Fresh-Agent Natural-Language Simulation
 
 **Files:**
 - Create: `C:/Projects/codex-user-config/tests/fixtures/live-routing-scenarios.json`
@@ -760,7 +834,7 @@ git push origin main
 
 ---
 
-### Task 10: Final Cross-Repository Closure
+### Task 11: Final Cross-Repository Closure
 
 **Files:**
 - Update as generated: repository verification reports only

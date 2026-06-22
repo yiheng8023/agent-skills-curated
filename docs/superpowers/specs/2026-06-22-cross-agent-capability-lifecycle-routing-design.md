@@ -221,6 +221,23 @@ proof of availability.
 
 ## Verification Strategy
 
+## Gap-Driven Third-Party Intake
+
+External discovery is triggered only when a lifecycle node remains a verified
+`gap` after native capability, visible runtime capability, existing curated
+content, and Recipe/DAG composition have been evaluated. Discovery is targeted
+to that capability and does not authorize broad collection or installation.
+
+Each GitHub or other third-party candidate must pass immutable source pinning,
+license and provenance review, executable-surface security review, sensitive
+data and identity removal, vendor and Agent neutralization, portability review,
+native/runtime and curated overlap review, generic cross-Agent naming, Skill
+TDD, lifecycle mapping, and adversarial routing validation. A candidate that
+cannot pass all applicable gates is rejected or reduced to merge,
+Recipe-only, or adapter-only evidence. Discovery and validation may iterate
+multiple times; release cannot proceed while an unjustified lifecycle gap or
+unresolved overlap remains.
+
 ### Static contract verification
 
 - registry and schema parity;
