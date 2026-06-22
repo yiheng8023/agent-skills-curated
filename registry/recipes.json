@@ -2,35 +2,69 @@
   "schema": 1,
   "recipes": [
     {
-      "id": "recipe.telemetry-safety",
-      "trigger": "Logs, metrics, traces, alerts, or launch monitoring may contain sensitive data",
+      "id": "recipe.test-strategy",
+      "trigger": "A change needs risk-proportionate verification across test layers and delivery gates",
       "steps": [
-        {"capability": "capability.privacy-governance"},
-        {"capability": "capability.observability", "when": "collection purpose, minimization, redaction, retention, and access are defined"},
-        {"capability": "capability.security-scan", "when": "telemetry crosses a new trust or external-service boundary"}
+        {"capability": "capability.requirements-clarification"},
+        {"capability": "capability.test-strategy"},
+        {"capability": "capability.tdd", "when": "behavior is being added or corrected"},
+        {"capability": "capability.performance", "when": "a performance objective or regression risk exists"},
+        {"capability": "capability.security-audit", "when": "a trust boundary or material threat changes"},
+        {"capability": "capability.ci-cd", "when": "repeatable automated gates are required"}
       ]
     },
     {
-      "id": "recipe.production-launch",
-      "trigger": "A product or service change is approaching production",
+      "id": "recipe.telemetry-safety",
+      "trigger": "Operational evidence may contain personal, confidential, regulated, or secret data",
       "steps": [
-        {"capability": "capability.observability", "when": "production behavior needs evidence"},
-        {"capability": "capability.performance", "when": "a performance target or regression risk exists"},
-        {"capability": "capability.ci-cd", "when": "automated delivery gates are required"},
-        {"capability": "capability.security-scan", "when": "the change crosses a security boundary"},
-        {"capability": "capability.production-launch", "when": "readiness evidence is available"}
-      ],
-      "authorization": "Every merge, push, release, deploy, data migration, or rollback remains separately authorized."
+        {"capability": "capability.privacy-governance"},
+        {"capability": "capability.observability", "when": "purpose, minimization, redaction, retention, and access are defined"},
+        {"capability": "capability.security-audit", "when": "telemetry crosses a new trust boundary"}
+      ]
     },
     {
-      "id": "recipe.contract-retirement",
-      "trigger": "An API, dependency, feature, or data contract is replaced or retired",
+      "id": "recipe.release",
+      "trigger": "A change is approaching a governed release boundary",
       "steps": [
-        {"capability": "capability.lifecycle-migration"},
-        {"capability": "capability.tdd"},
+        {"capability": "capability.test-strategy"},
         {"capability": "capability.observability"},
+        {"capability": "capability.performance", "when": "a performance objective applies"},
         {"capability": "capability.ci-cd"},
-        {"capability": "capability.production-launch"}
+        {"capability": "capability.rollback-recovery"},
+        {"capability": "capability.release-readiness"}
+      ],
+      "authorization": "Every merge, publication, release, deployment, migration, or rollback remains separately authorized."
+    },
+    {
+      "id": "recipe.migration",
+      "trigger": "An interface, dependency, feature, data contract, or system is replaced or retired",
+      "steps": [
+        {"capability": "capability.migration-deprecation"},
+        {"capability": "capability.test-strategy"},
+        {"capability": "capability.observability"},
+        {"capability": "capability.rollback-recovery"},
+        {"capability": "capability.release-readiness"}
+      ]
+    },
+    {
+      "id": "recipe.rollback-recovery",
+      "trigger": "A failed change or incident requires controlled restoration of a known-safe state",
+      "steps": [
+        {"capability": "capability.rollback-recovery"},
+        {"capability": "capability.observability"},
+        {"capability": "capability.fault-diagnosis", "when": "safe restoration does not explain the cause"},
+        {"capability": "capability.test-strategy", "when": "recovery behavior needs regression evidence"}
+      ],
+      "authorization": "Production rollback and destructive recovery actions require the accountable operator's explicit authorization."
+    },
+    {
+      "id": "recipe.knowledge-capture",
+      "trigger": "A completed decision, delivery, incident, or experiment produced reusable learning",
+      "steps": [
+        {"capability": "capability.retrospective-evolution"},
+        {"capability": "capability.knowledge-capture"},
+        {"capability": "capability.documentation-governance", "when": "learning changes an authoritative standard or operating path"},
+        {"capability": "capability.cross-agent-handoff", "when": "another subject will continue the work"}
       ]
     }
   ]

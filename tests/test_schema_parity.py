@@ -19,13 +19,12 @@ from scripts.contracts import (
     validate_skills_document,
     validate_sources_lock_document,
 )
-from tests.test_shape_contracts import ADMISSIONS, CAPABILITIES_V2, ROUTING, SCENARIOS_DOCUMENT
+from tests.test_shape_contracts import ADMISSIONS, ROUTING, SCENARIOS_DOCUMENT
 
 
 ROOT = Path(__file__).resolve().parent.parent
 CASES = (
     ("skills", "registry/skills.json", validate_skills_document),
-    ("capabilities", "registry/capabilities.json", validate_capabilities_document),
     ("relations", "registry/relations.json", validate_relations_document),
     ("conflicts", "registry/conflicts.json", validate_conflicts_document),
     ("recipes", "registry/recipes.json", validate_recipes_document),
@@ -37,11 +36,23 @@ CASES = (
     ),
     ("release-manifest", "release-manifest.json", validate_release_manifest_document),
 )
+CAPABILITIES_V1 = {
+    "schema": 1,
+    "capabilities": [
+        {"id": "capability.alpha", "canonicalOwner": "external:runtime"}
+    ],
+}
 ADDITIONAL_CASES = (
+    ("capabilities", 1, CAPABILITIES_V1, validate_capabilities_document),
     ("admissions", 1, ADMISSIONS, validate_admissions_document),
     ("routing", 1, ROUTING, validate_routing_document),
     ("scenarios", 1, SCENARIOS_DOCUMENT, validate_scenarios_document),
-    ("capabilities-v2", 2, CAPABILITIES_V2, validate_capabilities_document),
+    (
+        "capabilities-v2",
+        2,
+        json.loads((ROOT / "registry/capabilities.json").read_text(encoding="utf-8")),
+        validate_capabilities_document,
+    ),
 )
 PATTERN_CANDIDATES = (
     "skill.curated.alpha",

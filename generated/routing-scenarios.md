@@ -2,30 +2,60 @@
 
 Do not edit manually.
 
+## recipe.test-strategy
+
+Trigger: A change needs risk-proportionate verification across test layers and delivery gates
+
+- `capability.requirements-clarification`
+- `capability.test-strategy`
+- `capability.tdd` when behavior is being added or corrected
+- `capability.performance` when a performance objective or regression risk exists
+- `capability.security-audit` when a trust boundary or material threat changes
+- `capability.ci-cd` when repeatable automated gates are required
+
 ## recipe.telemetry-safety
 
-Trigger: Logs, metrics, traces, alerts, or launch monitoring may contain sensitive data
+Trigger: Operational evidence may contain personal, confidential, regulated, or secret data
 
 - `capability.privacy-governance`
-- `capability.observability` when collection purpose, minimization, redaction, retention, and access are defined
-- `capability.security-scan` when telemetry crosses a new trust or external-service boundary
+- `capability.observability` when purpose, minimization, redaction, retention, and access are defined
+- `capability.security-audit` when telemetry crosses a new trust boundary
 
-## recipe.production-launch
+## recipe.release
 
-Trigger: A product or service change is approaching production
+Trigger: A change is approaching a governed release boundary
 
-- `capability.observability` when production behavior needs evidence
-- `capability.performance` when a performance target or regression risk exists
-- `capability.ci-cd` when automated delivery gates are required
-- `capability.security-scan` when the change crosses a security boundary
-- `capability.production-launch` when readiness evidence is available
-
-## recipe.contract-retirement
-
-Trigger: An API, dependency, feature, or data contract is replaced or retired
-
-- `capability.lifecycle-migration`
-- `capability.tdd`
+- `capability.test-strategy`
 - `capability.observability`
+- `capability.performance` when a performance objective applies
 - `capability.ci-cd`
-- `capability.production-launch`
+- `capability.rollback-recovery`
+- `capability.release-readiness`
+
+## recipe.migration
+
+Trigger: An interface, dependency, feature, data contract, or system is replaced or retired
+
+- `capability.migration-deprecation`
+- `capability.test-strategy`
+- `capability.observability`
+- `capability.rollback-recovery`
+- `capability.release-readiness`
+
+## recipe.rollback-recovery
+
+Trigger: A failed change or incident requires controlled restoration of a known-safe state
+
+- `capability.rollback-recovery`
+- `capability.observability`
+- `capability.fault-diagnosis` when safe restoration does not explain the cause
+- `capability.test-strategy` when recovery behavior needs regression evidence
+
+## recipe.knowledge-capture
+
+Trigger: A completed decision, delivery, incident, or experiment produced reusable learning
+
+- `capability.retrospective-evolution`
+- `capability.knowledge-capture`
+- `capability.documentation-governance` when learning changes an authoritative standard or operating path
+- `capability.cross-agent-handoff` when another subject will continue the work

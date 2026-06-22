@@ -1,117 +1,411 @@
 {
   "capabilities": [
     {
-      "canonicalOwner": "external:codex-user-config/capability-router",
-      "id": "capability.routing"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.grill-me",
+        "skill.curated.ubiquitous-language"
+      ],
+      "description": "Clarify goals, affected subjects, constraints, vocabulary, and acceptance boundaries before solution work.",
+      "fallback": [
+        "Record assumptions and stop decisions that depend on unanswered questions."
+      ],
+      "id": "capability.requirements-clarification",
+      "stage": "discover",
+      "validation": [
+        "Confirm unresolved questions and acceptance boundaries with the responsible subject."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.tdd",
-      "id": "capability.tdd"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.to-prd"
+      ],
+      "description": "Turn an agreed problem into a reviewable product or technical decision document.",
+      "fallback": [
+        "Keep the document in draft and identify missing decision authority."
+      ],
+      "id": "capability.prd-rfc",
+      "stage": "define",
+      "validation": [
+        "Review scope, outcomes, constraints, alternatives, and acceptance evidence."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.diagnose",
-      "id": "capability.debugging"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.to-issues"
+      ],
+      "description": "Decompose an approved outcome into bounded, independently verifiable work slices.",
+      "fallback": [
+        "Retain the larger outcome and mark decomposition gaps instead of inventing tasks."
+      ],
+      "id": "capability.problem-decomposition",
+      "stage": "plan",
+      "validation": [
+        "Check that each slice has inputs, outputs, dependencies, and observable completion."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.review",
-      "id": "capability.review"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.improve-codebase-architecture"
+      ],
+      "description": "Design system boundaries, responsibilities, interactions, and evolution constraints.",
+      "fallback": [
+        "Use the smallest reversible boundary change and document uncertainty."
+      ],
+      "id": "capability.architecture-design",
+      "stage": "design",
+      "validation": [
+        "Review the design against current domain language, decisions, and operational constraints."
+      ]
     },
     {
-      "canonicalOwner": "external:superpowers/writing-plans",
-      "id": "capability.planning"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.design-an-interface"
+      ],
+      "description": "Design stable interfaces and contracts between components or subjects.",
+      "fallback": [
+        "Expose the narrowest reversible interface and defer unsupported flexibility."
+      ],
+      "id": "capability.interface-api-design",
+      "stage": "design",
+      "validation": [
+        "Evaluate alternatives against callers, failure modes, compatibility, and testability."
+      ]
     },
     {
-      "canonicalOwner": "external:environment-browser-capability",
-      "id": "capability.browser-runtime"
+      "coverageState": "gap",
+      "description": "Model data entities, invariants, ownership, retention, and change semantics.",
+      "fallback": [
+        "Declare the uncovered modeling need and avoid irreversible schema commitments."
+      ],
+      "id": "capability.data-modeling",
+      "stage": "design",
+      "validation": [
+        "Require domain and storage experts to review invariants and lifecycle assumptions."
+      ]
     },
     {
-      "canonicalOwner": "external:product-design",
-      "id": "capability.product-design"
+      "coverageState": "runtime-resolved",
+      "description": "Design accessible, usable, responsive user-facing interactions and visual structure.",
+      "fallback": [
+        "Provide an implementation-neutral interaction specification and preserve design uncertainty."
+      ],
+      "id": "capability.frontend-design",
+      "stage": "design",
+      "validation": [
+        "Probe the live environment for an authorized design workflow and verify the rendered result."
+      ]
     },
     {
-      "canonicalOwner": "external:codex-security",
-      "id": "capability.security-scan"
+      "coverageState": "native-sufficient",
+      "description": "Implement server-side behavior, integrations, persistence boundaries, and failure handling.",
+      "fallback": [
+        "Implement a smaller reversible slice and report unavailable execution support."
+      ],
+      "id": "capability.backend-implementation",
+      "stage": "implement",
+      "validation": [
+        "Run repository-defined tests, static checks, and contract verification."
+      ]
     },
     {
-      "canonicalOwner": "external:organization-privacy-policy",
-      "id": "capability.privacy-governance"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.tdd"
+      ],
+      "description": "Develop behavior through observable red, green, and refactor cycles.",
+      "fallback": [
+        "Add the smallest reproducible regression test before changing behavior."
+      ],
+      "id": "capability.tdd",
+      "stage": "implement",
+      "validation": [
+        "Capture a failing test before the minimal implementation and rerun it after refactoring."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.ci-cd-and-automation",
-      "id": "capability.ci-cd"
+      "coverageState": "recipe",
+      "description": "Choose risk-proportionate test layers, evidence, environments, and quality gates.",
+      "fallback": [
+        "Prioritize critical-path integration checks and disclose untested risks."
+      ],
+      "id": "capability.test-strategy",
+      "stage": "verify",
+      "validation": [
+        "Trace each material risk to an executable check and an evidence owner."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.deprecation-and-migration",
-      "id": "capability.lifecycle-migration"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.review"
+      ],
+      "description": "Review changes for correctness, standards, maintainability, and unintended effects.",
+      "fallback": [
+        "Narrow the review scope and state which change surfaces remain unreviewed."
+      ],
+      "id": "capability.code-review",
+      "stage": "verify",
+      "validation": [
+        "Inspect the bounded change set and verify actionable findings against repository evidence."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.observability-and-instrumentation",
-      "id": "capability.observability"
+      "coverageState": "runtime-resolved",
+      "description": "Assess trust boundaries, attack paths, vulnerabilities, and mitigation evidence.",
+      "fallback": [
+        "Perform a bounded manual threat review and recommend specialist review for unresolved risk."
+      ],
+      "id": "capability.security-audit",
+      "stage": "verify",
+      "validation": [
+        "Probe for an authorized security workflow and validate findings from source to impact."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.performance-optimization",
-      "id": "capability.performance"
+      "coverageState": "human-authority",
+      "description": "Determine lawful purpose, minimization, access, retention, and accountable handling of sensitive data.",
+      "fallback": [
+        "Minimize collection and pause processing that lacks a valid authority decision."
+      ],
+      "id": "capability.privacy-governance",
+      "stage": "govern",
+      "validation": [
+        "Obtain approval from the accountable privacy or legal authority before consequential processing."
+      ]
     },
     {
-      "canonicalOwner": "skill.curated.shipping-and-launch",
-      "id": "capability.production-launch"
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.performance-optimization"
+      ],
+      "description": "Define budgets and measure latency, throughput, responsiveness, and resource use.",
+      "fallback": [
+        "Report the measurement boundary and avoid unsupported performance claims."
+      ],
+      "id": "capability.performance",
+      "stage": "verify",
+      "validation": [
+        "Compare reproducible measurements with an explicit budget or baseline."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.observability-and-instrumentation"
+      ],
+      "description": "Design actionable logs, metrics, traces, alerts, and service-level evidence.",
+      "fallback": [
+        "Add bounded diagnostic evidence for the critical path and document blind spots."
+      ],
+      "id": "capability.observability",
+      "stage": "operate",
+      "validation": [
+        "Verify that critical behaviors and failures are visible without exposing restricted data."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.ci-cd-and-automation"
+      ],
+      "description": "Automate repeatable integration, quality gates, packaging, and staged delivery.",
+      "fallback": [
+        "Provide a reproducible manual gate sequence without claiming automated delivery."
+      ],
+      "id": "capability.ci-cd",
+      "stage": "deliver",
+      "validation": [
+        "Run the delivery workflow in its governed environment and inspect gate evidence."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.shipping-and-launch"
+      ],
+      "description": "Make a bounded release decision from readiness, rollout, monitoring, and rollback evidence.",
+      "fallback": [
+        "Hold the release and identify the smallest missing readiness evidence."
+      ],
+      "id": "capability.release-readiness",
+      "stage": "deliver",
+      "validation": [
+        "Confirm explicit go or no-go authority, acceptance evidence, monitoring, and recovery readiness."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.deprecation-and-migration"
+      ],
+      "description": "Replace or retire systems and contracts through measured compatibility and adoption stages.",
+      "fallback": [
+        "Preserve compatibility and delay irreversible removal until evidence is sufficient."
+      ],
+      "id": "capability.migration-deprecation",
+      "stage": "evolve",
+      "validation": [
+        "Verify compatibility, adoption, removal gates, and affected-subject communication."
+      ]
+    },
+    {
+      "coverageState": "recipe",
+      "description": "Restore a known-safe state or service objective after a failed change or incident.",
+      "fallback": [
+        "Stop further change, contain impact, and escalate to the accountable operator."
+      ],
+      "id": "capability.rollback-recovery",
+      "stage": "recover",
+      "validation": [
+        "Exercise the recovery path and verify state integrity plus restored service objectives."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.diagnose"
+      ],
+      "description": "Reproduce, isolate, explain, and regression-test faults or unexpected behavior.",
+      "fallback": [
+        "Minimize the reproduction and report competing hypotheses with evidence gaps."
+      ],
+      "id": "capability.fault-diagnosis",
+      "stage": "recover",
+      "validation": [
+        "Confirm the causal explanation with instrumentation and a passing regression test."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.triage"
+      ],
+      "description": "Classify incoming work by impact, urgency, evidence, ownership, and next state.",
+      "fallback": [
+        "Keep the issue uncommitted to a solution and request missing evidence."
+      ],
+      "id": "capability.issue-triage",
+      "stage": "operate",
+      "validation": [
+        "Confirm classification and ownership against the issue lifecycle policy."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.grill-with-docs"
+      ],
+      "description": "Keep authoritative documentation aligned with domain language, decisions, and implementation evidence.",
+      "fallback": [
+        "Mark stale or uncertain statements and retain traceable source references."
+      ],
+      "id": "capability.documentation-governance",
+      "stage": "govern",
+      "validation": [
+        "Cross-check updated documentation with authoritative repository and decision records."
+      ]
+    },
+    {
+      "coverageState": "recipe",
+      "description": "Capture reusable, source-linked learning without promoting transient state to authority.",
+      "fallback": [
+        "Keep a local evidence note and defer durable publication until reviewed."
+      ],
+      "id": "capability.knowledge-capture",
+      "stage": "evolve",
+      "validation": [
+        "Review captured knowledge for provenance, sensitivity, freshness, and retrieval value."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.request-refactor-plan",
+        "skill.curated.improve-codebase-architecture"
+      ],
+      "description": "Identify, classify, prioritize, and retire structural liabilities with bounded value evidence.",
+      "fallback": [
+        "Record the debt with impact and defer mutation until authority and capacity exist."
+      ],
+      "id": "capability.technical-debt",
+      "stage": "evolve",
+      "validation": [
+        "Tie proposed debt work to observable risk, cost, ownership, and verification."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.handoff"
+      ],
+      "description": "Transfer bounded context, evidence, decisions, and next actions between collaborating agents or subjects.",
+      "fallback": [
+        "Provide a minimal evidence-linked status summary and request receiver confirmation."
+      ],
+      "id": "capability.cross-agent-handoff",
+      "stage": "coordinate",
+      "validation": [
+        "Verify that the receiver can identify scope, current truth, uncertainties, and allowed next actions."
+      ]
+    },
+    {
+      "coverageState": "native-sufficient",
+      "description": "Turn outcome feedback into validated improvements to decisions, workflows, and safeguards.",
+      "fallback": [
+        "Record observed outcomes and unresolved causes for later accountable review."
+      ],
+      "id": "capability.retrospective-evolution",
+      "stage": "evolve",
+      "validation": [
+        "Compare intended and actual outcomes, then assign measurable follow-up changes."
+      ]
     }
   ],
   "conflicts": [
     {
-      "defaultOwner": "external:codex-user-config/capability-router",
-      "id": "conflict.router",
+      "defaultOwner": "skill.curated.request-refactor-plan",
+      "id": "conflict.technical-debt",
       "members": [
-        "external:codex-user-config/capability-router",
-        "upstream:addy/using-agent-skills",
-        "external:superpowers/using-superpowers"
-      ],
-      "resolution": "One global router. Plugin routers are scoped to explicit plugin workflows; Addy's router is excluded."
-    },
-    {
-      "defaultOwner": "skill.curated.tdd",
-      "id": "conflict.tdd",
-      "members": [
-        "skill.curated.tdd",
-        "external:superpowers/test-driven-development",
-        "upstream:addy/test-driven-development"
-      ],
-      "resolution": "Use curated tdd by default. Superpowers is scoped to an explicit Superpowers workflow; Addy is merged, not installed."
-    },
-    {
-      "defaultOwner": "skill.curated.diagnose",
-      "id": "conflict.debugging",
-      "members": [
-        "skill.curated.diagnose",
-        "external:superpowers/systematic-debugging",
-        "upstream:addy/debugging-and-error-recovery"
-      ],
-      "resolution": "Use diagnose by default; Superpowers is explicitly scoped; Addy is merged, not installed."
-    },
-    {
-      "defaultOwner": "skill.curated.review",
-      "id": "conflict.review",
-      "members": [
-        "skill.curated.review",
-        "external:superpowers/requesting-code-review",
-        "external:codex-security/security-diff-scan",
-        "upstream:addy/code-review-and-quality"
-      ],
-      "resolution": "Review owns general change review; requesting-code-review owns the request stage; security-diff-scan owns security only; Addy is merged."
-    },
-    {
-      "defaultOwner": "external:superpowers/writing-plans",
-      "id": "conflict.planning",
-      "members": [
-        "external:superpowers/writing-plans",
-        "skill.curated.to-issues",
         "skill.curated.request-refactor-plan",
-        "upstream:addy/planning-and-task-breakdown"
+        "skill.curated.improve-codebase-architecture"
       ],
-      "resolution": "Writing-plans owns implementation planning; to-issues publishes work; request-refactor-plan is refactor-specific; Addy is merged."
+      "resolution": "Use request-refactor-plan for a bounded debt-remediation plan; use improve-codebase-architecture for repository-wide architecture analysis."
     }
   ],
   "recipes": [
+    {
+      "id": "recipe.test-strategy",
+      "steps": [
+        {
+          "capability": "capability.requirements-clarification"
+        },
+        {
+          "capability": "capability.test-strategy"
+        },
+        {
+          "capability": "capability.tdd",
+          "when": "behavior is being added or corrected"
+        },
+        {
+          "capability": "capability.performance",
+          "when": "a performance objective or regression risk exists"
+        },
+        {
+          "capability": "capability.security-audit",
+          "when": "a trust boundary or material threat changes"
+        },
+        {
+          "capability": "capability.ci-cd",
+          "when": "repeatable automated gates are required"
+        }
+      ],
+      "trigger": "A change needs risk-proportionate verification across test layers and delivery gates"
+    },
     {
       "id": "recipe.telemetry-safety",
       "steps": [
@@ -120,93 +414,143 @@
         },
         {
           "capability": "capability.observability",
-          "when": "collection purpose, minimization, redaction, retention, and access are defined"
+          "when": "purpose, minimization, redaction, retention, and access are defined"
         },
         {
-          "capability": "capability.security-scan",
-          "when": "telemetry crosses a new trust or external-service boundary"
+          "capability": "capability.security-audit",
+          "when": "telemetry crosses a new trust boundary"
         }
       ],
-      "trigger": "Logs, metrics, traces, alerts, or launch monitoring may contain sensitive data"
+      "trigger": "Operational evidence may contain personal, confidential, regulated, or secret data"
     },
     {
-      "authorization": "Every merge, push, release, deploy, data migration, or rollback remains separately authorized.",
-      "id": "recipe.production-launch",
+      "authorization": "Every merge, publication, release, deployment, migration, or rollback remains separately authorized.",
+      "id": "recipe.release",
       "steps": [
         {
-          "capability": "capability.observability",
-          "when": "production behavior needs evidence"
-        },
-        {
-          "capability": "capability.performance",
-          "when": "a performance target or regression risk exists"
-        },
-        {
-          "capability": "capability.ci-cd",
-          "when": "automated delivery gates are required"
-        },
-        {
-          "capability": "capability.security-scan",
-          "when": "the change crosses a security boundary"
-        },
-        {
-          "capability": "capability.production-launch",
-          "when": "readiness evidence is available"
-        }
-      ],
-      "trigger": "A product or service change is approaching production"
-    },
-    {
-      "id": "recipe.contract-retirement",
-      "steps": [
-        {
-          "capability": "capability.lifecycle-migration"
-        },
-        {
-          "capability": "capability.tdd"
+          "capability": "capability.test-strategy"
         },
         {
           "capability": "capability.observability"
         },
         {
+          "capability": "capability.performance",
+          "when": "a performance objective applies"
+        },
+        {
           "capability": "capability.ci-cd"
         },
         {
-          "capability": "capability.production-launch"
+          "capability": "capability.rollback-recovery"
+        },
+        {
+          "capability": "capability.release-readiness"
         }
       ],
-      "trigger": "An API, dependency, feature, or data contract is replaced or retired"
+      "trigger": "A change is approaching a governed release boundary"
+    },
+    {
+      "id": "recipe.migration",
+      "steps": [
+        {
+          "capability": "capability.migration-deprecation"
+        },
+        {
+          "capability": "capability.test-strategy"
+        },
+        {
+          "capability": "capability.observability"
+        },
+        {
+          "capability": "capability.rollback-recovery"
+        },
+        {
+          "capability": "capability.release-readiness"
+        }
+      ],
+      "trigger": "An interface, dependency, feature, data contract, or system is replaced or retired"
+    },
+    {
+      "authorization": "Production rollback and destructive recovery actions require the accountable operator's explicit authorization.",
+      "id": "recipe.rollback-recovery",
+      "steps": [
+        {
+          "capability": "capability.rollback-recovery"
+        },
+        {
+          "capability": "capability.observability"
+        },
+        {
+          "capability": "capability.fault-diagnosis",
+          "when": "safe restoration does not explain the cause"
+        },
+        {
+          "capability": "capability.test-strategy",
+          "when": "recovery behavior needs regression evidence"
+        }
+      ],
+      "trigger": "A failed change or incident requires controlled restoration of a known-safe state"
+    },
+    {
+      "id": "recipe.knowledge-capture",
+      "steps": [
+        {
+          "capability": "capability.retrospective-evolution"
+        },
+        {
+          "capability": "capability.knowledge-capture"
+        },
+        {
+          "capability": "capability.documentation-governance",
+          "when": "learning changes an authoritative standard or operating path"
+        },
+        {
+          "capability": "capability.cross-agent-handoff",
+          "when": "another subject will continue the work"
+        }
+      ],
+      "trigger": "A completed decision, delivery, incident, or experiment produced reusable learning"
     }
   ],
   "relations": [
+    {
+      "from": "skill.curated.grill-me",
+      "to": "capability.requirements-clarification",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.ubiquitous-language",
+      "to": "capability.requirements-clarification",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.to-prd",
+      "to": "capability.prd-rfc",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.to-issues",
+      "to": "capability.problem-decomposition",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.improve-codebase-architecture",
+      "to": "capability.architecture-design",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.design-an-interface",
+      "to": "capability.interface-api-design",
+      "type": "provides"
+    },
     {
       "from": "skill.curated.tdd",
       "to": "capability.tdd",
       "type": "provides"
     },
     {
-      "from": "skill.curated.diagnose",
-      "to": "capability.debugging",
-      "type": "provides"
-    },
-    {
       "from": "skill.curated.review",
-      "to": "capability.review",
-      "type": "provides"
-    },
-    {
-      "from": "skill.curated.ci-cd-and-automation",
-      "to": "capability.ci-cd",
-      "type": "provides"
-    },
-    {
-      "from": "skill.curated.deprecation-and-migration",
-      "to": "capability.lifecycle-migration",
-      "type": "provides"
-    },
-    {
-      "from": "skill.curated.observability-and-instrumentation",
-      "to": "capability.observability",
+      "to": "capability.code-review",
       "type": "provides"
     },
     {
@@ -215,92 +559,185 @@
       "type": "provides"
     },
     {
-      "from": "skill.curated.shipping-and-launch",
-      "to": "capability.production-launch",
+      "from": "skill.curated.observability-and-instrumentation",
+      "to": "capability.observability",
       "type": "provides"
     },
     {
-      "condition": "production behavior must be measurable",
-      "from": "capability.observability",
-      "to": "capability.performance",
+      "from": "skill.curated.ci-cd-and-automation",
+      "to": "capability.ci-cd",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.shipping-and-launch",
+      "to": "capability.release-readiness",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.deprecation-and-migration",
+      "to": "capability.migration-deprecation",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.diagnose",
+      "to": "capability.fault-diagnosis",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.triage",
+      "to": "capability.issue-triage",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.grill-with-docs",
+      "to": "capability.documentation-governance",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.request-refactor-plan",
+      "to": "capability.technical-debt",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.improve-codebase-architecture",
+      "to": "capability.technical-debt",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.handoff",
+      "to": "capability.cross-agent-handoff",
+      "type": "provides"
+    },
+    {
+      "from": "capability.requirements-clarification",
+      "to": "capability.prd-rfc",
       "type": "precedes"
     },
     {
-      "condition": "a performance objective or budget applies",
-      "from": "capability.performance",
-      "to": "capability.production-launch",
+      "from": "capability.prd-rfc",
+      "to": "capability.problem-decomposition",
       "type": "precedes"
     },
     {
-      "from": "capability.ci-cd",
-      "to": "capability.production-launch",
+      "condition": "a slice changes system boundaries",
+      "from": "capability.problem-decomposition",
+      "to": "capability.architecture-design",
       "type": "precedes"
     },
     {
-      "from": "capability.observability",
-      "to": "capability.production-launch",
+      "from": "capability.architecture-design",
+      "to": "capability.interface-api-design",
       "type": "precedes"
     },
     {
-      "condition": "the launch replaces or retires an existing contract",
-      "from": "capability.lifecycle-migration",
-      "to": "capability.production-launch",
-      "type": "precedes"
+      "from": "capability.data-modeling",
+      "to": "capability.backend-implementation",
+      "type": "constrains"
     },
     {
-      "from": "capability.observability",
-      "to": "capability.debugging",
-      "type": "enriches"
+      "from": "capability.interface-api-design",
+      "to": "capability.backend-implementation",
+      "type": "constrains"
     },
     {
-      "from": "capability.observability",
-      "to": "capability.performance",
-      "type": "enriches"
+      "from": "capability.frontend-design",
+      "to": "capability.backend-implementation",
+      "type": "parallel-with"
     },
     {
-      "condition": "the root cause is unknown or intermittent",
-      "from": "capability.performance",
-      "to": "capability.debugging",
-      "type": "handoff"
+      "from": "capability.tdd",
+      "to": "capability.backend-implementation",
+      "type": "validates"
     },
     {
-      "condition": "migration evidence is ready for GO/NO-GO",
-      "from": "capability.lifecycle-migration",
-      "to": "capability.production-launch",
-      "type": "handoff"
+      "from": "capability.test-strategy",
+      "to": "capability.tdd",
+      "type": "constrains"
     },
     {
-      "from": "capability.security-scan",
-      "to": "capability.review",
+      "from": "capability.code-review",
+      "to": "capability.backend-implementation",
+      "type": "validates"
+    },
+    {
+      "from": "capability.security-audit",
+      "to": "capability.code-review",
       "type": "complements"
     },
     {
-      "condition": "telemetry may contain personal, confidential, regulated, or secret data",
       "from": "capability.privacy-governance",
       "to": "capability.observability",
       "type": "constrains"
     },
     {
-      "condition": "launch monitoring expands data collection or access",
-      "from": "capability.privacy-governance",
-      "to": "capability.production-launch",
-      "type": "constrains"
-    },
-    {
-      "from": "capability.browser-runtime",
+      "condition": "behavior must be measurable before optimization",
+      "from": "capability.observability",
       "to": "capability.performance",
-      "type": "complements"
-    },
-    {
-      "condition": "a user interface is implemented",
-      "from": "capability.product-design",
-      "to": "capability.browser-runtime",
       "type": "precedes"
     },
     {
-      "from": "capability.tdd",
-      "to": "capability.lifecycle-migration",
-      "type": "validates"
+      "from": "capability.test-strategy",
+      "to": "capability.ci-cd",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.ci-cd",
+      "to": "capability.release-readiness",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.observability",
+      "to": "capability.release-readiness",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.rollback-recovery",
+      "to": "capability.release-readiness",
+      "type": "precedes"
+    },
+    {
+      "condition": "a release changes or removes an existing contract",
+      "from": "capability.migration-deprecation",
+      "to": "capability.release-readiness",
+      "type": "constrains"
+    },
+    {
+      "from": "capability.observability",
+      "to": "capability.fault-diagnosis",
+      "type": "enriches"
+    },
+    {
+      "condition": "continued operation risks further impact",
+      "from": "capability.fault-diagnosis",
+      "to": "capability.rollback-recovery",
+      "type": "triggers"
+    },
+    {
+      "condition": "an issue is accepted as a reproducible fault",
+      "from": "capability.issue-triage",
+      "to": "capability.fault-diagnosis",
+      "type": "handoff"
+    },
+    {
+      "from": "capability.retrospective-evolution",
+      "to": "capability.knowledge-capture",
+      "type": "produces"
+    },
+    {
+      "from": "capability.knowledge-capture",
+      "to": "capability.documentation-governance",
+      "type": "enriches"
+    },
+    {
+      "condition": "feedback exposes a structural liability",
+      "from": "capability.retrospective-evolution",
+      "to": "capability.technical-debt",
+      "type": "triggers"
+    },
+    {
+      "from": "capability.cross-agent-handoff",
+      "to": "capability.problem-decomposition",
+      "type": "complements"
     }
   ],
   "schema": 1,

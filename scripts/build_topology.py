@@ -56,18 +56,36 @@ def render() -> dict[str, str]:
             routes.append(f"- `{step['capability']}`{suffix}")
         routes.append("")
 
+    lifecycle = [
+        "# Lifecycle Capability Coverage",
+        "",
+        "Do not edit manually.",
+        "",
+        "| Capability | Stage | Coverage | Validation | Fallback |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for capability in sorted(capabilities, key=lambda item: item["id"]):
+        lifecycle.append(
+            f"| `{capability['id']}` | `{capability['stage']}` | "
+            f"`{capability['coverageState']}` | "
+            f"{'<br>'.join(capability['validation'])} | "
+            f"{'<br>'.join(capability['fallback'])} |"
+        )
+    lifecycle.append("")
+
     return {
         "catalog.md": "\n".join(catalog),
         "topology.json": json.dumps(topology, indent=2, sort_keys=True) + "\n",
         "topology.mmd": "\n".join(mermaid),
         "routing-scenarios.md": "\n".join(routes),
+        "lifecycle-coverage.md": "\n".join(lifecycle),
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--emit", choices=("catalog.md", "topology.json", "topology.mmd", "routing-scenarios.md"))
+    parser.add_argument("--emit", choices=("catalog.md", "topology.json", "topology.mmd", "routing-scenarios.md", "lifecycle-coverage.md"))
     args = parser.parse_args()
     outputs = render()
     if args.emit:
