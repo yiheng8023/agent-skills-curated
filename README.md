@@ -78,6 +78,12 @@ are not executable routing targets. High-risk, ambiguous, conflicting,
 permission-changing, write, install, delete, migration, publish, release, or
 rollback choices require human confirmation.
 
+Schema-2 runtime coverage is structurally product-neutral. A
+`runtime-resolved` capability carries
+`runtimeResolution: visible-capability-inventory`; it names the resolution
+mechanism, not a product, vendor, owner, or assumed live capability. The
+consumer must probe its currently visible, authorized capability inventory.
+
 ## Layout
 
 - `skills/`: curated approved portable Skill content.

@@ -95,6 +95,7 @@
         "Provide an implementation-neutral interaction specification and preserve design uncertainty."
       ],
       "id": "capability.frontend-design",
+      "runtimeResolution": "visible-capability-inventory",
       "stage": "design",
       "validation": [
         "Probe the live environment for an authorized design workflow and verify the rendered result."
@@ -161,6 +162,7 @@
         "Perform a bounded manual threat review and recommend specialist review for unresolved risk."
       ],
       "id": "capability.security-audit",
+      "runtimeResolution": "visible-capability-inventory",
       "stage": "verify",
       "validation": [
         "Probe for an authorized security workflow and validate findings from source to impact."
@@ -385,9 +387,6 @@
           "capability": "capability.requirements-clarification"
         },
         {
-          "capability": "capability.test-strategy"
-        },
-        {
           "capability": "capability.tdd",
           "when": "behavior is being added or corrected"
         },
@@ -475,9 +474,6 @@
       "id": "recipe.rollback-recovery",
       "steps": [
         {
-          "capability": "capability.rollback-recovery"
-        },
-        {
           "capability": "capability.observability"
         },
         {
@@ -496,9 +492,6 @@
       "steps": [
         {
           "capability": "capability.retrospective-evolution"
-        },
-        {
-          "capability": "capability.knowledge-capture"
         },
         {
           "capability": "capability.documentation-governance",

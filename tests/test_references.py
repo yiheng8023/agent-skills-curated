@@ -67,7 +67,7 @@ class ReferenceTests(unittest.TestCase):
                     {
                         "id": "conflict.alpha",
                         "defaultOwner": "skill.curated.alpha",
-                        "members": ["skill.curated.alpha", "upstream:alpha"],
+                        "members": ["skill.curated.alpha", "skill.curated.beta"],
                         "resolution": "Prefer alpha.",
                     }
                 ],
@@ -246,7 +246,7 @@ class ReferenceTests(unittest.TestCase):
 
     def test_conflict_owner_must_be_member_and_members_must_resolve_uniquely(self) -> None:
         documents = deepcopy(self.documents)
-        documents["conflicts"]["groups"][0]["defaultOwner"] = "skill.curated.beta"
+        documents["conflicts"]["groups"][0]["defaultOwner"] = "skill.curated.missing"
         self.assert_rejected(
             documents, "registry/conflicts.json", "/groups/0/defaultOwner"
         )
@@ -263,6 +263,25 @@ class ReferenceTests(unittest.TestCase):
         documents["conflicts"]["groups"][0]["members"].append("skill.curated.alpha")
         self.assert_rejected(
             documents, "registry/conflicts.json", "/groups/0/members/2"
+        )
+
+    def test_conflicts_only_accept_approved_curated_skill_members(self) -> None:
+        for member in (
+            "capability.alpha",
+            "external:runtime",
+            "upstream:alpha",
+        ):
+            with self.subTest(member=member):
+                documents = deepcopy(self.documents)
+                documents["conflicts"]["groups"][0]["members"][1] = member
+                self.assert_rejected(
+                    documents, "registry/conflicts.json", "/groups/0/members/1"
+                )
+
+        documents = deepcopy(self.documents)
+        documents["skills"]["skills"][1]["status"] = "candidate"
+        self.assert_rejected(
+            documents, "registry/conflicts.json", "/groups/0/members/1"
         )
 
     def test_recipe_steps_require_known_capabilities(self) -> None:

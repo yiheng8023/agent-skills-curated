@@ -6,7 +6,6 @@
       "trigger": "A change needs risk-proportionate verification across test layers and delivery gates",
       "steps": [
         {"capability": "capability.requirements-clarification"},
-        {"capability": "capability.test-strategy"},
         {"capability": "capability.tdd", "when": "behavior is being added or corrected"},
         {"capability": "capability.performance", "when": "a performance objective or regression risk exists"},
         {"capability": "capability.security-audit", "when": "a trust boundary or material threat changes"},
@@ -50,7 +49,6 @@
       "id": "recipe.rollback-recovery",
       "trigger": "A failed change or incident requires controlled restoration of a known-safe state",
       "steps": [
-        {"capability": "capability.rollback-recovery"},
         {"capability": "capability.observability"},
         {"capability": "capability.fault-diagnosis", "when": "safe restoration does not explain the cause"},
         {"capability": "capability.test-strategy", "when": "recovery behavior needs regression evidence"}
@@ -62,7 +60,6 @@
       "trigger": "A completed decision, delivery, incident, or experiment produced reusable learning",
       "steps": [
         {"capability": "capability.retrospective-evolution"},
-        {"capability": "capability.knowledge-capture"},
         {"capability": "capability.documentation-governance", "when": "learning changes an authoritative standard or operating path"},
         {"capability": "capability.cross-agent-handoff", "when": "another subject will continue the work"}
       ]

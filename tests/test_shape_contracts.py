@@ -204,6 +204,25 @@ class ShapeTests(unittest.TestCase):
         document["capabilities"][0]["coverageState"] = "native-sufficient"
         validate_capabilities_document(document, "fixture.json")
 
+    def test_runtime_resolution_is_structural_and_curated_owners_are_unique(self) -> None:
+        document = deepcopy(CAPABILITIES_V2)
+        item = document["capabilities"][0]
+        item["coverageState"] = "runtime-resolved"
+        del item["curatedOwners"]
+        self.assert_contract_error(
+            validate_capabilities_document,
+            document,
+            "/capabilities/0/runtimeResolution",
+        )
+
+        document = deepcopy(CAPABILITIES_V2)
+        document["capabilities"][0]["curatedOwners"] *= 2
+        self.assert_contract_error(
+            validate_capabilities_document,
+            document,
+            "/capabilities/0/curatedOwners/1",
+        )
+
     def test_every_document_rejects_missing_or_wrong_schema(self) -> None:
         cases = (
             (validate_skills_document, "registry/skills.json"),
@@ -310,6 +329,12 @@ class ShapeTests(unittest.TestCase):
 
     def test_conflicts_validate_members_and_resolution(self) -> None:
         document = load("registry/conflicts.json")
+        document["groups"][0]["defaultOwner"] = "external:runtime"
+        self.assert_contract_error(
+            validate_conflicts_document, document, "/groups/0/defaultOwner"
+        )
+
+        document = load("registry/conflicts.json")
         document["groups"][0]["members"] = "owner"  # type: ignore[index]
         self.assert_contract_error(
             validate_conflicts_document, document, "/groups/0/members"
@@ -320,6 +345,17 @@ class ShapeTests(unittest.TestCase):
         self.assert_contract_error(
             validate_conflicts_document, document, "/groups/0/resolution"
         )
+
+        for members, pointer in (
+            (["skill.curated.request-refactor-plan"], "/groups/0/members"),
+            (["skill.curated.request-refactor-plan"] * 2, "/groups/0/members/1"),
+        ):
+            with self.subTest(members=members):
+                document = load("registry/conflicts.json")
+                document["groups"][0]["members"] = members
+                self.assert_contract_error(
+                    validate_conflicts_document, document, pointer
+                )
 
     def test_recipes_validate_steps_and_authorization(self) -> None:
         document = load("registry/recipes.json")

@@ -21,11 +21,21 @@
           "coverageState": {"type": "string", "enum": ["curated", "recipe", "runtime-resolved", "native-sufficient", "human-authority", "gap"]},
           "validation": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
           "fallback": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-          "curatedOwners": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^skill\\.curated\\.[a-z0-9][a-z0-9-]*$"}}
+          "curatedOwners": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^skill\\.curated\\.[a-z0-9][a-z0-9-]*$"}},
+          "runtimeResolution": {"const": "visible-capability-inventory"}
         },
-        "if": {"properties": {"coverageState": {"const": "curated"}}, "required": ["coverageState"]},
-        "then": {"required": ["curatedOwners"]},
-        "else": {"not": {"required": ["curatedOwners"]}}
+        "allOf": [
+          {
+            "if": {"properties": {"coverageState": {"const": "curated"}}, "required": ["coverageState"]},
+            "then": {"required": ["curatedOwners"]},
+            "else": {"not": {"required": ["curatedOwners"]}}
+          },
+          {
+            "if": {"properties": {"coverageState": {"const": "runtime-resolved"}}, "required": ["coverageState"]},
+            "then": {"required": ["runtimeResolution"]},
+            "else": {"not": {"required": ["runtimeResolution"]}}
+          }
+        ]
       }
     }
   }

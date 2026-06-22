@@ -58,10 +58,26 @@ class SourceSelectionIntegrationTests(unittest.TestCase):
 
 
 class StructuralValidationIntegrationTests(unittest.TestCase):
+    def test_schema2_capability_contract_is_a_required_verifier_input(self) -> None:
+        self.assertIn(
+            "schemas/v2/capabilities.schema.json", verify_script.REQUIRED_FILES
+        )
+
     def test_current_verifier_accepts_the_checked_in_schema2_capability_registry(self) -> None:
         document = verify_script.load("registry/capabilities.json")
         self.assertEqual(document["schema"], 2)
         verify_script.validate_capabilities_document(document, "registry/capabilities.json")
+
+    def test_verifier_rejects_orphan_recipe_coverage(self) -> None:
+        document = verify_script.load("registry/recipes.json")
+        document["recipes"] = [
+            recipe
+            for recipe in document["recipes"]
+            if recipe["id"] != "recipe.test-strategy"
+        ]
+        self.assert_verify_contract_error(
+            "registry/recipes.json", document, "/capabilities/9/coverageState"
+        )
 
     def assert_verify_contract_error(
         self, path: str, mutation: dict[str, object], pointer: str

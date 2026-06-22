@@ -1,8 +1,10 @@
 import json
 import unittest
+from copy import deepcopy
 from pathlib import Path
 
-from scripts.build_topology import render
+from scripts.build_topology import markdown_cell, render
+from scripts.contracts import ContractError, validate_lifecycle_coverage
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,7 +47,6 @@ ALLOWED_STATES = {
     "human-authority",
     "gap",
 }
-PRODUCT_TERMS = {"openai", "codex", "claude", "github", "figma", "superpowers"}
 
 
 def load(path: str) -> dict[str, object]:
@@ -73,11 +74,6 @@ class LifecycleCoverageTests(unittest.TestCase):
             for item in self.relations
             if item["type"] == "provides"
         }
-        recipe_steps = {
-            step["capability"]
-            for recipe in self.recipes
-            for step in recipe["steps"]
-        }
         for item in self.capabilities["capabilities"]:
             with self.subTest(capability=item["id"]):
                 self.assertTrue(item["stage"])
@@ -92,17 +88,54 @@ class LifecycleCoverageTests(unittest.TestCase):
                         self.assertIn((owner, item["id"]), provides)
                 else:
                     self.assertNotIn("curatedOwners", item)
-                if item["coverageState"] == "recipe":
-                    self.assertIn(item["id"], recipe_steps)
 
-    def test_runtime_resolved_capabilities_are_product_neutral(self) -> None:
+    def test_recipe_coverage_requires_a_matching_composition(self) -> None:
+        cases = []
+        orphan = deepcopy(self.recipes)
+        orphan[:] = [item for item in orphan if item["id"] != "recipe.test-strategy"]
+        cases.append((orphan, "/capabilities/9/coverageState"))
+
+        singleton = deepcopy(self.recipes)
+        singleton[0]["steps"] = [
+            {"capability": "capability.requirements-clarification"}
+        ]
+        cases.append((singleton, "/recipes/0/steps"))
+
+        duplicate = deepcopy(self.recipes)
+        duplicate[0]["steps"] = [
+            {"capability": "capability.requirements-clarification"},
+            {"capability": "capability.requirements-clarification"},
+        ]
+        cases.append((duplicate, "/recipes/0/steps/1/capability"))
+
+        self_reference = deepcopy(self.recipes)
+        self_reference[0]["steps"].insert(
+            0, {"capability": "capability.test-strategy"}
+        )
+        cases.append((self_reference, "/recipes/0/steps/0/capability"))
+
+        wrong_identity = deepcopy(self.recipes)
+        wrong_identity[0]["id"] = "recipe.other-strategy"
+        cases.append((wrong_identity, "/capabilities/9/coverageState"))
+
+        for recipes, pointer in cases:
+            with self.subTest(pointer=pointer):
+                with self.assertRaises(ContractError) as raised:
+                    validate_lifecycle_coverage(
+                        self.capabilities,
+                        {"schema": 1, "recipes": recipes},
+                    )
+                self.assertEqual(raised.exception.pointer, pointer)
+
+    def test_runtime_resolved_capabilities_use_a_structural_resolution_marker(self) -> None:
         for item in self.capabilities["capabilities"]:
             if item["coverageState"] != "runtime-resolved":
                 continue
-            text = json.dumps(item, ensure_ascii=False).lower()
             with self.subTest(capability=item["id"]):
-                self.assertFalse(any(term in text for term in PRODUCT_TERMS))
-                self.assertNotIn("owner", text)
+                self.assertEqual(
+                    item["runtimeResolution"], "visible-capability-inventory"
+                )
+                self.assertNotIn("curatedOwners", item)
 
     def test_generated_lifecycle_coverage_matches_the_registry(self) -> None:
         rendered = render()["lifecycle-coverage.md"]
@@ -113,6 +146,12 @@ class LifecycleCoverageTests(unittest.TestCase):
         for item in self.capabilities["capabilities"]:
             self.assertIn(f"`{item['id']}`", rendered)
             self.assertIn(f"`{item['coverageState']}`", rendered)
+
+    def test_markdown_cells_escape_table_and_line_break_syntax(self) -> None:
+        self.assertEqual(
+            markdown_cell("alpha|beta\ngamma\\delta\r\nomega"),
+            r"alpha\|beta<br>gamma\\delta<br>omega",
+        )
 
 
 if __name__ == "__main__":

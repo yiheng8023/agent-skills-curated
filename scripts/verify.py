@@ -16,6 +16,7 @@ from contracts import (
     validate_capabilities_document,
     validate_conflicts_document,
     validate_inventory_counts,
+    validate_lifecycle_coverage,
     validate_manifest_payload,
     validate_recipes_document,
     validate_references,
@@ -44,6 +45,25 @@ FORBIDDEN_APPROVED_TEXT = (
     "/mnt/skills/",
     ".claude/",
 )
+REQUIRED_FILES = (
+    "AGENTS.md", "README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md",
+    "sources/lock.json", "sources/addyosmani-agent-skills/selection.json",
+    "sources/addyosmani-agent-skills/LICENSE",
+    "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
+    "registry/capabilities.json", "registry/relations.json",
+    "registry/conflicts.json", "registry/recipes.json",
+    "policies/intake.md", "policies/portability.md", "policies/security.md",
+    "policies/overlap-resolution.md", "policies/lifecycle.md",
+    "scripts/build_topology.py", "scripts/verify.py", "release-manifest.json",
+    "schemas/v1/skills.schema.json", "schemas/v1/capabilities.schema.json",
+    "schemas/v1/relations.schema.json", "schemas/v1/conflicts.schema.json",
+    "schemas/v1/recipes.schema.json", "schemas/v1/sources-lock.schema.json",
+    "schemas/v1/selection.schema.json", "schemas/v1/release-manifest.schema.json",
+    "schemas/v2/capabilities.schema.json",
+    "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/security.md",
+    "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/overlap.md",
+    "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/portability.md",
+)
 
 
 def load(path: str) -> dict[str, object]:
@@ -51,25 +71,7 @@ def load(path: str) -> dict[str, object]:
 
 
 def verify() -> None:
-    required = (
-        "AGENTS.md", "README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md",
-        "sources/lock.json", "sources/addyosmani-agent-skills/selection.json",
-        "sources/addyosmani-agent-skills/LICENSE",
-        "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
-        "registry/capabilities.json", "registry/relations.json",
-        "registry/conflicts.json", "registry/recipes.json",
-        "policies/intake.md", "policies/portability.md", "policies/security.md",
-        "policies/overlap-resolution.md", "policies/lifecycle.md",
-        "scripts/build_topology.py", "scripts/verify.py", "release-manifest.json",
-        "schemas/v1/skills.schema.json", "schemas/v1/capabilities.schema.json",
-        "schemas/v1/relations.schema.json", "schemas/v1/conflicts.schema.json",
-        "schemas/v1/recipes.schema.json", "schemas/v1/sources-lock.schema.json",
-        "schemas/v1/selection.schema.json", "schemas/v1/release-manifest.schema.json",
-        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/security.md",
-        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/overlap.md",
-        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/portability.md",
-    )
-    missing = [path for path in required if not (ROOT / path).is_file()]
+    missing = [path for path in REQUIRED_FILES if not (ROOT / path).is_file()]
     if missing:
         raise RuntimeError("Missing required files: " + ", ".join(missing))
 
@@ -132,6 +134,7 @@ def verify() -> None:
             "sources": sources_doc,
         }
     )
+    validate_lifecycle_coverage(capabilities_doc, recipes_doc)
     adopted_directories = {
         name for name, disposition in selection.items() if disposition == "adopt"
     }

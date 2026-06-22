@@ -14,6 +14,17 @@ def load(name: str) -> dict[str, object]:
     return json.loads((ROOT / "registry" / name).read_text(encoding="utf-8"))
 
 
+def markdown_cell(value: str) -> str:
+    """Escape text for a GitHub-Flavored Markdown table cell."""
+
+    normalized = value.replace("\r\n", "\n").replace("\r", "\n")
+    return (
+        normalized.replace("\\", "\\\\")
+        .replace("|", "\\|")
+        .replace("\n", "<br>")
+    )
+
+
 def render() -> dict[str, str]:
     skills = load("skills.json")["skills"]
     capabilities = load("capabilities.json")["capabilities"]
@@ -66,10 +77,10 @@ def render() -> dict[str, str]:
     ]
     for capability in sorted(capabilities, key=lambda item: item["id"]):
         lifecycle.append(
-            f"| `{capability['id']}` | `{capability['stage']}` | "
+            f"| `{capability['id']}` | `{markdown_cell(capability['stage'])}` | "
             f"`{capability['coverageState']}` | "
-            f"{'<br>'.join(capability['validation'])} | "
-            f"{'<br>'.join(capability['fallback'])} |"
+            f"{'<br>'.join(markdown_cell(item) for item in capability['validation'])} | "
+            f"{'<br>'.join(markdown_cell(item) for item in capability['fallback'])} |"
         )
     lifecycle.append("")
 

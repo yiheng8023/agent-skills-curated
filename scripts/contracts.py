@@ -14,7 +14,23 @@ _KEY = re.compile(r"[A-Za-z][A-Za-z0-9_-]*")
 _PLAIN_RESERVED = "-?:,[]{}#&*!|>'\"%@`"
 _SKILL_ID = re.compile(r"skill\.curated\.[a-z0-9][a-z0-9-]*")
 _DIRECTORY = re.compile(r"[a-z0-9][a-z0-9-]*")
-_CAPABILITY_ID = re.compile(r"capability\.[a-z0-9][a-z0-9-]*")
+_CAPABILITIES_V2_SCHEMA = json.loads(
+    (
+        Path(__file__).resolve().parent.parent
+        / "schemas"
+        / "v2"
+        / "capabilities.schema.json"
+    ).read_text(encoding="utf-8")
+)
+_CAPABILITY_PROPERTIES = (
+    _CAPABILITIES_V2_SCHEMA["properties"]["capabilities"]["items"]["properties"]
+)
+_CAPABILITY_ID = re.compile(_CAPABILITY_PROPERTIES["id"]["pattern"])
+_CURATED_OWNER_ID = re.compile(
+    _CAPABILITY_PROPERTIES["curatedOwners"]["items"]["pattern"]
+)
+_COVERAGE_STATES = set(_CAPABILITY_PROPERTIES["coverageState"]["enum"])
+_RUNTIME_RESOLUTION = _CAPABILITY_PROPERTIES["runtimeResolution"]["const"]
 _CONFLICT_ID = re.compile(r"conflict\.[a-z0-9][a-z0-9-]*")
 _RECIPE_ID = re.compile(r"recipe\.[a-z0-9][a-z0-9-]*")
 _SCENARIO_ID = re.compile(r"scenario\.[a-z0-9][a-z0-9-]*")
@@ -33,10 +49,6 @@ _SELECTION_DISPOSITIONS = {
 }
 _ADMISSION_DISPOSITIONS = {
     "approve", "merge", "recipe-only", "adapter-only", "reject",
-}
-_COVERAGE_STATES = {
-    "curated", "recipe", "runtime-resolved", "native-sufficient",
-    "human-authority", "gap",
 }
 _RISK_LEVELS = {"low", "medium", "high", "critical"}
 _SOURCE_KINDS = {"git", "local"}
@@ -217,7 +229,7 @@ def validate_capabilities_document(value: object, document: str) -> None:
     _, items = _document(value, document, "capabilities", schema_version=2)
     allowed = {
         "id", "stage", "description", "coverageState", "validation", "fallback",
-        "curatedOwners",
+        "curatedOwners", "runtimeResolution",
     }
     required = {"id", "stage", "description", "coverageState", "validation", "fallback"}
     for index, raw in enumerate(items):
@@ -236,11 +248,48 @@ def validate_capabilities_document(value: object, document: str) -> None:
         if coverage == "curated":
             if "curatedOwners" not in item:
                 raise ContractError(document, _join(pointer, "curatedOwners"), "is required for curated coverage")
-            owners = _strings(item["curatedOwners"], document, _join(pointer, "curatedOwners"), min_items=1)
+            owners = _strings(
+                item["curatedOwners"],
+                document,
+                _join(pointer, "curatedOwners"),
+                min_items=1,
+            )
+            seen_owners: set[str] = set()
             for owner_index, owner in enumerate(owners):
-                require_pattern(owner, _SKILL_ID, document, _join(_join(pointer, "curatedOwners"), owner_index))
+                require_pattern(
+                    owner,
+                    _CURATED_OWNER_ID,
+                    document,
+                    _join(_join(pointer, "curatedOwners"), owner_index),
+                )
+                if owner in seen_owners:
+                    raise ContractError(
+                        document,
+                        _join(_join(pointer, "curatedOwners"), owner_index),
+                        "duplicate curated owner",
+                    )
+                seen_owners.add(owner)
         elif "curatedOwners" in item:
             raise ContractError(document, _join(pointer, "curatedOwners"), "is allowed only for curated coverage")
+        if coverage == "runtime-resolved":
+            if "runtimeResolution" not in item:
+                raise ContractError(
+                    document,
+                    _join(pointer, "runtimeResolution"),
+                    "is required for runtime-resolved coverage",
+                )
+            if item["runtimeResolution"] != _RUNTIME_RESOLUTION:
+                raise ContractError(
+                    document,
+                    _join(pointer, "runtimeResolution"),
+                    f"must equal {_RUNTIME_RESOLUTION}",
+                )
+        elif "runtimeResolution" in item:
+            raise ContractError(
+                document,
+                _join(pointer, "runtimeResolution"),
+                "is allowed only for runtime-resolved coverage",
+            )
 
 
 def validate_admissions_document(value: object, document: str) -> None:
@@ -345,9 +394,33 @@ def validate_conflicts_document(value: object, document: str) -> None:
         require_keys(item, allowed, document, pointer)
         reject_unknown(item, allowed, document, pointer)
         require_pattern(item["id"], _CONFLICT_ID, document, _join(pointer, "id"))
-        for field in ("defaultOwner", "resolution"):
-            require_min_length(item[field], 1, document, _join(pointer, field))
-        _strings(item["members"], document, _join(pointer, "members"), min_items=1)
+        require_pattern(
+            item["defaultOwner"],
+            _SKILL_ID,
+            document,
+            _join(pointer, "defaultOwner"),
+        )
+        require_min_length(
+            item["resolution"], 1, document, _join(pointer, "resolution")
+        )
+        members = _strings(
+            item["members"], document, _join(pointer, "members"), min_items=2
+        )
+        seen: set[str] = set()
+        for member_index, member in enumerate(members):
+            require_pattern(
+                member,
+                _SKILL_ID,
+                document,
+                _join(_join(pointer, "members"), member_index),
+            )
+            if member in seen:
+                raise ContractError(
+                    document,
+                    _join(_join(pointer, "members"), member_index),
+                    "duplicate member",
+                )
+            seen.add(member)
 
 
 def validate_recipes_document(value: object, document: str) -> None:
@@ -374,6 +447,56 @@ def validate_recipes_document(value: object, document: str) -> None:
             reject_unknown(step, step_allowed, document, step_pointer)
             for field in step:
                 require_min_length(step[field], 1, document, _join(step_pointer, field))
+
+
+def validate_lifecycle_coverage(
+    capabilities_document: dict[str, object], recipes_document: dict[str, object]
+) -> None:
+    """Require recipe-covered capabilities to resolve to real compositions."""
+
+    if capabilities_document["schema"] != 2:
+        return
+    recipes = recipes_document["recipes"]  # type: ignore[index]
+    recipes_by_id = {
+        recipe["id"]: (index, recipe) for index, recipe in enumerate(recipes)
+    }
+    for capability_index, capability in enumerate(
+        capabilities_document["capabilities"]  # type: ignore[index]
+    ):
+        if capability["coverageState"] != "recipe":
+            continue
+        capability_id = capability["id"]
+        expected_recipe_id = "recipe." + capability_id.removeprefix("capability.")
+        match = recipes_by_id.get(expected_recipe_id)
+        if match is None:
+            raise ContractError(
+                "registry/capabilities.json",
+                f"/capabilities/{capability_index}/coverageState",
+                f"recipe coverage requires {expected_recipe_id}",
+            )
+        recipe_index, recipe = match
+        seen: set[str] = set()
+        for step_index, step in enumerate(recipe["steps"]):
+            step_capability = step["capability"]
+            if step_capability == capability_id:
+                raise ContractError(
+                    "registry/recipes.json",
+                    f"/recipes/{recipe_index}/steps/{step_index}/capability",
+                    "a recipe-covered capability cannot reference itself",
+                )
+            if step_capability in seen:
+                raise ContractError(
+                    "registry/recipes.json",
+                    f"/recipes/{recipe_index}/steps/{step_index}/capability",
+                    "composition steps must reference distinct capabilities",
+                )
+            seen.add(step_capability)
+        if len(seen) < 2:
+            raise ContractError(
+                "registry/recipes.json",
+                f"/recipes/{recipe_index}/steps",
+                "recipe coverage requires at least two distinct composition steps",
+            )
 
 
 def validate_sources_lock_document(value: object, document: str) -> None:
@@ -978,6 +1101,9 @@ def validate_references(documents: dict[str, object]) -> None:
     skill_ids = _unique_field(
         skills, "id", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
     )
+    approved_skill_ids = {
+        item["id"] for item in skills if item["status"] == "approved"
+    }
     source_ids = _unique_field(
         sources, "id", "sources", _REFERENCE_DOCUMENTS["sources"]  # type: ignore[arg-type]
     )
@@ -1155,11 +1281,11 @@ def validate_references(documents: dict[str, object]) -> None:
                     _REFERENCE_DOCUMENTS["conflicts"], pointer, "duplicate member"
                 )
             seen_members.add(member)
-            if member not in internal_ids and not _is_external_reference(member):
+            if member not in approved_skill_ids:
                 raise ContractError(
                     _REFERENCE_DOCUMENTS["conflicts"],
                     pointer,
-                    "must resolve internally or use external:/upstream:",
+                    "must resolve to an approved curated Skill",
                 )
 
     for recipe_index, recipe in enumerate(recipes):  # type: ignore[assignment]

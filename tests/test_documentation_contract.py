@@ -85,6 +85,13 @@ class DocumentationContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, corpus)
 
+    def test_runtime_resolution_is_documented_as_a_structural_contract(self) -> None:
+        for path in ("README.md", "README.zh-CN.md"):
+            text = read(path)
+            with self.subTest(path=path):
+                self.assertIn("visible-capability-inventory", text)
+                self.assertIn("runtimeResolution", text)
+
 
 if __name__ == "__main__":
     unittest.main()

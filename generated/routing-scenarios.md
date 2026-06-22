@@ -7,7 +7,6 @@ Do not edit manually.
 Trigger: A change needs risk-proportionate verification across test layers and delivery gates
 
 - `capability.requirements-clarification`
-- `capability.test-strategy`
 - `capability.tdd` when behavior is being added or corrected
 - `capability.performance` when a performance objective or regression risk exists
 - `capability.security-audit` when a trust boundary or material threat changes
@@ -46,7 +45,6 @@ Trigger: An interface, dependency, feature, data contract, or system is replaced
 
 Trigger: A failed change or incident requires controlled restoration of a known-safe state
 
-- `capability.rollback-recovery`
 - `capability.observability`
 - `capability.fault-diagnosis` when safe restoration does not explain the cause
 - `capability.test-strategy` when recovery behavior needs regression evidence
@@ -56,6 +54,5 @@ Trigger: A failed change or incident requires controlled restoration of a known-
 Trigger: A completed decision, delivery, incident, or experiment produced reusable learning
 
 - `capability.retrospective-evolution`
-- `capability.knowledge-capture`
 - `capability.documentation-governance` when learning changes an authoritative standard or operating path
 - `capability.cross-agent-handoff` when another subject will continue the work

@@ -235,8 +235,13 @@ class SchemaParityTests(unittest.TestCase):
                             capability = changed["capabilities"][0]
                             if value == "curated":
                                 capability["curatedOwners"] = ["skill.curated.alpha"]
+                                capability.pop("runtimeResolution", None)
+                            elif value == "runtime-resolved":
+                                capability.pop("curatedOwners", None)
+                                capability["runtimeResolution"] = "visible-capability-inventory"
                             else:
                                 capability.pop("curatedOwners", None)
+                                capability.pop("runtimeResolution", None)
                         if (
                             name == "sources-lock"
                             and document_pointer == "/sources/0/kind"
@@ -295,6 +300,11 @@ class SchemaParityTests(unittest.TestCase):
                 contracts._MANIFEST_PATH,
             ),
             ("capabilities-v2", "/properties/capabilities/items/properties/id", contracts._CAPABILITY_ID),
+            (
+                "capabilities-v2",
+                "/properties/capabilities/items/properties/curatedOwners/items",
+                contracts._CURATED_OWNER_ID,
+            ),
             ("admissions", "/properties/admissions/items/properties/skill", contracts._SKILL_ID),
             ("routing", "/properties/routes/items/properties/skill", contracts._SKILL_ID),
             ("scenarios", "/properties/scenarios/items/properties/id", contracts._SCENARIO_ID),
@@ -353,6 +363,16 @@ class SchemaParityTests(unittest.TestCase):
             with self.subTest(name=name, pointer=pointer):
                 self.assertEqual(set(resolve(schemas[name], pointer)), validator_values)
 
+    def test_runtime_resolution_const_is_the_validator_source(self) -> None:
+        schema = load("schemas/v2/capabilities.schema.json")
+        self.assertEqual(
+            resolve(
+                schema,
+                "/properties/capabilities/items/properties/runtimeResolution/const",
+            ),
+            contracts._RUNTIME_RESOLUTION,
+        )
+
     def test_local_source_policy_is_declared_in_schema(self) -> None:
         schema = load("schemas/v1/sources-lock.schema.json")
         source = resolve(schema, "/properties/sources/items")
@@ -383,6 +403,22 @@ class SchemaParityTests(unittest.TestCase):
                             name=name, schema=schema_pointer, length=length
                         ):
                             self.assertEqual(expected, self.accepts(validator, changed))
+
+    def test_unique_items_facets_match_validator(self) -> None:
+        for name, schema, document, validator in self.cases:
+            for schema_pointer, document_pointer, node in property_facets(schema):
+                if node.get("uniqueItems") is not True:
+                    continue
+                original = resolve(document, document_pointer)
+                self.assertGreaterEqual(len(original), 1)  # type: ignore[arg-type]
+                changed = deepcopy(document)
+                assign(
+                    changed,
+                    document_pointer,
+                    [deepcopy(original[0]), deepcopy(original[0])],  # type: ignore[index]
+                )
+                with self.subTest(name=name, schema=schema_pointer):
+                    self.assertFalse(self.accepts(validator, changed))
                 if "minItems" in node:
                     minimum = node["minItems"]
                     original = resolve(document, document_pointer)
@@ -435,6 +471,12 @@ class SchemaParityTests(unittest.TestCase):
                 if "const" in node:
                     allowed = deepcopy(document)
                     assign(allowed, document_pointer, node["const"])
+                    if (
+                        name == "capabilities-v2"
+                        and document_pointer.endswith("/runtimeResolution")
+                    ):
+                        allowed["capabilities"][0]["coverageState"] = "runtime-resolved"
+                        allowed["capabilities"][0].pop("curatedOwners", None)
                     self.assertTrue(self.accepts(validator, allowed))
                     prohibited = deepcopy(document)
                     assign(prohibited, document_pointer, "__not_the_const__")
