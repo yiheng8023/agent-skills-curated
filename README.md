@@ -8,8 +8,9 @@ governance evidence, capability topology, and deterministic release manifests.
 ## Repository Role
 
 This repository governs reusable Skill assets from intake through an approved,
-auditable release. It is the upstream producer paired with
-`codex-user-config`, which is the runtime/configuration consumer.
+auditable release. It is the agent-neutral upstream producer for downstream
+consumer configuration repositories, currently including `codex-user-config`
+and `claude-user-config`.
 
 ## What This Repository Provides
 
