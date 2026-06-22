@@ -36,7 +36,7 @@ ADMISSIONS = {
     "schema": 1,
     "admissions": [{
         "skill": "skill.curated.alpha",
-        "source": "upstream:alpha",
+        "source": "upstream:reviewed",
         "thirdParty": True,
         "nativeBaselineCompared": True,
         "nativeIncrement": "A repeatable evidence-producing workflow.",
@@ -141,11 +141,32 @@ class ShapeTests(unittest.TestCase):
                 document = deepcopy(ADMISSIONS)
                 del document["admissions"][0][field]
                 self.assert_contract_error(validate_admissions_document, document, f"/admissions/0/{field}")
-        for field in ("thirdParty", "validated"):
+        for field in (
+            "thirdParty",
+            "nativeBaselineCompared",
+            "overlapReviewed",
+            "validated",
+        ):
             with self.subTest(field=field):
                 document = deepcopy(ADMISSIONS)
                 document["admissions"][0][field] = False
                 self.assert_contract_error(validate_admissions_document, document, f"/admissions/0/{field}")
+
+    def test_admissions_schema_declares_all_approval_truths(self) -> None:
+        schema = load("schemas/v1/admissions.schema.json")
+        approved = schema["properties"]["admissions"]["items"]["then"]["properties"]
+        self.assertEqual(
+            approved,
+            {
+                field: {"const": True}
+                for field in (
+                    "thirdParty",
+                    "nativeBaselineCompared",
+                    "overlapReviewed",
+                    "validated",
+                )
+            },
+        )
 
     def test_new_governance_enums_are_closed(self) -> None:
         document = deepcopy(ADMISSIONS)

@@ -297,6 +297,32 @@ class ReferenceTests(unittest.TestCase):
                 documents[key][collection][0]["skill"] = "skill.curated.missing"
                 self.assert_rejected(documents, document_name, f"/{collection}/0/skill")
 
+    def test_admission_source_must_resolve_to_source_lock(self) -> None:
+        documents = deepcopy(self.documents)
+        documents["admissions"]["admissions"][0]["source"] = "upstream:missing"
+        self.assert_rejected(
+            documents,
+            "registry/admissions.json",
+            "/admissions/0/source",
+        )
+
+    def test_new_governance_natural_keys_are_unique(self) -> None:
+        cases = (
+            ("admissions", "admissions", "skill", "registry/admissions.json"),
+            ("routing", "routes", "skill", "registry/routing.json"),
+            ("scenarios", "scenarios", "id", "registry/scenarios.json"),
+        )
+        for key, collection, field, document_name in cases:
+            with self.subTest(key=key):
+                documents = deepcopy(self.documents)
+                duplicate = deepcopy(documents[key][collection][0])
+                documents[key][collection].append(duplicate)
+                self.assert_rejected(
+                    documents,
+                    document_name,
+                    f"/{collection}/1/{field}",
+                )
+
     def test_routing_lifecycle_capabilities_must_resolve(self) -> None:
         documents = deepcopy(self.documents)
         documents["routing"]["routes"][0]["lifecycleCapabilities"] = [

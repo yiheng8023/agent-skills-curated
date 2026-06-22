@@ -26,7 +26,7 @@
           "validated": {"type": "boolean"}
         },
         "if": {"properties": {"disposition": {"const": "approve"}}, "required": ["disposition"]},
-        "then": {"properties": {"thirdParty": {"const": true}, "validated": {"const": true}}}
+        "then": {"properties": {"thirdParty": {"const": true}, "nativeBaselineCompared": {"const": true}, "overlapReviewed": {"const": true}, "validated": {"const": true}}}
       }
     }
   }

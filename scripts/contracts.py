@@ -262,7 +262,12 @@ def validate_admissions_document(value: object, document: str) -> None:
         disposition = require_enum(item["disposition"], _ADMISSION_DISPOSITIONS, document, _join(pointer, "disposition"))
         _strings(item["reviewRefs"], document, _join(pointer, "reviewRefs"), min_items=1)
         if disposition == "approve":
-            for field in ("thirdParty", "validated"):
+            for field in (
+                "thirdParty",
+                "nativeBaselineCompared",
+                "overlapReviewed",
+                "validated",
+            ):
                 if item[field] is not True:
                     raise ContractError(document, _join(pointer, field), "must be true for approved admissions")
 
@@ -973,6 +978,22 @@ def validate_references(documents: dict[str, object]) -> None:
     skill_ids = _unique_field(
         skills, "id", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
     )
+    source_ids = _unique_field(
+        sources, "id", "sources", _REFERENCE_DOCUMENTS["sources"]  # type: ignore[arg-type]
+    )
+    natural_keys = (
+        ("admissions", "admissions", "skill"),
+        ("routing", "routes", "skill"),
+        ("scenarios", "scenarios", "id"),
+    )
+    for key, collection, field in natural_keys:
+        if key in documents:
+            _unique_field(
+                documents[key][collection],  # type: ignore[index,arg-type]
+                field,
+                collection,
+                _REFERENCE_DOCUMENTS[key],
+            )
     for key, collection in (("admissions", "admissions"), ("routing", "routes")):
         if key not in documents:
             continue
@@ -982,6 +1003,12 @@ def validate_references(documents: dict[str, object]) -> None:
                     _REFERENCE_DOCUMENTS[key],
                     f"/{collection}/{index}/skill",
                     "must resolve to a curated Skill",
+                )
+            if key == "admissions" and item["source"] not in source_ids:
+                raise ContractError(
+                    _REFERENCE_DOCUMENTS[key],
+                    f"/{collection}/{index}/source",
+                    "must resolve to a source lock record",
                 )
     _unique_field(
         skills, "directory", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
@@ -1029,9 +1056,6 @@ def validate_references(documents: dict[str, object]) -> None:
         recipes, "id", "recipes", _REFERENCE_DOCUMENTS["recipes"]  # type: ignore[arg-type]
     )
 
-    source_ids = _unique_field(
-        sources, "id", "sources", _REFERENCE_DOCUMENTS["sources"]  # type: ignore[arg-type]
-    )
     for index, item in enumerate(skills):  # type: ignore[assignment]
         if item["source"] not in source_ids:
             raise ContractError(
