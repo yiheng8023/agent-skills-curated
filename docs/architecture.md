@@ -6,7 +6,13 @@
 router, authorization boundaries, and restoration order. This repository owns
 the reviewed Skill supply chain and its semantic relationships.
 
-The runtime sequence is:
+The repositories have a one-way producer-consumer relationship. This
+repository produces reviewed content and deterministic release evidence; it
+does not install, does not write to `codex-user-config`, and does not write to a
+live Agent environment. The configuration repository pins a reviewed revision,
+then plans, backs up, installs, verifies, and rolls back managed Skill paths.
+
+The consumer-owned runtime sequence is:
 
 1. restore and verify the user-configuration baseline;
 2. resolve the pinned Skills repository revision;
@@ -15,6 +21,30 @@ The runtime sequence is:
 5. apply only the adapter required by the active agent environment;
 6. rebuild the capability index and topology from governed registry data;
 7. verify discovery, routing, conflicts, and representative workflows.
+
+Steps 1-7 describe consumer behavior, not executable responsibilities of this
+repository.
+
+## Capability Layers And Decisions
+
+An official, runtime-owned, or built-in Skill remains environment-owned. When
+needed for topology, it is modeled as external capability metadata; its body
+must not be vendored and it does not enter the release manifest by default.
+
+A third-party candidate remains in source, intake, selection, and audit
+surfaces until it has passed source pinning, license, provenance, security,
+portability, overlap, adaptation, and validation review. Before approval it
+must not enter an execution path. Only a curated approved Skill with
+`status=approved` may enter `skills/` and the schema-1 manifest;
+`registry/skills.json` is the approved release inventory.
+
+The configuration-owned `capability-router` is a capability decision router.
+It may select native reasoning, an official or runtime-owned capability, a
+curated Skill, external capability metadata, a recipe or DAG, human
+confirmation, or no skill needed. Candidate content is not a routing target.
+High-risk, ambiguous, conflicting, permission-changing, write, install,
+delete, migration, publish, release, or rollback decisions require human
+confirmation.
 
 ## Dynamic Capability Topology
 

@@ -180,6 +180,21 @@
   ],
   "relations": [
     {
+      "from": "skill.curated.tdd",
+      "to": "capability.tdd",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.diagnose",
+      "to": "capability.debugging",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.review",
+      "to": "capability.review",
+      "type": "provides"
+    },
+    {
       "from": "skill.curated.ci-cd-and-automation",
       "to": "capability.ci-cd",
       "type": "provides"
@@ -291,7 +306,7 @@
   "schema": 1,
   "skills": [
     {
-      "description": ">",
+      "description": "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, articles, and pleasantries while keeping full technical accuracy. Use when user says \"caveman mode\", \"talk like caveman\", \"use caveman\", \"less tokens\", \"be brief\", or invokes /caveman.",
       "directory": "caveman",
       "id": "skill.curated.caveman",
       "name": "caveman",

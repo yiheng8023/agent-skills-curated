@@ -3,8 +3,42 @@
   "sources": [
     {
       "id": "github:addyosmani/agent-skills",
+      "kind": "git",
+      "provenanceStatus": "complete",
+      "redistribution": "license-governed",
+      "reviewRefs": [
+        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/security.md",
+        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/overlap.md",
+        "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/portability.md"
+      ],
       "url": "https://github.com/addyosmani/agent-skills",
       "revision": "17214a29c429a19f7a9607f2c06f9d650ea87eb0",
+      "candidateIds": [
+        "api-and-interface-design",
+        "browser-testing-with-devtools",
+        "ci-cd-and-automation",
+        "code-review-and-quality",
+        "code-simplification",
+        "context-engineering",
+        "debugging-and-error-recovery",
+        "deprecation-and-migration",
+        "documentation-and-adrs",
+        "doubt-driven-development",
+        "frontend-ui-engineering",
+        "git-workflow-and-versioning",
+        "idea-refine",
+        "incremental-implementation",
+        "interview-me",
+        "observability-and-instrumentation",
+        "performance-optimization",
+        "planning-and-task-breakdown",
+        "security-and-hardening",
+        "shipping-and-launch",
+        "source-driven-development",
+        "spec-driven-development",
+        "test-driven-development",
+        "using-agent-skills"
+      ],
       "license": "MIT",
       "status": "intake-reviewed",
       "approvedForRuntime": false,
@@ -12,6 +46,50 @@
         "Upstream structural validators passed for 24 Skills and 8 commands.",
         "Executable hooks require separate portability and security adjudication.",
         "The upstream meta-router must not compete with the canonical capability router."
+      ]
+    },
+    {
+      "id": "local:reviewed-baseline",
+      "kind": "local",
+      "provenanceStatus": "incomplete",
+      "redistribution": "private-only",
+      "reviewRefs": ["THIRD_PARTY_NOTICES.md"],
+      "candidateIds": [
+        "caveman",
+        "design-an-interface",
+        "diagnose",
+        "edit-article",
+        "git-guardrails-claude-code",
+        "grill-me",
+        "grill-with-docs",
+        "handoff",
+        "improve-codebase-architecture",
+        "migrate-to-shoehorn",
+        "obsidian-vault",
+        "prototype",
+        "qa",
+        "request-refactor-plan",
+        "review",
+        "scaffold-exercises",
+        "setup-matt-pocock-skills",
+        "setup-pre-commit",
+        "tdd",
+        "teach",
+        "to-issues",
+        "to-prd",
+        "triage",
+        "ubiquitous-language",
+        "write-a-skill",
+        "writing-beats",
+        "writing-fragments",
+        "writing-shape",
+        "zoom-out"
+      ],
+      "status": "reviewed-baseline",
+      "approvedForRuntime": true,
+      "notes": [
+        "Local reviewed baseline provenance remains incomplete.",
+        "Redistribution is private-only pending complete provenance review."
       ]
     }
   ]

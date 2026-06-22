@@ -3,20 +3,38 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
 
+from contracts import (
+    ContractError,
+    parse_frontmatter,
+    validate_adopted_selection,
+    validate_capabilities_document,
+    validate_conflicts_document,
+    validate_inventory_counts,
+    validate_manifest_payload,
+    validate_recipes_document,
+    validate_references,
+    validate_relations_document,
+    validate_release_manifest_document,
+    validate_selection_document,
+    validate_skills_document,
+    validate_source_selection,
+    validate_sources_lock_document,
+)
+
 ROOT = Path(__file__).resolve().parent.parent
-ADDY_APPROVED = {
-    "ci-cd-and-automation",
-    "deprecation-and-migration",
-    "observability-and-instrumentation",
-    "performance-optimization",
-    "shipping-and-launch",
+UPSTREAM_SOURCE_ID = "github:addyosmani/agent-skills"
+ALLOWED_SELECTION_DISPOSITIONS = {
+    "adopt",
+    "merge",
+    "adapter-only",
+    "recipe-only",
+    "reject",
 }
 FORBIDDEN_APPROVED_TEXT = (
     "using-agent-skills",
@@ -32,20 +50,6 @@ def load(path: str) -> dict[str, object]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
-def frontmatter(text: str) -> dict[str, str]:
-    if not text.startswith("---\n"):
-        raise RuntimeError("Missing YAML frontmatter")
-    end = text.find("\n---\n", 4)
-    if end < 0:
-        raise RuntimeError("Unclosed YAML frontmatter")
-    values: dict[str, str] = {}
-    for line in text[4:end].splitlines():
-        if re.match(r"^[A-Za-z][A-Za-z0-9_-]*:\s*", line):
-            key, value = line.split(":", 1)
-            values[key] = value.strip()
-    return values
-
-
 def verify() -> None:
     required = (
         "AGENTS.md", "README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md",
@@ -57,6 +61,10 @@ def verify() -> None:
         "policies/intake.md", "policies/portability.md", "policies/security.md",
         "policies/overlap-resolution.md", "policies/lifecycle.md",
         "scripts/build_topology.py", "scripts/verify.py", "release-manifest.json",
+        "schemas/v1/skills.schema.json", "schemas/v1/capabilities.schema.json",
+        "schemas/v1/relations.schema.json", "schemas/v1/conflicts.schema.json",
+        "schemas/v1/recipes.schema.json", "schemas/v1/sources-lock.schema.json",
+        "schemas/v1/selection.schema.json", "schemas/v1/release-manifest.schema.json",
         "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/security.md",
         "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/overlap.md",
         "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/portability.md",
@@ -65,42 +73,78 @@ def verify() -> None:
     if missing:
         raise RuntimeError("Missing required files: " + ", ".join(missing))
 
-    registry = load("registry/skills.json")["skills"]
+    skills_doc = load("registry/skills.json")
+    capabilities_doc = load("registry/capabilities.json")
+    relations_doc = load("registry/relations.json")
+    conflicts_doc = load("registry/conflicts.json")
+    recipes_doc = load("registry/recipes.json")
+    sources_doc = load("sources/lock.json")
+    selection_document = "sources/addyosmani-agent-skills/selection.json"
+    selection_doc = load(selection_document)
+    manifest = load("release-manifest.json")
+    validate_skills_document(skills_doc, "registry/skills.json")
+    validate_capabilities_document(capabilities_doc, "registry/capabilities.json")
+    validate_relations_document(relations_doc, "registry/relations.json")
+    validate_conflicts_document(conflicts_doc, "registry/conflicts.json")
+    validate_recipes_document(recipes_doc, "registry/recipes.json")
+    validate_sources_lock_document(sources_doc, "sources/lock.json")
+    validate_selection_document(selection_doc, selection_document)
+    validate_release_manifest_document(manifest, "release-manifest.json")
+
+    registry = skills_doc["skills"]
     directories = sorted(path.name for path in (ROOT / "skills").iterdir() if path.is_dir())
     registered = sorted(item["directory"] for item in registry)
     if directories != registered:
         raise RuntimeError("Skill registry does not match installed directories.")
-    if len(directories) != 34:
-        raise RuntimeError(f"Expected 34 curated Skills, found {len(directories)}.")
 
-    manifest = load("release-manifest.json")
-    if manifest.get("skillCount") != 34 or manifest.get("fileCount") != 60:
-        raise RuntimeError("Unexpected release manifest inventory.")
-    manifest_paths = {item["path"] for item in manifest["files"]}
-    actual_paths = {
-        path.relative_to(ROOT).as_posix()
-        for path in (ROOT / "skills").rglob("*")
-        if path.is_file()
+    validate_inventory_counts(
+        registry, manifest, directories, "release-manifest.json"
+    )
+    validate_manifest_payload(ROOT, manifest, registry)
+
+    source_records = sources_doc["sources"]
+    source_record = next(
+        (item for item in source_records if item.get("id") == UPSTREAM_SOURCE_ID),
+        None,
+    )
+    if source_record is None:
+        raise RuntimeError(f"Missing source lock record: {UPSTREAM_SOURCE_ID}")
+    validate_source_selection(
+        selection_doc,
+        source_record,
+        ALLOWED_SELECTION_DISPOSITIONS,
+        selection_document,
+    )
+    selection = selection_doc["decisions"]
+    validate_adopted_selection(
+        selection,
+        registry,
+        selection_doc["source"],
+        selection_document,
+    )
+    validate_references(
+        {
+            "skills": skills_doc,
+            "capabilities": capabilities_doc,
+            "relations": relations_doc,
+            "conflicts": conflicts_doc,
+            "recipes": recipes_doc,
+            "sources": sources_doc,
+        }
+    )
+    adopted_directories = {
+        name for name, disposition in selection.items() if disposition == "adopt"
     }
-    if manifest_paths != actual_paths:
-        raise RuntimeError("Release manifest does not match Skill files.")
-    for item in manifest["files"]:
-        data = (ROOT / item["path"]).read_bytes()
-        if hashlib.sha256(data).hexdigest() != item["sha256"] or len(data) != item["size"]:
-            raise RuntimeError(f"Release manifest hash mismatch: {item['path']}")
 
-    ids = [item["id"] for item in registry]
-    if len(ids) != len(set(ids)):
-        raise RuntimeError("Skill IDs are not unique.")
     for item in registry:
         path = ROOT / "skills" / item["directory"] / "SKILL.md"
         if not path.is_file():
             raise RuntimeError(f"Missing {path.relative_to(ROOT)}")
         text = path.read_text(encoding="utf-8")
-        meta = frontmatter(text)
+        meta = parse_frontmatter(text, path.relative_to(ROOT).as_posix())
         if meta.get("name") != item["name"] or meta.get("description") != item["description"]:
             raise RuntimeError(f"Registry/frontmatter drift: {item['directory']}")
-        if item["directory"] in ADDY_APPROVED:
+        if item["directory"] in adopted_directories:
             if not meta["description"].startswith("Use when"):
                 raise RuntimeError(f"Non-trigger description: {item['directory']}")
             for forbidden in FORBIDDEN_APPROVED_TEXT:
@@ -110,29 +154,15 @@ def verify() -> None:
                 if not (path.parent / reference).is_file():
                     raise RuntimeError(f"Dead adopted-Skill reference in {item['directory']}: {reference}")
 
-    selection = load("sources/addyosmani-agent-skills/selection.json")["decisions"]
-    if len(selection) != 24 or {name for name, decision in selection.items() if decision == "adopt"} != ADDY_APPROVED:
-        raise RuntimeError("Upstream selection must close all 24 Skills and adopt exactly five.")
-
-    capabilities = load("registry/capabilities.json")["capabilities"]
-    capability_ids = {item["id"] for item in capabilities}
-    skill_ids = set(ids)
-    relations_doc = load("registry/relations.json")
-    allowed = set(relations_doc["relationTypes"])
-    nodes = capability_ids | skill_ids
-    for relation in relations_doc["relations"]:
-        if relation["type"] not in allowed or relation["from"] not in nodes or relation["to"] not in nodes:
-            raise RuntimeError(f"Invalid relationship: {relation}")
-
-    conflicts = load("registry/conflicts.json")["groups"]
-    if not conflicts or any(not group.get("defaultOwner") or not group.get("resolution") for group in conflicts):
-        raise RuntimeError("Every conflict group needs a default owner and resolution.")
-
     subprocess.run([sys.executable, str(ROOT / "scripts/build_topology.py"), "--check"], check=True)
 
 
 def main() -> int:
-    verify()
+    try:
+        verify()
+    except ContractError as exc:
+        print(f"Contract error: {exc}", file=sys.stderr)
+        return 1
     print("Agent Skills Curated validation passed.")
     return 0
 
