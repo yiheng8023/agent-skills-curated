@@ -291,7 +291,8 @@ def validate_scenarios_document(value: object, document: str) -> None:
     _, items = _document(value, document, "scenarios")
     allowed = {
         "id", "language", "request", "decisionClass", "expectedSkills",
-        "excludedSkills", "humanConfirmation", "validationExpectations",
+        "excludedSkills", "requestedCapabilities", "expectedCapabilities",
+        "humanConfirmation", "validationExpectations",
     }
     for index, raw in enumerate(items):
         pointer = f"/scenarios/{index}"
@@ -304,6 +305,8 @@ def validate_scenarios_document(value: object, document: str) -> None:
         require_enum(item["decisionClass"], _COVERAGE_STATES, document, _join(pointer, "decisionClass"))
         _strings(item["expectedSkills"], document, _join(pointer, "expectedSkills"))
         _strings(item["excludedSkills"], document, _join(pointer, "excludedSkills"))
+        for field in ("requestedCapabilities", "expectedCapabilities"):
+            _strings(item[field], document, _join(pointer, field), min_items=1)
         _require_bool(item["humanConfirmation"], document, _join(pointer, "humanConfirmation"))
         _strings(item["validationExpectations"], document, _join(pointer, "validationExpectations"), min_items=1)
 
@@ -934,6 +937,7 @@ _REFERENCE_DOCUMENTS = {
     "sources": "sources/lock.json",
     "admissions": "registry/admissions.json",
     "routing": "registry/routing.json",
+    "scenarios": "registry/scenarios.json",
 }
 
 
@@ -991,6 +995,33 @@ def validate_references(documents: dict[str, object]) -> None:
         "capabilities",
         _REFERENCE_DOCUMENTS["capabilities"],  # type: ignore[arg-type]
     )
+    if "routing" in documents:
+        for route_index, route in enumerate(documents["routing"]["routes"]):  # type: ignore[index,assignment]
+            for capability_index, capability in enumerate(route["lifecycleCapabilities"]):
+                if capability not in capability_ids:
+                    raise ContractError(
+                        _REFERENCE_DOCUMENTS["routing"],
+                        f"/routes/{route_index}/lifecycleCapabilities/{capability_index}",
+                        "must resolve to a capability",
+                    )
+    if "scenarios" in documents:
+        for scenario_index, scenario in enumerate(documents["scenarios"]["scenarios"]):  # type: ignore[index,assignment]
+            for field in ("expectedSkills", "excludedSkills"):
+                for reference_index, reference in enumerate(scenario[field]):
+                    if reference not in skill_ids:
+                        raise ContractError(
+                            _REFERENCE_DOCUMENTS["scenarios"],
+                            f"/scenarios/{scenario_index}/{field}/{reference_index}",
+                            "must resolve to a curated Skill",
+                        )
+            for field in ("requestedCapabilities", "expectedCapabilities"):
+                for reference_index, reference in enumerate(scenario[field]):
+                    if reference not in capability_ids:
+                        raise ContractError(
+                            _REFERENCE_DOCUMENTS["scenarios"],
+                            f"/scenarios/{scenario_index}/{field}/{reference_index}",
+                            "must resolve to a capability",
+                        )
     _unique_field(
         conflicts, "id", "groups", _REFERENCE_DOCUMENTS["conflicts"]  # type: ignore[arg-type]
     )
@@ -1055,22 +1086,34 @@ def validate_references(documents: dict[str, object]) -> None:
             )
         relation_keys.add(key)
 
+    capabilities_schema = documents["capabilities"]["schema"]  # type: ignore[index]
     for index, capability in enumerate(capabilities):  # type: ignore[assignment]
-        owner = capability["canonicalOwner"]
-        pointer = f"/capabilities/{index}/canonicalOwner"
-        if owner.startswith("skill.curated."):
-            if owner not in skill_ids or (owner, capability["id"]) not in provided:
+        if capabilities_schema == 1:
+            owner = capability["canonicalOwner"]
+            pointer = f"/capabilities/{index}/canonicalOwner"
+            if owner.startswith("skill.curated."):
+                if owner not in skill_ids or (owner, capability["id"]) not in provided:
+                    raise ContractError(
+                        _REFERENCE_DOCUMENTS["capabilities"],
+                        pointer,
+                        "curated owner must exist and provide this capability",
+                    )
+            elif not _is_external_reference(owner):
                 raise ContractError(
                     _REFERENCE_DOCUMENTS["capabilities"],
                     pointer,
+                    "must be a curated Skill or use external:/upstream:",
+                )
+            continue
+        if capability["coverageState"] != "curated":
+            continue
+        for owner_index, owner in enumerate(capability["curatedOwners"]):
+            if owner not in skill_ids or (owner, capability["id"]) not in provided:
+                raise ContractError(
+                    _REFERENCE_DOCUMENTS["capabilities"],
+                    f"/capabilities/{index}/curatedOwners/{owner_index}",
                     "curated owner must exist and provide this capability",
                 )
-        elif not _is_external_reference(owner):
-            raise ContractError(
-                _REFERENCE_DOCUMENTS["capabilities"],
-                pointer,
-                "must be a curated Skill or use external:/upstream:",
-            )
 
     for group_index, group in enumerate(conflicts):  # type: ignore[assignment]
         members = group["members"]

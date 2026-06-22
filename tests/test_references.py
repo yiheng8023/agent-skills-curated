@@ -2,7 +2,7 @@ from copy import deepcopy
 import unittest
 
 from scripts.contracts import ContractError, validate_references
-from tests.test_shape_contracts import ADMISSIONS, ROUTING
+from tests.test_shape_contracts import ADMISSIONS, ROUTING, SCENARIOS_DOCUMENT
 
 
 class ReferenceTests(unittest.TestCase):
@@ -91,6 +91,7 @@ class ReferenceTests(unittest.TestCase):
             },
             "admissions": deepcopy(ADMISSIONS),
             "routing": deepcopy(ROUTING),
+            "scenarios": deepcopy(SCENARIOS_DOCUMENT),
         }
 
     def assert_rejected(
@@ -103,6 +104,57 @@ class ReferenceTests(unittest.TestCase):
 
     def test_accepts_minimal_reference_closed_documents(self) -> None:
         validate_references(self.documents)
+
+    def test_accepts_v2_capabilities_without_canonical_owner(self) -> None:
+        documents = deepcopy(self.documents)
+        documents["capabilities"] = {
+            "schema": 2,
+            "capabilities": [
+                {
+                    "id": "capability.alpha",
+                    "stage": "verify",
+                    "description": "Alpha evidence.",
+                    "coverageState": "curated",
+                    "validation": ["Run alpha checks."],
+                    "fallback": ["Declare the gap."],
+                    "curatedOwners": ["skill.curated.alpha"],
+                },
+                {
+                    "id": "capability.external",
+                    "stage": "verify",
+                    "description": "Resolved by the live runtime.",
+                    "coverageState": "runtime-resolved",
+                    "validation": ["Probe live availability."],
+                    "fallback": ["Declare the gap."],
+                },
+            ],
+        }
+
+        validate_references(documents)
+
+    def test_v2_curated_owners_must_resolve_and_provide_the_capability(self) -> None:
+        for owner, relation_type in (
+            ("skill.curated.missing", "provides"),
+            ("skill.curated.alpha", "requires"),
+        ):
+            with self.subTest(owner=owner, relation_type=relation_type):
+                documents = deepcopy(self.documents)
+                capability = {
+                    "id": "capability.alpha",
+                    "stage": "verify",
+                    "description": "Alpha evidence.",
+                    "coverageState": "curated",
+                    "validation": ["Run alpha checks."],
+                    "fallback": ["Declare the gap."],
+                    "curatedOwners": [owner],
+                }
+                documents["capabilities"] = {"schema": 2, "capabilities": [capability]}
+                documents["relations"]["relations"][0]["type"] = relation_type
+                self.assert_rejected(
+                    documents,
+                    "registry/capabilities.json",
+                    "/capabilities/0/curatedOwners/0",
+                )
 
     def test_rejects_duplicate_skill_id_directory_and_name(self) -> None:
         for field in ("id", "directory", "name"):
@@ -244,6 +296,34 @@ class ReferenceTests(unittest.TestCase):
                 documents = deepcopy(self.documents)
                 documents[key][collection][0]["skill"] = "skill.curated.missing"
                 self.assert_rejected(documents, document_name, f"/{collection}/0/skill")
+
+    def test_routing_lifecycle_capabilities_must_resolve(self) -> None:
+        documents = deepcopy(self.documents)
+        documents["routing"]["routes"][0]["lifecycleCapabilities"] = [
+            "capability.missing"
+        ]
+        self.assert_rejected(
+            documents,
+            "registry/routing.json",
+            "/routes/0/lifecycleCapabilities/0",
+        )
+
+    def test_scenario_skill_and_capability_references_must_resolve(self) -> None:
+        cases = (
+            ("expectedSkills", "skill.curated.missing"),
+            ("excludedSkills", "skill.curated.missing"),
+            ("requestedCapabilities", "capability.missing"),
+            ("expectedCapabilities", "capability.missing"),
+        )
+        for field, value in cases:
+            with self.subTest(field=field):
+                documents = deepcopy(self.documents)
+                documents["scenarios"]["scenarios"][0][field] = [value]
+                self.assert_rejected(
+                    documents,
+                    "registry/scenarios.json",
+                    f"/scenarios/0/{field}/0",
+                )
 
 if __name__ == "__main__":
     unittest.main()

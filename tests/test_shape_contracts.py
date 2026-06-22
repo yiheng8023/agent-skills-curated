@@ -78,6 +78,8 @@ SCENARIOS_DOCUMENT = {
         "decisionClass": "curated",
         "expectedSkills": ["skill.curated.alpha"],
         "excludedSkills": ["skill.curated.beta"],
+        "requestedCapabilities": ["capability.alpha"],
+        "expectedCapabilities": ["capability.alpha"],
         "humanConfirmation": False,
         "validationExpectations": ["The output is independently verifiable."],
     }],
