@@ -3,7 +3,7 @@
     {
       "coverageState": "curated",
       "curatedOwners": [
-        "skill.curated.grill-me",
+        "skill.curated.grill-with-docs",
         "skill.curated.ubiquitous-language"
       ],
       "description": "Clarify goals, affected subjects, constraints, vocabulary, and acceptance boundaries before solution work.",
@@ -62,10 +62,7 @@
       ]
     },
     {
-      "coverageState": "curated",
-      "curatedOwners": [
-        "skill.curated.design-an-interface"
-      ],
+      "coverageState": "recipe",
       "description": "Design stable interfaces and contracts between components or subjects.",
       "fallback": [
         "Expose the narrowest reversible interface and defer unsupported flexibility."
@@ -77,10 +74,10 @@
       ]
     },
     {
-      "coverageState": "gap",
+      "coverageState": "recipe",
       "description": "Model data entities, invariants, ownership, retention, and change semantics.",
       "fallback": [
-        "Declare the uncovered modeling need and avoid irreversible schema commitments."
+        "Compose requirements and architecture modeling, then avoid irreversible schema commitments until accountable review."
       ],
       "id": "capability.data-modeling",
       "stage": "design",
@@ -327,7 +324,6 @@
     {
       "coverageState": "curated",
       "curatedOwners": [
-        "skill.curated.request-refactor-plan",
         "skill.curated.improve-codebase-architecture"
       ],
       "description": "Identify, classify, prioritize, and retire structural liabilities with bounded value evidence.",
@@ -368,18 +364,45 @@
       ]
     }
   ],
-  "conflicts": [
-    {
-      "defaultOwner": "skill.curated.request-refactor-plan",
-      "id": "conflict.technical-debt",
-      "members": [
-        "skill.curated.request-refactor-plan",
-        "skill.curated.improve-codebase-architecture"
-      ],
-      "resolution": "Use request-refactor-plan for a bounded debt-remediation plan; use improve-codebase-architecture for repository-wide architecture analysis."
-    }
-  ],
+  "conflicts": [],
   "recipes": [
+    {
+      "id": "recipe.interface-api-design",
+      "steps": [
+        {
+          "capability": "capability.requirements-clarification"
+        },
+        {
+          "capability": "capability.architecture-design"
+        },
+        {
+          "capability": "capability.code-review",
+          "when": "a candidate contract or implementation exists"
+        }
+      ],
+      "trigger": "A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill"
+    },
+    {
+      "authorization": "Irreversible schema, migration, retention, and regulated-data decisions remain subject to their accountable human authorities.",
+      "id": "recipe.data-modeling",
+      "steps": [
+        {
+          "capability": "capability.requirements-clarification"
+        },
+        {
+          "capability": "capability.architecture-design"
+        },
+        {
+          "capability": "capability.privacy-governance",
+          "when": "personal, confidential, regulated, or retention-sensitive data is involved"
+        },
+        {
+          "capability": "capability.code-review",
+          "when": "a schema, contract, or migration candidate exists"
+        }
+      ],
+      "trigger": "A system needs explicit entities, invariants, ownership, retention, and change semantics without adding an overlapping dedicated Skill"
+    },
     {
       "id": "recipe.test-strategy",
       "steps": [
@@ -507,7 +530,7 @@
   ],
   "relations": [
     {
-      "from": "skill.curated.grill-me",
+      "from": "skill.curated.grill-with-docs",
       "to": "capability.requirements-clarification",
       "type": "provides"
     },
@@ -529,11 +552,6 @@
     {
       "from": "skill.curated.improve-codebase-architecture",
       "to": "capability.architecture-design",
-      "type": "provides"
-    },
-    {
-      "from": "skill.curated.design-an-interface",
-      "to": "capability.interface-api-design",
       "type": "provides"
     },
     {
@@ -587,11 +605,6 @@
       "type": "provides"
     },
     {
-      "from": "skill.curated.request-refactor-plan",
-      "to": "capability.technical-debt",
-      "type": "provides"
-    },
-    {
       "from": "skill.curated.improve-codebase-architecture",
       "to": "capability.technical-debt",
       "type": "provides"
@@ -599,6 +612,21 @@
     {
       "from": "skill.curated.handoff",
       "to": "capability.cross-agent-handoff",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.prototype",
+      "to": "capability.architecture-design",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.setup-project-skills",
+      "to": "capability.documentation-governance",
+      "type": "provides"
+    },
+    {
+      "from": "skill.curated.ubiquitous-language",
+      "to": "capability.documentation-governance",
       "type": "provides"
     },
     {
@@ -736,15 +764,6 @@
   "schema": 1,
   "skills": [
     {
-      "description": "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, articles, and pleasantries while keeping full technical accuracy. Use when user says \"caveman mode\", \"talk like caveman\", \"use caveman\", \"less tokens\", \"be brief\", or invokes /caveman.",
-      "directory": "caveman",
-      "id": "skill.curated.caveman",
-      "name": "caveman",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
       "description": "Use when designing or modifying CI/CD pipelines, automated quality gates, test runners, staged delivery, or deployment safeguards; not for diagnosing an already-failing GitHub Actions run.",
       "directory": "ci-cd-and-automation",
       "id": "skill.curated.ci-cd-and-automation",
@@ -763,48 +782,21 @@
       "status": "approved"
     },
     {
-      "description": "Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions \"design it twice\".",
-      "directory": "design-an-interface",
-      "id": "skill.curated.design-an-interface",
-      "name": "design-an-interface",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
       "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce \u2192 minimise \u2192 hypothesise \u2192 instrument \u2192 fix \u2192 regression-test. Use when user says \"diagnose this\" / \"debug this\", reports a bug, says something is broken/throwing/failing, or describes a performance regression.",
       "directory": "diagnose",
       "id": "skill.curated.diagnose",
       "name": "diagnose",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Edit and improve articles by restructuring sections, improving clarity, and tightening prose. Use when user wants to edit, revise, or improve an article draft.",
-      "directory": "edit-article",
-      "id": "skill.curated.edit-article",
-      "name": "edit-article",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
       "description": "Set up hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Works in any agent environment or manual terminal workflow. Use when the user wants to prevent destructive git operations or add git safety guardrails.",
-      "directory": "git-guardrails-claude-code",
-      "id": "skill.curated.git-guardrails-claude-code",
+      "directory": "git-guardrails",
+      "id": "skill.curated.git-guardrails",
       "name": "git-guardrails",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions \"grill me\".",
-      "directory": "grill-me",
-      "id": "skill.curated.grill-me",
-      "name": "grill-me",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -813,7 +805,7 @@
       "id": "skill.curated.grill-with-docs",
       "name": "grill-with-docs",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -822,7 +814,7 @@
       "id": "skill.curated.handoff",
       "name": "handoff",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -831,7 +823,7 @@
       "id": "skill.curated.improve-codebase-architecture",
       "name": "improve-codebase-architecture",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -840,7 +832,7 @@
       "id": "skill.curated.migrate-to-shoehorn",
       "name": "migrate-to-shoehorn",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -850,15 +842,6 @@
       "name": "observability-and-instrumentation",
       "phase": "operate",
       "source": "github:addyosmani/agent-skills",
-      "status": "approved"
-    },
-    {
-      "description": "Search, create, and manage notes in an Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.",
-      "directory": "obsidian-vault",
-      "id": "skill.curated.obsidian-vault",
-      "name": "obsidian-vault",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
       "status": "approved"
     },
     {
@@ -876,25 +859,7 @@
       "id": "skill.curated.prototype",
       "name": "prototype",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wants to report bugs, do QA, file issues conversationally, or mentions \"QA session\".",
-      "directory": "qa",
-      "id": "skill.curated.qa",
-      "name": "qa",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe incremental steps.",
-      "directory": "request-refactor-plan",
-      "id": "skill.curated.request-refactor-plan",
-      "name": "request-refactor-plan",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -903,34 +868,16 @@
       "id": "skill.curated.review",
       "name": "review",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Create exercise directory structures with sections, problems, solutions, and explainers that pass linting. Use when user wants to scaffold exercises, create exercise stubs, or set up a new course section.",
-      "directory": "scaffold-exercises",
-      "id": "skill.curated.scaffold-exercises",
-      "name": "scaffold-exercises",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
       "description": "Sets up an `## Agent skills` block in the repo's agent config file and `docs/agents/` so engineering skills know this repo's issue tracker (GitHub, GitLab, or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` \u2014 or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.",
-      "directory": "setup-matt-pocock-skills",
-      "id": "skill.curated.setup-matt-pocock-skills",
+      "directory": "setup-project-skills",
+      "id": "skill.curated.setup-project-skills",
       "name": "setup-project-skills",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests in the current repo. Use when user wants to add pre-commit hooks, set up Husky, configure lint-staged, or add commit-time formatting/typechecking/testing.",
-      "directory": "setup-pre-commit",
-      "id": "skill.curated.setup-pre-commit",
-      "name": "setup-pre-commit",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -948,16 +895,7 @@
       "id": "skill.curated.tdd",
       "name": "tdd",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Teach the user a new skill or concept, within this workspace.",
-      "directory": "teach",
-      "id": "skill.curated.teach",
-      "name": "teach",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -966,7 +904,7 @@
       "id": "skill.curated.to-issues",
       "name": "to-issues",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -975,7 +913,7 @@
       "id": "skill.curated.to-prd",
       "name": "to-prd",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -984,7 +922,7 @@
       "id": "skill.curated.triage",
       "name": "triage",
       "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     },
     {
@@ -993,52 +931,7 @@
       "id": "skill.curated.ubiquitous-language",
       "name": "ubiquitous-language",
       "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.",
-      "directory": "write-a-skill",
-      "id": "skill.curated.write-a-skill",
-      "name": "write-a-skill",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Shape an article as a journey of beats, choose-your-own-adventure style. The user picks a starting beat from the raw material, you write only that beat, then offer options for where to pivot next, beat by beat, until the article reaches a natural end. Use when the user has raw material and wants to assemble it as a narrative rather than an argument.",
-      "directory": "writing-beats",
-      "id": "skill.curated.writing-beats",
-      "name": "writing-beats",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Grilling session that mines the user for fragments \u2014 heterogeneous nuggets of writing (claims, vignettes, sharp sentences, half-thoughts) \u2014 and appends them to a single document as raw material for a future article. Use when the user wants to develop ideas before imposing structure, or mentions \"fragments\", \"ideate\", or \"raw material\" for writing.",
-      "directory": "writing-fragments",
-      "id": "skill.curated.writing-fragments",
-      "name": "writing-fragments",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Take a markdown file of raw material and shape it into an article through a conversational session \u2014 drafting candidate openings, growing the piece paragraph by paragraph, arguing about format (lists, tables, callouts, quotes) at each step. Use when the user has a pile of notes, fragments, or a rough draft and wants help turning it into something publishable.",
-      "directory": "writing-shape",
-      "id": "skill.curated.writing-shape",
-      "name": "writing-shape",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
-      "status": "approved"
-    },
-    {
-      "description": "Tell the agent to zoom out and give broader context or a higher-level perspective. Use when you're unfamiliar with a section of code or need to understand how it fits into the bigger picture.",
-      "directory": "zoom-out",
-      "id": "skill.curated.zoom-out",
-      "name": "zoom-out",
-      "phase": "general",
-      "source": "local:reviewed-baseline",
+      "source": "github:mattpocock/skills",
       "status": "approved"
     }
   ]

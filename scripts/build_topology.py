@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -31,6 +32,27 @@ def render() -> dict[str, str]:
     relations = load("relations.json")["relations"]
     conflicts = load("conflicts.json")["groups"]
     recipes = load("recipes.json")["recipes"]
+    routing = load("routing.json")["routes"]
+
+    routing_inputs = (
+        "registry/capabilities.json",
+        "registry/routing.json",
+        "registry/relations.json",
+        "registry/conflicts.json",
+        "registry/recipes.json",
+    )
+    routing_index = {
+        "schema": 1,
+        "authoritativeInputDigests": {
+            path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+            for path in routing_inputs
+        },
+        "capabilities": capabilities,
+        "routes": routing,
+        "relations": relations,
+        "conflicts": conflicts,
+        "recipes": recipes,
+    }
 
     catalog = ["# Generated Skill Catalog", "", "Do not edit manually.", ""]
     for skill in sorted(skills, key=lambda item: item["id"]):
@@ -90,13 +112,14 @@ def render() -> dict[str, str]:
         "topology.mmd": "\n".join(mermaid),
         "routing-scenarios.md": "\n".join(routes),
         "lifecycle-coverage.md": "\n".join(lifecycle),
+        "routing-index.json": json.dumps(routing_index, indent=2, sort_keys=True) + "\n",
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--emit", choices=("catalog.md", "topology.json", "topology.mmd", "routing-scenarios.md", "lifecycle-coverage.md"))
+    parser.add_argument("--emit", choices=("catalog.md", "topology.json", "topology.mmd", "routing-scenarios.md", "lifecycle-coverage.md", "routing-index.json"))
     args = parser.parse_args()
     outputs = render()
     if args.emit:

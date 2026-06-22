@@ -18,8 +18,9 @@
 - Skills、能力、关系、冲突和 Recipes 的权威 registry；
 - 确定性的派生投影和 schema 1 发布清单。
 
-当前批准发布包含 34 个 Skills、60 个文件：29 个已审查本地 Skills，以及从
-`addyosmani/agent-skills` 跨 Agent 适配的 5 个 Skills。
+当前批准发布包含 19 个 Skills、41 个文件：5 个来自
+`addyosmani/agent-skills`，14 个来自 `mattpocock/skills`。它们都具备完整、固定的
+Git 来源；原先来源不完整的本地基线仅保留为非运行时历史证据。
 
 ## 本仓库不负责什么
 
@@ -75,6 +76,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `policies/`：准入、可移植性、安全、重叠和生命周期规则；
 - `audits/`：来源级审查与证据；
 - `generated/`：确定性派生投影，不是第二真相源；
+- `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 96 场景
+  结构化策略语料；
 - `release-manifest.json`：批准 payload 的精确路径、大小和哈希；
 - `scripts/`：只负责验证和确定性投影生成。
 
@@ -82,12 +85,15 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 
 ```bash
 python -B -m unittest discover -s tests -v
+python -B scripts/build_release_manifest.py --check
 python -B scripts/build_topology.py --check
+python -B scripts/simulate_routing.py --all
 python -B scripts/verify.py
 ```
 
-验证覆盖 registry 契约、引用、派生文件一致性、来源证据和精确 payload，但不会安装
-Skill。
+验证覆盖 registry 契约、引用、派生文件一致性、来源证据、精确 payload、输入绑定的
+路由投影、全部 26 个生命周期节点和 96 个确定性对抗场景。自然语言理解仍由 Agent
+负责；模拟器验证归一化后的策略决策，不伪装成关键词分类器。它不会安装 Skill。
 
 ## 更新规则
 

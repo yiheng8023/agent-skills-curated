@@ -90,33 +90,42 @@ class LifecycleCoverageTests(unittest.TestCase):
                     self.assertNotIn("curatedOwners", item)
 
     def test_recipe_coverage_requires_a_matching_composition(self) -> None:
+        capability_index = next(
+            index for index, item in enumerate(self.capabilities["capabilities"])
+            if item["id"] == "capability.test-strategy"
+        )
+        recipe_index = next(
+            index for index, item in enumerate(self.recipes)
+            if item["id"] == "recipe.test-strategy"
+        )
+        capability_pointer = f"/capabilities/{capability_index}/coverageState"
         cases = []
         orphan = deepcopy(self.recipes)
         orphan[:] = [item for item in orphan if item["id"] != "recipe.test-strategy"]
-        cases.append((orphan, "/capabilities/9/coverageState"))
+        cases.append((orphan, capability_pointer))
 
         singleton = deepcopy(self.recipes)
-        singleton[0]["steps"] = [
+        singleton[recipe_index]["steps"] = [
             {"capability": "capability.requirements-clarification"}
         ]
-        cases.append((singleton, "/recipes/0/steps"))
+        cases.append((singleton, f"/recipes/{recipe_index}/steps"))
 
         duplicate = deepcopy(self.recipes)
-        duplicate[0]["steps"] = [
+        duplicate[recipe_index]["steps"] = [
             {"capability": "capability.requirements-clarification"},
             {"capability": "capability.requirements-clarification"},
         ]
-        cases.append((duplicate, "/recipes/0/steps/1/capability"))
+        cases.append((duplicate, f"/recipes/{recipe_index}/steps/1/capability"))
 
         self_reference = deepcopy(self.recipes)
-        self_reference[0]["steps"].insert(
+        self_reference[recipe_index]["steps"].insert(
             0, {"capability": "capability.test-strategy"}
         )
-        cases.append((self_reference, "/recipes/0/steps/0/capability"))
+        cases.append((self_reference, f"/recipes/{recipe_index}/steps/0/capability"))
 
         wrong_identity = deepcopy(self.recipes)
-        wrong_identity[0]["id"] = "recipe.other-strategy"
-        cases.append((wrong_identity, "/capabilities/9/coverageState"))
+        wrong_identity[recipe_index]["id"] = "recipe.other-strategy"
+        cases.append((wrong_identity, capability_pointer))
 
         for recipes, pointer in cases:
             with self.subTest(pointer=pointer):

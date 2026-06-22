@@ -93,6 +93,13 @@ class ReferenceTests(unittest.TestCase):
             "routing": deepcopy(ROUTING),
             "scenarios": deepcopy(SCENARIOS_DOCUMENT),
         }
+        beta_admission = deepcopy(self.documents["admissions"]["admissions"][0])
+        beta_admission["skill"] = "skill.curated.beta"
+        beta_admission["source"] = "upstream:reviewed"
+        self.documents["admissions"]["admissions"].append(beta_admission)
+        beta_route = deepcopy(self.documents["routing"]["routes"][0])
+        beta_route["skill"] = "skill.curated.beta"
+        self.documents["routing"]["routes"].append(beta_route)
 
     def assert_rejected(
         self, documents: dict[str, object], document: str, pointer: str
@@ -280,6 +287,8 @@ class ReferenceTests(unittest.TestCase):
 
         documents = deepcopy(self.documents)
         documents["skills"]["skills"][1]["status"] = "candidate"
+        del documents["admissions"]
+        del documents["routing"]
         self.assert_rejected(
             documents, "registry/conflicts.json", "/groups/0/members/1"
         )
@@ -316,6 +325,37 @@ class ReferenceTests(unittest.TestCase):
                 documents[key][collection][0]["skill"] = "skill.curated.missing"
                 self.assert_rejected(documents, document_name, f"/{collection}/0/skill")
 
+    def test_nonapproved_admission_must_not_be_in_release_inventory(self) -> None:
+        documents = deepcopy(self.documents)
+        admission = documents["admissions"]["admissions"][0]
+        admission["disposition"] = "reject"
+        for field in ("thirdParty", "nativeBaselineCompared", "overlapReviewed", "validated"):
+            admission[field] = False
+        self.assert_rejected(
+            documents,
+            "registry/admissions.json",
+            "/admissions/0/skill",
+        )
+
+    def test_nonapproved_admission_may_reference_a_nonrelease_candidate(self) -> None:
+        documents = deepcopy(self.documents)
+        admission = deepcopy(documents["admissions"]["admissions"][0])
+        admission["skill"] = "skill.curated.rejected-candidate"
+        admission["disposition"] = "reject"
+        for field in ("thirdParty", "nativeBaselineCompared", "overlapReviewed", "validated"):
+            admission[field] = False
+        documents["admissions"]["admissions"].append(admission)
+        validate_references(documents)
+
+    def test_approved_inventory_and_routes_must_equal_approved_admissions(self) -> None:
+        documents = deepcopy(self.documents)
+        documents["routing"]["routes"] = []
+        self.assert_rejected(
+            documents,
+            "registry/routing.json",
+            "/routes",
+        )
+
     def test_admission_source_must_resolve_to_source_lock(self) -> None:
         documents = deepcopy(self.documents)
         documents["admissions"]["admissions"][0]["source"] = "upstream:missing"
@@ -335,11 +375,12 @@ class ReferenceTests(unittest.TestCase):
             with self.subTest(key=key):
                 documents = deepcopy(self.documents)
                 duplicate = deepcopy(documents[key][collection][0])
+                duplicate_index = len(documents[key][collection])
                 documents[key][collection].append(duplicate)
                 self.assert_rejected(
                     documents,
                     document_name,
-                    f"/{collection}/1/{field}",
+                    f"/{collection}/{duplicate_index}/{field}",
                 )
 
     def test_routing_lifecycle_capabilities_must_resolve(self) -> None:

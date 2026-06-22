@@ -73,15 +73,29 @@ SCENARIOS_DOCUMENT = {
     "schema": 1,
     "scenarios": [{
         "id": "scenario.alpha-positive",
+        "family": "lifecycle",
         "language": "en",
         "request": "Apply the alpha workflow.",
         "decisionClass": "curated",
+        "expectedDecision": "curated",
         "expectedSkills": ["skill.curated.alpha"],
         "excludedSkills": ["skill.curated.beta"],
         "requestedCapabilities": ["capability.alpha"],
         "expectedCapabilities": ["capability.alpha"],
         "humanConfirmation": False,
         "validationExpectations": ["The output is independently verifiable."],
+        "routingFacts": {
+            "available": ["native"],
+            "contextSatisfied": True,
+            "negativeMatch": False,
+            "nativeEquivalent": False,
+            "runtimeEquivalent": False,
+            "risk": "low",
+            "cost": "low",
+            "permissionExpansion": False,
+            "unresolvedConflict": False,
+            "ambiguous": False,
+        },
     }],
 }
 
@@ -104,6 +118,11 @@ def load(path: str) -> dict[str, object]:
 
 
 class ShapeTests(unittest.TestCase):
+    def test_conflicts_allow_no_unresolved_groups(self) -> None:
+        validate_conflicts_document(
+            {"schema": 1, "groups": []}, "registry/conflicts.json"
+        )
+
     def assert_contract_error(
         self, validator: object, document: dict[str, object], pointer: str
     ) -> None:
@@ -294,6 +313,13 @@ class ShapeTests(unittest.TestCase):
         for validator, path, collection in cases:
             with self.subTest(path=path):
                 document = load(path)
+                if not document[collection]:
+                    document[collection] = [{
+                        "id": "conflict.fixture",
+                        "defaultOwner": "skill.curated.alpha",
+                        "members": ["skill.curated.alpha", "skill.curated.beta"],
+                        "resolution": "Prefer alpha.",
+                    }]
                 document[collection][0]["id"] = "bad"  # type: ignore[index]
                 self.assert_contract_error(
                     validator, document, f"/{collection}/0/id"
@@ -328,19 +354,28 @@ class ShapeTests(unittest.TestCase):
         )
 
     def test_conflicts_validate_members_and_resolution(self) -> None:
-        document = load("registry/conflicts.json")
+        fixture = {
+            "schema": 1,
+            "groups": [{
+                "id": "conflict.fixture",
+                "defaultOwner": "skill.curated.alpha",
+                "members": ["skill.curated.alpha", "skill.curated.beta"],
+                "resolution": "Prefer alpha.",
+            }],
+        }
+        document = deepcopy(fixture)
         document["groups"][0]["defaultOwner"] = "external:runtime"
         self.assert_contract_error(
             validate_conflicts_document, document, "/groups/0/defaultOwner"
         )
 
-        document = load("registry/conflicts.json")
+        document = deepcopy(fixture)
         document["groups"][0]["members"] = "owner"  # type: ignore[index]
         self.assert_contract_error(
             validate_conflicts_document, document, "/groups/0/members"
         )
 
-        document = load("registry/conflicts.json")
+        document = deepcopy(fixture)
         document["groups"][0]["resolution"] = False  # type: ignore[index]
         self.assert_contract_error(
             validate_conflicts_document, document, "/groups/0/resolution"
@@ -351,7 +386,7 @@ class ShapeTests(unittest.TestCase):
             (["skill.curated.request-refactor-plan"] * 2, "/groups/0/members/1"),
         ):
             with self.subTest(members=members):
-                document = load("registry/conflicts.json")
+                document = deepcopy(fixture)
                 document["groups"][0]["members"] = members
                 self.assert_contract_error(
                     validate_conflicts_document, document, pointer
@@ -437,11 +472,15 @@ class ShapeTests(unittest.TestCase):
         for field in ("url", "revision", "license"):
             with self.subTest(field=field):
                 document = load("sources/lock.json")
-                document["sources"][1][field] = "not-allowed"
+                local_index = next(
+                    index for index, source in enumerate(document["sources"])
+                    if source["kind"] == "local"
+                )
+                document["sources"][local_index][field] = "not-allowed"
                 self.assert_contract_error(
                     validate_sources_lock_document,
                     document,
-                    f"/sources/1/{field}",
+                    f"/sources/{local_index}/{field}",
                 )
 
     def test_local_sources_require_restricted_provenance_policy(self) -> None:
@@ -452,11 +491,15 @@ class ShapeTests(unittest.TestCase):
         for field, value in cases:
             with self.subTest(field=field):
                 document = load("sources/lock.json")
-                document["sources"][1][field] = value
+                local_index = next(
+                    index for index, source in enumerate(document["sources"])
+                    if source["kind"] == "local"
+                )
+                document["sources"][local_index][field] = value
                 self.assert_contract_error(
                     validate_sources_lock_document,
                     document,
-                    f"/sources/1/{field}",
+                    f"/sources/{local_index}/{field}",
                 )
 
     def test_selection_validates_decisions_and_disposition_enum(self) -> None:

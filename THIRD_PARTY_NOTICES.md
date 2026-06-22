@@ -12,12 +12,15 @@ Every adopted Skill records its original path in frontmatter. The curated
 version changes trigger descriptions, permission boundaries, agent-specific
 references, and unsafe action wording. No upstream Hook or script is installed.
 
-## Existing reviewed local baseline
+## mattpocock/skills
 
-The remaining Skills were imported from the user's previously reviewed and
-adapted local baseline. The user attributes most of that historical collection
-to Matt Pocock's public Skills work, but the installed files did not retain
-per-file source or license metadata. They remain private, are marked as a local
-reviewed baseline, and must not be publicly redistributed until provenance and
-license mapping is reconstructed. This uncertainty is explicit rather than
-silently assigning an unsupported license.
+Fourteen selected and adapted Skills were reconstructed against
+<https://github.com/mattpocock/skills> at commit
+`6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461` and are used under the MIT
+License. Copyright (c) 2026 Matt Pocock. The original license is preserved at
+`sources/mattpocock-skills/LICENSE`.
+
+The retained bodies were re-audited for native overlap, security, portability,
+author-specific naming, product assumptions, and executable surfaces. The
+historical incomplete local source record remains only as provenance history;
+it is not runtime-approved and contributes no Skill to the release manifest.

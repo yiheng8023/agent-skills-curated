@@ -51,6 +51,14 @@ _ADMISSION_DISPOSITIONS = {
     "approve", "merge", "recipe-only", "adapter-only", "reject",
 }
 _RISK_LEVELS = {"low", "medium", "high", "critical"}
+_SCENARIO_FAMILIES = {
+    "lifecycle", "native-no-skill", "runtime-preference", "curated-workflow",
+    "recipe-dag", "negative-near-match", "authority-ambiguity", "fallback-gap",
+}
+_ROUTING_DECISIONS = {
+    "native", "runtime", "curated", "recipe", "no-skill", "ask-user", "gap",
+}
+_AVAILABLE_CAPABILITIES = {"native", "runtime", "curated"}
 _SOURCE_KINDS = {"git", "local"}
 _PROVENANCE_STATUSES = {"complete", "incomplete"}
 _REDISTRIBUTION_STATUSES = {"license-governed", "private-only"}
@@ -344,9 +352,9 @@ def validate_routing_document(value: object, document: str) -> None:
 def validate_scenarios_document(value: object, document: str) -> None:
     _, items = _document(value, document, "scenarios")
     allowed = {
-        "id", "language", "request", "decisionClass", "expectedSkills",
+        "id", "family", "language", "request", "decisionClass", "expectedDecision", "expectedSkills",
         "excludedSkills", "requestedCapabilities", "expectedCapabilities",
-        "humanConfirmation", "validationExpectations",
+        "humanConfirmation", "validationExpectations", "routingFacts",
     }
     for index, raw in enumerate(items):
         pointer = f"/scenarios/{index}"
@@ -354,15 +362,50 @@ def validate_scenarios_document(value: object, document: str) -> None:
         require_keys(item, allowed, document, pointer)
         reject_unknown(item, allowed, document, pointer)
         require_pattern(item["id"], _SCENARIO_ID, document, _join(pointer, "id"))
+        require_enum(item["family"], _SCENARIO_FAMILIES, document, _join(pointer, "family"))
         for field in ("language", "request"):
             require_min_length(item[field], 1, document, _join(pointer, field))
         require_enum(item["decisionClass"], _COVERAGE_STATES, document, _join(pointer, "decisionClass"))
+        require_enum(item["expectedDecision"], _ROUTING_DECISIONS, document, _join(pointer, "expectedDecision"))
         _strings(item["expectedSkills"], document, _join(pointer, "expectedSkills"))
         _strings(item["excludedSkills"], document, _join(pointer, "excludedSkills"))
         for field in ("requestedCapabilities", "expectedCapabilities"):
             _strings(item[field], document, _join(pointer, field), min_items=1)
         _require_bool(item["humanConfirmation"], document, _join(pointer, "humanConfirmation"))
         _strings(item["validationExpectations"], document, _join(pointer, "validationExpectations"), min_items=1)
+        facts_pointer = _join(pointer, "routingFacts")
+        facts = require_object(item["routingFacts"], document, facts_pointer)
+        fact_fields = {
+            "available", "contextSatisfied", "negativeMatch", "nativeEquivalent",
+            "runtimeEquivalent", "risk", "cost", "permissionExpansion",
+            "unresolvedConflict", "ambiguous",
+        }
+        require_keys(facts, fact_fields, document, facts_pointer)
+        reject_unknown(facts, fact_fields, document, facts_pointer)
+        available = _strings(facts["available"], document, _join(facts_pointer, "available"))
+        seen_available: set[str] = set()
+        for available_index, available_item in enumerate(available):
+            require_enum(
+                available_item,
+                _AVAILABLE_CAPABILITIES,
+                document,
+                _join(_join(facts_pointer, "available"), available_index),
+            )
+            if available_item in seen_available:
+                raise ContractError(
+                    document,
+                    _join(_join(facts_pointer, "available"), available_index),
+                    "duplicate item",
+                )
+            seen_available.add(available_item)
+        for field in (
+            "contextSatisfied", "negativeMatch", "nativeEquivalent",
+            "runtimeEquivalent", "permissionExpansion", "unresolvedConflict",
+            "ambiguous",
+        ):
+            _require_bool(facts[field], document, _join(facts_pointer, field))
+        require_enum(facts["risk"], _RISK_LEVELS, document, _join(facts_pointer, "risk"))
+        require_enum(facts["cost"], {"low", "meaningful"}, document, _join(facts_pointer, "cost"))
 
 
 def validate_relations_document(value: object, document: str) -> None:
@@ -386,7 +429,12 @@ def validate_relations_document(value: object, document: str) -> None:
 
 
 def validate_conflicts_document(value: object, document: str) -> None:
-    _, groups = _document(value, document, "groups")
+    root = require_object(value, document, "")
+    require_keys(root, {"schema", "groups"}, document, "")
+    reject_unknown(root, {"schema", "groups"}, document, "")
+    if require_int(root["schema"], document, "/schema") != 1:
+        raise ContractError(document, "/schema", "must equal 1")
+    groups = require_array(root["groups"], document, "/groups")
     allowed = {"id", "defaultOwner", "members", "resolution"}
     for index, raw in enumerate(groups):
         pointer = f"/groups/{index}"
@@ -1120,22 +1168,62 @@ def validate_references(documents: dict[str, object]) -> None:
                 collection,
                 _REFERENCE_DOCUMENTS[key],
             )
-    for key, collection in (("admissions", "admissions"), ("routing", "routes")):
-        if key not in documents:
-            continue
-        for index, item in enumerate(documents[key][collection]):  # type: ignore[index,assignment]
-            if item["skill"] not in skill_ids:
+    approved_admission_ids: set[str] | None = None
+    if "admissions" in documents:
+        approved_admission_ids = set()
+        for index, item in enumerate(documents["admissions"]["admissions"]):  # type: ignore[index,assignment]
+            skill = item["skill"]
+            approved = item["disposition"] == "approve"
+            if approved:
+                approved_admission_ids.add(skill)
+                if skill not in approved_skill_ids:
+                    raise ContractError(
+                        _REFERENCE_DOCUMENTS["admissions"],
+                        f"/admissions/{index}/skill",
+                        "approved admission must resolve to an approved curated Skill",
+                    )
+            elif skill in skill_ids:
                 raise ContractError(
-                    _REFERENCE_DOCUMENTS[key],
-                    f"/{collection}/{index}/skill",
-                    "must resolve to a curated Skill",
+                    _REFERENCE_DOCUMENTS["admissions"],
+                    f"/admissions/{index}/skill",
+                    "nonapproved admission must not remain in release inventory",
                 )
-            if key == "admissions" and item["source"] not in source_ids:
+            if item["source"] not in source_ids:
                 raise ContractError(
-                    _REFERENCE_DOCUMENTS[key],
-                    f"/{collection}/{index}/source",
+                    _REFERENCE_DOCUMENTS["admissions"],
+                    f"/admissions/{index}/source",
                     "must resolve to a source lock record",
                 )
+
+        if approved_admission_ids != approved_skill_ids:
+            raise ContractError(
+                _REFERENCE_DOCUMENTS["admissions"],
+                "/admissions",
+                "approved admissions must equal the approved release inventory",
+            )
+
+    if "routing" in documents:
+        for index, item in enumerate(documents["routing"]["routes"]):  # type: ignore[index,assignment]
+            if item["skill"] not in approved_skill_ids:
+                raise ContractError(
+                    _REFERENCE_DOCUMENTS["routing"],
+                    f"/routes/{index}/skill",
+                    "route must resolve to an approved curated Skill",
+                )
+        route_ids = {
+            item["skill"] for item in documents["routing"]["routes"]  # type: ignore[index]
+        }
+        expected_route_ids = (
+            approved_admission_ids
+            if approved_admission_ids is not None
+            else approved_skill_ids
+        )
+        if route_ids != expected_route_ids:
+            raise ContractError(
+                _REFERENCE_DOCUMENTS["routing"],
+                "/routes",
+                "routes must equal the approved release inventory",
+            )
     _unique_field(
         skills, "directory", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
     )
@@ -1147,6 +1235,12 @@ def validate_references(documents: dict[str, object]) -> None:
         "id",
         "capabilities",
         _REFERENCE_DOCUMENTS["capabilities"],  # type: ignore[arg-type]
+    )
+    _unique_field(
+        conflicts, "id", "groups", _REFERENCE_DOCUMENTS["conflicts"]  # type: ignore[arg-type]
+    )
+    recipe_ids = _unique_field(
+        recipes, "id", "recipes", _REFERENCE_DOCUMENTS["recipes"]  # type: ignore[arg-type]
     )
     if "routing" in documents:
         for route_index, route in enumerate(documents["routing"]["routes"]):  # type: ignore[index,assignment]
@@ -1161,7 +1255,12 @@ def validate_references(documents: dict[str, object]) -> None:
         for scenario_index, scenario in enumerate(documents["scenarios"]["scenarios"]):  # type: ignore[index,assignment]
             for field in ("expectedSkills", "excludedSkills"):
                 for reference_index, reference in enumerate(scenario[field]):
-                    if reference not in skill_ids:
+                    recipe_selection = (
+                        field == "expectedSkills"
+                        and scenario["expectedDecision"] == "recipe"
+                        and reference in recipe_ids
+                    )
+                    if reference not in skill_ids and not recipe_selection:
                         raise ContractError(
                             _REFERENCE_DOCUMENTS["scenarios"],
                             f"/scenarios/{scenario_index}/{field}/{reference_index}",
@@ -1175,13 +1274,6 @@ def validate_references(documents: dict[str, object]) -> None:
                             f"/scenarios/{scenario_index}/{field}/{reference_index}",
                             "must resolve to a capability",
                         )
-    _unique_field(
-        conflicts, "id", "groups", _REFERENCE_DOCUMENTS["conflicts"]  # type: ignore[arg-type]
-    )
-    _unique_field(
-        recipes, "id", "recipes", _REFERENCE_DOCUMENTS["recipes"]  # type: ignore[arg-type]
-    )
-
     for index, item in enumerate(skills):  # type: ignore[assignment]
         if item["source"] not in source_ids:
             raise ContractError(

@@ -133,11 +133,19 @@ class SchemaParityTests(unittest.TestCase):
     def setUp(self) -> None:
         self.cases = []
         for name, document_path, validator in CASES:
+            document = load(document_path)
+            if name == "conflicts" and not document["groups"]:
+                document["groups"] = [{
+                    "id": "conflict.fixture",
+                    "defaultOwner": "skill.curated.alpha",
+                    "members": ["skill.curated.alpha", "skill.curated.beta"],
+                    "resolution": "Prefer alpha.",
+                }]
             self.cases.append(
                 (
                     name,
                     load(f"schemas/v1/{name}.schema.json"),
-                    load(document_path),
+                    document,
                     validator,
                 )
             )

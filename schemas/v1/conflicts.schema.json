@@ -9,7 +9,6 @@
     "schema": {"const": 1},
     "groups": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,

@@ -47,6 +47,14 @@ High-risk, ambiguous, conflicting, permission-changing, write, install,
 delete, migration, publish, release, or rollback paths require the applicable
 human confirmation.
 
+Natural-language interpretation belongs to the active Agent. This repository
+tests deterministic policy after Chinese, English, mixed, colloquial,
+context-dependent, ambiguous, and near-match intent has been normalized into
+structured facts. Do not replace that reasoning boundary with a brittle
+keyword router. The structured policy must still prefer an equivalent healthy
+native or visible runtime capability, apply negative/context gates, compose
+Recipes, and fail closed on risk, cost, permission, conflict, and ambiguity.
+
 This repository does not own user configuration, credentials, native memory,
 runtime caches, Apps, Plugins, MCP account state, or installation authority.
 `codex-user-config` may consume a pinned reviewed revision; this repository

@@ -58,6 +58,21 @@ class SourceSelectionIntegrationTests(unittest.TestCase):
 
 
 class StructuralValidationIntegrationTests(unittest.TestCase):
+    def test_admission_and_routing_contracts_are_required_verifier_inputs(self) -> None:
+        for path in (
+            "registry/admissions.json",
+            "registry/routing.json",
+            "schemas/v1/admissions.schema.json",
+            "schemas/v1/routing.schema.json",
+            "scripts/build_release_manifest.py",
+            "generated/routing-index.json",
+            "registry/scenarios.json",
+            "schemas/v1/scenarios.schema.json",
+            "scripts/simulate_routing.py",
+            "generated/routing-simulation-report.json",
+        ):
+            self.assertIn(path, verify_script.REQUIRED_FILES)
+
     def test_schema2_capability_contract_is_a_required_verifier_input(self) -> None:
         self.assertIn(
             "schemas/v2/capabilities.schema.json", verify_script.REQUIRED_FILES
@@ -76,7 +91,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             if recipe["id"] != "recipe.test-strategy"
         ]
         self.assert_verify_contract_error(
-            "registry/recipes.json", document, "/capabilities/9/coverageState"
+            "registry/recipes.json", document, "/scenarios/9/expectedSkills/0"
         )
 
     def assert_verify_contract_error(

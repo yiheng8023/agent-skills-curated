@@ -1,13 +1,8 @@
 {
   "schema": 1,
-  "skillCount": 34,
-  "fileCount": 60,
+  "skillCount": 19,
+  "fileCount": 41,
   "files": [
-    {
-      "path": "skills/caveman/SKILL.md",
-      "sha256": "b4bb6fe3bf3da222993ca0aee5e7c6f5368b182dd30ce1172e8f8e3280eb7052",
-      "size": 1916
-    },
     {
       "path": "skills/ci-cd-and-automation/SKILL.md",
       "sha256": "7aa008e4be26068c9e61ea8a9303711020e376c6cbfdf10d581a9fd400acf8ea",
@@ -19,9 +14,9 @@
       "size": 12510
     },
     {
-      "path": "skills/design-an-interface/SKILL.md",
-      "sha256": "a2596e9fa2d50e23ba014f64a5b8f9df4eb56b846a52cad152899ef5eb97b085",
-      "size": 3366
+      "path": "skills/diagnose/SKILL.md",
+      "sha256": "28886402bbfa0470248086eab9106a103b964b76ae9496e63ff0c8a6761b6d13",
+      "size": 7163
     },
     {
       "path": "skills/diagnose/scripts/hitl-loop.template.sh",
@@ -29,29 +24,14 @@
       "size": 1165
     },
     {
-      "path": "skills/diagnose/SKILL.md",
-      "sha256": "28886402bbfa0470248086eab9106a103b964b76ae9496e63ff0c8a6761b6d13",
-      "size": 7163
-    },
-    {
-      "path": "skills/edit-article/SKILL.md",
-      "sha256": "cc372fb25b552017765aa0dac1b108f77eaee4555d607041efc1ad5d8c995b4a",
-      "size": 721
-    },
-    {
-      "path": "skills/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
-      "sha256": "9acf0e890ecc535358f45fc15cec867b2eb6a78f4089dfd3777c388c81d3564a",
-      "size": 508
-    },
-    {
-      "path": "skills/git-guardrails-claude-code/SKILL.md",
+      "path": "skills/git-guardrails/SKILL.md",
       "sha256": "27bb96dda0850f3d969b550ff01f996d22cf53ef1ef4d1bc678b18a82f66d790",
       "size": 4002
     },
     {
-      "path": "skills/grill-me/SKILL.md",
-      "sha256": "74147eb6010a65957efef2b9e0f0b3ff935c1def7fc117697151b1d0f3610556",
-      "size": 635
+      "path": "skills/git-guardrails/scripts/block-dangerous-git.sh",
+      "sha256": "9acf0e890ecc535358f45fc15cec867b2eb6a78f4089dfd3777c388c81d3564a",
+      "size": 508
     },
     {
       "path": "skills/grill-with-docs/ADR-FORMAT.md",
@@ -109,11 +89,6 @@
       "size": 11761
     },
     {
-      "path": "skills/obsidian-vault/SKILL.md",
-      "sha256": "6514fee386f8eb976330bba81b682cf7e9a26c801deab48b68c4fe6cb6123a8e",
-      "size": 1932
-    },
-    {
       "path": "skills/performance-optimization/SKILL.md",
       "sha256": "7faa154ece0c18f4682626016565e4b428b00cebce233b3aa91242126bcc76d2",
       "size": 13282
@@ -134,64 +109,49 @@
       "size": 6790
     },
     {
-      "path": "skills/qa/SKILL.md",
-      "sha256": "d9727aac6503981bf69bdd8b37e0d85b32b8fbd353a57528c252dac1337ab761",
-      "size": 4965
-    },
-    {
-      "path": "skills/request-refactor-plan/SKILL.md",
-      "sha256": "d59de4ba6cc1fe2dd267e8b9b5a1fd88e3e739e2130bc9dd78061d2a072830b8",
-      "size": 2711
-    },
-    {
       "path": "skills/review/SKILL.md",
       "sha256": "5700f30d3f06706ee56c099adceec222fef26dbcf82817ff604962634e246b2e",
       "size": 4426
     },
     {
-      "path": "skills/scaffold-exercises/SKILL.md",
-      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
-      "size": 3589
-    },
-    {
-      "path": "skills/setup-matt-pocock-skills/domain.md",
-      "sha256": "968afe4b216eac21a647caa79fa1cffaedeb41e8eb2adf2da20b0ed36a645d3e",
-      "size": 1987
-    },
-    {
-      "path": "skills/setup-matt-pocock-skills/issue-tracker-github.md",
-      "sha256": "30acc5b79622b26e4f1940f471ce1b335d2e6ed57e32c95d8b54f710ac01e1f6",
-      "size": 1066
-    },
-    {
-      "path": "skills/setup-matt-pocock-skills/issue-tracker-gitlab.md",
-      "sha256": "9e2a5aa71be68e7333ff3019761fc3f786f46a9be59f03c451fb9f4112bd7dfd",
-      "size": 1466
-    },
-    {
-      "path": "skills/setup-matt-pocock-skills/issue-tracker-local.md",
-      "sha256": "80d1cf98c31fb329023fa2a3a0f6c307651173ffa95d02e2e0454d999bc274d9",
-      "size": 839
-    },
-    {
-      "path": "skills/setup-matt-pocock-skills/SKILL.md",
+      "path": "skills/setup-project-skills/SKILL.md",
       "sha256": "ebee5596b95a77f7780c4f8df591612f82b4c2a59ed47b72b115f659fa9af604",
       "size": 7128
     },
     {
-      "path": "skills/setup-matt-pocock-skills/triage-labels.md",
-      "sha256": "e8ad29022aecc56994d0e670bbb0a4a7b86c817ffe4dcbd875764b8713071860",
-      "size": 1046
+      "path": "skills/setup-project-skills/domain.md",
+      "sha256": "968afe4b216eac21a647caa79fa1cffaedeb41e8eb2adf2da20b0ed36a645d3e",
+      "size": 1987
     },
     {
-      "path": "skills/setup-pre-commit/SKILL.md",
-      "sha256": "872f4037cb7e6e0e340d4175c086550072959925dffc87b160d1a30dc9f63bbd",
-      "size": 2261
+      "path": "skills/setup-project-skills/issue-tracker-github.md",
+      "sha256": "30acc5b79622b26e4f1940f471ce1b335d2e6ed57e32c95d8b54f710ac01e1f6",
+      "size": 1066
+    },
+    {
+      "path": "skills/setup-project-skills/issue-tracker-gitlab.md",
+      "sha256": "9e2a5aa71be68e7333ff3019761fc3f786f46a9be59f03c451fb9f4112bd7dfd",
+      "size": 1466
+    },
+    {
+      "path": "skills/setup-project-skills/issue-tracker-local.md",
+      "sha256": "80d1cf98c31fb329023fa2a3a0f6c307651173ffa95d02e2e0454d999bc274d9",
+      "size": 839
+    },
+    {
+      "path": "skills/setup-project-skills/triage-labels.md",
+      "sha256": "e8ad29022aecc56994d0e670bbb0a4a7b86c817ffe4dcbd875764b8713071860",
+      "size": 1046
     },
     {
       "path": "skills/shipping-and-launch/SKILL.md",
       "sha256": "2a562cf84bb4ef00af7ae5f92eaf368271db713e71f0a7719f016069ea64f9bc",
       "size": 10674
+    },
+    {
+      "path": "skills/tdd/SKILL.md",
+      "sha256": "af059705061156fd4845ddbb736fe92b564118ac5f03551e09ef9e8f6d970638",
+      "size": 4395
     },
     {
       "path": "skills/tdd/deep-modules.md",
@@ -214,39 +174,9 @@
       "size": 388
     },
     {
-      "path": "skills/tdd/SKILL.md",
-      "sha256": "af059705061156fd4845ddbb736fe92b564118ac5f03551e09ef9e8f6d970638",
-      "size": 4395
-    },
-    {
       "path": "skills/tdd/tests.md",
       "sha256": "8f90b3785ae43599bf5723a2c8b262cd87b3ec613298cb172614c14394501e97",
       "size": 1641
-    },
-    {
-      "path": "skills/teach/GLOSSARY-FORMAT.md",
-      "sha256": "c04e69330b5c6d914367a303acb937002b9ff55127a6c8a21787ea6578aa5b8b",
-      "size": 2132
-    },
-    {
-      "path": "skills/teach/LEARNING-RECORD-FORMAT.md",
-      "sha256": "018efd55ba8719c1db4160925dc32da300bbab30958778ac23ac36d42058ea1e",
-      "size": 2778
-    },
-    {
-      "path": "skills/teach/MISSION-FORMAT.md",
-      "sha256": "468f167fcedd6ce7180ff16d133433156ebd00fae00608504e713c841cf6d526",
-      "size": 1554
-    },
-    {
-      "path": "skills/teach/RESOURCES-FORMAT.md",
-      "sha256": "d18b50e1758570d7cca889779a235cdabc44c7c2901b64f9e8d81d4de99ba60a",
-      "size": 1927
-    },
-    {
-      "path": "skills/teach/SKILL.md",
-      "sha256": "b55c93d761d4d1a70555e6caa86abe1a692892ebdacfda2e51d5ba8612decf31",
-      "size": 6003
     },
     {
       "path": "skills/to-issues/SKILL.md",
@@ -277,31 +207,6 @@
       "path": "skills/ubiquitous-language/SKILL.md",
       "sha256": "2449e2345b96b9f1e861c697b5eab50d03ae1254481a4306b6f815684e523b3a",
       "size": 4890
-    },
-    {
-      "path": "skills/write-a-skill/SKILL.md",
-      "sha256": "be8f20e66309258034b82a7db5040b03798aa40546f9d387662c2bd86be23123",
-      "size": 3056
-    },
-    {
-      "path": "skills/writing-beats/SKILL.md",
-      "sha256": "0843367d0a653bb17e61b3771d0ec08fa463663bc0ab6f3f421141b2687c4429",
-      "size": 2836
-    },
-    {
-      "path": "skills/writing-fragments/SKILL.md",
-      "sha256": "4ffa34a701caff27da54b9e073fef48471f0ccafee009d404c22ae542d0e8dea",
-      "size": 3325
-    },
-    {
-      "path": "skills/writing-shape/SKILL.md",
-      "sha256": "81a542b95fa865325835bf5ec7644a98e657c1e0f3374c56cb9f3b42b374660f",
-      "size": 4593
-    },
-    {
-      "path": "skills/zoom-out/SKILL.md",
-      "sha256": "2a6894c7f9b1c9c55f451c625a834c4f377e217b623a85280e55db5fe9cacf48",
-      "size": 430
     }
   ]
 }

@@ -49,6 +49,62 @@
       ]
     },
     {
+      "id": "github:mattpocock/skills",
+      "kind": "git",
+      "provenanceStatus": "complete",
+      "redistribution": "license-governed",
+      "reviewRefs": [
+        "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/security.md",
+        "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
+        "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md"
+      ],
+      "url": "https://github.com/mattpocock/skills",
+      "revision": "6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461",
+      "candidateIds": [
+        "ask-matt",
+        "codebase-design",
+        "design-an-interface",
+        "diagnosing-bugs",
+        "domain-modeling",
+        "edit-article",
+        "git-guardrails-claude-code",
+        "grill-me",
+        "grill-with-docs",
+        "grilling",
+        "handoff",
+        "implement",
+        "improve-codebase-architecture",
+        "migrate-to-shoehorn",
+        "obsidian-vault",
+        "prototype",
+        "qa",
+        "request-refactor-plan",
+        "resolving-merge-conflicts",
+        "review",
+        "scaffold-exercises",
+        "setup-matt-pocock-skills",
+        "setup-pre-commit",
+        "tdd",
+        "teach",
+        "to-issues",
+        "to-prd",
+        "triage",
+        "ubiquitous-language",
+        "writing-beats",
+        "writing-fragments",
+        "writing-great-skills",
+        "writing-shape"
+      ],
+      "license": "MIT",
+      "status": "intake-reviewed",
+      "approvedForRuntime": false,
+      "notes": [
+        "The source was recovered from the historical local baseline and pinned before readmission.",
+        "Only individually approved, neutralized Skill payloads may enter the curated release.",
+        "Repository scripts, workflows, plugin metadata, deprecated status, and in-progress status are evidence, not implicit runtime approval."
+      ]
+    },
+    {
       "id": "local:reviewed-baseline",
       "kind": "local",
       "provenanceStatus": "incomplete",
@@ -86,7 +142,7 @@
         "zoom-out"
       ],
       "status": "reviewed-baseline",
-      "approvedForRuntime": true,
+      "approvedForRuntime": false,
       "notes": [
         "Local reviewed baseline provenance remains incomplete.",
         "Redistribution is private-only pending complete provenance review."

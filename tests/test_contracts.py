@@ -296,16 +296,19 @@ class FrontmatterTests(unittest.TestCase):
         )
 
     def test_parses_caveman_folded_description(self) -> None:
-        text = (ROOT / "skills/caveman/SKILL.md").read_text(encoding="utf-8")
+        text = """---
+name: folded-example
+description: >
+  First line of a folded
+  description remains readable.
+---
+"""
 
-        metadata = parse_frontmatter(text, "skills/caveman/SKILL.md")
+        metadata = parse_frontmatter(text, "folded-example.md")
 
         self.assertEqual(
             metadata["description"],
-            "Ultra-compressed communication mode. Cuts token usage ~75% by dropping "
-            "filler, articles, and pleasantries while keeping full technical accuracy. "
-            'Use when user says "caveman mode", "talk like caveman", "use caveman", '
-            '"less tokens", "be brief", or invokes /caveman.',
+            "First line of a folded description remains readable.",
         )
 
     def test_rejects_duplicate_keys(self) -> None:

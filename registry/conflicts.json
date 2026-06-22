@@ -1,11 +1,4 @@
 {
   "schema": 1,
-  "groups": [
-    {
-      "id": "conflict.technical-debt",
-      "defaultOwner": "skill.curated.request-refactor-plan",
-      "members": ["skill.curated.request-refactor-plan", "skill.curated.improve-codebase-architecture"],
-      "resolution": "Use request-refactor-plan for a bounded debt-remediation plan; use improve-codebase-architecture for repository-wide architecture analysis."
-    }
-  ]
+  "groups": []
 }

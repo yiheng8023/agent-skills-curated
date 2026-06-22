@@ -49,6 +49,14 @@ High-risk, ambiguous, conflicting, permission-changing, write, install,
 delete, migration, publish, release, or rollback decisions require human
 confirmation.
 
+The routing contract separates semantic normalization from deterministic
+policy. The active Agent interprets multilingual and context-dependent intent;
+the governed projection then adjudicates availability, native/runtime
+equivalence, context and negative gates, Recipe composition, risk, cost,
+permission, conflict, ambiguity, validation, and fallback. The checked-in
+scenario corpus exercises this policy but is not a replacement language model
+or a keyword router.
+
 ## Dynamic Capability Topology
 
 Git-tracked JSON is the initial authority. A graph database or visualization

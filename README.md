@@ -20,8 +20,10 @@ auditable release. It is the upstream producer paired with
   recipes.
 - Deterministic generated projections and a schema-1 release manifest.
 
-The current approved release contains 34 Skills and 60 files: 29 reviewed
-local Skills and 5 cross-agent adaptations from `addyosmani/agent-skills`.
+The current approved release contains 19 Skills and 41 files: 5 reviewed
+adaptations from `addyosmani/agent-skills` and 14 from `mattpocock/skills`.
+All have complete pinned Git provenance; the prior incomplete local baseline is
+retained only as non-runtime historical evidence.
 
 ## What This Repository Does Not Own
 
@@ -92,6 +94,8 @@ consumer must probe its currently visible, authorized capability inventory.
 - `policies/`: intake, portability, security, overlap, and lifecycle rules.
 - `audits/`: source-specific provenance and review evidence.
 - `generated/`: deterministic derived projections, never a second truth source.
+- `registry/routing.json` and `registry/scenarios.json`: approved routing
+  metadata and the 96-case structured policy corpus.
 - `release-manifest.json`: exact approved payload paths, sizes, and hashes.
 - `scripts/`: validation and deterministic projection generation only.
 
@@ -99,12 +103,18 @@ consumer must probe its currently visible, authorized capability inventory.
 
 ```bash
 python -B -m unittest discover -s tests -v
+python -B scripts/build_release_manifest.py --check
 python -B scripts/build_topology.py --check
+python -B scripts/simulate_routing.py --all
 python -B scripts/verify.py
 ```
 
 Verification covers registry contracts, references, generated parity, source
-evidence, and the exact manifest payload. It does not install a Skill.
+evidence, the exact manifest payload, input-bound routing projection, all 26
+lifecycle nodes, and 96 deterministic adversarial scenarios. Natural-language
+interpretation remains an Agent responsibility; the simulator verifies the
+normalized policy decision and does not pretend to be a keyword classifier.
+It does not install a Skill.
 
 ## Update Rules
 

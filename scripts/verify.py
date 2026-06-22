@@ -12,6 +12,7 @@ from pathlib import Path
 from contracts import (
     ContractError,
     parse_frontmatter,
+    validate_admissions_document,
     validate_adopted_selection,
     validate_capabilities_document,
     validate_conflicts_document,
@@ -22,11 +23,14 @@ from contracts import (
     validate_references,
     validate_relations_document,
     validate_release_manifest_document,
+    validate_routing_document,
+    validate_scenarios_document,
     validate_selection_document,
     validate_skills_document,
     validate_source_selection,
     validate_sources_lock_document,
 )
+from simulate_routing import run_scenarios
 
 ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM_SOURCE_ID = "github:addyosmani/agent-skills"
@@ -52,17 +56,26 @@ REQUIRED_FILES = (
     "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
     "registry/capabilities.json", "registry/relations.json",
     "registry/conflicts.json", "registry/recipes.json",
+    "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
-    "scripts/build_topology.py", "scripts/verify.py", "release-manifest.json",
+    "scripts/build_topology.py", "scripts/build_release_manifest.py",
+    "scripts/verify.py", "scripts/simulate_routing.py", "release-manifest.json",
+    "generated/routing-index.json", "generated/routing-simulation-report.json",
     "schemas/v1/skills.schema.json", "schemas/v1/capabilities.schema.json",
     "schemas/v1/relations.schema.json", "schemas/v1/conflicts.schema.json",
     "schemas/v1/recipes.schema.json", "schemas/v1/sources-lock.schema.json",
     "schemas/v1/selection.schema.json", "schemas/v1/release-manifest.schema.json",
+    "schemas/v1/admissions.schema.json", "schemas/v1/routing.schema.json",
+    "schemas/v1/scenarios.schema.json",
     "schemas/v2/capabilities.schema.json",
     "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/security.md",
     "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/overlap.md",
     "audits/addyosmani-agent-skills/17214a29c429a19f7a9607f2c06f9d650ea87eb0/portability.md",
+    "sources/mattpocock-skills/LICENSE",
+    "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/security.md",
+    "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
+    "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
 )
 
 
@@ -80,6 +93,9 @@ def verify() -> None:
     relations_doc = load("registry/relations.json")
     conflicts_doc = load("registry/conflicts.json")
     recipes_doc = load("registry/recipes.json")
+    admissions_doc = load("registry/admissions.json")
+    routing_doc = load("registry/routing.json")
+    scenarios_doc = load("registry/scenarios.json")
     sources_doc = load("sources/lock.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
@@ -89,6 +105,9 @@ def verify() -> None:
     validate_relations_document(relations_doc, "registry/relations.json")
     validate_conflicts_document(conflicts_doc, "registry/conflicts.json")
     validate_recipes_document(recipes_doc, "registry/recipes.json")
+    validate_admissions_document(admissions_doc, "registry/admissions.json")
+    validate_routing_document(routing_doc, "registry/routing.json")
+    validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
     validate_sources_lock_document(sources_doc, "sources/lock.json")
     validate_selection_document(selection_doc, selection_document)
     validate_release_manifest_document(manifest, "release-manifest.json")
@@ -132,8 +151,16 @@ def verify() -> None:
             "conflicts": conflicts_doc,
             "recipes": recipes_doc,
             "sources": sources_doc,
+            "admissions": admissions_doc,
+            "routing": routing_doc,
+            "scenarios": scenarios_doc,
         }
     )
+    expected_report = run_scenarios(ROOT)
+    if load("generated/routing-simulation-report.json") != expected_report:
+        raise RuntimeError("Generated routing simulation report is stale.")
+    if expected_report["failed"] or expected_report["unclassifiedLifecycleCapabilities"]:
+        raise RuntimeError("Routing simulation did not close all scenarios and lifecycle capabilities.")
     validate_lifecycle_coverage(capabilities_doc, recipes_doc)
     adopted_directories = {
         name for name, disposition in selection.items() if disposition == "adopt"

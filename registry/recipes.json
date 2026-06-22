@@ -2,6 +2,26 @@
   "schema": 1,
   "recipes": [
     {
+      "id": "recipe.interface-api-design",
+      "trigger": "A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill",
+      "steps": [
+        {"capability": "capability.requirements-clarification"},
+        {"capability": "capability.architecture-design"},
+        {"capability": "capability.code-review", "when": "a candidate contract or implementation exists"}
+      ]
+    },
+    {
+      "id": "recipe.data-modeling",
+      "trigger": "A system needs explicit entities, invariants, ownership, retention, and change semantics without adding an overlapping dedicated Skill",
+      "steps": [
+        {"capability": "capability.requirements-clarification"},
+        {"capability": "capability.architecture-design"},
+        {"capability": "capability.privacy-governance", "when": "personal, confidential, regulated, or retention-sensitive data is involved"},
+        {"capability": "capability.code-review", "when": "a schema, contract, or migration candidate exists"}
+      ],
+      "authorization": "Irreversible schema, migration, retention, and regulated-data decisions remain subject to their accountable human authorities."
+    },
+    {
       "id": "recipe.test-strategy",
       "trigger": "A change needs risk-proportionate verification across test layers and delivery gates",
       "steps": [
