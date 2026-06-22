@@ -1,4 +1,5 @@
 from copy import deepcopy
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import re
@@ -403,6 +404,52 @@ class SchemaParityTests(unittest.TestCase):
                             name=name, schema=schema_pointer, length=length
                         ):
                             self.assertEqual(expected, self.accepts(validator, changed))
+                if "minItems" in node:
+                    minimum = node["minItems"]
+                    original = resolve(document, document_pointer)
+                    allowed = deepcopy(original[:minimum])  # type: ignore[index]
+                    prohibited = deepcopy(original[: minimum - 1])  # type: ignore[index]
+                    for value, expected in ((allowed, True), (prohibited, False)):
+                        changed = deepcopy(document)
+                        assign(changed, document_pointer, value)
+                        with self.subTest(
+                            name=name, schema=schema_pointer, size=len(value)
+                        ):
+                            self.assertEqual(expected, self.accepts(validator, changed))
+
+    def test_min_items_parity_detects_mismatch_without_unique_items(self) -> None:
+        schema = {
+            "type": "object",
+            "properties": {
+                "values": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {"type": "string"},
+                }
+            },
+        }
+        document = {"values": ["alpha", "beta"]}
+
+        def validator_which_ignores_min_items(
+            value: object, document_name: str
+        ) -> None:
+            del value, document_name
+
+        self.cases = [
+            (
+                "min-items-sentinel",
+                schema,
+                document,
+                validator_which_ignores_min_items,
+            )
+        ]
+        original_subtest = self.subTest
+        self.subTest = lambda **kwargs: nullcontext()  # type: ignore[method-assign]
+        try:
+            with self.assertRaises(AssertionError):
+                self.test_min_length_and_min_items_boundaries_match_validator()
+        finally:
+            self.subTest = original_subtest  # type: ignore[method-assign]
 
     def test_unique_items_facets_match_validator(self) -> None:
         for name, schema, document, validator in self.cases:
@@ -419,18 +466,6 @@ class SchemaParityTests(unittest.TestCase):
                 )
                 with self.subTest(name=name, schema=schema_pointer):
                     self.assertFalse(self.accepts(validator, changed))
-                if "minItems" in node:
-                    minimum = node["minItems"]
-                    original = resolve(document, document_pointer)
-                    allowed = deepcopy(original[:minimum])  # type: ignore[index]
-                    prohibited = deepcopy(original[: minimum - 1])  # type: ignore[index]
-                    for value, expected in ((allowed, True), (prohibited, False)):
-                        changed = deepcopy(document)
-                        assign(changed, document_pointer, value)
-                        with self.subTest(
-                            name=name, schema=schema_pointer, size=len(value)
-                        ):
-                            self.assertEqual(expected, self.accepts(validator, changed))
 
     def test_integer_and_minimum_boundaries_match_validator(self) -> None:
         for name, schema, document, validator in self.cases:
