@@ -58,6 +58,11 @@ agent-skills-curated
 governance. This repository does not take ownership of consumer-side
 installation or runtime integration.
 
+The paired consumer side is not a single repository: `codex-user-config` and
+`claude-user-config` both consume this repository as a downstream. Each owns
+its own consumer-side integration; this repository stays agent-neutral and
+binds to none.
+
 ## Capability Layers And Routing
 
 Three layers are deliberately noninterchangeable:
@@ -79,6 +84,14 @@ recipe or DAG, human confirmation, or no skill needed. Third-party candidates
 are not executable routing targets. High-risk, ambiguous, conflicting,
 permission-changing, write, install, delete, migration, publish, release, or
 rollback choices require human confirmation.
+
+The `capability-router` is the Codex consumer's decision mechanism, not a
+universal prerequisite. The invocation chain is consumer-agent-specific: for
+example, Claude Code loads its instruction file every session and surfaces
+Skills and MCP tools to the model directly, with no capability-router step.
+Only Codex and Claude are characterized today; other agents' chains are not yet
+mapped. This repository names mechanisms structurally and stays agent-neutral,
+open, and compatible — it must not hard-code any single agent's chain.
 
 Schema-2 runtime coverage is structurally product-neutral. A
 `runtime-resolved` capability carries

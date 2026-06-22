@@ -48,6 +48,8 @@ agent-skills-curated
 
 配置仓不接管第三方 Skill 正文治理；精选仓不接管消费者侧安装或运行时集成。
 
+配对的消费侧并非单一仓库：`codex-user-config` 与 `claude-user-config` 均以本仓为下游消费方。各自负责自己的消费侧集成；本仓保持 agent 中立，不绑定任何单一 agent。
+
 ## 能力分层与路由
 
 三层资产不可混同：
@@ -63,6 +65,8 @@ agent-skills-curated
 skill-router。候选决策包括原生推理、官方或运行时能力、精选 Skill、外部能力元数据、
 Recipe/DAG、请求人工确认和无需 Skill。第三方候选不是可执行路由目标；高风险、歧义、
 冲突、权限变化、写入、安装、删除、迁移、发布或回滚必须请求人工确认。
+
+`capability-router` 是 **Codex 消费方**的能力决策机制，并非通用前置。调用链因消费 agent 而异：例如 Claude Code 每会话加载其指令文件、并将 Skills 与 MCP 工具直接呈现给模型，**不经 capability-router**。目前仅刻画 Codex 与 Claude；其余 agent 链路尚未映射。本仓只在结构上命名机制，保持 agent 中立、开放、兼容，**不得为任何单一 agent 的链路写死**。
 
 Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resolved` 能力必须携带
 `runtimeResolution: visible-capability-inventory`。该字段只命名解析机制，不命名产品、
