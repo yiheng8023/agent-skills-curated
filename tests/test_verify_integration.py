@@ -58,6 +58,11 @@ class SourceSelectionIntegrationTests(unittest.TestCase):
 
 
 class StructuralValidationIntegrationTests(unittest.TestCase):
+    def test_current_verifier_keeps_the_checked_in_capability_registry_on_schema_1(self) -> None:
+        document = verify_script.load("registry/capabilities.json")
+        self.assertEqual(document["schema"], 1)
+        verify_script.validate_capabilities_document(document, "registry/capabilities.json")
+
     def assert_verify_contract_error(
         self, path: str, mutation: dict[str, object], pointer: str
     ) -> None:

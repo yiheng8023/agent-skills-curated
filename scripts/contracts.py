@@ -17,6 +17,7 @@ _DIRECTORY = re.compile(r"[a-z0-9][a-z0-9-]*")
 _CAPABILITY_ID = re.compile(r"capability\.[a-z0-9][a-z0-9-]*")
 _CONFLICT_ID = re.compile(r"conflict\.[a-z0-9][a-z0-9-]*")
 _RECIPE_ID = re.compile(r"recipe\.[a-z0-9][a-z0-9-]*")
+_SCENARIO_ID = re.compile(r"scenario\.[a-z0-9][a-z0-9-]*")
 _MANIFEST_PATH = re.compile(
     r"^skills/(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*[A-Za-z0-9][A-Za-z0-9._-]*$"
 )
@@ -30,6 +31,14 @@ _SKILL_STATUSES = {
 _SELECTION_DISPOSITIONS = {
     "adopt", "merge", "adapter-only", "recipe-only", "reject",
 }
+_ADMISSION_DISPOSITIONS = {
+    "approve", "merge", "recipe-only", "adapter-only", "reject",
+}
+_COVERAGE_STATES = {
+    "curated", "recipe", "runtime-resolved", "native-sufficient",
+    "human-authority", "gap",
+}
+_RISK_LEVELS = {"low", "medium", "high", "critical"}
 _SOURCE_KINDS = {"git", "local"}
 _PROVENANCE_STATUSES = {"complete", "incomplete"}
 _REDISTRIBUTION_STATUSES = {"license-governed", "private-only"}
@@ -157,13 +166,14 @@ def _document(
     document: str,
     collection: str,
     top_allowed: set[str] | None = None,
+    schema_version: int = 1,
 ) -> tuple[dict[str, object], list[object]]:
     root = require_object(value, document, "")
     allowed = top_allowed or {"schema", collection}
     require_keys(root, {"schema", collection}, document, "")
     reject_unknown(root, allowed, document, "")
-    if require_int(root["schema"], document, "/schema") != 1:
-        raise ContractError(document, "/schema", "must equal 1")
+    if require_int(root["schema"], document, "/schema") != schema_version:
+        raise ContractError(document, "/schema", f"must equal {schema_version}")
     return root, require_array(root[collection], document, f"/{collection}", 1)
 
 
@@ -188,17 +198,114 @@ def validate_skills_document(value: object, document: str) -> None:
 
 
 def validate_capabilities_document(value: object, document: str) -> None:
-    _, items = _document(value, document, "capabilities")
-    allowed = {"id", "canonicalOwner"}
+    root = require_object(value, document, "")
+    schema_version = require_int(root.get("schema"), document, "/schema")
+    if schema_version == 1:
+        _, items = _document(value, document, "capabilities")
+        allowed = {"id", "canonicalOwner"}
+        for index, raw in enumerate(items):
+            pointer = f"/capabilities/{index}"
+            item = require_object(raw, document, pointer)
+            require_keys(item, allowed, document, pointer)
+            reject_unknown(item, allowed, document, pointer)
+            require_pattern(item["id"], _CAPABILITY_ID, document, _join(pointer, "id"))
+            require_min_length(item["canonicalOwner"], 1, document, _join(pointer, "canonicalOwner"))
+        return
+    if schema_version != 2:
+        raise ContractError(document, "/schema", "must equal 1 or 2")
+
+    _, items = _document(value, document, "capabilities", schema_version=2)
+    allowed = {
+        "id", "stage", "description", "coverageState", "validation", "fallback",
+        "curatedOwners",
+    }
+    required = {"id", "stage", "description", "coverageState", "validation", "fallback"}
     for index, raw in enumerate(items):
         pointer = f"/capabilities/{index}"
         item = require_object(raw, document, pointer)
-        require_keys(item, allowed, document, pointer)
+        require_keys(item, required, document, pointer)
         reject_unknown(item, allowed, document, pointer)
         require_pattern(item["id"], _CAPABILITY_ID, document, _join(pointer, "id"))
-        require_min_length(
-            item["canonicalOwner"], 1, document, _join(pointer, "canonicalOwner")
+        for field in ("stage", "description"):
+            require_min_length(item[field], 1, document, _join(pointer, field))
+        coverage = require_enum(
+            item["coverageState"], _COVERAGE_STATES, document, _join(pointer, "coverageState")
         )
+        for field in ("validation", "fallback"):
+            _strings(item[field], document, _join(pointer, field), min_items=1)
+        if coverage == "curated":
+            if "curatedOwners" not in item:
+                raise ContractError(document, _join(pointer, "curatedOwners"), "is required for curated coverage")
+            owners = _strings(item["curatedOwners"], document, _join(pointer, "curatedOwners"), min_items=1)
+            for owner_index, owner in enumerate(owners):
+                require_pattern(owner, _SKILL_ID, document, _join(_join(pointer, "curatedOwners"), owner_index))
+        elif "curatedOwners" in item:
+            raise ContractError(document, _join(pointer, "curatedOwners"), "is allowed only for curated coverage")
+
+
+def validate_admissions_document(value: object, document: str) -> None:
+    _, items = _document(value, document, "admissions")
+    allowed = {
+        "skill", "source", "thirdParty", "nativeBaselineCompared", "nativeIncrement",
+        "overlapReviewed", "disposition", "reviewRefs", "validated",
+    }
+    for index, raw in enumerate(items):
+        pointer = f"/admissions/{index}"
+        item = require_object(raw, document, pointer)
+        require_keys(item, allowed, document, pointer)
+        reject_unknown(item, allowed, document, pointer)
+        require_pattern(item["skill"], _SKILL_ID, document, _join(pointer, "skill"))
+        for field in ("source", "nativeIncrement"):
+            require_min_length(item[field], 1, document, _join(pointer, field))
+        for field in ("thirdParty", "nativeBaselineCompared", "overlapReviewed", "validated"):
+            _require_bool(item[field], document, _join(pointer, field))
+        disposition = require_enum(item["disposition"], _ADMISSION_DISPOSITIONS, document, _join(pointer, "disposition"))
+        _strings(item["reviewRefs"], document, _join(pointer, "reviewRefs"), min_items=1)
+        if disposition == "approve":
+            for field in ("thirdParty", "validated"):
+                if item[field] is not True:
+                    raise ContractError(document, _join(pointer, field), "must be true for approved admissions")
+
+
+def validate_routing_document(value: object, document: str) -> None:
+    _, items = _document(value, document, "routes")
+    allowed = {
+        "skill", "aliases", "positiveTriggers", "negativeTriggers", "contextRequirements",
+        "inputs", "outputs", "sideEffects", "validation", "riskLevel",
+        "permissionsRequired", "fallback", "humanConfirmWhen", "languages",
+        "agentCompatibility", "lifecycleCapabilities",
+    }
+    optional_empty = {"sideEffects", "permissionsRequired"}
+    for index, raw in enumerate(items):
+        pointer = f"/routes/{index}"
+        item = require_object(raw, document, pointer)
+        require_keys(item, allowed, document, pointer)
+        reject_unknown(item, allowed, document, pointer)
+        require_pattern(item["skill"], _SKILL_ID, document, _join(pointer, "skill"))
+        for field in allowed - {"skill", "riskLevel"}:
+            _strings(item[field], document, _join(pointer, field), min_items=0 if field in optional_empty else 1)
+        require_enum(item["riskLevel"], _RISK_LEVELS, document, _join(pointer, "riskLevel"))
+
+
+def validate_scenarios_document(value: object, document: str) -> None:
+    _, items = _document(value, document, "scenarios")
+    allowed = {
+        "id", "language", "request", "decisionClass", "expectedSkills",
+        "excludedSkills", "humanConfirmation", "validationExpectations",
+    }
+    for index, raw in enumerate(items):
+        pointer = f"/scenarios/{index}"
+        item = require_object(raw, document, pointer)
+        require_keys(item, allowed, document, pointer)
+        reject_unknown(item, allowed, document, pointer)
+        require_pattern(item["id"], _SCENARIO_ID, document, _join(pointer, "id"))
+        for field in ("language", "request"):
+            require_min_length(item[field], 1, document, _join(pointer, field))
+        require_enum(item["decisionClass"], _COVERAGE_STATES, document, _join(pointer, "decisionClass"))
+        _strings(item["expectedSkills"], document, _join(pointer, "expectedSkills"))
+        _strings(item["excludedSkills"], document, _join(pointer, "excludedSkills"))
+        _require_bool(item["humanConfirmation"], document, _join(pointer, "humanConfirmation"))
+        _strings(item["validationExpectations"], document, _join(pointer, "validationExpectations"), min_items=1)
 
 
 def validate_relations_document(value: object, document: str) -> None:
@@ -825,6 +932,8 @@ _REFERENCE_DOCUMENTS = {
     "conflicts": "registry/conflicts.json",
     "recipes": "registry/recipes.json",
     "sources": "sources/lock.json",
+    "admissions": "registry/admissions.json",
+    "routing": "registry/routing.json",
 }
 
 
@@ -860,6 +969,16 @@ def validate_references(documents: dict[str, object]) -> None:
     skill_ids = _unique_field(
         skills, "id", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
     )
+    for key, collection in (("admissions", "admissions"), ("routing", "routes")):
+        if key not in documents:
+            continue
+        for index, item in enumerate(documents[key][collection]):  # type: ignore[index,assignment]
+            if item["skill"] not in skill_ids:
+                raise ContractError(
+                    _REFERENCE_DOCUMENTS[key],
+                    f"/{collection}/{index}/skill",
+                    "must resolve to a curated Skill",
+                )
     _unique_field(
         skills, "directory", "skills", _REFERENCE_DOCUMENTS["skills"]  # type: ignore[arg-type]
     )

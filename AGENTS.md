@@ -5,16 +5,22 @@ provenance, adapters, recipes, audits, and generated capability topology.
 
 Keep three governance layers distinct:
 
-- An official, runtime-owned, or built-in Skill is represented only as
-  external capability metadata when topology or conflict decisions need it. Its
-  body must not be vendored and it must not enter this repository's release
-  manifest by default.
+- An official, runtime-owned, or built-in Skill, including a first-party Skill,
+  may appear only in dated overlap-review evidence. Its body and runtime
+  identity must not enter managed inventory, be vendored, or enter this
+  repository's release manifest.
 - A third-party candidate must be source-pinned and pass license, provenance,
   security, portability, overlap, adaptation, and validation review. Until it
   is approved, it must not enter an execution path.
 - A curated approved Skill is the only kind allowed in `skills/` and the
   release manifest. In schema 1, `registry/skills.json` is the approved release
   inventory: each payload Skill must have `status=approved`.
+
+This curated repository governs third-party Skill bodies and an abstract,
+product-neutral capability taxonomy. It does not govern or inventory official,
+runtime-owned, built-in, or first-party Skill bodies. Those bodies may be
+consulted only as dated overlap evidence; that evidence is not managed
+inventory, ownership, or proof of current runtime availability.
 
 Keep agent-neutral behavior in `skills/`. Put unavoidable product-specific
 commands, paths, event formats, or installation details in `adapters/`. Never

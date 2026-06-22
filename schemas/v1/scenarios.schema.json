@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yiheng8023/agent-skills-curated/schemas/v1/scenarios.schema.json",
+  "title": "Portable Routing Scenarios",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "scenarios"],
+  "properties": {
+    "schema": {"const": 1},
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "language", "request", "decisionClass", "expectedSkills", "excludedSkills", "humanConfirmation", "validationExpectations"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^scenario\\.[a-z0-9][a-z0-9-]*$"},
+          "language": {"type": "string", "minLength": 1},
+          "request": {"type": "string", "minLength": 1},
+          "decisionClass": {"type": "string", "enum": ["curated", "recipe", "runtime-resolved", "native-sufficient", "human-authority", "gap"]},
+          "expectedSkills": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "excludedSkills": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "humanConfirmation": {"type": "boolean"},
+          "validationExpectations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}

@@ -5,11 +5,14 @@ import unittest
 
 from scripts.contracts import (
     ContractError,
+    validate_admissions_document,
     validate_capabilities_document,
     validate_conflicts_document,
     validate_recipes_document,
     validate_relations_document,
     validate_release_manifest_document,
+    validate_routing_document,
+    validate_scenarios_document,
     validate_selection_document,
     validate_skills_document,
     validate_sources_lock_document,
@@ -27,6 +30,71 @@ SCHEMAS = (
     "selection",
     "release-manifest",
 )
+
+
+ADMISSIONS = {
+    "schema": 1,
+    "admissions": [{
+        "skill": "skill.curated.alpha",
+        "source": "upstream:alpha",
+        "thirdParty": True,
+        "nativeBaselineCompared": True,
+        "nativeIncrement": "A repeatable evidence-producing workflow.",
+        "overlapReviewed": True,
+        "disposition": "approve",
+        "reviewRefs": ["audits/alpha.md"],
+        "validated": True,
+    }],
+}
+
+ROUTING = {
+    "schema": 1,
+    "routes": [{
+        "skill": "skill.curated.alpha",
+        "aliases": ["alpha workflow"],
+        "positiveTriggers": ["Use the alpha workflow."],
+        "negativeTriggers": ["Do not use it for ordinary summarization."],
+        "contextRequirements": ["A reviewable repository is available."],
+        "inputs": ["User goal"],
+        "outputs": ["Verified artifact"],
+        "sideEffects": ["Writes only within the requested repository scope."],
+        "validation": ["Run the focused contract tests."],
+        "riskLevel": "low",
+        "permissionsRequired": ["Repository write access"],
+        "fallback": ["Use native reasoning and declare the limitation."],
+        "humanConfirmWhen": ["The route would expand the requested scope."],
+        "languages": ["en"],
+        "agentCompatibility": ["cross-agent"],
+        "lifecycleCapabilities": ["capability.alpha"],
+    }],
+}
+
+SCENARIOS_DOCUMENT = {
+    "schema": 1,
+    "scenarios": [{
+        "id": "scenario.alpha-positive",
+        "language": "en",
+        "request": "Apply the alpha workflow.",
+        "decisionClass": "curated",
+        "expectedSkills": ["skill.curated.alpha"],
+        "excludedSkills": ["skill.curated.beta"],
+        "humanConfirmation": False,
+        "validationExpectations": ["The output is independently verifiable."],
+    }],
+}
+
+CAPABILITIES_V2 = {
+    "schema": 2,
+    "capabilities": [{
+        "id": "capability.alpha",
+        "stage": "verify",
+        "description": "Produce independently verifiable alpha evidence.",
+        "coverageState": "curated",
+        "validation": ["Run the alpha verification contract."],
+        "fallback": ["Declare a gap and request human direction."],
+        "curatedOwners": ["skill.curated.alpha"],
+    }],
+}
 
 
 def load(path: str) -> dict[str, object]:
@@ -52,6 +120,67 @@ class ShapeTests(unittest.TestCase):
                 self.assertEqual(schema["type"], "object")
                 self.assertFalse(schema["additionalProperties"])
 
+        for version, name in ((1, "admissions"), (1, "routing"), (1, "scenarios"), (2, "capabilities")):
+            with self.subTest(version=version, name=name):
+                schema = load(f"schemas/v{version}/{name}.schema.json")
+                self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+                self.assertEqual(schema["type"], "object")
+                self.assertFalse(schema["additionalProperties"])
+
+    def test_new_governance_documents_accept_approved_fixtures(self) -> None:
+        validate_admissions_document(ADMISSIONS, "fixture.json")
+        validate_routing_document(ROUTING, "fixture.json")
+        validate_scenarios_document(SCENARIOS_DOCUMENT, "fixture.json")
+        validate_capabilities_document(CAPABILITIES_V2, "fixture.json")
+
+    def test_admissions_require_all_evidence_and_approved_truths(self) -> None:
+        for field in ADMISSIONS["admissions"][0]:
+            with self.subTest(field=field):
+                document = deepcopy(ADMISSIONS)
+                del document["admissions"][0][field]
+                self.assert_contract_error(validate_admissions_document, document, f"/admissions/0/{field}")
+        for field in ("thirdParty", "validated"):
+            with self.subTest(field=field):
+                document = deepcopy(ADMISSIONS)
+                document["admissions"][0][field] = False
+                self.assert_contract_error(validate_admissions_document, document, f"/admissions/0/{field}")
+
+    def test_new_governance_enums_are_closed(self) -> None:
+        document = deepcopy(ADMISSIONS)
+        document["admissions"][0]["disposition"] = "adopt"
+        self.assert_contract_error(validate_admissions_document, document, "/admissions/0/disposition")
+        document = deepcopy(ROUTING)
+        document["routes"][0]["riskLevel"] = "urgent"
+        self.assert_contract_error(validate_routing_document, document, "/routes/0/riskLevel")
+        document = deepcopy(CAPABILITIES_V2)
+        document["capabilities"][0]["coverageState"] = "official"
+        self.assert_contract_error(validate_capabilities_document, document, "/capabilities/0/coverageState")
+
+    def test_routing_semantic_contract_arrays_are_nonempty(self) -> None:
+        fields = (
+            "aliases", "positiveTriggers", "negativeTriggers", "contextRequirements",
+            "inputs", "outputs", "validation", "fallback", "humanConfirmWhen",
+            "languages", "agentCompatibility", "lifecycleCapabilities",
+        )
+        for field in fields:
+            with self.subTest(field=field):
+                document = deepcopy(ROUTING)
+                document["routes"][0][field] = []
+                self.assert_contract_error(validate_routing_document, document, f"/routes/0/{field}")
+
+    def test_capabilities_v2_are_abstract_and_product_neutral(self) -> None:
+        for field in ("canonicalOwner", "product", "official", "runtime", "runtimeIdentity"):
+            with self.subTest(field=field):
+                document = deepcopy(CAPABILITIES_V2)
+                document["capabilities"][0][field] = "external:runtime"
+                self.assert_contract_error(validate_capabilities_document, document, f"/capabilities/0/{field}")
+
+        document = deepcopy(CAPABILITIES_V2)
+        del document["capabilities"][0]["curatedOwners"]
+        self.assert_contract_error(validate_capabilities_document, document, "/capabilities/0/curatedOwners")
+        document["capabilities"][0]["coverageState"] = "native-sufficient"
+        validate_capabilities_document(document, "fixture.json")
+
     def test_every_document_rejects_missing_or_wrong_schema(self) -> None:
         cases = (
             (validate_skills_document, "registry/skills.json"),
@@ -73,7 +202,7 @@ class ShapeTests(unittest.TestCase):
                 self.assert_contract_error(validator, document, "/schema")
             with self.subTest(path=path, problem="wrong"):
                 document = load(path)
-                document["schema"] = 2
+                document["schema"] = 3 if path == "registry/capabilities.json" else 2
                 self.assert_contract_error(validator, document, "/schema")
 
     def test_skills_reject_unknown_status_enum_and_wrong_type(self) -> None:

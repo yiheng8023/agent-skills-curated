@@ -27,9 +27,12 @@ repository.
 
 ## Capability Layers And Decisions
 
-An official, runtime-owned, or built-in Skill remains environment-owned. When
-needed for topology, it is modeled as external capability metadata; its body
-must not be vendored and it does not enter the release manifest by default.
+The curated authority governs third-party Skill bodies and an abstract,
+product-neutral capability taxonomy. Official, runtime-owned, built-in, and
+first-party Skill bodies remain outside its governed and managed inventory.
+They may be consulted only as dated overlap evidence; such evidence does not
+transfer ownership, assert canonical identity, or prove current runtime
+availability. Their bodies must not be vendored or enter the release manifest.
 
 A third-party candidate remains in source, intake, selection, and audit
 surfaces until it has passed source pinning, license, provenance, security,

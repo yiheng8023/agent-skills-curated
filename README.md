@@ -31,9 +31,11 @@ environment state. It does not install, does not write to
 `codex-user-config`, and does not write to a live Agent environment.
 
 Official, runtime-owned, or built-in Skill bodies remain environment-owned.
-When governance needs visibility, they are modeled only as external capability
-metadata; their bodies must not be vendored and they do not enter the manifest
-by default.
+This curated repository governs third-party Skill bodies and an abstract,
+product-neutral capability taxonomy. It does not govern or inventory official,
+runtime-owned, built-in, or first-party Skill bodies. They may appear only in
+dated overlap evidence; that evidence is not managed inventory, repository
+ownership, or proof of current runtime availability.
 
 ## Relationship To The Paired Repository
 
@@ -58,8 +60,9 @@ installation or runtime integration.
 
 Three layers are deliberately noninterchangeable:
 
-1. An official, runtime-owned, or built-in Skill is external capability
-   metadata only; its body is not vendored or released here.
+1. An official, runtime-owned, built-in, or first-party Skill may appear only
+   in dated overlap evidence; neither its body nor runtime identity is managed
+   inventory, vendored, or released here.
 2. A third-party candidate remains in source/intake/selection/audit surfaces
    until it passes source pinning, license, provenance, security, portability,
    overlap, adaptation, and validation. It must not enter an execution path.
@@ -108,7 +111,7 @@ then approve a new release inventory. Candidate dispositions may be `merge`,
 ## Safety Boundaries
 
 - Generated files are derived projections of registry truth.
-- Candidate or external capability metadata is never treated as installed or
+- Candidate content or dated overlap evidence is never treated as installed or
   executable content.
 - Cross-agent portability never weakens permission, safety, evidence, license,
   or real environment constraints.

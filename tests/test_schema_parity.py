@@ -7,15 +7,19 @@ import unittest
 from scripts import contracts
 from scripts.contracts import (
     ContractError,
+    validate_admissions_document,
     validate_capabilities_document,
     validate_conflicts_document,
     validate_recipes_document,
     validate_relations_document,
     validate_release_manifest_document,
+    validate_routing_document,
+    validate_scenarios_document,
     validate_selection_document,
     validate_skills_document,
     validate_sources_lock_document,
 )
+from tests.test_shape_contracts import ADMISSIONS, CAPABILITIES_V2, ROUTING, SCENARIOS_DOCUMENT
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -33,12 +37,19 @@ CASES = (
     ),
     ("release-manifest", "release-manifest.json", validate_release_manifest_document),
 )
+ADDITIONAL_CASES = (
+    ("admissions", 1, ADMISSIONS, validate_admissions_document),
+    ("routing", 1, ROUTING, validate_routing_document),
+    ("scenarios", 1, SCENARIOS_DOCUMENT, validate_scenarios_document),
+    ("capabilities-v2", 2, CAPABILITIES_V2, validate_capabilities_document),
+)
 PATTERN_CANDIDATES = (
     "skill.curated.alpha",
     "skill.curated.Alpha",
     "capability.alpha",
     "conflict.alpha",
     "recipe.alpha",
+    "scenario.alpha",
     "alpha",
     "a-1",
     "Alpha",
@@ -118,6 +129,9 @@ class SchemaParityTests(unittest.TestCase):
                     validator,
                 )
             )
+        for name, version, document, validator in ADDITIONAL_CASES:
+            schema_name = "capabilities" if name == "capabilities-v2" else name
+            self.cases.append((name, load(f"schemas/v{version}/{schema_name}.schema.json"), deepcopy(document), validator))
 
     def accepts(self, validator: object, document: dict[str, object]) -> bool:
         try:
@@ -165,6 +179,8 @@ class SchemaParityTests(unittest.TestCase):
                                 validator, changed, join(document_pointer, field)
                             )
                         else:
+                            if name == "capabilities-v2" and field == "curatedOwners":
+                                target["coverageState"] = "native-sufficient"  # type: ignore[index]
                             self.assertTrue(self.accepts(validator, changed))
 
     def test_every_closed_object_rejects_unknown_fields(self) -> None:
@@ -204,6 +220,12 @@ class SchemaParityTests(unittest.TestCase):
                     with self.subTest(name=name, schema=schema_pointer, value=value):
                         changed = deepcopy(document)
                         assign(changed, document_pointer, value)
+                        if name == "capabilities-v2" and document_pointer.endswith("/coverageState"):
+                            capability = changed["capabilities"][0]
+                            if value == "curated":
+                                capability["curatedOwners"] = ["skill.curated.alpha"]
+                            else:
+                                capability.pop("curatedOwners", None)
                         if (
                             name == "sources-lock"
                             and document_pointer == "/sources/0/kind"
@@ -261,6 +283,10 @@ class SchemaParityTests(unittest.TestCase):
                 "/properties/files/items/properties/path",
                 contracts._MANIFEST_PATH,
             ),
+            ("capabilities-v2", "/properties/capabilities/items/properties/id", contracts._CAPABILITY_ID),
+            ("admissions", "/properties/admissions/items/properties/skill", contracts._SKILL_ID),
+            ("routing", "/properties/routes/items/properties/skill", contracts._SKILL_ID),
+            ("scenarios", "/properties/scenarios/items/properties/id", contracts._SCENARIO_ID),
             (
                 "release-manifest",
                 "/properties/files/items/properties/sha256",
@@ -308,6 +334,9 @@ class SchemaParityTests(unittest.TestCase):
                 "/properties/sources/items/properties/redistribution/enum",
                 contracts._REDISTRIBUTION_STATUSES,
             ),
+            ("admissions", "/properties/admissions/items/properties/disposition/enum", contracts._ADMISSION_DISPOSITIONS),
+            ("routing", "/properties/routes/items/properties/riskLevel/enum", contracts._RISK_LEVELS),
+            ("capabilities-v2", "/properties/capabilities/items/properties/coverageState/enum", contracts._COVERAGE_STATES),
         )
         for name, pointer, validator_values in cases:
             with self.subTest(name=name, pointer=pointer):
@@ -404,6 +433,8 @@ class SchemaParityTests(unittest.TestCase):
                     for value, expected in ((True, True), (False, True), (0, False)):
                         changed = deepcopy(document)
                         assign(changed, document_pointer, value)
+                        if name == "admissions" and value is False:
+                            changed["admissions"][0]["disposition"] = "reject"
                         with self.subTest(
                             name=name, schema=schema_pointer, value=value
                         ):

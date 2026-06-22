@@ -2,6 +2,7 @@ from copy import deepcopy
 import unittest
 
 from scripts.contracts import ContractError, validate_references
+from tests.test_shape_contracts import ADMISSIONS, ROUTING
 
 
 class ReferenceTests(unittest.TestCase):
@@ -88,6 +89,8 @@ class ReferenceTests(unittest.TestCase):
                     {"id": "upstream:reviewed"},
                 ],
             },
+            "admissions": deepcopy(ADMISSIONS),
+            "routing": deepcopy(ROUTING),
         }
 
     def assert_rejected(
@@ -231,6 +234,16 @@ class ReferenceTests(unittest.TestCase):
         self.assert_rejected(
             documents, "sources/lock.json", "/sources/1/id"
         )
+
+    def test_admission_and_routing_skill_references_must_resolve(self) -> None:
+        for key, collection, document_name in (
+            ("admissions", "admissions", "registry/admissions.json"),
+            ("routing", "routes", "registry/routing.json"),
+        ):
+            with self.subTest(key=key):
+                documents = deepcopy(self.documents)
+                documents[key][collection][0]["skill"] = "skill.curated.missing"
+                self.assert_rejected(documents, document_name, f"/{collection}/0/skill")
 
 if __name__ == "__main__":
     unittest.main()
