@@ -85,6 +85,7 @@ class RoutingCorpusTests(unittest.TestCase):
             "negative-near-match": 10,
             "authority-ambiguity": 8,
             "fallback-gap": 8,
+            "execution-reroute": 6,
         }
         for family, minimum in minimums.items():
             with self.subTest(family=family):

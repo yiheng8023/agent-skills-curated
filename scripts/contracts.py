@@ -54,6 +54,7 @@ _RISK_LEVELS = {"low", "medium", "high", "critical"}
 _SCENARIO_FAMILIES = {
     "lifecycle", "native-no-skill", "runtime-preference", "curated-workflow",
     "recipe-dag", "negative-near-match", "authority-ambiguity", "fallback-gap",
+    "execution-reroute",
 }
 _ROUTING_DECISIONS = {
     "native", "runtime", "curated", "recipe", "no-skill", "ask-user", "gap",

@@ -3527,6 +3527,228 @@
         "unresolvedConflict": false,
         "ambiguous": false
       }
+    },
+    {
+      "id": "scenario.execution-reroute-01",
+      "family": "execution-reroute",
+      "language": "zh-CN",
+      "request": "实现阶段发现普通推理不够，下一步需要重新评估并转入 TDD 的专用流程。",
+      "decisionClass": "curated",
+      "expectedDecision": "curated",
+      "expectedSkills": [
+        "skill.curated.tdd"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.tdd"
+      ],
+      "expectedCapabilities": [
+        "capability.tdd"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.execution-reroute-02",
+      "family": "execution-reroute",
+      "language": "en",
+      "request": "During implementation a repeated failure appears; reroute the next step to fault diagnosis.",
+      "decisionClass": "curated",
+      "expectedDecision": "curated",
+      "expectedSkills": [
+        "skill.curated.diagnose"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.fault-diagnosis"
+      ],
+      "expectedCapabilities": [
+        "capability.fault-diagnosis"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.execution-reroute-03",
+      "family": "execution-reroute",
+      "language": "mixed",
+      "request": "测试阶段 checkpoint 发现单个 Skill 不够，reroute to test-strategy Recipe/DAG。",
+      "decisionClass": "recipe",
+      "expectedDecision": "recipe",
+      "expectedSkills": [
+        "recipe.test-strategy"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.test-strategy"
+      ],
+      "expectedCapabilities": [
+        "capability.test-strategy"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.execution-reroute-04",
+      "family": "execution-reroute",
+      "language": "zh-CN",
+      "request": "准备修改 CI/CD 配置，下一步会写入仓库，必须先停在授权边界。",
+      "decisionClass": "human-authority",
+      "expectedDecision": "ask-user",
+      "expectedSkills": [],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.ci-cd"
+      ],
+      "expectedCapabilities": [
+        "capability.ci-cd"
+      ],
+      "humanConfirmation": true,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": true,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.execution-reroute-05",
+      "family": "execution-reroute",
+      "language": "en",
+      "request": "A visible runtime security scanner becomes the authoritative next step; prefer runtime over a curated workflow.",
+      "decisionClass": "runtime-resolved",
+      "expectedDecision": "runtime",
+      "expectedSkills": [],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.security-audit"
+      ],
+      "expectedCapabilities": [
+        "capability.security-audit"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": true,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.execution-reroute-06",
+      "family": "execution-reroute",
+      "language": "mixed",
+      "request": "中途只是顺手提到 performance，不是要启动专用优化流程，reroute to no-skill。",
+      "decisionClass": "native-sufficient",
+      "expectedDecision": "no-skill",
+      "expectedSkills": [],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.performance"
+      ],
+      "expectedCapabilities": [
+        "capability.performance"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Decision class, selected IDs, validation, and fallback must be deterministic."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": true,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
     }
   ]
 }

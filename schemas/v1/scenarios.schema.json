@@ -16,7 +16,7 @@
         "required": ["id", "family", "language", "request", "decisionClass", "expectedDecision", "expectedSkills", "excludedSkills", "requestedCapabilities", "expectedCapabilities", "humanConfirmation", "validationExpectations", "routingFacts"],
         "properties": {
           "id": {"type": "string", "pattern": "^scenario\\.[a-z0-9][a-z0-9-]*$"},
-          "family": {"type": "string", "enum": ["lifecycle", "native-no-skill", "runtime-preference", "curated-workflow", "recipe-dag", "negative-near-match", "authority-ambiguity", "fallback-gap"]},
+          "family": {"type": "string", "enum": ["lifecycle", "native-no-skill", "runtime-preference", "curated-workflow", "recipe-dag", "negative-near-match", "authority-ambiguity", "fallback-gap", "execution-reroute"]},
           "language": {"type": "string", "minLength": 1},
           "request": {"type": "string", "minLength": 1},
           "decisionClass": {"type": "string", "enum": ["curated", "recipe", "runtime-resolved", "native-sufficient", "human-authority", "gap"]},

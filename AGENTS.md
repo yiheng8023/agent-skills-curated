@@ -47,6 +47,15 @@ High-risk, ambiguous, conflicting, permission-changing, write, install,
 delete, migration, publish, release, or rollback paths require the applicable
 human confirmation.
 
+Routing is not only an initial task-entry decision. For multi-step work, model
+event-driven reroute checkpoints that a consuming Agent can apply at phase
+boundaries, after new context, after a failure or blocker, before
+side-effecting actions, before switching capability classes, and before final
+verification. These checkpoints may continue the current path, switch to native
+or runtime capability, select a curated Skill, compose a Recipe/DAG, ask for
+human confirmation, choose no Skill, or fall back safely. Do not model this as
+an every-atomic-step keyword classifier.
+
 Natural-language interpretation belongs to the active Agent. This repository
 tests deterministic policy after Chinese, English, mixed, colloquial,
 context-dependent, ambiguous, and near-match intent has been normalized into

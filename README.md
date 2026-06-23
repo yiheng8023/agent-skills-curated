@@ -86,6 +86,13 @@ are not executable routing targets. High-risk, ambiguous, conflicting,
 permission-changing, write, install, delete, migration, publish, release, or
 rollback choices require human confirmation.
 
+Routing is not only a task-entry decision. For multi-step work, consumers
+should re-evaluate at event-driven reroute checkpoints: phase boundaries, new
+context, failures or blockers, before side-effecting actions, before switching
+capability classes, and before final verification. The routing projection
+supplies deterministic policy input for those checkpoints; it does not require
+per-step routing and does not prove live capability availability.
+
 The `capability-router` is the Codex consumer's decision mechanism, not a
 universal prerequisite. The invocation chain is consumer-agent-specific: for
 example, Claude Code loads its instruction file every session and surfaces
@@ -111,7 +118,7 @@ consumer must probe its currently visible, authorized capability inventory.
   contract changes.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
-  metadata and the 96-case structured policy corpus.
+  metadata and the 102-case structured policy corpus.
 - `release-manifest.json`: exact approved payload paths, sizes, and hashes.
 - `scripts/`: validation and deterministic projection generation only.
 
@@ -127,7 +134,7 @@ python -B scripts/verify.py
 
 Verification covers registry contracts, references, generated parity, source
 evidence, the exact manifest payload, input-bound routing projection, all 26
-lifecycle nodes, and 96 deterministic adversarial scenarios. Natural-language
+lifecycle nodes, and 102 deterministic adversarial scenarios. Natural-language
 interpretation remains an Agent responsibility; the simulator verifies the
 normalized policy decision and does not pretend to be a keyword classifier.
 It does not install a Skill.

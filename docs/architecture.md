@@ -57,6 +57,13 @@ permission, conflict, ambiguity, validation, and fallback. The checked-in
 scenario corpus exercises this policy but is not a replacement language model
 or a keyword router.
 
+For multi-step execution, routing is event-driven rather than one-shot or
+per-atomic-step. A consumer should re-evaluate at phase boundaries, after new
+context, after failures or blockers, before side-effecting actions, before
+switching capability classes, and before final verification. The deterministic
+projection supports those reroute checkpoints; the consumer still owns live
+availability checks and authorization.
+
 ## Dynamic Capability Topology
 
 Git-tracked JSON is the initial authority. A graph database or visualization
