@@ -12,11 +12,15 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "defaultOwner", "members", "resolution"],
+        "required": ["id", "defaultOwner", "members", "scope", "disposition", "tieBreakers", "humanConfirmWhen", "resolution"],
         "properties": {
           "id": {"type": "string", "pattern": "^conflict\\.[a-z0-9][a-z0-9-]*$"},
           "defaultOwner": {"type": "string", "pattern": "^skill\\.curated\\.[a-z0-9][a-z0-9-]*$"},
           "members": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^skill\\.curated\\.[a-z0-9][a-z0-9-]*$"}},
+          "scope": {"type": "string", "minLength": 1},
+          "disposition": {"type": "string", "enum": ["prefer-default-owner", "route-by-context", "compose", "ask-user"]},
+          "tieBreakers": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "humanConfirmWhen": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
           "resolution": {"type": "string", "minLength": 1}
         }
       }

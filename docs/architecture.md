@@ -74,6 +74,9 @@ replacement. Recipes represent multi-node conditional workflows where a simple
 pairwise edge is insufficient. A Recipe is not just a list of steps: it must
 declare evidence gates, failure policy, and terminal criteria so a consumer can
 distinguish a completed composition from an unsafe partial path.
+Conflict groups similarly need more than prose: each group must declare its
+scope, disposition, tie-breakers, and human-confirmation conditions before a
+consumer can safely use the default owner.
 
 Stable IDs survive renames. Every inventory change must regenerate derived
 indexes and report impacted routes, unresolved references, cycles where cycles

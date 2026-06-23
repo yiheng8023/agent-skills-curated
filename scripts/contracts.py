@@ -59,6 +59,12 @@ _ROUTING_DECISIONS = {
     "native", "runtime", "curated", "recipe", "no-skill", "ask-user", "gap",
 }
 _AVAILABLE_CAPABILITIES = {"native", "runtime", "curated"}
+_CONFLICT_DISPOSITIONS = {
+    "prefer-default-owner",
+    "route-by-context",
+    "compose",
+    "ask-user",
+}
 _SOURCE_KINDS = {"git", "local"}
 _PROVENANCE_STATUSES = {"complete", "incomplete"}
 _REDISTRIBUTION_STATUSES = {"license-governed", "private-only"}
@@ -435,11 +441,21 @@ def validate_conflicts_document(value: object, document: str) -> None:
     if require_int(root["schema"], document, "/schema") != 1:
         raise ContractError(document, "/schema", "must equal 1")
     groups = require_array(root["groups"], document, "/groups")
-    allowed = {"id", "defaultOwner", "members", "resolution"}
+    required = {
+        "id",
+        "defaultOwner",
+        "members",
+        "scope",
+        "disposition",
+        "tieBreakers",
+        "humanConfirmWhen",
+        "resolution",
+    }
+    allowed = required
     for index, raw in enumerate(groups):
         pointer = f"/groups/{index}"
         item = require_object(raw, document, pointer)
-        require_keys(item, allowed, document, pointer)
+        require_keys(item, required, document, pointer)
         reject_unknown(item, allowed, document, pointer)
         require_pattern(item["id"], _CONFLICT_ID, document, _join(pointer, "id"))
         require_pattern(
@@ -448,9 +464,22 @@ def validate_conflicts_document(value: object, document: str) -> None:
             document,
             _join(pointer, "defaultOwner"),
         )
+        require_min_length(item["scope"], 1, document, _join(pointer, "scope"))
+        require_enum(
+            item["disposition"],
+            _CONFLICT_DISPOSITIONS,
+            document,
+            _join(pointer, "disposition"),
+        )
         require_min_length(
             item["resolution"], 1, document, _join(pointer, "resolution")
         )
+        for field in ("tieBreakers", "humanConfirmWhen"):
+            entries = require_array(item[field], document, _join(pointer, field), 1)
+            for entry_index, entry in enumerate(entries):
+                require_min_length(
+                    entry, 1, document, _join(_join(pointer, field), entry_index)
+                )
         members = _strings(
             item["members"], document, _join(pointer, "members"), min_items=2
         )

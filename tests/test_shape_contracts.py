@@ -318,6 +318,10 @@ class ShapeTests(unittest.TestCase):
                         "id": "conflict.fixture",
                         "defaultOwner": "skill.curated.alpha",
                         "members": ["skill.curated.alpha", "skill.curated.beta"],
+                        "scope": "Use alpha unless beta is explicitly requested.",
+                        "disposition": "prefer-default-owner",
+                        "tieBreakers": ["Prefer alpha for general requests."],
+                        "humanConfirmWhen": ["Ask when routing would mutate external state."],
                         "resolution": "Prefer alpha.",
                     }]
                 document[collection][0]["id"] = "bad"  # type: ignore[index]
@@ -360,6 +364,10 @@ class ShapeTests(unittest.TestCase):
                 "id": "conflict.fixture",
                 "defaultOwner": "skill.curated.alpha",
                 "members": ["skill.curated.alpha", "skill.curated.beta"],
+                "scope": "Use alpha unless the task explicitly requires beta's narrower workflow.",
+                "disposition": "prefer-default-owner",
+                "tieBreakers": ["Prefer the default owner when both members match the same capability."],
+                "humanConfirmWhen": ["Ask when both members appear equally eligible and the route can change files."],
                 "resolution": "Prefer alpha.",
             }],
         }
@@ -390,6 +398,50 @@ class ShapeTests(unittest.TestCase):
                 document["groups"][0]["members"] = members
                 self.assert_contract_error(
                     validate_conflicts_document, document, pointer
+                )
+
+    def test_conflicts_require_machine_readable_disposition_and_tie_breakers(self) -> None:
+        fixture = {
+            "schema": 1,
+            "groups": [{
+                "id": "conflict.fixture",
+                "defaultOwner": "skill.curated.alpha",
+                "members": ["skill.curated.alpha", "skill.curated.beta"],
+                "scope": "Use alpha unless beta is explicitly requested.",
+                "disposition": "prefer-default-owner",
+                "tieBreakers": ["Prefer alpha for general requests."],
+                "humanConfirmWhen": ["Ask when routing would mutate external state."],
+                "resolution": "Prefer alpha.",
+            }],
+        }
+
+        for field in ("scope", "disposition", "tieBreakers", "humanConfirmWhen"):
+            with self.subTest(field=field, mutation="missing"):
+                document = deepcopy(fixture)
+                del document["groups"][0][field]  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_conflicts_document, document, f"/groups/0/{field}"
+                )
+
+        document = deepcopy(fixture)
+        document["groups"][0]["disposition"] = "surprise"  # type: ignore[index]
+        self.assert_contract_error(
+            validate_conflicts_document, document, "/groups/0/disposition"
+        )
+
+        for field in ("tieBreakers", "humanConfirmWhen"):
+            with self.subTest(field=field, mutation="empty"):
+                document = deepcopy(fixture)
+                document["groups"][0][field] = []  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_conflicts_document, document, f"/groups/0/{field}"
+                )
+
+            with self.subTest(field=field, mutation="blank"):
+                document = deepcopy(fixture)
+                document["groups"][0][field] = [""]  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_conflicts_document, document, f"/groups/0/{field}/0"
                 )
 
     def test_recipes_validate_steps_and_authorization(self) -> None:

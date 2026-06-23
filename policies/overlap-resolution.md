@@ -3,6 +3,10 @@
 Semantic intersection is expected; unresolved ownership is not. Every obvious
 overlap group must record one default owner, scoped alternatives, conditions,
 fallbacks, conflicts, merged sources, and excluded candidates.
+When an overlap becomes a `registry/conflicts.json` group, it must also record
+machine-readable `scope`, `disposition`, `tieBreakers`, and
+`humanConfirmWhen` fields so runtime consumers can distinguish default routing
+from context routing, composition, and authorization stops.
 
 Source-selection schema 1 uses `adopt`; third-party admission uses `approve`.
 Both use `merge`, `adapter-only`, `recipe-only`, or `reject` for non-standalone

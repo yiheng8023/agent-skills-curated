@@ -139,6 +139,10 @@ class SchemaParityTests(unittest.TestCase):
                     "id": "conflict.fixture",
                     "defaultOwner": "skill.curated.alpha",
                     "members": ["skill.curated.alpha", "skill.curated.beta"],
+                    "scope": "Use alpha unless beta is explicitly requested.",
+                    "disposition": "prefer-default-owner",
+                    "tieBreakers": ["Prefer alpha for general requests."],
+                    "humanConfirmWhen": ["Ask when routing would mutate external state."],
                     "resolution": "Prefer alpha.",
                 }]
             self.cases.append(
