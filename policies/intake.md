@@ -20,5 +20,12 @@ Keep the intake state separate from release state:
   the manifest. `registry/skills.json` is the schema-1 approved release
   inventory, not a candidate backlog.
 
+Official Skill repositories may be inspected as external baselines for coverage
+comparison. Record the inspected revision, license posture, capability
+coverage, gap, and disposition. A baseline row does not approve import,
+adaptation, execution, or redistribution. Source-available, all-rights-reserved,
+unclear-license, product-specific, or runtime-owned official content remains
+reference-only unless a separate approved permission and adaptation path exists.
+
 An upstream validator is evidence about structure, not proof of safety,
 portability, semantic consistency, or runtime authorization.

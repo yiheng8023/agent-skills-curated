@@ -22,6 +22,14 @@ runtime-owned, built-in, or first-party Skill bodies. Those bodies may be
 consulted only as dated overlap evidence; that evidence is not managed
 inventory, ownership, or proof of current runtime availability.
 
+Official Skill repositories, including Anthropic official Skills, may be used
+as dated external baselines for coverage comparison. Do not treat such a
+baseline as permission to vendor, adapt, execute, or release those bodies. A
+baseline entry may be classified as covered, reference, adapt-candidate, or
+skip, but adaptation still requires source pinning, license/provenance,
+security, portability, overlap, neutralization, validation, topology, and
+manifest review.
+
 Keep agent-neutral behavior in `skills/`. Put unavoidable product-specific
 commands, paths, event formats, or installation details in `adapters/`. Never
 weaken safety, permission, evidence, licensing, or environment constraints in

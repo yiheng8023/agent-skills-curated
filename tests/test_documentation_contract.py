@@ -50,6 +50,7 @@ class DocumentationContractTests(unittest.TestCase):
                 read("README.md"),
                 read("docs/architecture.md"),
                 read("policies/intake.md"),
+                read("docs/anthropic-official-skills-coverage.md"),
             )
         )
 
@@ -62,6 +63,34 @@ class DocumentationContractTests(unittest.TestCase):
             "curated approved",
             "status=approved",
             "approved release inventory",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, corpus)
+
+    def test_anthropic_official_skills_are_external_baseline_not_inventory(self) -> None:
+        coverage = read("docs/anthropic-official-skills-coverage.md")
+        corpus = "\n".join((read("README.md"), read("AGENTS.md"), read("policies/intake.md")))
+
+        for phrase in (
+            "Anthropic official Skills",
+            "dated external baseline",
+            "not managed inventory",
+            "source-available",
+            "all-rights-reserved",
+            "covered",
+            "reference",
+            "adapt-candidate",
+            "skip",
+            "release-manifest.json",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, coverage)
+
+        for phrase in (
+            "coverage comparison",
+            "does not approve import",
+            "license/provenance",
+            "neutralization",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, corpus)
