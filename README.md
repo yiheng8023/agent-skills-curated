@@ -107,6 +107,8 @@ consumer must probe its currently visible, authorized capability inventory.
 - `registry/`: hand-maintained authority for topology and release inventory.
 - `policies/`: intake, portability, security, overlap, and lifecycle rules.
 - `audits/`: source-specific provenance and review evidence.
+- `docs/decisions/`: accepted governance decisions that constrain future
+  contract changes.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
   metadata and the 96-case structured policy corpus.

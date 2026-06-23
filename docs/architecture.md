@@ -63,6 +63,10 @@ Git-tracked JSON is the initial authority. A graph database or visualization
 may consume generated projections later, but must not become a second manual
 source of truth.
 
+Accepted contract decisions live under `docs/decisions/`. They constrain
+future schema and release-interface changes, but they do not replace the
+registries as machine-checked authority.
+
 Nodes may represent Skills, capabilities, artifacts, lifecycle phases,
 conditions, tools, adapters, policies, risks, and evidence. Typed edges express
 ordering, data flow, collaboration, alternatives, fallbacks, conflicts, and

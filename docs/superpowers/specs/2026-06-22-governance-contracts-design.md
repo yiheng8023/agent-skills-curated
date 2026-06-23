@@ -31,6 +31,8 @@ Current state markers:
 - `registry/skills.json` remains schema 1.
 - The manifest v2 has not been published.
 - The next bounded task is not a manifest upgrade.
+- Skill v2 promotion is governed by
+  `docs/decisions/2026-06-23-skill-v2-contract-decision.md`.
 
 ## 1. Goal
 

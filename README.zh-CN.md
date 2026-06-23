@@ -79,6 +79,7 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `registry/`：人工维护的拓扑与发布清单权威；
 - `policies/`：准入、可移植性、安全、重叠和生命周期规则；
 - `audits/`：来源级审查与证据；
+- `docs/decisions/`：已经接受的治理决策，用于约束后续 contract 变更；
 - `generated/`：确定性派生投影，不是第二真相源；
 - `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 96 场景
   结构化策略语料；

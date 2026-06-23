@@ -110,6 +110,23 @@ class DocumentationContractTests(unittest.TestCase):
             design,
         )
 
+    def test_skill_v2_contract_decision_avoids_second_truth_source(self) -> None:
+        decision = read("docs/decisions/2026-06-23-skill-v2-contract-decision.md")
+
+        for phrase in (
+            "Decision: do not promote Skill v2 metadata into a new authoritative skills registry yet",
+            "`registry/skills.json` remains the schema-1 approved release inventory",
+            "`registry/routing.json` remains the authority for Skill routing metadata",
+            "`registry/capabilities.json` remains the authority for abstract lifecycle coverage",
+            "No second Skill truth source",
+            "No manifest v2 publication",
+            "Future promotion gate",
+            "5-8 representative Skills",
+            "legacy-pending",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decision)
+
 
 if __name__ == "__main__":
     unittest.main()
