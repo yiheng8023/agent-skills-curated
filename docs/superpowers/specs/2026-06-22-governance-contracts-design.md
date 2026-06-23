@@ -1,9 +1,36 @@
 # Agent Skills Governance Contracts Design
 
 **Date:** 2026-06-22
-**Status:** Proposed for user review
+**Status:** Current roadmap after Batch A closeout
 **Scope:** `agent-skills-curated` governance contracts and the future one-way
 consumer interface with `codex-user-config`
+
+## Current Implementation State
+
+Batch A is complete. The checked-in repository now validates strict
+frontmatter parsing, dynamic inventory counts, schema contracts, cross-registry
+references, manifest payload boundaries, deterministic generated projections,
+and the schema-1 release surface.
+
+The lifecycle-routing baseline has also advanced beyond the original Batch B
+sketch: `registry/capabilities.json` is schema 2, `registry/routing.json`
+contains approved semantic routing metadata, and `registry/scenarios.json`
+contains the 96-case normalized policy corpus. `registry/skills.json` remains
+schema 1 and continues to serve as the approved release inventory for the
+schema-1 manifest and current consumers.
+
+The manifest v2 has not been published. The next bounded task is not a
+manifest upgrade; it is to decide whether Skill-level v2 metadata should be
+promoted into a new authoritative `skills` contract or remain factored through
+the existing `skills` plus `routing`, `capabilities`, `relations`, `conflicts`,
+and `recipes` registries. Any manifest v2 or consumer integration work remains
+a later cross-repository transaction.
+
+Current state markers:
+
+- `registry/skills.json` remains schema 1.
+- The manifest v2 has not been published.
+- The next bounded task is not a manifest upgrade.
 
 ## 1. Goal
 
@@ -79,6 +106,8 @@ is also a rebuildable projection and never an authoring surface.
 
 ## 4. Batch A — Current Contract Hardening
 
+**State:** complete.
+
 Batch A changes only `agent-skills-curated` and keeps release manifest schema 1
 compatible with the current `codex-user-config` installer.
 
@@ -133,8 +162,13 @@ CI has not pinned and reviewed.
 
 ## 5. Batch B — Registry v2 and Routing Samples
 
-After Batch A is green, define registry schema version 2. Do not require all 34
-legacy Skills to claim evidence they do not yet have.
+**State:** partially absorbed by the current lifecycle-routing baseline.
+
+After Batch A is green, define registry schema version 2. Do not require
+legacy Skills to claim evidence they do not yet have. The current repository
+has already adopted schema 2 for abstract capabilities and keeps Skill release
+identity in `registry/skills.json` schema 1. Rich routing metadata currently
+lives in `registry/routing.json` to avoid creating a second Skill truth source.
 
 ### Minimum Skill v2 metadata
 
@@ -152,14 +186,17 @@ legacy Skills to claim evidence they do not yet have.
 Inputs/outputs, numeric confidence thresholds, embeddings, filesystem mappings,
 cost models and exhaustive Agent matrices are deferred.
 
-Select 5–8 representative Skills for full metadata. Legacy entries use an
-explicit, narrowly scoped `legacy-pending` assessment state; new or changed
-approved Skills cannot use that exception.
+If a future Skill v2 contract is introduced, select 5-8 representative Skills
+for full metadata first. Legacy entries must use an explicit, narrowly scoped
+`legacy-pending` assessment state; new or changed approved Skills cannot use
+that exception.
 
 Relations remain the only topology-edge authority. Fallbacks, capability maps
 and conflict membership are not copied into each Skill.
 
 ## 6. Batch C — Capability Graph and Lifecycle Recipes
+
+**State:** partially implemented for lifecycle coverage and routing policy.
 
 Extend capabilities with scope and ownership, relations with stable IDs and
 conditions, conflicts with machine-readable dispositions, and recipes with
@@ -174,7 +211,14 @@ priority gaps are requirements/RFC, data modeling, test strategy, documentation
 governance and post-incident learning. Security, privacy, live deployment and
 rollback execution remain external authorities.
 
+The current baseline classifies all 26 software-engineering lifecycle
+capabilities and leaves no unclassified lifecycle gap. Some capabilities are
+intentionally `recipe`, `runtime-resolved`, `native-sufficient`, or
+`human-authority` rather than curated Skill bodies.
+
 ## 7. Batch D — Cross-Repository Release v2
+
+**State:** future work requiring separate approval.
 
 This batch requires a separate user approval because it changes
 `codex-user-config`.
@@ -240,5 +284,3 @@ They must not mutate the working repository or access the network.
 The design is complete when each batch has a bounded contract, a failing test
 before implementation, deterministic outputs, no unresolved internal
 references, and no violation of the two-repository authority boundary.
-
-Batch A is the next implementation target after user review of this document.

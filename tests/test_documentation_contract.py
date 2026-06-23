@@ -92,6 +92,24 @@ class DocumentationContractTests(unittest.TestCase):
                 self.assertIn("visible-capability-inventory", text)
                 self.assertIn("runtimeResolution", text)
 
+    def test_governance_roadmap_matches_current_contract_state(self) -> None:
+        design = read("docs/superpowers/specs/2026-06-22-governance-contracts-design.md")
+
+        for phrase in (
+            "Current Implementation State",
+            "Batch A is complete",
+            "`registry/skills.json` remains schema 1",
+            "manifest v2 has not been published",
+            "The next bounded task is not a manifest upgrade",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, design)
+
+        self.assertNotIn(
+            "Batch A is the next implementation target after user review",
+            design,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
