@@ -4,6 +4,17 @@
     {
       "id": "recipe.interface-api-design",
       "trigger": "A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill",
+      "evidenceGates": [
+        "Boundary goals, callers, failure modes, compatibility expectations, and test surfaces are identified.",
+        "At least one candidate contract is reviewed against architecture and code-review capabilities."
+      ],
+      "failurePolicy": [
+        "If callers, compatibility needs, or failure modes are unknown, stop at requirements clarification.",
+        "If implementation evidence is unavailable, publish only a reversible interface proposal."
+      ],
+      "terminalCriteria": [
+        "A narrow contract, known tradeoffs, verification surface, and unresolved assumptions are documented."
+      ],
       "steps": [
         {"capability": "capability.requirements-clarification"},
         {"capability": "capability.architecture-design"},
@@ -13,6 +24,17 @@
     {
       "id": "recipe.data-modeling",
       "trigger": "A system needs explicit entities, invariants, ownership, retention, and change semantics without adding an overlapping dedicated Skill",
+      "evidenceGates": [
+        "Entities, invariants, ownership, retention, lifecycle semantics, and change risks are named.",
+        "Privacy or regulated-data implications are evaluated when the model touches sensitive data."
+      ],
+      "failurePolicy": [
+        "If authority or data sensitivity is unclear, stop before schema, migration, or retention commitments.",
+        "If no reviewable schema or contract exists, keep the output as a model proposal."
+      ],
+      "terminalCriteria": [
+        "The model has reviewable invariants, owners, retention assumptions, and reversible next steps."
+      ],
       "steps": [
         {"capability": "capability.requirements-clarification"},
         {"capability": "capability.architecture-design"},
@@ -24,6 +46,17 @@
     {
       "id": "recipe.test-strategy",
       "trigger": "A change needs risk-proportionate verification across test layers and delivery gates",
+      "evidenceGates": [
+        "Material risks are mapped to test layers, owners, commands, environments, and acceptance evidence.",
+        "Performance, security, and delivery gates are included when their risk conditions apply."
+      ],
+      "failurePolicy": [
+        "If risk ownership or execution environment is missing, identify the unverified risks instead of claiming coverage.",
+        "If an automated gate is unavailable, provide the smallest reproducible manual check."
+      ],
+      "terminalCriteria": [
+        "Each critical risk has an executable or explicitly deferred check with a stated evidence owner."
+      ],
       "steps": [
         {"capability": "capability.requirements-clarification"},
         {"capability": "capability.tdd", "when": "behavior is being added or corrected"},
@@ -35,6 +68,17 @@
     {
       "id": "recipe.telemetry-safety",
       "trigger": "Operational evidence may contain personal, confidential, regulated, or secret data",
+      "evidenceGates": [
+        "Purpose, minimization, redaction, retention, access, and trust-boundary assumptions are explicit.",
+        "Telemetry fields and destinations are reviewed before collection or export."
+      ],
+      "failurePolicy": [
+        "If privacy authority or data classification is missing, stop before adding or exporting telemetry.",
+        "If security review is unavailable for a new boundary, keep evidence local and bounded."
+      ],
+      "terminalCriteria": [
+        "Telemetry captures the critical behavior while minimizing sensitive exposure and documenting blind spots."
+      ],
       "steps": [
         {"capability": "capability.privacy-governance"},
         {"capability": "capability.observability", "when": "purpose, minimization, redaction, retention, and access are defined"},
@@ -44,6 +88,17 @@
     {
       "id": "recipe.release",
       "trigger": "A change is approaching a governed release boundary",
+      "evidenceGates": [
+        "Test, observability, performance, delivery, rollback, and release-readiness evidence are available or explicitly waived.",
+        "Go or no-go authority and affected-subject communication path are identified."
+      ],
+      "failurePolicy": [
+        "If release authority or rollback evidence is missing, hold the release.",
+        "If any gate is unavailable, record the smallest missing evidence and do not imply readiness."
+      ],
+      "terminalCriteria": [
+        "A go, no-go, or hold decision is recorded with readiness evidence, monitoring, and recovery posture."
+      ],
       "steps": [
         {"capability": "capability.test-strategy"},
         {"capability": "capability.observability"},
@@ -57,6 +112,17 @@
     {
       "id": "recipe.migration",
       "trigger": "An interface, dependency, feature, data contract, or system is replaced or retired",
+      "evidenceGates": [
+        "Compatibility, adoption, observability, rollback, and release-readiness evidence are present.",
+        "Affected consumers and removal gates are named."
+      ],
+      "failurePolicy": [
+        "If consumers or rollback path are unknown, preserve compatibility and defer removal.",
+        "If adoption evidence is incomplete, continue migration support rather than cutting over."
+      ],
+      "terminalCriteria": [
+        "Migration can proceed, pause, or retire only with documented adoption, compatibility, and rollback state."
+      ],
       "steps": [
         {"capability": "capability.migration-deprecation"},
         {"capability": "capability.test-strategy"},
@@ -68,6 +134,17 @@
     {
       "id": "recipe.rollback-recovery",
       "trigger": "A failed change or incident requires controlled restoration of a known-safe state",
+      "evidenceGates": [
+        "Current impact, known-safe target, observability signals, and accountable operator are identified.",
+        "Regression evidence is planned when recovery behavior changes."
+      ],
+      "failurePolicy": [
+        "If operator authority is missing, contain impact and stop before destructive recovery.",
+        "If the safe target is unknown, preserve evidence and escalate instead of guessing."
+      ],
+      "terminalCriteria": [
+        "Service or state objective is restored, contained, or explicitly escalated with remaining risk recorded."
+      ],
       "steps": [
         {"capability": "capability.observability"},
         {"capability": "capability.fault-diagnosis", "when": "safe restoration does not explain the cause"},
@@ -78,6 +155,17 @@
     {
       "id": "recipe.knowledge-capture",
       "trigger": "A completed decision, delivery, incident, or experiment produced reusable learning",
+      "evidenceGates": [
+        "Learning is tied to source evidence, sensitivity review, freshness, and expected retrieval value.",
+        "Authoritative documentation changes are separated from local notes and handoff material."
+      ],
+      "failurePolicy": [
+        "If provenance or sensitivity is unclear, keep the note local and do not promote it to authority.",
+        "If no future consumer is known, capture a minimal source-linked summary instead of expanding process."
+      ],
+      "terminalCriteria": [
+        "Reusable learning is captured, deliberately deferred, or handed off with provenance and authority boundaries."
+      ],
       "steps": [
         {"capability": "capability.retrospective-evolution"},
         {"capability": "capability.documentation-governance", "when": "learning changes an authoritative standard or operating path"},

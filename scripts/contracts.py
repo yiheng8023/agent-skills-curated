@@ -473,8 +473,9 @@ def validate_conflicts_document(value: object, document: str) -> None:
 
 def validate_recipes_document(value: object, document: str) -> None:
     _, recipes = _document(value, document, "recipes")
-    allowed = {"id", "trigger", "steps", "authorization"}
-    required = {"id", "trigger", "steps"}
+    gated_fields = {"evidenceGates", "failurePolicy", "terminalCriteria"}
+    allowed = {"id", "trigger", "steps", "authorization"} | gated_fields
+    required = {"id", "trigger", "steps"} | gated_fields
     step_allowed = {"capability", "when"}
     for index, raw in enumerate(recipes):
         pointer = f"/recipes/{index}"
@@ -487,6 +488,12 @@ def validate_recipes_document(value: object, document: str) -> None:
             require_min_length(
                 item["authorization"], 1, document, _join(pointer, "authorization")
             )
+        for field in sorted(gated_fields):
+            entries = require_array(item[field], document, _join(pointer, field), 1)
+            for entry_index, entry in enumerate(entries):
+                require_min_length(
+                    entry, 1, document, _join(_join(pointer, field), entry_index)
+                )
         steps = require_array(item["steps"], document, _join(pointer, "steps"), 1)
         for step_index, raw_step in enumerate(steps):
             step_pointer = _join(_join(pointer, "steps"), step_index)

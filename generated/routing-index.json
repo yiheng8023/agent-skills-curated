@@ -2,7 +2,7 @@
   "authoritativeInputDigests": {
     "registry/capabilities.json": "a73e507905c12974fd7f33b6a1a363c19ed8772347869804cee5c52f71e2200b",
     "registry/conflicts.json": "29510b16fbc22258e99b585a910a40e8626c7912d461673f904ac7180b74c360",
-    "registry/recipes.json": "0f623593d9623a2e425f8f03de68518b83d6dcf6b0164b03aa6c990b19e54023",
+    "registry/recipes.json": "191bc16709a6f74aa77414668accc0fb2d49ed88b239609e6df5078fd6cf0643",
     "registry/relations.json": "7b483f371ca5fb42b2c643f7b48c146e652772754c68f49bcfcffe4dbc441ee2",
     "registry/routing.json": "acf055daabf9224752923b4cc4f14db08f8fa5d6f3e1d1fe240981335606ca32"
   },
@@ -374,6 +374,14 @@
   "conflicts": [],
   "recipes": [
     {
+      "evidenceGates": [
+        "Boundary goals, callers, failure modes, compatibility expectations, and test surfaces are identified.",
+        "At least one candidate contract is reviewed against architecture and code-review capabilities."
+      ],
+      "failurePolicy": [
+        "If callers, compatibility needs, or failure modes are unknown, stop at requirements clarification.",
+        "If implementation evidence is unavailable, publish only a reversible interface proposal."
+      ],
       "id": "recipe.interface-api-design",
       "steps": [
         {
@@ -387,10 +395,21 @@
           "when": "a candidate contract or implementation exists"
         }
       ],
+      "terminalCriteria": [
+        "A narrow contract, known tradeoffs, verification surface, and unresolved assumptions are documented."
+      ],
       "trigger": "A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill"
     },
     {
       "authorization": "Irreversible schema, migration, retention, and regulated-data decisions remain subject to their accountable human authorities.",
+      "evidenceGates": [
+        "Entities, invariants, ownership, retention, lifecycle semantics, and change risks are named.",
+        "Privacy or regulated-data implications are evaluated when the model touches sensitive data."
+      ],
+      "failurePolicy": [
+        "If authority or data sensitivity is unclear, stop before schema, migration, or retention commitments.",
+        "If no reviewable schema or contract exists, keep the output as a model proposal."
+      ],
       "id": "recipe.data-modeling",
       "steps": [
         {
@@ -408,9 +427,20 @@
           "when": "a schema, contract, or migration candidate exists"
         }
       ],
+      "terminalCriteria": [
+        "The model has reviewable invariants, owners, retention assumptions, and reversible next steps."
+      ],
       "trigger": "A system needs explicit entities, invariants, ownership, retention, and change semantics without adding an overlapping dedicated Skill"
     },
     {
+      "evidenceGates": [
+        "Material risks are mapped to test layers, owners, commands, environments, and acceptance evidence.",
+        "Performance, security, and delivery gates are included when their risk conditions apply."
+      ],
+      "failurePolicy": [
+        "If risk ownership or execution environment is missing, identify the unverified risks instead of claiming coverage.",
+        "If an automated gate is unavailable, provide the smallest reproducible manual check."
+      ],
       "id": "recipe.test-strategy",
       "steps": [
         {
@@ -433,9 +463,20 @@
           "when": "repeatable automated gates are required"
         }
       ],
+      "terminalCriteria": [
+        "Each critical risk has an executable or explicitly deferred check with a stated evidence owner."
+      ],
       "trigger": "A change needs risk-proportionate verification across test layers and delivery gates"
     },
     {
+      "evidenceGates": [
+        "Purpose, minimization, redaction, retention, access, and trust-boundary assumptions are explicit.",
+        "Telemetry fields and destinations are reviewed before collection or export."
+      ],
+      "failurePolicy": [
+        "If privacy authority or data classification is missing, stop before adding or exporting telemetry.",
+        "If security review is unavailable for a new boundary, keep evidence local and bounded."
+      ],
       "id": "recipe.telemetry-safety",
       "steps": [
         {
@@ -450,10 +491,21 @@
           "when": "telemetry crosses a new trust boundary"
         }
       ],
+      "terminalCriteria": [
+        "Telemetry captures the critical behavior while minimizing sensitive exposure and documenting blind spots."
+      ],
       "trigger": "Operational evidence may contain personal, confidential, regulated, or secret data"
     },
     {
       "authorization": "Every merge, publication, release, deployment, migration, or rollback remains separately authorized.",
+      "evidenceGates": [
+        "Test, observability, performance, delivery, rollback, and release-readiness evidence are available or explicitly waived.",
+        "Go or no-go authority and affected-subject communication path are identified."
+      ],
+      "failurePolicy": [
+        "If release authority or rollback evidence is missing, hold the release.",
+        "If any gate is unavailable, record the smallest missing evidence and do not imply readiness."
+      ],
       "id": "recipe.release",
       "steps": [
         {
@@ -476,9 +528,20 @@
           "capability": "capability.release-readiness"
         }
       ],
+      "terminalCriteria": [
+        "A go, no-go, or hold decision is recorded with readiness evidence, monitoring, and recovery posture."
+      ],
       "trigger": "A change is approaching a governed release boundary"
     },
     {
+      "evidenceGates": [
+        "Compatibility, adoption, observability, rollback, and release-readiness evidence are present.",
+        "Affected consumers and removal gates are named."
+      ],
+      "failurePolicy": [
+        "If consumers or rollback path are unknown, preserve compatibility and defer removal.",
+        "If adoption evidence is incomplete, continue migration support rather than cutting over."
+      ],
       "id": "recipe.migration",
       "steps": [
         {
@@ -497,10 +560,21 @@
           "capability": "capability.release-readiness"
         }
       ],
+      "terminalCriteria": [
+        "Migration can proceed, pause, or retire only with documented adoption, compatibility, and rollback state."
+      ],
       "trigger": "An interface, dependency, feature, data contract, or system is replaced or retired"
     },
     {
       "authorization": "Production rollback and destructive recovery actions require the accountable operator's explicit authorization.",
+      "evidenceGates": [
+        "Current impact, known-safe target, observability signals, and accountable operator are identified.",
+        "Regression evidence is planned when recovery behavior changes."
+      ],
+      "failurePolicy": [
+        "If operator authority is missing, contain impact and stop before destructive recovery.",
+        "If the safe target is unknown, preserve evidence and escalate instead of guessing."
+      ],
       "id": "recipe.rollback-recovery",
       "steps": [
         {
@@ -515,9 +589,20 @@
           "when": "recovery behavior needs regression evidence"
         }
       ],
+      "terminalCriteria": [
+        "Service or state objective is restored, contained, or explicitly escalated with remaining risk recorded."
+      ],
       "trigger": "A failed change or incident requires controlled restoration of a known-safe state"
     },
     {
+      "evidenceGates": [
+        "Learning is tied to source evidence, sensitivity review, freshness, and expected retrieval value.",
+        "Authoritative documentation changes are separated from local notes and handoff material."
+      ],
+      "failurePolicy": [
+        "If provenance or sensitivity is unclear, keep the note local and do not promote it to authority.",
+        "If no future consumer is known, capture a minimal source-linked summary instead of expanding process."
+      ],
       "id": "recipe.knowledge-capture",
       "steps": [
         {
@@ -531,6 +616,9 @@
           "capability": "capability.cross-agent-handoff",
           "when": "another subject will continue the work"
         }
+      ],
+      "terminalCriteria": [
+        "Reusable learning is captured, deliberately deferred, or handed off with provenance and authority boundaries."
       ],
       "trigger": "A completed decision, delivery, incident, or experiment produced reusable learning"
     }

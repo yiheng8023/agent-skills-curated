@@ -71,7 +71,9 @@ Nodes may represent Skills, capabilities, artifacts, lifecycle phases,
 conditions, tools, adapters, policies, risks, and evidence. Typed edges express
 ordering, data flow, collaboration, alternatives, fallbacks, conflicts, and
 replacement. Recipes represent multi-node conditional workflows where a simple
-pairwise edge is insufficient.
+pairwise edge is insufficient. A Recipe is not just a list of steps: it must
+declare evidence gates, failure policy, and terminal criteria so a consumer can
+distinguish a completed composition from an unsafe partial path.
 
 Stable IDs survive renames. Every inventory change must regenerate derived
 indexes and report impacted routes, unresolved references, cycles where cycles

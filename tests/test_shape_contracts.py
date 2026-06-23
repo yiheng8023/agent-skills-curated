@@ -405,6 +405,29 @@ class ShapeTests(unittest.TestCase):
             validate_recipes_document, document, "/recipes/1/authorization"
         )
 
+    def test_recipes_require_gates_failure_policy_and_terminal_criteria(self) -> None:
+        for field in ("evidenceGates", "failurePolicy", "terminalCriteria"):
+            with self.subTest(field=field, mutation="missing"):
+                document = load("registry/recipes.json")
+                del document["recipes"][0][field]  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_recipes_document, document, f"/recipes/0/{field}"
+                )
+
+            with self.subTest(field=field, mutation="empty"):
+                document = load("registry/recipes.json")
+                document["recipes"][0][field] = []  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_recipes_document, document, f"/recipes/0/{field}"
+                )
+
+            with self.subTest(field=field, mutation="blank"):
+                document = load("registry/recipes.json")
+                document["recipes"][0][field] = [""]  # type: ignore[index]
+                self.assert_contract_error(
+                    validate_recipes_document, document, f"/recipes/0/{field}/0"
+                )
+
     def test_sources_validate_candidate_ids_revision_and_boolean_type(self) -> None:
         document = load("sources/lock.json")
         document["sources"][0]["candidateIds"][0] = 7  # type: ignore[index]
