@@ -4,10 +4,16 @@ Inspection date: 2026-06-24
 Source: <https://github.com/anthropics/skills>  
 Reviewed revision: `57546260929473d4e0d1c1bb75297be2fdfa1949`
 
-This document treats Anthropic official Skills as a dated external baseline
-and dated external capability baseline. It does not make those Skills part of
-this repository's managed inventory. In short: this is not managed inventory,
-not release manifest content, and not an execution path.
+Anthropic official Skills are the first recorded official external capability
+baseline instance in this repository.
+
+This is the first recorded instance of the official external capability
+baseline model described in
+`docs/official-external-capability-baselines.md`. It treats Anthropic official
+Skills as a dated external baseline and dated external capability baseline. It
+does not make those Skills part of this repository's managed inventory. In
+short: this is not managed inventory, not release manifest content, and not an
+execution path.
 
 ## Scope And Rules
 
@@ -25,9 +31,9 @@ not release manifest content, and not an execution path.
 - Use `skip` when the Skill is product-specific, not portable, or not aligned
   with this repository's agent-neutral scope.
 
-Anthropic official, runtime-owned, or first-party content remains external
-metadata and dated overlap evidence. It is not vendored here and does not enter
-`release-manifest.json`.
+Anthropic official, runtime-owned, or first-party content remains official
+external baseline evidence and dated overlap evidence. It is not vendored here
+and does not enter `release-manifest.json`.
 
 ## License And Provenance Findings
 

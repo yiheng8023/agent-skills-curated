@@ -50,6 +50,7 @@ class DocumentationContractTests(unittest.TestCase):
                 read("README.md"),
                 read("docs/architecture.md"),
                 read("policies/intake.md"),
+                read("docs/official-external-capability-baselines.md"),
                 read("docs/anthropic-official-skills-coverage.md"),
             )
         )
@@ -67,14 +68,35 @@ class DocumentationContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, corpus)
 
-    def test_anthropic_official_skills_are_external_baseline_not_inventory(self) -> None:
+    def test_official_external_baselines_are_not_managed_inventory(self) -> None:
+        baseline_policy = read("docs/official-external-capability-baselines.md")
         coverage = read("docs/anthropic-official-skills-coverage.md")
-        corpus = "\n".join((read("README.md"), read("AGENTS.md"), read("policies/intake.md")))
+        corpus = "\n".join(
+            (
+                read("README.md"),
+                read("AGENTS.md"),
+                read("docs/architecture.md"),
+                read("policies/intake.md"),
+            )
+        )
+
+        for phrase in (
+            "Official External Capability Baselines",
+            "dated external baseline",
+            "not managed inventory",
+            "not proof of live availability",
+            "coverage comparison",
+            "gap analysis",
+            "routing calibration",
+            "adapt-candidate",
+            "approved release",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, baseline_policy)
 
         for phrase in (
             "Anthropic official Skills",
-            "dated external baseline",
-            "not managed inventory",
+            "first recorded instance",
             "source-available",
             "all-rights-reserved",
             "covered",
@@ -87,7 +109,7 @@ class DocumentationContractTests(unittest.TestCase):
                 self.assertIn(phrase, coverage)
 
         for phrase in (
-            "coverage comparison",
+            "official external capability baselines",
             "does not approve import",
             "license/provenance",
             "neutralization",

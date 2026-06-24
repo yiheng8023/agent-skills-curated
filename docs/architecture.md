@@ -34,6 +34,15 @@ They may be consulted only as dated overlap evidence; such evidence does not
 transfer ownership, assert canonical identity, or prove current runtime
 availability. Their bodies must not be vendored or enter the release manifest.
 
+Official Skills, capability packages, workflow templates, and similar public
+capability bundles from Agent, runtime, platform, or tool ecosystems may be
+recorded as official external capability baselines. A baseline is a pinned
+coverage-calibration surface: it may inform gap analysis, overlap review,
+routing calibration, and future intake decisions, but it is not managed
+inventory, not release payload, and not proof of live availability. Anthropic
+official Skills are the first recorded instance, not a special-case vendor
+rule.
+
 A third-party candidate remains in source, intake, selection, and audit
 surfaces until it has passed source pinning, license, provenance, security,
 portability, overlap, adaptation, and validation review. Before approval it

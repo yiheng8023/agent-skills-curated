@@ -40,13 +40,16 @@ runtime-owned, built-in, or first-party Skill bodies. They may appear only in
 dated overlap evidence; that evidence is not managed inventory, repository
 ownership, or proof of current runtime availability.
 
-Anthropic official Skills are one dated external baseline for coverage
-comparison, not managed inventory. Their inspected coverage matrix is in
-`docs/anthropic-official-skills-coverage.md`. This repository uses that matrix
-to decide `covered`, `reference`, `adapt-candidate`, or `skip`; it does not
-blindly import the official repository and does not claim full coverage until a
-Skill's workflow, resources, scripts, trigger description, and output standard
-have been checked.
+Official Skills, capability packages, workflow templates, and similar public
+capability bundles from Agent, runtime, platform, or tool ecosystems may be
+recorded as dated official external capability baselines. Baselines are used
+for coverage comparison, gap analysis, and routing calibration; they are not
+managed inventory. This repository uses baseline matrices to decide
+`covered`, `reference`, `adapt-candidate`, or `skip`; it does not blindly
+import official repositories and does not claim full coverage until workflow,
+resources, scripts, trigger description, and output standard have been checked.
+The current first baseline instance is
+`docs/anthropic-official-skills-coverage.md`.
 
 ## Relationship To The Paired Repository
 
@@ -124,8 +127,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `audits/`: source-specific provenance and review evidence.
 - `docs/decisions/`: accepted governance decisions that constrain future
   contract changes.
+- `docs/official-external-capability-baselines.md`: general policy for official
+  external capability baseline handling.
 - `docs/anthropic-official-skills-coverage.md`: dated external baseline
-  coverage matrix for Anthropic official Skills.
+  coverage matrix for the first official baseline instance.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
   metadata and the 102-case structured policy corpus.
@@ -157,7 +162,7 @@ portability and overlap, adapt minimally, validate, update topology, and only
 then approve a new release inventory. Candidate dispositions may be `merge`,
 `adapter-only`, `recipe-only`, or `reject`; they are not runtime approval.
 
-Official Skill repositories may be used as external baselines, but the same
+Official external capability baselines may be used for comparison, but the same
 license, provenance, security, portability, overlap, and neutralization gates
 apply before any adaptation. Source-available or all-rights-reserved official
 content remains reference-only unless a separate permission path is approved.
