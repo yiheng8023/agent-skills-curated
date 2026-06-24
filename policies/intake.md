@@ -32,5 +32,13 @@ and adaptation path exists.
 
 A baseline row does not approve import.
 
+User-starred repositories and awesome lists are discovery hints only. Classify
+each source before intake as official baseline, third-party candidate, index,
+agent runtime, methodology, external capability metadata, reference-only, or
+rejected. Stars, popularity, or list membership do not prove license safety,
+quality, portability, maintenance, or execution approval.
+
+Stars are only discovery hints.
+
 An upstream validator is evidence about structure, not proof of safety,
 portability, semantic consistency, or runtime authorization.

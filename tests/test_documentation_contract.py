@@ -52,6 +52,7 @@ class DocumentationContractTests(unittest.TestCase):
                 read("policies/intake.md"),
                 read("docs/official-external-capability-baselines.md"),
                 read("docs/anthropic-official-skills-coverage.md"),
+                read("docs/starred-capability-source-discovery.md"),
             )
         )
 
@@ -64,6 +65,32 @@ class DocumentationContractTests(unittest.TestCase):
             "curated approved",
             "status=approved",
             "approved release inventory",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, corpus)
+
+    def test_starred_sources_are_discovery_hints_not_approval(self) -> None:
+        discovery = read("docs/starred-capability-source-discovery.md")
+        corpus = "\n".join((read("README.md"), read("policies/intake.md")))
+
+        for phrase in (
+            "Discovery surface",
+            "not approval",
+            "not installation",
+            "not managed inventory",
+            "third-party skill source",
+            "official external baseline",
+            "index / awesome list",
+            "risk / exclusion",
+            "normal intake process",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, discovery)
+
+        for phrase in (
+            "Stars are only discovery hints",
+            "do not prove license safety",
+            "must not enter `skills/`",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, corpus)

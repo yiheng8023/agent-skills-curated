@@ -131,6 +131,8 @@ consumer must probe its currently visible, authorized capability inventory.
   external capability baseline handling.
 - `docs/anthropic-official-skills-coverage.md`: dated external baseline
   coverage matrix for the first official baseline instance.
+- `docs/starred-capability-source-discovery.md`: user-starred discovery surface
+  triage for future candidate sources, baselines, indexes, and exclusions.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
   metadata and the 102-case structured policy corpus.
@@ -166,6 +168,12 @@ Official external capability baselines may be used for comparison, but the same
 license, provenance, security, portability, overlap, and neutralization gates
 apply before any adaptation. Source-available or all-rights-reserved official
 content remains reference-only unless a separate permission path is approved.
+
+User-starred repositories may seed discovery, but stars are not approval. A
+starred source may become an official baseline, third-party candidate, discovery
+index, external capability metadata, reference-only evidence, or rejection.
+It must not enter `skills/`, the manifest, generated routing projections, or a
+live execution path until the normal intake process closes.
 
 ## Safety Boundaries
 

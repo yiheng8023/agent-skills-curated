@@ -94,6 +94,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/decisions/`：已经接受的治理决策，用于约束后续 contract 变更；
 - `docs/official-external-capability-baselines.md`：官方外部能力基线的通用处理规则；
 - `docs/anthropic-official-skills-coverage.md`：第一份官方基线实例的带日期覆盖矩阵；
+- `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
+  基线、索引和排除项治理；
 - `generated/`：确定性派生投影，不是第二真相源；
 - `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 102 场景
   结构化策略语料；
@@ -124,6 +126,10 @@ python -B scripts/verify.py
 官方外部能力基线可以用于覆盖关系对照，但任何适配都仍需经过许可证、来源证明、安全、
 可移植性、重叠和中立化审查。source-available 或 all-rights-reserved 的官方内容只能
 作为 reference，除非另有明确授权路径。
+
+用户 star 的仓库可以作为发现入口，但 star 不等于批准。一个来源可能被归类为官方基线、
+第三方候选、发现索引、外部能力元数据、仅 reference 或 reject；在正常准入流程闭环前，
+不得进入 `skills/`、manifest、generated routing projection 或 live 执行路径。
 
 ## 安全边界
 
