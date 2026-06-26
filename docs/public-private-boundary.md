@@ -29,7 +29,7 @@ Keep these out of the public repository:
 
 A real user configuration repository, such as a private `codex-user-config`, may contain personal information, preferences, memory snapshots, account assumptions, local restore policy, installed-state notes, or private operational choices. It should remain private unless deliberately sanitized.
 
-If a public configuration example is useful, create a separate public template or mirror repository instead of exposing the private repo. The public version should contain:
+If a public configuration example is useful, create a separate public template such as `codex-user-config-template` instead of exposing the private repo. The public version should contain:
 
 - generic directory structure;
 - sample configuration with placeholder values;
@@ -38,6 +38,11 @@ If a public configuration example is useful, create a separate public template o
 - guidance on why a private user-owned configuration repo is recommended.
 
 The public template must not claim to be a live configuration, must not include the maintainer's personal settings, and must not be consumed as a source of truth by this curated Skill repository.
+
+`open-resource-governance` may serve as the public-safe hub for explaining the
+repository family, roadmap, promotion material, and public/private boundaries.
+It does not own this repository's Skill bodies, intake decisions, release
+manifests, or runtime installation.
 
 ## Declassification checklist
 

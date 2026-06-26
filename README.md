@@ -79,8 +79,13 @@ A real user configuration repository may contain personal information,
 preferences, memory snapshots, account assumptions, local restore policy, or
 private operational choices. It should remain private unless deliberately
 sanitized. If a public configuration example is useful, create a separate
-public template or mirror with placeholders and user-owned setup guidance,
-not a copy of the private repository.
+public template such as `codex-user-config-template`, with placeholders and
+user-owned setup guidance, not a copy of the private repository.
+
+The broader public-facing repository family may be explained through
+`open-resource-governance`. That hub can map this repository, `resource-radar`,
+configuration templates, and bookmark taxonomy repositories, but it does not
+own Skill release decisions, manifests, or runtime installation.
 
 ## Capability Layers And Routing
 
@@ -187,6 +192,10 @@ starred source may become an official baseline, third-party candidate, discovery
 index, external capability metadata, reference-only evidence, or rejection.
 It must not enter `skills/`, the manifest, generated routing projections, or a
 live execution path until the normal intake process closes.
+
+`resource-radar` may suggest third-party Skill or capability sources. Those
+suggestions remain advisory until this repository completes intake, review,
+adaptation, validation, topology update, and release-manifest update.
 
 ## Safety Boundaries
 
