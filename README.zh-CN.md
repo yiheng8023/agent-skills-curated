@@ -58,8 +58,11 @@ agent-skills-curated
 配对的消费侧并非单一仓库：`codex-user-config` 与 `claude-user-config` 均以本仓为下游消费方。各自负责自己的消费侧集成；本仓保持 agent 中立，不绑定任何单一 agent。
 
 真实用户配置仓可能包含个人信息、偏好、记忆快照、账号假设、本地恢复策略或私有运行选择，
-除非经过专门脱敏，否则应保持私有。如需公开配置示例，应另建公开模板或映射仓，使用占位值
-和用户自建指引，而不是复制私人仓库。
+除非经过专门脱敏，否则应保持私有。如需公开配置示例，应另建 `codex-user-config-template`
+这类公开模板，使用占位值和用户自建指引，而不是复制私人仓库。
+
+更宽的公开侧仓库家族可由 `open-resource-governance` 解释。该总入口可以映射本仓、
+`resource-radar`、配置模板和书签分类仓，但不拥有 Skill release 决策、manifest 或运行时安装。
 
 ## 能力分层与路由
 
@@ -138,6 +141,9 @@ python -B scripts/verify.py
 用户 star 的仓库可以作为发现入口，但 star 不等于批准。一个来源可能被归类为官方基线、
 第三方候选、发现索引、外部能力元数据、仅 reference 或 reject；在正常准入流程闭环前，
 不得进入 `skills/`、manifest、generated routing projection 或 live 执行路径。
+
+`resource-radar` 可以建议第三方 Skill 或能力来源。这些建议在本仓完成 intake、审查、适配、
+验证、拓扑更新和 release-manifest 更新前，始终只是 advisory。
 
 ## 安全边界
 
