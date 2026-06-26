@@ -58,6 +58,7 @@ REQUIRED_FILES = (
     "registry/conflicts.json", "registry/recipes.json",
     "registry/radar-feedback.json",
     "registry/mvp-candidate-batches.json",
+    "registry/mvp-candidate-reviews.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -79,6 +80,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
+    "docs/mvp-candidate-review-2026-06-27.md",
 )
 
 
@@ -101,6 +103,7 @@ def verify() -> None:
     scenarios_doc = load("registry/scenarios.json")
     sources_doc = load("sources/lock.json")
     mvp_batches_doc = load("registry/mvp-candidate-batches.json")
+    mvp_reviews_doc = load("registry/mvp-candidate-reviews.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -148,6 +151,14 @@ def verify() -> None:
         selection_document,
     )
     validate_mvp_candidate_batches(
+        mvp_batches_doc,
+        sources_doc,
+        selection_doc,
+        skills_doc,
+        manifest,
+    )
+    validate_mvp_candidate_reviews(
+        mvp_reviews_doc,
         mvp_batches_doc,
         sources_doc,
         selection_doc,
@@ -264,6 +275,116 @@ def validate_mvp_candidate_batches(
         ]:
             if phrase not in doc:
                 raise RuntimeError(f"MVP candidate batch doc missing phrase: {phrase}")
+
+
+def validate_mvp_candidate_reviews(
+    reviews_doc: dict[str, object],
+    batches_doc: dict[str, object],
+    sources_doc: dict[str, object],
+    selection_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if reviews_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP candidate reviews schema_version must be 1.")
+    if reviews_doc.get("status") != "pre_adaptation_review_recorded_not_approved":
+        raise RuntimeError("MVP candidate reviews must remain not approved.")
+
+    reviews = reviews_doc.get("reviews", [])
+    if len(reviews) != 1:
+        raise RuntimeError("Expected exactly one MVP candidate review.")
+    batches = batches_doc.get("batches", [])
+    if len(batches) != 1:
+        raise RuntimeError("Expected exactly one MVP candidate batch for review.")
+    batch = batches[0]
+    batch_candidates = {
+        candidate.get("candidate_id")
+        for candidate in batch.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+
+    source_records = {
+        item["id"]: item
+        for item in sources_doc.get("sources", [])
+        if isinstance(item, dict) and "id" in item
+    }
+    decisions = selection_doc.get("decisions", {})
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = "\n".join(
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    )
+
+    for review in reviews:
+        if review.get("batch_id") != batch.get("id"):
+            raise RuntimeError("MVP candidate review must reference the selected batch.")
+        if review.get("review_state") != "pre_adaptation_review_not_approved":
+            raise RuntimeError("MVP candidate review must remain pre-adaptation.")
+        if (
+            review.get("runtime_allowed")
+            or review.get("release_manifest_allowed")
+            or review.get("routing_projection_allowed")
+            or review.get("adapted_payload_allowed")
+            or review.get("source_text_redistributed")
+        ):
+            raise RuntimeError("MVP candidate review must not approve runtime, release, routing, adaptation, or source redistribution.")
+        source_id = review.get("source")
+        source = source_records.get(source_id)
+        if source is None:
+            raise RuntimeError(f"MVP candidate review references unknown source: {source_id}")
+        if review.get("revision") != source.get("revision") or review.get("revision") != selection_doc.get("revision"):
+            raise RuntimeError("MVP candidate review revision must match source lock and selection.")
+        if source_id != selection_doc.get("source"):
+            raise RuntimeError("MVP candidate review source must match selection document.")
+        evidence_doc = review.get("evidence_doc")
+        if not isinstance(evidence_doc, str) or not (ROOT / evidence_doc).is_file():
+            raise RuntimeError("MVP candidate review evidence doc is missing.")
+        for ref in review.get("review_refs", []):
+            if not (ROOT / ref).is_file():
+                raise RuntimeError(f"MVP candidate review has dead review ref: {ref}")
+        review_candidates = review.get("candidates", [])
+        review_ids = {
+            candidate.get("candidate_id")
+            for candidate in review_candidates
+            if isinstance(candidate, dict)
+        }
+        if review_ids != batch_candidates:
+            raise RuntimeError("MVP candidate review candidates must match the selected batch.")
+        for candidate in review_candidates:
+            candidate_id = candidate.get("candidate_id")
+            if candidate_id not in source.get("candidateIds", []):
+                raise RuntimeError(f"MVP reviewed candidate not listed in source lock: {candidate_id}")
+            if decisions.get(candidate_id) != candidate.get("source_selection_disposition"):
+                raise RuntimeError(f"MVP reviewed candidate selection drift: {candidate_id}")
+            if candidate.get("source_selection_disposition") != "merge":
+                raise RuntimeError(f"MVP review should contain only merge candidates: {candidate_id}")
+            if candidate.get("instruction_surface") != "instruction_only":
+                raise RuntimeError(f"MVP reviewed candidate must remain instruction-only: {candidate_id}")
+            if candidate.get("embedded_executable_artifacts"):
+                raise RuntimeError(f"MVP reviewed candidate cannot approve embedded executable artifacts: {candidate_id}")
+            upstream_hash = candidate.get("upstream_sha256")
+            if not isinstance(upstream_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", upstream_hash):
+                raise RuntimeError(f"MVP reviewed candidate has invalid upstream hash: {candidate_id}")
+            if candidate_id in approved_directories:
+                raise RuntimeError(f"MVP reviewed candidate already appears as approved Skill directory: {candidate_id}")
+            if f"skills/{candidate_id}/" in manifest_paths:
+                raise RuntimeError(f"MVP reviewed candidate appears in release manifest: {candidate_id}")
+            if not candidate.get("must_neutralize") or not candidate.get("mvp02_remaining_work"):
+                raise RuntimeError(f"MVP reviewed candidate must record neutralization and remaining work: {candidate_id}")
+
+    doc = (ROOT / "docs/mvp-candidate-review-2026-06-27.md").read_text(encoding="utf-8")
+    for phrase in [
+        "It is not approval",
+        "Runtime allowed",
+        "Release manifest allowed",
+        "Routing projection allowed",
+        "Adapted payload allowed",
+        "This document does not close MVP-02",
+        "Do not copy upstream source text into `skills/`",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP candidate review doc missing phrase: {phrase}")
 
 
 def main() -> int:
