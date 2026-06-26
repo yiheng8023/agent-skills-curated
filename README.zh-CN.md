@@ -100,6 +100,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/anthropic-official-skills-coverage.md`：第一份官方基线实例的带日期覆盖矩阵；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
+- `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
+- `docs/license-policy.md`：仓库自有代码、文档、生成投影、第三方 Skill 正文和官方基线的分层许可证策略；
 - `docs/public-private-boundary.md`：公开/私有发布边界和用户配置模板指引；
 - `docs/sustainability.md`：成本姿态、赞助边界与 free-first 纪律；
 - `generated/`：确定性派生投影，不是第二真相源；
@@ -146,6 +148,7 @@ python -B scripts/verify.py
 
 ## 开源就绪
 
-本仓开发期仍为私有。公开前，仓库所有者必须单独确认仓库可见性、许可证选择、赞助入口、
-第三方再分发边界和私有 overlay 清除。当前路径不需要 GitHub Pro 或 Team；只有当私有
+本仓开发期仍为私有。公开前，仓库所有者必须单独确认仓库可见性、赞助入口、第三方再分发边界和私有 overlay 清除。
+仓库自有代码和治理机制采用 Apache-2.0；仓库自有文档和公开治理文本按
+[`docs/license-policy.md`](docs/license-policy.md) 的分层策略治理。当前路径不需要 GitHub Pro 或 Team；只有当私有
 Actions 分钟、组织治理或多人审查确实需要时，才考虑升级。
