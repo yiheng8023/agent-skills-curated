@@ -1,5 +1,7 @@
 # Third-Party Notices
 
+The repository-level `LICENSE` and `NOTICE` cover repository-owned governance code, scripts, schemas, policies, tests, workflows, and documentation as described in `docs/license-policy.md`. They do not override the original licenses, provenance limits, or redistribution boundaries of third-party Skill bodies.
+
 ## addyosmani/agent-skills
 
 Selected and adapted Skills originate from
