@@ -140,6 +140,10 @@ consumer must probe its currently visible, authorized capability inventory.
   coverage matrix for the first official baseline instance.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
+- `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
+  attribution, and third-party Skill notices.
+- `docs/license-policy.md`: layered licensing for repo-owned code, docs,
+  generated projections, third-party Skill bodies, and official baselines.
 - `docs/public-private-boundary.md`: public/private release boundary and user-config template guidance.
 - `docs/sustainability.md`: cost posture, funding boundaries, and free-first discipline.
 - `generated/`: deterministic derived projections, never a second truth source.
@@ -197,8 +201,10 @@ live execution path until the normal intake process closes.
 ## Open-source readiness
 
 This repository is private during development. Before making it public, the
-owner must explicitly confirm repository visibility, license choice, funding
-links, third-party redistribution boundaries, and private-overlay removal.
+owner must explicitly confirm repository visibility, funding links, third-party
+redistribution boundaries, and private-overlay removal. Repository-owned code
+and governance machinery are Apache-2.0; repository-owned documentation and
+public governance text follow the layered policy in [`docs/license-policy.md`](docs/license-policy.md).
 GitHub Free is sufficient for the current path; GitHub Team or Pro is only a
 future option if private Actions minutes, organization governance, or team
 review needs require it.
