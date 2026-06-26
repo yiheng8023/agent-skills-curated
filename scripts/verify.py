@@ -60,6 +60,7 @@ REQUIRED_FILES = (
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
+    "registry/mvp-adaptation-review-checklist.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -83,6 +84,7 @@ REQUIRED_FILES = (
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
+    "docs/mvp02-adaptation-review-template.md",
 )
 
 
@@ -107,6 +109,7 @@ def verify() -> None:
     mvp_batches_doc = load("registry/mvp-candidate-batches.json")
     mvp_reviews_doc = load("registry/mvp-candidate-reviews.json")
     mvp_transition_gates_doc = load("registry/mvp-transition-gates.json")
+    mvp_adaptation_checklist_doc = load("registry/mvp-adaptation-review-checklist.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -174,6 +177,10 @@ def verify() -> None:
         mvp_reviews_doc,
         skills_doc,
         manifest,
+    )
+    validate_mvp_adaptation_review_checklist(
+        mvp_adaptation_checklist_doc,
+        mvp_transition_gates_doc,
     )
     validate_references(
         {
@@ -507,6 +514,87 @@ def validate_mvp_transition_gates(
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP transition gate doc missing phrase: {phrase}")
+
+
+def validate_mvp_adaptation_review_checklist(
+    checklist_doc: dict[str, object],
+    gates_doc: dict[str, object],
+) -> None:
+    if checklist_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP adaptation review checklist schema_version must be 1.")
+    if checklist_doc.get("status") != "template_only_not_adapted_output":
+        raise RuntimeError("MVP adaptation review checklist must remain template-only.")
+    if checklist_doc.get("adapted_output_present") is not False:
+        raise RuntimeError("MVP adaptation review checklist must not claim adapted output exists.")
+    if checklist_doc.get("approval_required_before_use") is not True:
+        raise RuntimeError("MVP adaptation review checklist must require approval before use.")
+
+    gates = gates_doc.get("gates", [])
+    if len(gates) != 1:
+        raise RuntimeError("MVP adaptation review checklist expects one transition gate.")
+    gate = gates[0]
+    if checklist_doc.get("gate_id") != gate.get("id"):
+        raise RuntimeError("MVP adaptation review checklist must reference the transition gate.")
+
+    gate_candidates = {
+        candidate.get("candidate_id")
+        for candidate in gate.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    checklist_candidates = {
+        candidate.get("candidate_id")
+        for candidate in checklist_doc.get("candidate_checklists", [])
+        if isinstance(candidate, dict)
+    }
+    if checklist_candidates != gate_candidates:
+        raise RuntimeError("MVP adaptation review checklist candidates must match transition gate.")
+
+    required_sections = {
+        "source_integrity",
+        "license_and_attribution",
+        "security",
+        "portability_and_neutralization",
+        "overlap_and_conflict",
+        "routing_and_runtime_boundary",
+        "validation",
+        "disposition",
+    }
+    actual_sections = {section.get("id") for section in checklist_doc.get("required_sections", [])}
+    missing = required_sections - actual_sections
+    if missing:
+        raise RuntimeError("MVP adaptation review checklist missing sections: " + ", ".join(sorted(missing)))
+
+    for section in checklist_doc.get("required_sections", []):
+        if not section.get("must_record"):
+            raise RuntimeError(f"MVP adaptation review checklist section missing must_record: {section.get('id')}")
+        if section.get("fail_closed_if_missing") is not True:
+            raise RuntimeError(f"MVP adaptation review checklist section must fail closed: {section.get('id')}")
+
+    for candidate in checklist_doc.get("candidate_checklists", []):
+        if not candidate.get("decision_questions"):
+            raise RuntimeError(f"MVP adaptation candidate checklist missing decision questions: {candidate.get('candidate_id')}")
+        if not candidate.get("forbidden_shortcuts"):
+            raise RuntimeError(f"MVP adaptation candidate checklist missing forbidden shortcuts: {candidate.get('candidate_id')}")
+
+    doc_path = checklist_doc.get("evidence_doc")
+    if doc_path != "docs/mvp02-adaptation-review-template.md":
+        raise RuntimeError("MVP adaptation review checklist evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Template only, not adapted output",
+        "Do not use this template as approval",
+        "Source integrity",
+        "License and attribution",
+        "Security",
+        "Portability and neutralization",
+        "Overlap and conflict",
+        "Routing and runtime boundary",
+        "Validation",
+        "Disposition",
+        "Fail closed",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP adaptation review template missing phrase: {phrase}")
 
 
 def main() -> int:
