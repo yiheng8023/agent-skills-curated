@@ -57,6 +57,10 @@ agent-skills-curated
 
 配对的消费侧并非单一仓库：`codex-user-config` 与 `claude-user-config` 均以本仓为下游消费方。各自负责自己的消费侧集成；本仓保持 agent 中立，不绑定任何单一 agent。
 
+真实用户配置仓可能包含个人信息、偏好、记忆快照、账号假设、本地恢复策略或私有运行选择，
+除非经过专门脱敏，否则应保持私有。如需公开配置示例，应另建公开模板或映射仓，使用占位值
+和用户自建指引，而不是复制私人仓库。
+
 ## 能力分层与路由
 
 三层资产不可混同：
@@ -96,6 +100,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/anthropic-official-skills-coverage.md`：第一份官方基线实例的带日期覆盖矩阵；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
+- `docs/public-private-boundary.md`：公开/私有发布边界和用户配置模板指引；
+- `docs/sustainability.md`：成本姿态、赞助边界与 free-first 纪律；
 - `generated/`：确定性派生投影，不是第二真相源；
 - `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 102 场景
   结构化策略语料；
@@ -137,3 +143,9 @@ python -B scripts/verify.py
 - 候选内容或带日期的重叠证据不得被描述为已经安装或可以执行；
 - 跨 Agent 可移植性不得削弱权限、安全、证据、许可证或真实环境限制；
 - 安装、账号连接、外部写入和信任边界变化由消费者侧处理，并需适用的授权。
+
+## 开源就绪
+
+本仓开发期仍为私有。公开前，仓库所有者必须单独确认仓库可见性、许可证选择、赞助入口、
+第三方再分发边界和私有 overlay 清除。当前路径不需要 GitHub Pro 或 Team；只有当私有
+Actions 分钟、组织治理或多人审查确实需要时，才考虑升级。
