@@ -56,6 +56,7 @@ REQUIRED_FILES = (
     "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
     "registry/capabilities.json", "registry/relations.json",
     "registry/conflicts.json", "registry/recipes.json",
+    "registry/radar-feedback.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",

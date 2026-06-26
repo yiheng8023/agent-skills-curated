@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "decisions": [
+    {
+      "id": "github:asgeirtj/system_prompts_leaks",
+      "disposition": "reject",
+      "appliesTo": ["skill_candidate"],
+      "reason": "Leaked prompt archive; do not ingest as a Skill source because provenance, policy, and safety posture are unsuitable for curated runtime content.",
+      "reviewRefs": ["docs/starred-capability-source-discovery.md"],
+      "runtimeEligible": false
+    }
+  ]
+}
