@@ -77,6 +77,17 @@ No starred source may enter `skills/`, `release-manifest.json`, generated
 routing projections, or a live execution path until it has completed the
 normal intake process.
 
+## Resource Radar Feedback
+
+When a discovered source is explicitly rejected, marked reference-only, or
+otherwise already handled by this curated repository, record the machine-readable
+feedback in `registry/radar-feedback.json`.
+
+This file is a read-only suppression surface for `resource-radar`. It lets the
+radar stop re-recommending already-decided or unsuitable Skill candidates without
+writing back to this repository and without parsing prose. It is not an approval
+surface, not a release manifest, and not runtime inventory.
+
 ## Next Review Slices
 
 1. Separate direct Skill sources from indexes and agent runtimes.
