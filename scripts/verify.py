@@ -61,6 +61,7 @@ REQUIRED_FILES = (
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
     "registry/mvp-adaptation-review-checklist.json",
+    "registry/mvp-approval-requests.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -85,6 +86,7 @@ REQUIRED_FILES = (
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
     "docs/mvp02-adaptation-review-template.md",
+    "docs/mvp02-adaptation-approval-request.md",
 )
 
 
@@ -110,6 +112,7 @@ def verify() -> None:
     mvp_reviews_doc = load("registry/mvp-candidate-reviews.json")
     mvp_transition_gates_doc = load("registry/mvp-transition-gates.json")
     mvp_adaptation_checklist_doc = load("registry/mvp-adaptation-review-checklist.json")
+    mvp_approval_requests_doc = load("registry/mvp-approval-requests.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -181,6 +184,11 @@ def verify() -> None:
     validate_mvp_adaptation_review_checklist(
         mvp_adaptation_checklist_doc,
         mvp_transition_gates_doc,
+    )
+    validate_mvp_approval_requests(
+        mvp_approval_requests_doc,
+        mvp_transition_gates_doc,
+        mvp_adaptation_checklist_doc,
     )
     validate_references(
         {
@@ -595,6 +603,102 @@ def validate_mvp_adaptation_review_checklist(
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP adaptation review template missing phrase: {phrase}")
+
+
+def validate_mvp_approval_requests(
+    requests_doc: dict[str, object],
+    gates_doc: dict[str, object],
+    checklist_doc: dict[str, object],
+) -> None:
+    if requests_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP approval requests schema_version must be 1.")
+    if requests_doc.get("status") != "pending_owner_decision":
+        raise RuntimeError("MVP approval request must remain pending owner decision.")
+    if requests_doc.get("approval_recorded") is not False:
+        raise RuntimeError("MVP approval request must not record approval.")
+    if requests_doc.get("adapted_output_present") is not False:
+        raise RuntimeError("MVP approval request must not claim adapted output exists.")
+
+    requests = requests_doc.get("requests", [])
+    if len(requests) != 1:
+        raise RuntimeError("Expected exactly one MVP approval request.")
+    gates = gates_doc.get("gates", [])
+    if len(gates) != 1:
+        raise RuntimeError("MVP approval request expects one transition gate.")
+    gate = gates[0]
+
+    request = requests[0]
+    if request.get("gate_id") != gate.get("id"):
+        raise RuntimeError("MVP approval request must reference the transition gate.")
+    if request.get("checklist_id") != checklist_doc.get("id"):
+        raise RuntimeError("MVP approval request must reference the adaptation checklist.")
+    if request.get("decision_state") != "pending_owner_decision":
+        raise RuntimeError("MVP approval request decision must remain pending.")
+    if request.get("approval_recorded") is not False:
+        raise RuntimeError("MVP approval request must not self-approve.")
+
+    gate_candidates = {
+        candidate.get("candidate_id")
+        for candidate in gate.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    request_candidates = set(request.get("candidate_ids", []))
+    if request_candidates != gate_candidates:
+        raise RuntimeError("MVP approval request candidates must match transition gate.")
+
+    current_permissions = request.get("current_permissions", {})
+    for key in [
+        "adapted_output_allowed",
+        "approved_payload_allowed",
+        "release_manifest_allowed",
+        "routing_projection_allowed",
+        "live_install_allowed",
+        "source_text_redistribution_allowed",
+    ]:
+        if current_permissions.get(key) is not False:
+            raise RuntimeError(f"MVP approval request must keep {key} false.")
+
+    required_requested_scope = {
+        "create adapted draft output in a non-runtime review surface",
+        "apply the MVP-02 adaptation review checklist",
+        "record candidate-specific disposition evidence",
+    }
+    requested_scope = set(request.get("requested_scope_if_approved", []))
+    if not required_requested_scope <= requested_scope:
+        raise RuntimeError("MVP approval request missing required requested scope.")
+
+    required_not_requested = {
+        "edit skills/",
+        "update release-manifest.json",
+        "update generated routing projections",
+        "install or sync live Agent environments",
+        "approve, release, or publish any candidate payload",
+    }
+    not_requested = set(request.get("explicitly_not_requested", []))
+    if not required_not_requested <= not_requested:
+        raise RuntimeError("MVP approval request missing explicit non-scope boundaries.")
+
+    if not request.get("safe_approval_phrases"):
+        raise RuntimeError("MVP approval request must provide safe approval phrases.")
+    if not request.get("next_state_if_approved"):
+        raise RuntimeError("MVP approval request must state next state if approved.")
+
+    doc_path = request.get("evidence_doc")
+    if doc_path != "docs/mvp02-adaptation-approval-request.md":
+        raise RuntimeError("MVP approval request evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Request only, not approval",
+        "Current decision: pending owner decision",
+        "No adapted output exists",
+        "Requested scope",
+        "Explicitly not requested",
+        "Safe approval phrases",
+        "Do not treat goal continuation as approval",
+        "If approved, the next state is adapted-output drafting",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP approval request doc missing phrase: {phrase}")
 
 
 def main() -> int:
