@@ -59,6 +59,7 @@ REQUIRED_FILES = (
     "registry/radar-feedback.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
+    "registry/mvp-transition-gates.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -81,6 +82,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
+    "docs/mvp02-adaptation-transition-gate.md",
 )
 
 
@@ -104,6 +106,7 @@ def verify() -> None:
     sources_doc = load("sources/lock.json")
     mvp_batches_doc = load("registry/mvp-candidate-batches.json")
     mvp_reviews_doc = load("registry/mvp-candidate-reviews.json")
+    mvp_transition_gates_doc = load("registry/mvp-transition-gates.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -162,6 +165,13 @@ def verify() -> None:
         mvp_batches_doc,
         sources_doc,
         selection_doc,
+        skills_doc,
+        manifest,
+    )
+    validate_mvp_transition_gates(
+        mvp_transition_gates_doc,
+        mvp_batches_doc,
+        mvp_reviews_doc,
         skills_doc,
         manifest,
     )
@@ -385,6 +395,118 @@ def validate_mvp_candidate_reviews(
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP candidate review doc missing phrase: {phrase}")
+
+
+def validate_mvp_transition_gates(
+    gates_doc: dict[str, object],
+    batches_doc: dict[str, object],
+    reviews_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if gates_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP transition gates schema_version must be 1.")
+    if gates_doc.get("status") != "awaiting_human_approval":
+        raise RuntimeError("MVP transition gate must remain awaiting human approval.")
+
+    gates = gates_doc.get("gates", [])
+    if len(gates) != 1:
+        raise RuntimeError("Expected exactly one MVP transition gate.")
+    batches = batches_doc.get("batches", [])
+    reviews = reviews_doc.get("reviews", [])
+    if len(batches) != 1 or len(reviews) != 1:
+        raise RuntimeError("MVP transition gate expects one batch and one review.")
+
+    batch = batches[0]
+    review = reviews[0]
+    batch_candidates = {
+        candidate.get("candidate_id")
+        for candidate in batch.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    review_candidates = {
+        candidate.get("candidate_id")
+        for candidate in review.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = "\n".join(
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    )
+
+    gate = gates[0]
+    if gate.get("batch_id") != batch.get("id"):
+        raise RuntimeError("MVP transition gate must reference the selected batch.")
+    if gate.get("review_id") != review.get("id"):
+        raise RuntimeError("MVP transition gate must reference the pre-adaptation review.")
+    if gate.get("transition_state") != "awaiting_human_approval":
+        raise RuntimeError("MVP transition gate must not advance without human approval.")
+    if gate.get("explicit_human_approval_required") is not True:
+        raise RuntimeError("MVP transition gate must require explicit human approval.")
+    if gate.get("current_human_approval_recorded") is not False:
+        raise RuntimeError("MVP transition gate must record that approval is not present yet.")
+
+    current_permissions = gate.get("current_permissions", {})
+    for key in [
+        "adapted_output_allowed",
+        "approved_payload_allowed",
+        "runtime_allowed",
+        "release_manifest_allowed",
+        "routing_projection_allowed",
+        "live_install_allowed",
+        "source_text_redistribution_allowed",
+    ]:
+        if current_permissions.get(key) is not False:
+            raise RuntimeError(f"MVP transition gate must keep {key} false.")
+
+    gate_candidates = {
+        candidate.get("candidate_id")
+        for candidate in gate.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    if gate_candidates != batch_candidates or gate_candidates != review_candidates:
+        raise RuntimeError("MVP transition gate candidates must match batch and review.")
+    for candidate in gate.get("candidates", []):
+        candidate_id = candidate.get("candidate_id")
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"MVP transition candidate already approved: {candidate_id}")
+        if f"skills/{candidate_id}/" in manifest_paths:
+            raise RuntimeError(f"MVP transition candidate appears in release manifest: {candidate_id}")
+        if candidate.get("next_allowed_state") != "adaptation_draft_after_explicit_approval":
+            raise RuntimeError(f"MVP transition candidate has wrong next state: {candidate_id}")
+        if not candidate.get("required_decisions"):
+            raise RuntimeError(f"MVP transition candidate needs required decisions: {candidate_id}")
+
+    for list_key in [
+        "preconditions_before_adaptation",
+        "allowed_after_explicit_approval",
+        "disallowed_without_approval",
+        "fail_closed_conditions",
+        "acceptance_to_leave_gate",
+    ]:
+        values = gate.get(list_key)
+        if not isinstance(values, list) or not values:
+            raise RuntimeError(f"MVP transition gate missing non-empty {list_key}.")
+
+    doc_path = gate.get("evidence_doc")
+    if doc_path != "docs/mvp02-adaptation-transition-gate.md":
+        raise RuntimeError("MVP transition gate evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "This is a gate, not approval",
+        "Current state: awaiting explicit human approval",
+        "Do not create adapted output",
+        "Do not edit `skills/`",
+        "Do not update `release-manifest.json`",
+        "Do not update generated routing projections",
+        "Do not install or sync live Agent environments",
+        "Fail closed",
+        "Acceptance to leave this gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP transition gate doc missing phrase: {phrase}")
 
 
 def main() -> int:
