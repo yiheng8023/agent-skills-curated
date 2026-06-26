@@ -63,6 +63,7 @@ REQUIRED_FILES = (
     "registry/mvp-adaptation-review-checklist.json",
     "registry/mvp-approval-requests.json",
     "registry/mvp02-preflight-readiness.json",
+    "registry/mvp02-post-approval-execution-plan.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -89,6 +90,7 @@ REQUIRED_FILES = (
     "docs/mvp02-adaptation-review-template.md",
     "docs/mvp02-adaptation-approval-request.md",
     "docs/mvp02-preflight-readiness.md",
+    "docs/mvp02-post-approval-execution-plan.md",
 )
 
 
@@ -116,6 +118,7 @@ def verify() -> None:
     mvp_adaptation_checklist_doc = load("registry/mvp-adaptation-review-checklist.json")
     mvp_approval_requests_doc = load("registry/mvp-approval-requests.json")
     mvp02_preflight_doc = load("registry/mvp02-preflight-readiness.json")
+    mvp02_post_approval_plan_doc = load("registry/mvp02-post-approval-execution-plan.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -202,6 +205,15 @@ def verify() -> None:
         mvp_approval_requests_doc,
         skills_doc,
         manifest,
+    )
+    validate_mvp02_post_approval_execution_plan(
+        mvp02_post_approval_plan_doc,
+        mvp02_preflight_doc,
+        mvp_batches_doc,
+        mvp_reviews_doc,
+        mvp_transition_gates_doc,
+        mvp_adaptation_checklist_doc,
+        mvp_approval_requests_doc,
     )
     validate_references(
         {
@@ -862,6 +874,142 @@ def validate_mvp02_preflight_readiness(
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP-02 preflight readiness doc missing phrase: {phrase}")
+
+
+def validate_mvp02_post_approval_execution_plan(
+    plan_doc: dict[str, object],
+    preflight_doc: dict[str, object],
+    batches_doc: dict[str, object],
+    reviews_doc: dict[str, object],
+    gates_doc: dict[str, object],
+    checklist_doc: dict[str, object],
+    requests_doc: dict[str, object],
+) -> None:
+    if plan_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-02 post-approval execution plan schema_version must be 1.")
+    if plan_doc.get("status") != "post_approval_plan_ready_not_executable_without_owner_approval":
+        raise RuntimeError("MVP-02 post-approval execution plan must remain non-executable before approval.")
+    if plan_doc.get("not_approval") is not True:
+        raise RuntimeError("MVP-02 post-approval execution plan must explicitly not be approval.")
+    if plan_doc.get("approval_recorded") is not False:
+        raise RuntimeError("MVP-02 post-approval execution plan must not record approval.")
+    if plan_doc.get("adapted_output_present") is not False:
+        raise RuntimeError("MVP-02 post-approval execution plan must not claim adapted output exists.")
+
+    planned_output_root = plan_doc.get("planned_output_root")
+    if planned_output_root != "drafts/mvp02-adaptation/":
+        raise RuntimeError("MVP-02 post-approval execution plan must use the declared draft root.")
+    if (ROOT / planned_output_root).exists():
+        raise RuntimeError("MVP-02 planned output root exists before approval.")
+
+    batches = batches_doc.get("batches", [])
+    reviews = reviews_doc.get("reviews", [])
+    gates = gates_doc.get("gates", [])
+    requests = requests_doc.get("requests", [])
+    if len(batches) != 1 or len(reviews) != 1 or len(gates) != 1 or len(requests) != 1:
+        raise RuntimeError("MVP-02 post-approval plan expects one batch, review, gate, and request.")
+    batch = batches[0]
+    review = reviews[0]
+    gate = gates[0]
+    request = requests[0]
+
+    expected_refs = {
+        "batch_id": batch.get("id"),
+        "review_id": review.get("id"),
+        "gate_id": gate.get("id"),
+        "checklist_id": checklist_doc.get("id"),
+        "approval_request_id": request.get("id"),
+        "preflight_record": "registry/mvp02-preflight-readiness.json",
+    }
+    for key, expected_value in expected_refs.items():
+        if plan_doc.get(key) != expected_value:
+            raise RuntimeError(f"MVP-02 post-approval execution plan reference mismatch: {key}")
+
+    batch_candidates = {
+        candidate.get("candidate_id")
+        for candidate in batch.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    request_candidates = set(request.get("candidate_ids", []))
+    plan_candidates = set(plan_doc.get("candidate_ids", []))
+    preflight_candidates = set(preflight_doc.get("candidate_ids", []))
+    if plan_candidates != batch_candidates or plan_candidates != request_candidates or plan_candidates != preflight_candidates:
+        raise RuntimeError("MVP-02 post-approval execution plan candidate set mismatch.")
+
+    if set(plan_doc.get("safe_approval_phrases", [])) != set(request.get("safe_approval_phrases", [])):
+        raise RuntimeError("MVP-02 post-approval execution plan safe approval phrases must match request.")
+    if plan_doc.get("next_state_if_approved") != request.get("next_state_if_approved"):
+        raise RuntimeError("MVP-02 post-approval execution plan next state must match request.")
+
+    for permissions in [
+        request.get("current_permissions", {}),
+        preflight_doc.get("current_permissions", {}),
+        plan_doc.get("current_permissions", {}),
+    ]:
+        for key, value in permissions.items():
+            if value is not False:
+                raise RuntimeError(f"MVP-02 post-approval execution plan permission must remain false: {key}")
+
+    required_steps = [
+        "record_approval_event",
+        "create_non_runtime_review_surface",
+        "draft_candidate_adaptations",
+        "complete_review_checklist",
+        "run_verification",
+        "stop_before_next_gate",
+    ]
+    actual_steps = [step.get("id") for step in plan_doc.get("execution_sequence_after_approval", [])]
+    if actual_steps != required_steps:
+        raise RuntimeError("MVP-02 post-approval execution plan step order changed.")
+    for step in plan_doc.get("execution_sequence_after_approval", []):
+        if not step.get("goal") or not step.get("must_verify"):
+            raise RuntimeError(f"MVP-02 post-approval execution plan step missing goal or verification: {step.get('id')}")
+
+    required_disallowed = {
+        "create adapted candidate output",
+        "create planned_output_root",
+        "edit skills/",
+        "update release-manifest.json",
+        "update generated routing projections",
+        "install or sync live Agent environments",
+        "approve, release, or publish any candidate payload",
+        "redistribute upstream source text as approved curated payload",
+    }
+    if set(plan_doc.get("still_disallowed_until_approval", [])) != required_disallowed:
+        raise RuntimeError("MVP-02 post-approval execution plan still_disallowed list drifted.")
+
+    required_next_evidence = {
+        "approval event record",
+        "adapted draft location under planned_output_root",
+        "completed checklist sections",
+        "candidate-specific disposition",
+        "verification command results",
+        "explicit record that manifest, routing projection, and live install remain unchanged",
+    }
+    if set(plan_doc.get("next_required_evidence_if_approved", [])) != required_next_evidence:
+        raise RuntimeError("MVP-02 post-approval execution plan next evidence changed.")
+
+    doc_path = plan_doc.get("evidence_doc")
+    if doc_path != "docs/mvp02-post-approval-execution-plan.md":
+        raise RuntimeError("MVP-02 post-approval execution plan evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "This is a plan, not approval",
+        "approval recorded: false",
+        "adapted output present: false",
+        "planned output root: drafts/mvp02-adaptation/",
+        "Goal continuation is not approval",
+        "Do not create `drafts/mvp02-adaptation/`",
+        "Stop before the next gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP-02 post-approval execution plan doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link MVP-02 post-approval execution plan.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link MVP-02 post-approval execution plan.")
 
 
 def main() -> int:

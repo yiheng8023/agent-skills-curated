@@ -103,6 +103,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/anthropic-official-skills-coverage.md`：第一份官方基线实例的带日期覆盖矩阵；
 - `docs/mvp02-preflight-readiness.md`：当前 MVP-02 preflight 记录；表示可以请求 owner
   批准，但不是批准，也不是适配产物；
+- `docs/mvp02-post-approval-execution-plan.md`：仅在明确批准后使用的适配草案执行计划；
+  当前不是批准，也还不可执行；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
