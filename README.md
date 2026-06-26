@@ -75,6 +75,13 @@ The paired consumer side is not a single repository: `codex-user-config` and
 its own consumer-side integration; this repository stays agent-neutral and
 binds to none.
 
+A real user configuration repository may contain personal information,
+preferences, memory snapshots, account assumptions, local restore policy, or
+private operational choices. It should remain private unless deliberately
+sanitized. If a public configuration example is useful, create a separate
+public template or mirror with placeholders and user-owned setup guidance,
+not a copy of the private repository.
+
 ## Capability Layers And Routing
 
 Three layers are deliberately noninterchangeable:
@@ -133,6 +140,8 @@ consumer must probe its currently visible, authorized capability inventory.
   coverage matrix for the first official baseline instance.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
+- `docs/public-private-boundary.md`: public/private release boundary and user-config template guidance.
+- `docs/sustainability.md`: cost posture, funding boundaries, and free-first discipline.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
   metadata and the 102-case structured policy corpus.
@@ -184,3 +193,12 @@ live execution path until the normal intake process closes.
   or real environment constraints.
 - Installation, account connection, external writes, and trust-boundary
   changes remain consumer-side actions requiring applicable authorization.
+
+## Open-source readiness
+
+This repository is private during development. Before making it public, the
+owner must explicitly confirm repository visibility, license choice, funding
+links, third-party redistribution boundaries, and private-overlay removal.
+GitHub Free is sufficient for the current path; GitHub Team or Pro is only a
+future option if private Actions minutes, organization governance, or team
+review needs require it.
