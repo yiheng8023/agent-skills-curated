@@ -27,9 +27,21 @@ Keep these out of the public repository:
 
 ## User configuration repositories
 
-A real user configuration repository, such as a private `codex-user-config`, may contain personal information, preferences, memory snapshots, account assumptions, local restore policy, installed-state notes, or private operational choices. It should remain private unless deliberately sanitized.
+A real user configuration repository may contain personal information,
+preferences, memory snapshots, account assumptions, local restore policy,
+installed-state notes, or private operational choices. It should remain
+private unless deliberately sanitized. `codex-user-config` and
+`claude-user-config` are current private examples, not the boundary of the
+model.
 
-If a public configuration example is useful, create a separate public template such as `codex-user-config-template` instead of exposing the private repo. The public version should contain:
+The public-template pattern is generic in purpose: agent-environment migration,
+cloud sync/backup, verification, restore, rollback, and runtime integration.
+Concrete templates may still be agent-specific because each agent stores
+different settings, memory, hooks, tools, MCPs, plugins, and account state.
+
+If a public configuration example is useful, create a separate public template
+such as `codex-user-config-template` or `claude-user-config-template` instead
+of exposing the private repo. The public version should contain:
 
 - generic directory structure;
 - sample configuration with placeholder values;

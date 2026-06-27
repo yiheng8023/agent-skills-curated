@@ -8,11 +8,13 @@ governance evidence, capability topology, and deterministic release manifests.
 ## Repository Role
 
 This repository governs reusable Skill assets from intake through an approved,
-auditable release. It is the agent-neutral upstream producer for downstream
-consumer configuration lanes. The real Codex and Claude consumer repositories
-are private user-configuration repos; public readers should start from the
-public-safe templates `codex-user-config-template` and
-`claude-user-config-template`.
+auditable release. It is an agent-neutral producer for downstream consumer
+configuration lanes. Codex and Claude are the currently characterized consumer
+examples because they are the maintainer's active environments; they are not
+the boundary of the model. Public readers should start from the public-safe
+templates `codex-user-config-template` and `claude-user-config-template`,
+which demonstrate a broader pattern for agent-environment migration, cloud
+sync/backup, verification, and restore.
 
 ## What This Repository Provides
 
@@ -59,12 +61,12 @@ The current first baseline instance is
 The dependency and authority direction is one-way:
 
 ```text
-Public reader entry points
+Current public reader entry points
   codex-user-config-template
   claude-user-config-template
     -> show public-safe structure, placeholders, and user-owned setup guidance
 
-Private consumer repositories
+Current private consumer repositories
   codex-user-config
   claude-user-config
     -> may consume a pinned reviewed revision and release manifest
@@ -82,6 +84,11 @@ memory, account assumptions, preferences, or local machine state. They are the
 public way to understand the consumer-side pattern. The private Codex and
 Claude configuration repositories are real downstream consumers, but ordinary
 public users should not need access to them.
+
+The consumer-side pattern is generic even when a concrete implementation is
+agent-specific. Future agents or toolchains can add their own public template
+and private overlay once their runtime files, settings, memory, hooks, tools,
+permissions, and restore behavior have been mapped.
 
 Consumer repositories do not take ownership of third-party Skill-body
 governance. This repository does not take ownership of consumer-side
@@ -134,9 +141,11 @@ The `capability-router` is the Codex consumer's decision mechanism, not a
 universal prerequisite. The invocation chain is consumer-agent-specific: for
 example, Claude Code loads its instruction file every session and surfaces
 Skills and MCP tools to the model directly, with no capability-router step.
-Only Codex and Claude are characterized today; other agents' chains are not yet
-mapped. This repository names mechanisms structurally and stays agent-neutral,
-open, and compatible — it must not hard-code any single agent's chain.
+Codex and Claude are the first characterized consumer lanes, not the complete
+set of possible consumers. Other agents' chains must be mapped as evidence
+before this repository describes their install, routing, or restore behavior.
+This repository names mechanisms structurally and stays agent-neutral, open,
+and compatible — it must not hard-code any single agent's chain.
 
 Schema-2 runtime coverage is structurally product-neutral. A
 `runtime-resolved` capability carries

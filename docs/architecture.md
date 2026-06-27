@@ -1,16 +1,20 @@
 # Architecture
 
-## Two Repository Model
+## Producer / Consumer Model
 
-`codex-user-config` owns portable user configuration, the canonical capability
-router, authorization boundaries, and restoration order. This repository owns
-the reviewed Skill supply chain and its semantic relationships.
+Consumer configuration repositories own portable user configuration,
+agent-specific runtime integration, authorization boundaries, and restoration
+order. The current characterized private consumers are `codex-user-config` and
+`claude-user-config`; public users should learn the pattern through
+`codex-user-config-template` and `claude-user-config-template`. This repository
+owns the reviewed Skill supply chain and its semantic relationships.
 
-The repositories have a one-way producer-consumer relationship. This
-repository produces reviewed content and deterministic release evidence; it
-does not install, does not write to `codex-user-config`, and does not write to a
-live Agent environment. The configuration repository pins a reviewed revision,
-then plans, backs up, installs, verifies, and rolls back managed Skill paths.
+The repositories have a one-way producer-consumer relationship for Skill
+release artifacts. This repository produces reviewed content and deterministic
+release evidence; it does not install, does not write to private configuration
+repositories, and does not write to a live Agent environment. A consumer
+configuration repository pins a reviewed revision, then plans, backs up,
+installs, verifies, and rolls back managed Skill paths.
 
 The consumer-owned runtime sequence is:
 
@@ -24,6 +28,12 @@ The consumer-owned runtime sequence is:
 
 Steps 1-7 describe consumer behavior, not executable responsibilities of this
 repository.
+
+The consumer-side configuration pattern is generic in purpose: environment
+migration, cloud sync/backup, restore, verification, rollback, and runtime
+integration. Concrete templates may be agent-specific because each agent has
+different files, settings, memory surfaces, hooks, plugins, MCPs, tools, and
+account state.
 
 ## Capability Layers And Decisions
 
