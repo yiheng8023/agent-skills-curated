@@ -107,6 +107,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   已停在 release 或 runtime 闸门之前；
 - `docs/mvp02-adapted-draft-review.md`：非运行时适配草案审查证据；不是批准
   payload、不是路由、也不是 live install；
+- `docs/mvp03-release-or-routing-preflight.md`：下一闸门预检与授权请求；不是
+  release、routing、manifest 或 runtime 批准；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

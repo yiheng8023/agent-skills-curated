@@ -149,6 +149,8 @@ consumer must probe its currently visible, authorized capability inventory.
   post-approval adapted-draft step; stopped before release or runtime gates.
 - `docs/mvp02-adapted-draft-review.md`: non-runtime adapted draft review
   evidence; not approved payload, not routing, and not live install.
+- `docs/mvp03-release-or-routing-preflight.md`: next-gate preflight and
+  approval request; not release, routing, manifest, or runtime approval.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
