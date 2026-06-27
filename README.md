@@ -9,8 +9,10 @@ governance evidence, capability topology, and deterministic release manifests.
 
 This repository governs reusable Skill assets from intake through an approved,
 auditable release. It is the agent-neutral upstream producer for downstream
-consumer configuration repositories, currently including `codex-user-config`
-and `claude-user-config`.
+consumer configuration lanes. The real Codex and Claude consumer repositories
+are private user-configuration repos; public readers should start from the
+public-safe templates `codex-user-config-template` and
+`claude-user-config-template`.
 
 ## What This Repository Provides
 
@@ -31,7 +33,8 @@ retained only as non-runtime historical evidence.
 This repository does not own user configuration, authentication, runtime
 memory, Plugins, Apps, MCP account state, installation permissions, or live
 environment state. It does not install, does not write to
-`codex-user-config`, and does not write to a live Agent environment.
+private consumer configuration repositories such as `codex-user-config` or
+`claude-user-config`, and does not write to a live Agent environment.
 
 Official, runtime-owned, or built-in Skill bodies remain environment-owned.
 This curated repository governs third-party Skill bodies and an abstract,
@@ -56,31 +59,42 @@ The current first baseline instance is
 The dependency and authority direction is one-way:
 
 ```text
-codex-user-config
-  -> consumes a pinned reviewed revision and release manifest
-  -> plans, backs up, installs, verifies, and rolls back managed Skill paths
+Public reader entry points
+  codex-user-config-template
+  claude-user-config-template
+    -> show public-safe structure, placeholders, and user-owned setup guidance
+
+Private consumer repositories
+  codex-user-config
+  claude-user-config
+    -> may consume a pinned reviewed revision and release manifest
+    -> plan, back up, install, verify, and roll back managed Skill paths
 
 agent-skills-curated
   -> owns reviewed Skill content, provenance, topology, conflicts, policies,
      audits, and deterministic release manifests
-  -> does not write back to codex-user-config or live Agent environments
+  -> does not write back to private consumer configuration repositories or
+     live Agent environments
 ```
 
-`codex-user-config` does not take ownership of third-party Skill-body
-governance. This repository does not take ownership of consumer-side
-installation or runtime integration.
+The public templates do not contain the maintainer's private configuration,
+memory, account assumptions, preferences, or local machine state. They are the
+public way to understand the consumer-side pattern. The private Codex and
+Claude configuration repositories are real downstream consumers, but ordinary
+public users should not need access to them.
 
-The paired consumer side is not a single repository: `codex-user-config` and
-`claude-user-config` both consume this repository as a downstream. Each owns
-its own consumer-side integration; this repository stays agent-neutral and
-binds to none.
+Consumer repositories do not take ownership of third-party Skill-body
+governance. This repository does not take ownership of consumer-side
+installation or runtime integration. Each consumer owns its own integration;
+this repository stays agent-neutral and binds to none.
 
 A real user configuration repository may contain personal information,
 preferences, memory snapshots, account assumptions, local restore policy, or
 private operational choices. It should remain private unless deliberately
 sanitized. If a public configuration example is useful, create a separate
-public template such as `codex-user-config-template`, with placeholders and
-user-owned setup guidance, not a copy of the private repository.
+public template such as `codex-user-config-template` or
+`claude-user-config-template`, with placeholders and user-owned setup guidance,
+not a copy of the private repository.
 
 The broader public-facing repository family may be explained through
 `open-resource-governance`. That hub can map this repository, `resource-radar`,
