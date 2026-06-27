@@ -118,6 +118,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/mvp03-release-routing-execution.md`：owner 批准后的后续闸门；将两个
   候选合并进现有 approved Skill payload，将 `spec-driven-development` 建模为
   recipe/routing projection，并把 runtime install proof 交给消费仓执行；
+- `docs/mvp06-lifecycle-feedback.md`：来自已验证消费仓安装结果的生命周期反馈，
+  包含资源雷达去重元数据，以及下一批前先暂停观察的决策；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
@@ -125,7 +127,7 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/public-private-boundary.md`：公开/私有发布边界和用户配置模板指引；
 - `docs/sustainability.md`：成本姿态、赞助边界与 free-first 纪律；
 - `generated/`：确定性派生投影，不是第二真相源；
-- `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 102 场景
+- `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 104 场景
   结构化策略语料；
 - `release-manifest.json`：批准 payload 的精确路径、大小和哈希；
 - `scripts/`：只负责验证和确定性投影生成。
@@ -141,7 +143,7 @@ python -B scripts/verify.py
 ```
 
 验证覆盖 registry 契约、引用、派生文件一致性、来源证据、精确 payload、输入绑定的
-路由投影、全部 26 个生命周期节点和 102 个确定性对抗场景。自然语言理解仍由 Agent
+路由投影、全部 26 个生命周期节点和 104 个确定性对抗场景。自然语言理解仍由 Agent
 负责；模拟器验证归一化后的策略决策，不伪装成关键词分类器。它不会安装 Skill。
 
 ## 更新规则

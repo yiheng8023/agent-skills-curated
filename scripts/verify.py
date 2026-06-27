@@ -72,6 +72,7 @@ REQUIRED_FILES = (
     "registry/mvp03-approval-events.json",
     "registry/mvp03-release-or-routing-candidate-review.json",
     "registry/mvp03-release-routing-execution.json",
+    "registry/mvp06-lifecycle-feedback.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -105,6 +106,7 @@ REQUIRED_FILES = (
     "docs/mvp03-release-or-routing-approval-request.md",
     "docs/mvp03-release-or-routing-candidate-review.md",
     "docs/mvp03-release-routing-execution.md",
+    "docs/mvp06-lifecycle-feedback.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -125,6 +127,7 @@ def verify() -> None:
     relations_doc = load("registry/relations.json")
     conflicts_doc = load("registry/conflicts.json")
     recipes_doc = load("registry/recipes.json")
+    radar_feedback_doc = load("registry/radar-feedback.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -144,6 +147,7 @@ def verify() -> None:
     mvp03_approval_events_doc = load("registry/mvp03-approval-events.json")
     mvp03_release_or_routing_candidate_review_doc = load("registry/mvp03-release-or-routing-candidate-review.json")
     mvp03_release_routing_execution_doc = load("registry/mvp03-release-routing-execution.json")
+    mvp06_lifecycle_feedback_doc = load("registry/mvp06-lifecycle-feedback.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -152,6 +156,7 @@ def verify() -> None:
     validate_relations_document(relations_doc, "registry/relations.json")
     validate_conflicts_document(conflicts_doc, "registry/conflicts.json")
     validate_recipes_document(recipes_doc, "registry/recipes.json")
+    validate_radar_feedback(radar_feedback_doc)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -307,6 +312,17 @@ def verify() -> None:
         scenarios_doc,
         manifest,
     )
+    validate_mvp06_lifecycle_feedback(
+        mvp06_lifecycle_feedback_doc,
+        mvp03_release_routing_execution_doc,
+        mvp03_release_or_routing_candidate_review_doc,
+        skills_doc,
+        manifest,
+    )
+    validate_mvp06_radar_feedback_projection(
+        radar_feedback_doc,
+        mvp06_lifecycle_feedback_doc,
+    )
     validate_references(
         {
             "skills": skills_doc,
@@ -349,6 +365,85 @@ def verify() -> None:
                     raise RuntimeError(f"Dead adopted-Skill reference in {item['directory']}: {reference}")
 
     subprocess.run([sys.executable, str(ROOT / "scripts/build_topology.py"), "--check"], check=True)
+
+
+def validate_radar_feedback(feedback_doc: dict[str, object]) -> None:
+    if feedback_doc.get("schema") != 1:
+        raise RuntimeError("Radar feedback schema must be 1.")
+    decisions = feedback_doc.get("decisions", [])
+    if not isinstance(decisions, list) or not decisions:
+        raise RuntimeError("Radar feedback must contain decisions.")
+    seen: set[str] = set()
+    allowed_dispositions = {
+        "reject",
+        "reference-only",
+        "already-reviewed",
+        "approved-elsewhere",
+    }
+    for decision in decisions:
+        if not isinstance(decision, dict):
+            raise RuntimeError("Radar feedback decisions must be objects.")
+        decision_id = decision.get("id")
+        if not isinstance(decision_id, str) or not decision_id:
+            raise RuntimeError("Radar feedback decision id is required.")
+        if decision_id in seen:
+            raise RuntimeError(f"Duplicate radar feedback decision: {decision_id}")
+        seen.add(decision_id)
+        if decision.get("disposition") not in allowed_dispositions:
+            raise RuntimeError(f"Radar feedback disposition is unsupported: {decision_id}")
+        applies_to = decision.get("appliesTo", [])
+        if not isinstance(applies_to, list) or not applies_to:
+            raise RuntimeError(f"Radar feedback appliesTo is required: {decision_id}")
+        if "skill_candidate" not in applies_to:
+            raise RuntimeError(f"Radar feedback must be scoped to skill candidates: {decision_id}")
+        if not isinstance(decision.get("reason"), str) or not decision.get("reason"):
+            raise RuntimeError(f"Radar feedback reason is required: {decision_id}")
+        if not isinstance(decision.get("runtimeEligible"), bool):
+            raise RuntimeError(f"Radar feedback runtimeEligible must be boolean: {decision_id}")
+        for ref in decision.get("reviewRefs", []):
+            if not isinstance(ref, str) or not (ROOT / ref).is_file():
+                raise RuntimeError(f"Radar feedback has dead review ref: {decision_id}/{ref}")
+
+
+def validate_mvp06_radar_feedback_projection(
+    feedback_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+) -> None:
+    decisions = {
+        item.get("id"): item
+        for item in feedback_doc.get("decisions", [])
+        if isinstance(item, dict)
+    }
+    metadata = lifecycle_doc.get("radar_feedback", {}).get("metadata", [])
+    for item in metadata:
+        source = item.get("source")
+        candidate_id = item.get("candidate_id")
+        if not isinstance(source, str) or "@" not in source:
+            raise RuntimeError(f"MVP-06 radar feedback source is invalid: {candidate_id}")
+        feedback_id, source_revision = source.rsplit("@", 1)
+        decision = decisions.get(feedback_id)
+        if not decision:
+            raise RuntimeError(f"Missing MVP-06 radar feedback decision: {feedback_id}")
+        if decision.get("disposition") != "already-reviewed":
+            raise RuntimeError(f"MVP-06 radar feedback source disposition drifted: {feedback_id}")
+        if decision.get("runtimeEligible") is not False:
+            raise RuntimeError(f"MVP-06 radar feedback source must not be runtime eligible: {feedback_id}")
+        if "dedupe_signal" not in decision.get("appliesTo", []):
+            raise RuntimeError(f"MVP-06 radar feedback must be a dedupe signal: {feedback_id}")
+        candidate_feedback = {
+            entry.get("candidateId"): entry
+            for entry in decision.get("candidateFeedback", [])
+            if isinstance(entry, dict)
+        }
+        candidate_entry = candidate_feedback.get(candidate_id)
+        if not candidate_entry:
+            raise RuntimeError(f"Missing MVP-06 candidate feedback: {candidate_id}")
+        if candidate_entry.get("sourceRevision") != source_revision:
+            raise RuntimeError(f"MVP-06 candidate feedback revision drifted: {candidate_id}")
+        if candidate_entry.get("outcome") != item.get("outcome"):
+            raise RuntimeError(f"MVP-06 candidate feedback outcome drifted: {candidate_id}")
+        if candidate_entry.get("runtimeSurface") != item.get("runtime_surface"):
+            raise RuntimeError(f"MVP-06 candidate feedback runtime surface drifted: {candidate_id}")
 
 
 def validate_mvp_candidate_batches(
@@ -2160,6 +2255,160 @@ def validate_mvp03_release_routing_execution(
         raise RuntimeError("README.md must link MVP-03 execution.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link MVP-03 execution.")
+
+
+def validate_mvp06_lifecycle_feedback(
+    lifecycle_doc: dict[str, object],
+    execution_doc: dict[str, object],
+    candidate_review_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if lifecycle_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-06 lifecycle feedback schema_version must be 1.")
+    if lifecycle_doc.get("record_id") != "mvp06-lifecycle-feedback-2026-06-27":
+        raise RuntimeError("MVP-06 lifecycle feedback record id mismatch.")
+    if lifecycle_doc.get("status") != "lifecycle_feedback_recorded":
+        raise RuntimeError("MVP-06 lifecycle feedback status mismatch.")
+    if lifecycle_doc.get("not_completion_claim") is not True:
+        raise RuntimeError("MVP-06 lifecycle feedback must not claim global completion.")
+    if lifecycle_doc.get("source_execution_record") != "registry/mvp03-release-routing-execution.json":
+        raise RuntimeError("MVP-06 lifecycle feedback must reference MVP-03 execution.")
+    if lifecycle_doc.get("consumer_repository") != "codex-user-config":
+        raise RuntimeError("MVP-06 consumer repository mismatch.")
+    if lifecycle_doc.get("consumer_head") != "a89b61737f066118b13264510cb4dbe5566e2269":
+        raise RuntimeError("MVP-06 consumer head mismatch.")
+
+    runtime_evidence = lifecycle_doc.get("runtime_evidence", {})
+    if not isinstance(runtime_evidence, dict):
+        raise RuntimeError("MVP-06 runtime evidence must be an object.")
+    if runtime_evidence.get("install_plan") != {
+        "add": 0,
+        "unchanged": 17,
+        "replace": 2,
+        "retire": 0,
+    }:
+        raise RuntimeError("MVP-06 install plan drifted.")
+    if runtime_evidence.get("installed_curated_skills") != 19:
+        raise RuntimeError("MVP-06 installed curated Skill count mismatch.")
+    if runtime_evidence.get("replaced") != ["grill-with-docs", "review"]:
+        raise RuntimeError("MVP-06 replaced Skill list mismatch.")
+    if runtime_evidence.get("routing_index") != "replaced and verified":
+        raise RuntimeError("MVP-06 routing index evidence mismatch.")
+    if runtime_evidence.get("private_runtime_details") != "private":
+        raise RuntimeError("MVP-06 must keep private runtime details private.")
+
+    candidate_ids = candidate_review_doc.get("candidate_ids", [])
+    if candidate_ids != execution_doc.get("candidate_ids", candidate_ids):
+        raise RuntimeError("MVP-06 candidate ids must match MVP-03 records.")
+    expected_lifecycle = {
+        "spec-driven-development": (
+            "accepted_as_recipe_projection",
+            "recipe.spec-driven-development",
+        ),
+        "documentation-and-adrs": (
+            "accepted_as_merge_into_existing_skill",
+            "skill.curated.grill-with-docs",
+        ),
+        "code-review-and-quality": (
+            "accepted_as_merge_into_existing_skill",
+            "skill.curated.review",
+        ),
+    }
+    lifecycle_items = {
+        item.get("candidate_id"): item
+        for item in lifecycle_doc.get("candidate_lifecycle", [])
+        if isinstance(item, dict)
+    }
+    if set(lifecycle_items) != set(candidate_ids) or set(lifecycle_items) != set(expected_lifecycle):
+        raise RuntimeError("MVP-06 lifecycle candidates must match the selected batch.")
+
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    for candidate_id, item in lifecycle_items.items():
+        expected_state, expected_surface = expected_lifecycle[candidate_id]
+        if item.get("lifecycle_state") != expected_state:
+            raise RuntimeError(f"MVP-06 lifecycle state mismatch: {candidate_id}")
+        if item.get("runtime_surface") != expected_surface:
+            raise RuntimeError(f"MVP-06 runtime surface mismatch: {candidate_id}")
+        if item.get("decision") != "keep_active":
+            raise RuntimeError(f"MVP-06 lifecycle decision mismatch: {candidate_id}")
+        if item.get("deprecated") or item.get("retired"):
+            raise RuntimeError(f"MVP-06 must not deprecate or retire selected candidate: {candidate_id}")
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"MVP-06 must not add standalone approved Skill directory: {candidate_id}")
+        if f"skills/{candidate_id}/" in manifest_paths:
+            raise RuntimeError(f"MVP-06 must not add standalone candidate to manifest: {candidate_id}")
+
+    radar_feedback = lifecycle_doc.get("radar_feedback", {})
+    if not isinstance(radar_feedback, dict):
+        raise RuntimeError("MVP-06 radar feedback must be an object.")
+    if radar_feedback.get("safe_to_publish") is not True:
+        raise RuntimeError("MVP-06 radar feedback must be public-safe.")
+    if radar_feedback.get("dedupe_action") != "suppress_exact_candidate_reproposal_for_this_batch":
+        raise RuntimeError("MVP-06 radar feedback dedupe action mismatch.")
+    if radar_feedback.get("does_not_reject_upstream_repository") is not True:
+        raise RuntimeError("MVP-06 must not reject the upstream repository globally.")
+    if radar_feedback.get("does_not_approve_new_sources") is not True:
+        raise RuntimeError("MVP-06 must not approve new sources.")
+    metadata = radar_feedback.get("metadata", [])
+    if len(metadata) != len(candidate_ids):
+        raise RuntimeError("MVP-06 radar feedback metadata count mismatch.")
+    for item in metadata:
+        if not isinstance(item, dict):
+            raise RuntimeError("MVP-06 radar feedback metadata entries must be objects.")
+        candidate_id = item.get("candidate_id")
+        if candidate_id not in expected_lifecycle:
+            raise RuntimeError(f"MVP-06 radar feedback unknown candidate: {candidate_id}")
+        if item.get("runtime_surface") != expected_lifecycle[candidate_id][1]:
+            raise RuntimeError(f"MVP-06 radar feedback runtime surface mismatch: {candidate_id}")
+        if item.get("outcome") != expected_lifecycle[candidate_id][0]:
+            raise RuntimeError(f"MVP-06 radar feedback outcome mismatch: {candidate_id}")
+
+    next_step = lifecycle_doc.get("next_step_decision", {})
+    if not isinstance(next_step, dict):
+        raise RuntimeError("MVP-06 next step decision must be an object.")
+    if next_step.get("decision") != "pause_and_observe_before_next_batch":
+        raise RuntimeError("MVP-06 next step decision mismatch.")
+    if next_step.get("new_batch_requires_new_gate") is not True:
+        raise RuntimeError("MVP-06 must require a new gate for another batch.")
+    if next_step.get("new_terminal_consumer_requires_graduation_gate") is not True:
+        raise RuntimeError("MVP-06 must require a graduation gate for another consumer.")
+
+    validation = lifecycle_doc.get("validation", {})
+    if validation.get("status") != "passed":
+        raise RuntimeError("MVP-06 validation must be passed.")
+    if set(validation.get("required_commands", [])) != {
+        "python -B scripts/verify.py",
+        "python -B scripts/simulate_routing.py --all",
+    }:
+        raise RuntimeError("MVP-06 validation commands drifted.")
+
+    doc_path = lifecycle_doc.get("evidence_doc")
+    if doc_path != "docs/mvp06-lifecycle-feedback.md":
+        raise RuntimeError("MVP-06 evidence doc path mismatch.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "not a completion claim",
+        "not a new source intake approval",
+        "not a public promotion decision",
+        "Resource radar feedback",
+        "pause and observe before the next batch",
+        "another terminal consumer requires a separate graduation gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP-06 lifecycle doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link MVP-06 lifecycle feedback.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link MVP-06 lifecycle feedback.")
 
 
 def main() -> int:

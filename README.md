@@ -163,6 +163,9 @@ consumer must probe its currently visible, authorized capability inventory.
   merges two candidates into existing approved Skill payloads, models
   `spec-driven-development` as a recipe/routing projection, and hands runtime
   install proof to the consumer repository.
+- `docs/mvp06-lifecycle-feedback.md`: lifecycle feedback from the verified
+  consumer install, including radar dedupe metadata and the pause/observe
+  decision before the next batch.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
@@ -173,7 +176,7 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/sustainability.md`: cost posture, funding boundaries, and free-first discipline.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
-  metadata and the 102-case structured policy corpus.
+  metadata and the 104-case structured policy corpus.
 - `release-manifest.json`: exact approved payload paths, sizes, and hashes.
 - `scripts/`: validation and deterministic projection generation only.
 
@@ -189,7 +192,7 @@ python -B scripts/verify.py
 
 Verification covers registry contracts, references, generated parity, source
 evidence, the exact manifest payload, input-bound routing projection, all 26
-lifecycle nodes, and 102 deterministic adversarial scenarios. Natural-language
+lifecycle nodes, and 104 deterministic adversarial scenarios. Natural-language
 interpretation remains an Agent responsibility; the simulator verifies the
 normalized policy decision and does not pretend to be a keyword classifier.
 It does not install a Skill.
