@@ -8,6 +8,11 @@ Review template:
 and
 [`docs/mvp03-release-or-routing-review-template.md`](mvp03-release-or-routing-review-template.md).
 
+Approval request:
+[`registry/mvp03-release-or-routing-approval-request.json`](../registry/mvp03-release-or-routing-approval-request.json)
+and
+[`docs/mvp03-release-or-routing-approval-request.md`](mvp03-release-or-routing-approval-request.md).
+
 This is a preflight and approval request, not approval.
 
 ## Current state

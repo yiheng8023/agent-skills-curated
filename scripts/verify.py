@@ -68,6 +68,7 @@ REQUIRED_FILES = (
     "registry/mvp02-adapted-drafts.json",
     "registry/mvp03-release-or-routing-preflight.json",
     "registry/mvp03-release-or-routing-review-template.json",
+    "registry/mvp03-release-or-routing-approval-request.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -98,6 +99,7 @@ REQUIRED_FILES = (
     "docs/mvp02-adapted-draft-review.md",
     "docs/mvp03-release-or-routing-preflight.md",
     "docs/mvp03-release-or-routing-review-template.md",
+    "docs/mvp03-release-or-routing-approval-request.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -133,6 +135,7 @@ def verify() -> None:
     mvp02_adapted_drafts_doc = load("registry/mvp02-adapted-drafts.json")
     mvp03_release_or_routing_preflight_doc = load("registry/mvp03-release-or-routing-preflight.json")
     mvp03_release_or_routing_review_template_doc = load("registry/mvp03-release-or-routing-review-template.json")
+    mvp03_release_or_routing_approval_request_doc = load("registry/mvp03-release-or-routing-approval-request.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -266,6 +269,11 @@ def verify() -> None:
         mvp03_release_or_routing_review_template_doc,
         mvp03_release_or_routing_preflight_doc,
         mvp02_adapted_drafts_doc,
+    )
+    validate_mvp03_release_or_routing_approval_request(
+        mvp03_release_or_routing_approval_request_doc,
+        mvp03_release_or_routing_preflight_doc,
+        mvp03_release_or_routing_review_template_doc,
     )
     validate_references(
         {
@@ -1392,6 +1400,10 @@ def validate_mvp03_release_or_routing_preflight(
         raise RuntimeError("MVP-03 preflight must reference the MVP-03 review template.")
     if preflight_doc.get("review_template_doc") != "docs/mvp03-release-or-routing-review-template.md":
         raise RuntimeError("MVP-03 preflight must reference the MVP-03 review template doc.")
+    if preflight_doc.get("approval_request_record") != "registry/mvp03-release-or-routing-approval-request.json":
+        raise RuntimeError("MVP-03 preflight must reference the MVP-03 approval request.")
+    if preflight_doc.get("approval_request_doc") != "docs/mvp03-release-or-routing-approval-request.md":
+        raise RuntimeError("MVP-03 preflight must reference the MVP-03 approval request doc.")
     if preflight_doc.get("gate_id") != "mvp03-release-or-routing-candidate-review":
         raise RuntimeError("MVP-03 preflight gate id mismatch.")
 
@@ -1507,6 +1519,7 @@ def validate_mvp03_release_or_routing_preflight(
         "Still disallowed",
         "Candidate review bias",
         "Review template",
+        "Approval request",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP-03 preflight doc missing phrase: {phrase}")
@@ -1633,6 +1646,95 @@ def validate_mvp03_release_or_routing_review_template(
         raise RuntimeError("README.md must link MVP-03 review template.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link MVP-03 review template.")
+
+
+def validate_mvp03_release_or_routing_approval_request(
+    request_doc: dict[str, object],
+    preflight_doc: dict[str, object],
+    template_doc: dict[str, object],
+) -> None:
+    if request_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-03 approval request schema_version must be 1.")
+    if request_doc.get("id") != preflight_doc.get("approval_request_id"):
+        raise RuntimeError("MVP-03 approval request id must match preflight.")
+    if request_doc.get("status") != "awaiting_owner_approval":
+        raise RuntimeError("MVP-03 approval request must await owner approval.")
+    if request_doc.get("not_approval") is not True:
+        raise RuntimeError("MVP-03 approval request must explicitly avoid approval.")
+    if request_doc.get("approval_recorded") is not False:
+        raise RuntimeError("MVP-03 approval request must not record approval.")
+    if request_doc.get("source_preflight_record") != "registry/mvp03-release-or-routing-preflight.json":
+        raise RuntimeError("MVP-03 approval request must reference the preflight.")
+    if request_doc.get("review_template") != template_doc.get("evidence_doc", "").replace("docs/", "registry/").replace(".md", ".json"):
+        raise RuntimeError("MVP-03 approval request must reference the review template.")
+    if request_doc.get("candidate_ids") != preflight_doc.get("candidate_ids"):
+        raise RuntimeError("MVP-03 approval request candidates must match preflight.")
+
+    permissions = request_doc.get("current_permissions", {})
+    for key, value in permissions.items():
+        expected = key == "approval_request_allowed"
+        if value is not expected:
+            raise RuntimeError(f"MVP-03 approval request permission mismatch: {key}")
+
+    required_requested_scope = {
+        "enter candidate-specific release-or-routing review for the three MVP-02 adapted drafts",
+        "apply the MVP-03 review template to record a decision for each candidate",
+        "decide per draft whether it remains reference-only, becomes a recipe/routing proposal, merges into an existing approved Skill, becomes a release-payload candidate, or is rejected",
+        "record rationale, evidence, rejected alternatives, boundary assertions, validation results, and next gate for each candidate",
+    }
+    if set(request_doc.get("requested_scope_if_approved", [])) != required_requested_scope:
+        raise RuntimeError("MVP-03 approval request requested scope changed.")
+
+    required_disallowed = {
+        "edit skills/",
+        "update release-manifest.json",
+        "update generated routing projections",
+        "install or sync live Agent environments",
+        "approve, release, or publish any candidate payload",
+        "redistribute upstream source text as approved curated payload",
+    }
+    if set(request_doc.get("explicitly_not_requested", [])) != required_disallowed:
+        raise RuntimeError("MVP-03 approval request explicitly_not_requested changed.")
+    if set(request_doc.get("still_disallowed", [])) != required_disallowed:
+        raise RuntimeError("MVP-03 approval request still_disallowed changed.")
+    if request_doc.get("safe_approval_phrases") != preflight_doc.get("safe_approval_phrases"):
+        raise RuntimeError("MVP-03 approval request safe approval phrases must match preflight.")
+    if request_doc.get("next_state_if_approved") != "release_or_routing_candidate_review":
+        raise RuntimeError("MVP-03 approval request next state mismatch.")
+
+    required_next_evidence = {
+        "owner approval event record",
+        "candidate-specific release/routing disposition record",
+        "rationale for release payload, recipe/routing proposal, merge, reference-only, or reject",
+        "verification command results",
+        "explicit record that live install, publication, and source redistribution remain unchanged unless separately approved",
+    }
+    if set(request_doc.get("next_required_evidence_if_approved", [])) != required_next_evidence:
+        raise RuntimeError("MVP-03 approval request next required evidence changed.")
+
+    doc_path = request_doc.get("evidence_doc")
+    if doc_path != "docs/mvp03-release-or-routing-approval-request.md":
+        raise RuntimeError("MVP-03 approval request evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "This is an approval request, not approval.",
+        "approval recorded: false",
+        "candidate review allowed: false",
+        "Requested approval",
+        "批准进入 MVP-03 release/routing 候选审查阶段",
+        "Approve MVP-03 release-or-routing candidate review only",
+        "Explicitly not requested",
+        "Until the approval event exists, MVP-03 remains preflight-only",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP-03 approval request doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link MVP-03 approval request.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link MVP-03 approval request.")
 
 
 def main() -> int:

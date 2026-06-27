@@ -153,6 +153,8 @@ consumer must probe its currently visible, authorized capability inventory.
   approval request; not release, routing, manifest, or runtime approval.
 - `docs/mvp03-release-or-routing-review-template.md`: template-only candidate
   review contract to use after owner approval; not a candidate decision.
+- `docs/mvp03-release-or-routing-approval-request.md`: formal owner approval
+  request for MVP-03 candidate review; awaiting approval.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

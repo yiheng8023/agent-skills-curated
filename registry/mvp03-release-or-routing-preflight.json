@@ -10,6 +10,8 @@
   "evidence_doc": "docs/mvp03-release-or-routing-preflight.md",
   "review_template": "registry/mvp03-release-or-routing-review-template.json",
   "review_template_doc": "docs/mvp03-release-or-routing-review-template.md",
+  "approval_request_record": "registry/mvp03-release-or-routing-approval-request.json",
+  "approval_request_doc": "docs/mvp03-release-or-routing-approval-request.md",
   "gate_id": "mvp03-release-or-routing-candidate-review",
   "approval_request_id": "mvp03-release-or-routing-review-approval-request-2026-06-27",
   "candidate_ids": [
