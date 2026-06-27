@@ -3,6 +3,11 @@
 Machine-readable record:
 [`registry/mvp03-release-or-routing-preflight.json`](../registry/mvp03-release-or-routing-preflight.json).
 
+Review template:
+[`registry/mvp03-release-or-routing-review-template.json`](../registry/mvp03-release-or-routing-review-template.json)
+and
+[`docs/mvp03-release-or-routing-review-template.md`](mvp03-release-or-routing-review-template.md).
+
 This is a preflight and approval request, not approval.
 
 ## Current state

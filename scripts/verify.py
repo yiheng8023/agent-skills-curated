@@ -67,6 +67,7 @@ REQUIRED_FILES = (
     "registry/mvp02-approval-events.json",
     "registry/mvp02-adapted-drafts.json",
     "registry/mvp03-release-or-routing-preflight.json",
+    "registry/mvp03-release-or-routing-review-template.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -96,6 +97,7 @@ REQUIRED_FILES = (
     "docs/mvp02-post-approval-execution-plan.md",
     "docs/mvp02-adapted-draft-review.md",
     "docs/mvp03-release-or-routing-preflight.md",
+    "docs/mvp03-release-or-routing-review-template.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -130,6 +132,7 @@ def verify() -> None:
     mvp02_approval_events_doc = load("registry/mvp02-approval-events.json")
     mvp02_adapted_drafts_doc = load("registry/mvp02-adapted-drafts.json")
     mvp03_release_or_routing_preflight_doc = load("registry/mvp03-release-or-routing-preflight.json")
+    mvp03_release_or_routing_review_template_doc = load("registry/mvp03-release-or-routing-review-template.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -258,6 +261,11 @@ def verify() -> None:
         mvp02_adapted_drafts_doc,
         skills_doc,
         manifest,
+    )
+    validate_mvp03_release_or_routing_review_template(
+        mvp03_release_or_routing_review_template_doc,
+        mvp03_release_or_routing_preflight_doc,
+        mvp02_adapted_drafts_doc,
     )
     validate_references(
         {
@@ -1380,6 +1388,10 @@ def validate_mvp03_release_or_routing_preflight(
         raise RuntimeError("MVP-03 preflight must not record approval.")
     if preflight_doc.get("source_draft_record") != "registry/mvp02-adapted-drafts.json":
         raise RuntimeError("MVP-03 preflight must reference the MVP-02 adapted draft record.")
+    if preflight_doc.get("review_template") != "registry/mvp03-release-or-routing-review-template.json":
+        raise RuntimeError("MVP-03 preflight must reference the MVP-03 review template.")
+    if preflight_doc.get("review_template_doc") != "docs/mvp03-release-or-routing-review-template.md":
+        raise RuntimeError("MVP-03 preflight must reference the MVP-03 review template doc.")
     if preflight_doc.get("gate_id") != "mvp03-release-or-routing-candidate-review":
         raise RuntimeError("MVP-03 preflight gate id mismatch.")
 
@@ -1494,6 +1506,7 @@ def validate_mvp03_release_or_routing_preflight(
         "Approve MVP-03 release-or-routing candidate review only",
         "Still disallowed",
         "Candidate review bias",
+        "Review template",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP-03 preflight doc missing phrase: {phrase}")
@@ -1503,6 +1516,123 @@ def validate_mvp03_release_or_routing_preflight(
         raise RuntimeError("README.md must link MVP-03 preflight.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link MVP-03 preflight.")
+
+
+def validate_mvp03_release_or_routing_review_template(
+    template_doc: dict[str, object],
+    preflight_doc: dict[str, object],
+    adapted_drafts_doc: dict[str, object],
+) -> None:
+    if template_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-03 review template schema_version must be 1.")
+    if template_doc.get("status") != "template_only_not_candidate_decision":
+        raise RuntimeError("MVP-03 review template must remain template-only.")
+    if template_doc.get("not_approval") is not True:
+        raise RuntimeError("MVP-03 review template must explicitly avoid approval.")
+    if template_doc.get("approval_required_before_use") is not True:
+        raise RuntimeError("MVP-03 review template must require approval before use.")
+    if template_doc.get("source_preflight_record") != "registry/mvp03-release-or-routing-preflight.json":
+        raise RuntimeError("MVP-03 review template must reference the preflight record.")
+    if template_doc.get("source_draft_record") != "registry/mvp02-adapted-drafts.json":
+        raise RuntimeError("MVP-03 review template must reference the adapted draft record.")
+
+    candidate_ids = template_doc.get("candidate_ids", [])
+    if candidate_ids != preflight_doc.get("candidate_ids"):
+        raise RuntimeError("MVP-03 review template candidates must match preflight candidates.")
+    draft_candidate_ids = [
+        item.get("candidate_id")
+        for item in adapted_drafts_doc.get("candidate_drafts", [])
+        if isinstance(item, dict)
+    ]
+    if set(candidate_ids) != set(draft_candidate_ids):
+        raise RuntimeError("MVP-03 review template candidates must match adapted drafts.")
+
+    allowed_decisions = [
+        "release-payload-candidate",
+        "recipe-routing-proposal",
+        "merge-into-existing-approved-skill",
+        "reference-only",
+        "reject",
+    ]
+    if template_doc.get("allowed_decisions_after_approval") != allowed_decisions:
+        raise RuntimeError("MVP-03 review template decision enum changed.")
+    required_sections = [
+        "source_integrity",
+        "license_and_attribution",
+        "security",
+        "portability_and_neutralization",
+        "overlap_and_conflict",
+        "native_or_runtime_equivalence",
+        "routing_semantics",
+        "release_manifest_impact",
+        "consumer_install_impact",
+        "validation_plan",
+        "rejected_alternatives",
+        "next_gate",
+    ]
+    if template_doc.get("required_review_sections") != required_sections:
+        raise RuntimeError("MVP-03 review template sections changed.")
+
+    decision_rules = template_doc.get("decision_rules", [])
+    if {item.get("decision") for item in decision_rules if isinstance(item, dict)} != set(allowed_decisions):
+        raise RuntimeError("MVP-03 review template must define every allowed decision.")
+    for item in decision_rules:
+        if not item.get("requires"):
+            raise RuntimeError(f"MVP-03 decision rule missing requirements: {item.get('decision')}")
+
+    required_fail_closed = {
+        "owner approval for MVP-03 review is missing",
+        "candidate source revision or upstream hash differs from MVP-02 evidence",
+        "license, provenance, attribution, or redistribution posture is unclear",
+        "security, portability, overlap, or native/runtime equivalence review is incomplete",
+        "candidate would override repository, runtime, or human authority",
+        "candidate would enter skills/, release-manifest.json, generated routing, or live environment before its later specific gate",
+        "candidate decision is based only on enthusiasm, source popularity, or broad usefulness without evidence",
+    }
+    if set(template_doc.get("fail_closed_conditions", [])) != required_fail_closed:
+        raise RuntimeError("MVP-03 review template fail-closed conditions changed.")
+
+    permissions = template_doc.get("current_permissions", {})
+    for key, value in permissions.items():
+        expected = key == "template_allowed"
+        if value is not expected:
+            raise RuntimeError(f"MVP-03 review template permission mismatch: {key}")
+
+    output_contract = template_doc.get("output_contract_after_approval", {})
+    required_output = {
+        "decision",
+        "rationale",
+        "evidence",
+        "rejected_alternatives",
+        "boundary_assertions",
+        "validation_results",
+        "next_gate",
+    }
+    if set(output_contract.get("must_include", [])) != required_output:
+        raise RuntimeError("MVP-03 review template output contract changed.")
+    if "candidate_decisions" not in output_contract:
+        raise RuntimeError("MVP-03 review template must define candidate_decisions output.")
+
+    doc_path = template_doc.get("evidence_doc")
+    if doc_path != "docs/mvp03-release-or-routing-review-template.md":
+        raise RuntimeError("MVP-03 review template evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Template only, not approval.",
+        "Without that approval, this document remains scaffolding.",
+        "Allowed decisions after approval",
+        "does not by itself mutate `skills/`, `release-manifest.json`, generated",
+        "Fail-closed conditions",
+        "Output contract after approval",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP-03 review template doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link MVP-03 review template.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link MVP-03 review template.")
 
 
 def main() -> int:

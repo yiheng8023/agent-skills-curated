@@ -8,6 +8,8 @@
   "source_draft_record": "registry/mvp02-adapted-drafts.json",
   "source_evidence_doc": "docs/mvp02-adapted-draft-review.md",
   "evidence_doc": "docs/mvp03-release-or-routing-preflight.md",
+  "review_template": "registry/mvp03-release-or-routing-review-template.json",
+  "review_template_doc": "docs/mvp03-release-or-routing-review-template.md",
   "gate_id": "mvp03-release-or-routing-candidate-review",
   "approval_request_id": "mvp03-release-or-routing-review-approval-request-2026-06-27",
   "candidate_ids": [
