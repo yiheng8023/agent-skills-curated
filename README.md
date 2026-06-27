@@ -159,6 +159,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/mvp03-release-or-routing-candidate-review.md`: candidate-specific
   MVP-03 disposition evidence; not approved payload, not manifest, not routing,
   and not live install.
+- `docs/mvp03-release-routing-execution.md`: owner-approved follow-up gate that
+  merges two candidates into existing approved Skill payloads, models
+  `spec-driven-development` as a recipe/routing projection, and hands runtime
+  install proof to the consumer repository.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

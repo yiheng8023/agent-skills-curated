@@ -14,6 +14,20 @@ Both axes run as **parallel sub-agents** so they don't pollute each other's cont
 
 The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if `docs/agents/issue-tracker.md` is missing.
 
+## Review depth
+
+Scale review depth by impact, reversibility, risk, and how much authority the originating spec has. A tiny low-risk diff can receive a targeted review. A public API, security boundary, migration, data model, release path, or long-lived standard needs a broader pass.
+
+Use these quality axes when they matter:
+
+- **Correctness** — behavior matches the spec and likely runtime states.
+- **Clarity** — names, structure, and error paths are understandable to future maintainers.
+- **Architecture** — boundaries, dependencies, ownership, and evolution paths remain coherent.
+- **Security and privacy** — trust boundaries, secrets, data exposure, and authorization are not weakened.
+- **Operability** — tests, observability, rollback, performance, and release evidence are sufficient for the change.
+
+Escalate to a specialized capability when one axis dominates the review, for example security audit, performance, observability, CI/CD, migration, or release readiness. Do not post comments, change code, merge, publish, or release unless the user separately authorized that action.
+
 ## Process
 
 ### 1. Pin the fixed point

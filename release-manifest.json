@@ -45,8 +45,8 @@
     },
     {
       "path": "skills/grill-with-docs/SKILL.md",
-      "sha256": "3e35025119ba03efe7983dfdec3c8b96918142e3978512f3c2bf66d428310c7e",
-      "size": 3639
+      "sha256": "f10ee01da7ea2cd0b534b8e6a1919568e332e6ade2df4cb415890f60290ea51a",
+      "size": 4569
     },
     {
       "path": "skills/handoff/SKILL.md",
@@ -110,8 +110,8 @@
     },
     {
       "path": "skills/review/SKILL.md",
-      "sha256": "5700f30d3f06706ee56c099adceec222fef26dbcf82817ff604962634e246b2e",
-      "size": 4426
+      "sha256": "b414f0d4aa22737542aba37dcf3be150bd3c617bbed8f84d54edb00c039a7d68",
+      "size": 5531
     },
     {
       "path": "skills/setup-project-skills/SKILL.md",

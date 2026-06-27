@@ -218,7 +218,8 @@
         "领域模型澄清"
       ],
       "positiveTriggers": [
-        "Stress-test a plan against existing domain language, ADRs, constraints, and documented decisions."
+        "Stress-test a plan against existing domain language, ADRs, constraints, and documented decisions.",
+        "Clarify whether a document is current authority, historical context, generated projection, or working notes before editing."
       ],
       "negativeTriggers": [
         "A casual question or plan without a documentation/domain context can use native discussion."
@@ -230,13 +231,15 @@
         "Plan or design plus CONTEXT, ADR, glossary, or equivalent domain records."
       ],
       "outputs": [
-        "Resolved ambiguities and reviewed updates to domain/decision documents."
+        "Resolved ambiguities and reviewed updates to domain/decision documents.",
+        "ADR or documentation update proposal with context, decision, alternatives, consequences, status, supersession path, and evidence when warranted."
       ],
       "sideEffects": [
         "May update documentation only after the user approves the evolving decisions."
       ],
       "validation": [
-        "Terms, decisions, unresolved branches, and document changes are internally consistent."
+        "Terms, decisions, unresolved branches, and document changes are internally consistent.",
+        "Generated projections, handoff notes, and working notes are not promoted to authority without explicit responsible-subject acceptance."
       ],
       "riskLevel": "medium",
       "permissionsRequired": [
@@ -586,10 +589,12 @@
         "code review",
         "review since",
         "变更评审",
-        "规格评审"
+        "规格评审",
+        "质量轴评审"
       ],
       "positiveTriggers": [
-        "Changes since a fixed Git point need independent standards and specification compliance review."
+        "Changes since a fixed Git point need independent standards and specification compliance review.",
+        "A diff needs risk-proportionate review across correctness, clarity, architecture, security, privacy, operability, tests, or release evidence."
       ],
       "negativeTriggers": [
         "A repository-wide security audit or an unfixed known bug needs its specialized workflow."
@@ -601,13 +606,15 @@
         "Git diff, standards, spec, tests, and relevant evidence."
       ],
       "outputs": [
-        "Prioritized findings separated by standards and spec compliance."
+        "Prioritized findings separated by standards and spec compliance.",
+        "Quality-axis escalation notes when security, performance, observability, CI/CD, migration, or release readiness should own the next pass."
       ],
       "sideEffects": [
         "Read-only unless the user separately asks to fix findings."
       ],
       "validation": [
-        "Every finding cites evidence and the review base is explicit and reproducible."
+        "Every finding cites evidence and the review base is explicit and reproducible.",
+        "Review depth is justified by change impact, reversibility, risk, and spec authority."
       ],
       "riskLevel": "low",
       "permissionsRequired": [
@@ -1003,4 +1010,3 @@
     }
   ]
 }
-

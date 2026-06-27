@@ -1,10 +1,10 @@
 {
   "authoritativeInputDigests": {
-    "registry/capabilities.json": "a73e507905c12974fd7f33b6a1a363c19ed8772347869804cee5c52f71e2200b",
+    "registry/capabilities.json": "6aa0c1f629ae24d2f6df5c11611bd11e034fe9bcdec5444e9dc96a75d7483de3",
     "registry/conflicts.json": "29510b16fbc22258e99b585a910a40e8626c7912d461673f904ac7180b74c360",
-    "registry/recipes.json": "191bc16709a6f74aa77414668accc0fb2d49ed88b239609e6df5078fd6cf0643",
-    "registry/relations.json": "7b483f371ca5fb42b2c643f7b48c146e652772754c68f49bcfcffe4dbc441ee2",
-    "registry/routing.json": "acf055daabf9224752923b4cc4f14db08f8fa5d6f3e1d1fe240981335606ca32"
+    "registry/recipes.json": "bd2e00ed1d9f1cc84dd9b47bb39f7bb4be9737c15948262ff2c293970001a622",
+    "registry/relations.json": "068aba389cb60b276f08da0c42c2d469f598431e48cffecd92dfc87d2358f892",
+    "registry/routing.json": "68f7c0a650faf1ae23736410fa578c5dc1d15051f22e089cdbeddca9579a16d1"
   },
   "capabilities": [
     {
@@ -36,6 +36,18 @@
       "stage": "define",
       "validation": [
         "Review scope, outcomes, constraints, alternatives, and acceptance evidence."
+      ]
+    },
+    {
+      "coverageState": "recipe",
+      "description": "Run consequential work through a spec-first loop: clarify outcome, separate facts from assumptions, define acceptance, decompose slices, choose implementation path, and verify closure.",
+      "fallback": [
+        "Use native reasoning with a lightweight acceptance checklist when the task is small or already scoped."
+      ],
+      "id": "capability.spec-driven-development",
+      "stage": "define",
+      "validation": [
+        "Acceptance criteria, assumptions, work slices, selected capability path, and final verification are traceable."
       ]
     },
     {
@@ -373,6 +385,50 @@
   ],
   "conflicts": [],
   "recipes": [
+    {
+      "authorization": "Side-effecting implementation, installation, migration, commit, push, release, deployment, or rollback remains governed by the active repository and user authorization.",
+      "evidenceGates": [
+        "Outcome, non-goals, affected subjects, assumptions, and acceptance criteria are separated before implementation.",
+        "Work is decomposed into independently verifiable slices and routed to the smallest sufficient native, curated, runtime, or human-confirmation path."
+      ],
+      "failurePolicy": [
+        "If ownership, acceptance, or risk is unclear, stop at requirements clarification instead of inventing implementation scope.",
+        "If repository commands or authority surfaces are unknown, keep the output as a proposal and do not run side-effecting actions."
+      ],
+      "id": "recipe.spec-driven-development",
+      "steps": [
+        {
+          "capability": "capability.requirements-clarification"
+        },
+        {
+          "capability": "capability.prd-rfc",
+          "when": "product, interface, or long-lived behavior needs a durable spec"
+        },
+        {
+          "capability": "capability.problem-decomposition"
+        },
+        {
+          "capability": "capability.test-strategy",
+          "when": "verification strategy is not already obvious"
+        },
+        {
+          "capability": "capability.tdd",
+          "when": "new or changed behavior is implemented"
+        },
+        {
+          "capability": "capability.code-review",
+          "when": "a reviewable diff exists"
+        },
+        {
+          "capability": "capability.release-readiness",
+          "when": "the work approaches a release boundary"
+        }
+      ],
+      "terminalCriteria": [
+        "The task has acceptance evidence, verified slices, recorded unresolved assumptions, and a clear continuation or closeout state."
+      ],
+      "trigger": "Consequential or ambiguous work needs a spec-first route before implementation or release"
+    },
     {
       "evidenceGates": [
         "Boundary goals, callers, failure modes, compatibility expectations, and test surfaces are identified.",
@@ -728,6 +784,33 @@
       "from": "capability.requirements-clarification",
       "to": "capability.prd-rfc",
       "type": "precedes"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.requirements-clarification",
+      "type": "triggers"
+    },
+    {
+      "condition": "durable behavior or product intent needs specification",
+      "from": "capability.spec-driven-development",
+      "to": "capability.prd-rfc",
+      "type": "produces"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.problem-decomposition",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.test-strategy",
+      "type": "constrains"
+    },
+    {
+      "condition": "the work reaches a launch boundary",
+      "from": "capability.spec-driven-development",
+      "to": "capability.release-readiness",
+      "type": "validates"
     },
     {
       "from": "capability.prd-rfc",
@@ -1101,13 +1184,15 @@
         "A casual question or plan without a documentation/domain context can use native discussion."
       ],
       "outputs": [
-        "Resolved ambiguities and reviewed updates to domain/decision documents."
+        "Resolved ambiguities and reviewed updates to domain/decision documents.",
+        "ADR or documentation update proposal with context, decision, alternatives, consequences, status, supersession path, and evidence when warranted."
       ],
       "permissionsRequired": [
         "Read domain documents; write permission for documentation updates."
       ],
       "positiveTriggers": [
-        "Stress-test a plan against existing domain language, ADRs, constraints, and documented decisions."
+        "Stress-test a plan against existing domain language, ADRs, constraints, and documented decisions.",
+        "Clarify whether a document is current authority, historical context, generated projection, or working notes before editing."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1115,7 +1200,8 @@
       ],
       "skill": "skill.curated.grill-with-docs",
       "validation": [
-        "Terms, decisions, unresolved branches, and document changes are internally consistent."
+        "Terms, decisions, unresolved branches, and document changes are internally consistent.",
+        "Generated projections, handoff notes, and working notes are not promoted to authority without explicit responsible-subject acceptance."
       ]
     },
     {
@@ -1445,7 +1531,8 @@
         "code review",
         "review since",
         "\u53d8\u66f4\u8bc4\u5ba1",
-        "\u89c4\u683c\u8bc4\u5ba1"
+        "\u89c4\u683c\u8bc4\u5ba1",
+        "\u8d28\u91cf\u8f74\u8bc4\u5ba1"
       ],
       "contextRequirements": [
         "Fixed comparison point, repository standards, and originating spec/issue are available."
@@ -1471,13 +1558,15 @@
         "A repository-wide security audit or an unfixed known bug needs its specialized workflow."
       ],
       "outputs": [
-        "Prioritized findings separated by standards and spec compliance."
+        "Prioritized findings separated by standards and spec compliance.",
+        "Quality-axis escalation notes when security, performance, observability, CI/CD, migration, or release readiness should own the next pass."
       ],
       "permissionsRequired": [
         "Repository read access."
       ],
       "positiveTriggers": [
-        "Changes since a fixed Git point need independent standards and specification compliance review."
+        "Changes since a fixed Git point need independent standards and specification compliance review.",
+        "A diff needs risk-proportionate review across correctness, clarity, architecture, security, privacy, operability, tests, or release evidence."
       ],
       "riskLevel": "low",
       "sideEffects": [
@@ -1485,7 +1574,8 @@
       ],
       "skill": "skill.curated.review",
       "validation": [
-        "Every finding cites evidence and the review base is explicit and reproducible."
+        "Every finding cites evidence and the review base is explicit and reproducible.",
+        "Review depth is justified by change impact, reversibility, risk, and spec authority."
       ]
     },
     {

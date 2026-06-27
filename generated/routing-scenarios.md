@@ -2,6 +2,18 @@
 
 Do not edit manually.
 
+## recipe.spec-driven-development
+
+Trigger: Consequential or ambiguous work needs a spec-first route before implementation or release
+
+- `capability.requirements-clarification`
+- `capability.prd-rfc` when product, interface, or long-lived behavior needs a durable spec
+- `capability.problem-decomposition`
+- `capability.test-strategy` when verification strategy is not already obvious
+- `capability.tdd` when new or changed behavior is implemented
+- `capability.code-review` when a reviewable diff exists
+- `capability.release-readiness` when the work approaches a release boundary
+
 ## recipe.interface-api-design
 
 Trigger: A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill

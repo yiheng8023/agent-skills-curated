@@ -20,6 +20,11 @@ flowchart LR
   skill_curated_setup_project_skills -- provides --> capability_documentation_governance
   skill_curated_ubiquitous_language -- provides --> capability_documentation_governance
   capability_requirements_clarification -- precedes --> capability_prd_rfc
+  capability_spec_driven_development -- triggers --> capability_requirements_clarification
+  capability_spec_driven_development -- produces --> capability_prd_rfc
+  capability_spec_driven_development -- precedes --> capability_problem_decomposition
+  capability_spec_driven_development -- constrains --> capability_test_strategy
+  capability_spec_driven_development -- validates --> capability_release_readiness
   capability_prd_rfc -- precedes --> capability_problem_decomposition
   capability_problem_decomposition -- precedes --> capability_architecture_design
   capability_architecture_design -- precedes --> capability_interface_api_design

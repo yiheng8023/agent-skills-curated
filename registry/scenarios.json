@@ -3749,6 +3749,80 @@
         "unresolvedConflict": false,
         "ambiguous": false
       }
+    },
+    {
+      "id": "scenario.spec-driven-development-recipe-01",
+      "family": "recipe-dag",
+      "language": "en",
+      "request": "Plan this multi-step product-facing change with acceptance criteria before implementation.",
+      "decisionClass": "recipe",
+      "expectedDecision": "recipe",
+      "expectedSkills": [
+        "recipe.spec-driven-development"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.spec-driven-development"
+      ],
+      "expectedCapabilities": [
+        "capability.spec-driven-development"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Acceptance criteria, assumptions, decomposition, routing path, and final verification are traceable."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "medium",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "scenario.spec-driven-development-recipe-02",
+      "family": "recipe-dag",
+      "language": "zh-CN",
+      "request": "这个需求影响面比较大，先把目标、非目标、验收标准和分批实施路径定清楚，再考虑动代码。",
+      "decisionClass": "recipe",
+      "expectedDecision": "recipe",
+      "expectedSkills": [
+        "recipe.spec-driven-development"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.spec-driven-development"
+      ],
+      "expectedCapabilities": [
+        "capability.spec-driven-development"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "中文隐式规划请求应触发 spec-first recipe，而不是直接进入单个 Skill 或实现动作。"
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "medium",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
     }
   ]
 }

@@ -115,6 +115,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   owner 授权请求；现在已被 bounded approval event 消费；
 - `docs/mvp03-release-or-routing-candidate-review.md`：MVP-03 逐候选处置证据；
   不是 approved payload、不是 manifest、不是 routing，也不是 live install；
+- `docs/mvp03-release-routing-execution.md`：owner 批准后的后续闸门；将两个
+  候选合并进现有 approved Skill payload，将 `spec-driven-development` 建模为
+  recipe/routing projection，并把 runtime install proof 交给消费仓执行；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

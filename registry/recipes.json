@@ -2,6 +2,31 @@
   "schema": 1,
   "recipes": [
     {
+      "id": "recipe.spec-driven-development",
+      "trigger": "Consequential or ambiguous work needs a spec-first route before implementation or release",
+      "evidenceGates": [
+        "Outcome, non-goals, affected subjects, assumptions, and acceptance criteria are separated before implementation.",
+        "Work is decomposed into independently verifiable slices and routed to the smallest sufficient native, curated, runtime, or human-confirmation path."
+      ],
+      "failurePolicy": [
+        "If ownership, acceptance, or risk is unclear, stop at requirements clarification instead of inventing implementation scope.",
+        "If repository commands or authority surfaces are unknown, keep the output as a proposal and do not run side-effecting actions."
+      ],
+      "terminalCriteria": [
+        "The task has acceptance evidence, verified slices, recorded unresolved assumptions, and a clear continuation or closeout state."
+      ],
+      "steps": [
+        {"capability": "capability.requirements-clarification"},
+        {"capability": "capability.prd-rfc", "when": "product, interface, or long-lived behavior needs a durable spec"},
+        {"capability": "capability.problem-decomposition"},
+        {"capability": "capability.test-strategy", "when": "verification strategy is not already obvious"},
+        {"capability": "capability.tdd", "when": "new or changed behavior is implemented"},
+        {"capability": "capability.code-review", "when": "a reviewable diff exists"},
+        {"capability": "capability.release-readiness", "when": "the work approaches a release boundary"}
+      ],
+      "authorization": "Side-effecting implementation, installation, migration, commit, push, release, deployment, or rollback remains governed by the active repository and user authorization."
+    },
+    {
       "id": "recipe.interface-api-design",
       "trigger": "A component boundary or API needs alternatives evaluated without a dedicated duplicate Skill",
       "evidenceGates": [

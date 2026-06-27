@@ -69,6 +69,17 @@ When domain relationships are being discussed, stress-test them with specific sc
 
 When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible — which is right?"
 
+### Preserve documentation authority
+
+Separate four kinds of material before proposing or editing docs:
+
+1. **Current authority** — active glossary terms, ADRs, standards, and repository instructions that govern future work.
+2. **Historical context** — old decisions, handoffs, or notes that explain why something happened but no longer decide behavior by themselves.
+3. **Generated projection** — derived indexes, summaries, graphs, or reports that help navigation but must not become a second truth source.
+4. **Working notes** — temporary exploration, unresolved questions, and assumptions that need confirmation before promotion.
+
+When a decision deserves an ADR, capture context, decision, rejected alternatives, consequences, status, supersession path, and verification evidence. Do not promote generated docs, handoff notes, or chat summaries into authority unless the responsible subject explicitly accepts them.
+
 ### Update CONTEXT.md inline
 
 When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).

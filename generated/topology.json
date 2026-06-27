@@ -32,6 +32,18 @@
       ]
     },
     {
+      "coverageState": "recipe",
+      "description": "Run consequential work through a spec-first loop: clarify outcome, separate facts from assumptions, define acceptance, decompose slices, choose implementation path, and verify closure.",
+      "fallback": [
+        "Use native reasoning with a lightweight acceptance checklist when the task is small or already scoped."
+      ],
+      "id": "capability.spec-driven-development",
+      "stage": "define",
+      "validation": [
+        "Acceptance criteria, assumptions, work slices, selected capability path, and final verification are traceable."
+      ]
+    },
+    {
       "coverageState": "curated",
       "curatedOwners": [
         "skill.curated.to-issues"
@@ -366,6 +378,50 @@
   ],
   "conflicts": [],
   "recipes": [
+    {
+      "authorization": "Side-effecting implementation, installation, migration, commit, push, release, deployment, or rollback remains governed by the active repository and user authorization.",
+      "evidenceGates": [
+        "Outcome, non-goals, affected subjects, assumptions, and acceptance criteria are separated before implementation.",
+        "Work is decomposed into independently verifiable slices and routed to the smallest sufficient native, curated, runtime, or human-confirmation path."
+      ],
+      "failurePolicy": [
+        "If ownership, acceptance, or risk is unclear, stop at requirements clarification instead of inventing implementation scope.",
+        "If repository commands or authority surfaces are unknown, keep the output as a proposal and do not run side-effecting actions."
+      ],
+      "id": "recipe.spec-driven-development",
+      "steps": [
+        {
+          "capability": "capability.requirements-clarification"
+        },
+        {
+          "capability": "capability.prd-rfc",
+          "when": "product, interface, or long-lived behavior needs a durable spec"
+        },
+        {
+          "capability": "capability.problem-decomposition"
+        },
+        {
+          "capability": "capability.test-strategy",
+          "when": "verification strategy is not already obvious"
+        },
+        {
+          "capability": "capability.tdd",
+          "when": "new or changed behavior is implemented"
+        },
+        {
+          "capability": "capability.code-review",
+          "when": "a reviewable diff exists"
+        },
+        {
+          "capability": "capability.release-readiness",
+          "when": "the work approaches a release boundary"
+        }
+      ],
+      "terminalCriteria": [
+        "The task has acceptance evidence, verified slices, recorded unresolved assumptions, and a clear continuation or closeout state."
+      ],
+      "trigger": "Consequential or ambiguous work needs a spec-first route before implementation or release"
+    },
     {
       "evidenceGates": [
         "Boundary goals, callers, failure modes, compatibility expectations, and test surfaces are identified.",
@@ -721,6 +777,33 @@
       "from": "capability.requirements-clarification",
       "to": "capability.prd-rfc",
       "type": "precedes"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.requirements-clarification",
+      "type": "triggers"
+    },
+    {
+      "condition": "durable behavior or product intent needs specification",
+      "from": "capability.spec-driven-development",
+      "to": "capability.prd-rfc",
+      "type": "produces"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.problem-decomposition",
+      "type": "precedes"
+    },
+    {
+      "from": "capability.spec-driven-development",
+      "to": "capability.test-strategy",
+      "type": "constrains"
+    },
+    {
+      "condition": "the work reaches a launch boundary",
+      "from": "capability.spec-driven-development",
+      "to": "capability.release-readiness",
+      "type": "validates"
     },
     {
       "from": "capability.prd-rfc",

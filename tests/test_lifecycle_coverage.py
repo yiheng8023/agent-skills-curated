@@ -13,6 +13,7 @@ EXPECTED_CAPABILITIES = {
     for name in (
         "requirements-clarification",
         "prd-rfc",
+        "spec-driven-development",
         "problem-decomposition",
         "architecture-design",
         "interface-api-design",
