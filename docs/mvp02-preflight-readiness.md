@@ -3,26 +3,28 @@
 Machine-readable record:
 [`registry/mvp02-preflight-readiness.json`](../registry/mvp02-preflight-readiness.json).
 
-This is a readiness record, not approval.
+This is a historical readiness record, not release approval.
 
 ## Current state
 
 ```text
-status: preflight_ready_awaiting_owner_approval
-approval recorded: false
-adapted output present: false
+status: preflight_consumed_by_owner_approval
+approval recorded: true
+adapted output present: true
 ```
 
-MVP-02 has enough non-executable evidence to ask the owner whether adapted draft
-creation may begin. It does not have approval to create adapted output.
+MVP-02 had enough non-executable evidence to ask the owner whether adapted draft
+creation may begin. The owner approved only that draft step, and the preflight
+record has been consumed by the approval event.
 
 ## What is ready
 
 - A small candidate batch is selected and pinned.
 - Candidate-specific pre-adaptation review exists.
-- The transition gate is waiting for explicit owner approval.
+- The transition gate consumed explicit owner approval for non-runtime draft
+  creation.
 - The adaptation review checklist is template-only and ready for future use.
-- The approval request is bounded and still pending.
+- The approval request is bounded and approved for draft creation only.
 - Candidates are not approved Skills.
 - Candidates are not in `release-manifest.json`.
 - Candidates are not executable routing targets.
@@ -30,7 +32,7 @@ creation may begin. It does not have approval to create adapted output.
 
 ## Safe approval phrases
 
-The owner may approve only the adapted-draft step with one of these phrases:
+The owner approved only the adapted-draft step using one of these phrases:
 
 ```text
 批准进入 MVP-02 适配草案阶段
@@ -54,6 +56,7 @@ Until a later gate explicitly approves it:
 ## Why this record exists
 
 Without a preflight record, the MVP can appear vaguely blocked. This document
-makes the state explicit: the repository is ready to request the smallest owner
-decision, but the next implementation step still requires that decision.
+now records that the smallest owner decision was made, while all release,
+routing, payload, live-install, and publication boundaries remain closed.
 
+In short: release, routing, payload, live-install, and publication boundaries remain closed.

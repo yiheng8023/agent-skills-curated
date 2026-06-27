@@ -1,17 +1,19 @@
 {
   "schema_version": 1,
-  "status": "post_approval_plan_ready_not_executable_without_owner_approval",
+  "status": "executed_after_owner_approval_stopped_before_release_gate",
   "date": "2026-06-27",
   "purpose": "Define the exact safe execution sequence to use only after the owner approves MVP-02 adapted draft creation.",
   "not_approval": true,
-  "approval_recorded": false,
-  "adapted_output_present": false,
+  "approval_recorded": true,
+  "adapted_output_present": true,
   "planned_output_root": "drafts/mvp02-adaptation/",
   "batch_id": "mvp-skills-batch-2026-06-27-spec-doc-review",
   "review_id": "mvp-review-2026-06-27-spec-doc-review",
   "gate_id": "mvp02-adaptation-transition-gate-2026-06-27",
   "checklist_id": "mvp02-adaptation-review-checklist-2026-06-27",
   "approval_request_id": "mvp02-adaptation-draft-approval-request-2026-06-27",
+  "approval_event_id": "mvp02-owner-approval-2026-06-27-adapted-draft",
+  "adapted_draft_record": "registry/mvp02-adapted-drafts.json",
   "preflight_record": "registry/mvp02-preflight-readiness.json",
   "evidence_doc": "docs/mvp02-post-approval-execution-plan.md",
   "candidate_ids": [
@@ -88,16 +90,14 @@
     }
   ],
   "current_permissions": {
-    "adapted_output_allowed": false,
+    "adapted_output_allowed": true,
     "approved_payload_allowed": false,
     "release_manifest_allowed": false,
     "routing_projection_allowed": false,
     "live_install_allowed": false,
     "source_text_redistribution_allowed": false
   },
-  "still_disallowed_until_approval": [
-    "create adapted candidate output",
-    "create planned_output_root",
+  "still_disallowed_until_next_gate": [
     "edit skills/",
     "update release-manifest.json",
     "update generated routing projections",
@@ -105,13 +105,14 @@
     "approve, release, or publish any candidate payload",
     "redistribute upstream source text as approved curated payload"
   ],
-  "next_state_if_approved": "adapted_output_drafting_in_non_runtime_review_surface",
-  "next_required_evidence_if_approved": [
+  "next_state_after_execution": "adapted_draft_review_recorded_pending_next_gate",
+  "next_required_evidence_after_execution": [
     "approval event record",
     "adapted draft location under planned_output_root",
     "completed checklist sections",
     "candidate-specific disposition",
     "verification command results",
     "explicit record that manifest, routing projection, and live install remain unchanged"
-  ]
+  ],
+  "next_required_gate": "Separate owner approval is required before any release manifest, generated routing, approved Skill payload, live install, or publication action."
 }

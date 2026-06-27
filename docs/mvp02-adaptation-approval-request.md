@@ -1,10 +1,10 @@
 # MVP-02 Adaptation Approval Request
 
-Request only, not approval.
+Request record, not release approval.
 
-Current decision: pending owner decision.
+Current decision: approved for adapted draft creation only.
 
-No adapted output exists.
+Adapted output exists only under `drafts/mvp02-adaptation/`.
 
 Machine-readable request:
 [`registry/mvp-approval-requests.json`](../registry/mvp-approval-requests.json).
@@ -33,9 +33,15 @@ This request covers exactly:
 It does not include any other source, repository, official/runtime capability,
 or future candidate.
 
-## Requested scope
+## Approved scope
 
-If the owner approves this request, the next phase may:
+The owner approved this request with:
+
+```text
+批准进入 MVP-02 适配草案阶段
+```
+
+The approved next phase may:
 
 - create adapted draft output in a non-runtime review surface;
 - apply the MVP-02 adaptation review checklist;
@@ -43,12 +49,11 @@ If the owner approves this request, the next phase may:
 - run focused security, portability, overlap, attribution, and validation
   review on the adapted draft.
 
-If approved, the next state is adapted-output drafting in a non-runtime review
-surface.
+The next state is adapted-output drafting in a non-runtime review surface.
 
-## Explicitly not requested
+## Explicitly not approved
 
-This request does not ask permission to:
+This request did not ask permission to:
 
 - edit `skills/`;
 - update `release-manifest.json`;
@@ -61,7 +66,7 @@ Those remain separate gates.
 
 ## Safe approval phrases
 
-Use one of these phrases if you want to approve only this narrow next step:
+These phrases define the narrow approval boundary for this step:
 
 ```text
 批准进入 MVP-02 适配草案阶段
@@ -73,13 +78,13 @@ or:
 Approve MVP-02 adapted draft creation only
 ```
 
-Any broader approval should explicitly name the broader action. Otherwise, the
-system should interpret approval as limited to non-runtime adapted draft
-creation plus checklist-based review.
+Any broader approval must explicitly name the broader action. Otherwise, the
+system interprets approval as limited to non-runtime adapted draft creation
+plus checklist-based review.
 
-## Evidence required after approval
+## Evidence recorded after approval
 
-If approved, the next record must include:
+The next record now includes:
 
 1. adapted draft location;
 2. completed checklist sections;
@@ -90,6 +95,6 @@ If approved, the next record must include:
 
 ## Current conclusion
 
-MVP-02 remains partial. The project is ready to ask for a bounded owner
-decision, but no adapted output, release, routing, runtime use, or live install
-has been authorized.
+MVP-02 remains partial. The bounded owner decision has been recorded and
+adapted draft output exists, but no release, routing, runtime use, live install,
+or publication has been authorized.

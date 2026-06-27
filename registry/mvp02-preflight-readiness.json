@@ -1,16 +1,18 @@
 {
   "schema_version": 1,
-  "status": "preflight_ready_awaiting_owner_approval",
+  "status": "preflight_consumed_by_owner_approval",
   "date": "2026-06-27",
   "purpose": "Record that MVP-02 has enough non-executable evidence to ask for owner approval to create adapted drafts, without granting that approval.",
   "not_approval": true,
-  "approval_recorded": false,
-  "adapted_output_present": false,
+  "approval_recorded": true,
+  "adapted_output_present": true,
   "batch_id": "mvp-skills-batch-2026-06-27-spec-doc-review",
   "review_id": "mvp-review-2026-06-27-spec-doc-review",
   "gate_id": "mvp02-adaptation-transition-gate-2026-06-27",
   "checklist_id": "mvp02-adaptation-review-checklist-2026-06-27",
   "approval_request_id": "mvp02-adaptation-draft-approval-request-2026-06-27",
+  "approval_event_id": "mvp02-owner-approval-2026-06-27-adapted-draft",
+  "adapted_draft_record": "registry/mvp02-adapted-drafts.json",
   "evidence_doc": "docs/mvp02-preflight-readiness.md",
   "candidate_ids": [
     "spec-driven-development",
@@ -18,7 +20,7 @@
     "code-review-and-quality"
   ],
   "current_permissions": {
-    "adapted_output_allowed": false,
+    "adapted_output_allowed": true,
     "approved_payload_allowed": false,
     "release_manifest_allowed": false,
     "routing_projection_allowed": false,
@@ -39,10 +41,10 @@
       "meaning": "Candidate-specific pre-adaptation review exists and does not approve adaptation, release, routing, or runtime use."
     },
     {
-      "id": "transition_gate_waiting",
+      "id": "transition_gate_approval_consumed",
       "status": "pass",
       "evidence": "registry/mvp-transition-gates.json and docs/mvp02-adaptation-transition-gate.md",
-      "meaning": "The transition gate is waiting for explicit owner approval and all current permissions remain false."
+      "meaning": "The transition gate consumed explicit owner approval for non-runtime adapted draft creation; release, routing, and live permissions remain false."
     },
     {
       "id": "review_checklist_template_ready",
@@ -51,10 +53,10 @@
       "meaning": "A template-only adapted-output checklist exists for future use after approval."
     },
     {
-      "id": "approval_request_pending",
+      "id": "approval_request_approved_for_draft_only",
       "status": "pass",
       "evidence": "registry/mvp-approval-requests.json and docs/mvp02-adaptation-approval-request.md",
-      "meaning": "A bounded approval request exists, remains pending, and lists the safe approval phrases."
+      "meaning": "A bounded approval request exists and is approved only for non-runtime adapted draft creation."
     },
     {
       "id": "no_candidate_payload_released",
@@ -63,10 +65,10 @@
       "meaning": "Candidates are not approved Skills, not release payloads, and not executable routing targets."
     },
     {
-      "id": "next_action_is_human_gate",
+      "id": "next_action_is_next_gate",
       "status": "pass",
       "evidence": "safe approval phrases in registry/mvp-approval-requests.json",
-      "meaning": "The next state requires explicit owner approval before adapted draft creation."
+      "meaning": "The next state requires separate owner approval before release, routing, approved payload, live install, or publication."
     }
   ],
   "safe_approval_phrases": [
@@ -82,5 +84,5 @@
     "approve, release, or publish any candidate payload",
     "redistribute upstream source text as approved curated payload"
   ],
-  "preflight_result": "ready_to_request_owner_approval_not_ready_to_adapt_without_it"
+  "preflight_result": "owner_approval_received_and_adapted_draft_created"
 }

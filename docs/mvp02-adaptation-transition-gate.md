@@ -1,8 +1,9 @@
 # MVP-02 Adaptation Transition Gate
 
-This is a gate, not approval.
+This is a gate record, not release approval.
 
-Current state: awaiting explicit human approval.
+Current state: adapted draft created after explicit human approval; pending next
+release-or-routing gate.
 
 Machine-readable record:
 [`registry/mvp-transition-gates.json`](../registry/mvp-transition-gates.json).
@@ -23,8 +24,9 @@ without silently crossing the candidate-to-approved boundary.
 | Gate id | `mvp02-adaptation-transition-gate-2026-06-27` |
 | Batch id | `mvp-skills-batch-2026-06-27-spec-doc-review` |
 | Review id | `mvp-review-2026-06-27-spec-doc-review` |
-| Current state | awaiting explicit human approval |
-| Adapted output allowed | no |
+| Current state | adapted draft review recorded, pending next gate |
+| Approval event | `mvp02-owner-approval-2026-06-27-adapted-draft` |
+| Adapted output allowed | yes, only under `drafts/mvp02-adaptation/` |
 | Approved payload allowed | no |
 | Runtime allowed | no |
 | Release manifest allowed | no |
@@ -55,9 +57,7 @@ No other candidate is included by implication.
 - Work must stay in a non-runtime review or staging surface until a separate
   release approval exists.
 
-## Disallowed before approval
-
-Do not create adapted output.
+## Disallowed after draft approval until the next gate
 
 Do not edit `skills/`.
 
@@ -73,7 +73,7 @@ Do not claim any candidate is approved, released, routable, or installable.
 
 ## What approval would allow
 
-If explicit human approval is later recorded, the next phase may:
+The owner approved this narrow phase. The phase may:
 
 - create adapted draft text in a non-runtime review surface;
 - record candidate-specific disposition as merge, recipe-only, adapter-only,
@@ -83,15 +83,15 @@ If explicit human approval is later recorded, the next phase may:
 - prepare release-candidate evidence only after the adapted output passes
   review.
 
-That later approval still would not automatically authorize release manifest
-changes, routing projection changes, live install, or private consumer install.
-Those are separate MVP gates.
+That approval still does not authorize release manifest changes, routing
+projection changes, live install, publication, or private consumer install.
+Those remain separate MVP gates.
 
 ## Fail closed
 
 Fail closed if any of the following is true:
 
-- no explicit human approval is recorded;
+- the recorded approval phrase does not match the bounded approval request;
 - source revision or upstream hash differs from recorded evidence;
 - license, provenance, attribution, or redistribution posture is unclear;
 - adaptation would override repository, human, or runtime authority;
@@ -116,6 +116,7 @@ This gate is not closed until all of the following are true:
 
 ## Current conclusion
 
-MVP-02 remains in progress. The project has selected a small candidate batch
-and recorded candidate-specific pre-adaptation review, but it has not yet
-entered adapted-output creation.
+MVP-02 has left the pre-adaptation waiting state and now has non-runtime
+adapted draft evidence. It remains blocked before release, routing projection,
+approved payload, live install, or publication until a separate next gate is
+approved.

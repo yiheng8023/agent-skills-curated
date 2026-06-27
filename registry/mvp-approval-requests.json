@@ -1,15 +1,17 @@
 {
   "schema_version": 1,
-  "status": "pending_owner_decision",
-  "approval_recorded": false,
-  "adapted_output_present": false,
+  "status": "owner_approved_adapted_draft_creation",
+  "approval_recorded": true,
+  "adapted_output_present": true,
   "requests": [
     {
       "id": "mvp02-adaptation-draft-approval-request-2026-06-27",
       "date": "2026-06-27",
       "purpose": "Ask the owner for the smallest explicit approval needed to leave the MVP-02 transition gate and create adapted draft output for review.",
-      "decision_state": "pending_owner_decision",
-      "approval_recorded": false,
+      "decision_state": "approved_for_adapted_draft_creation",
+      "approval_recorded": true,
+      "approval_event_id": "mvp02-owner-approval-2026-06-27-adapted-draft",
+      "adapted_draft_record": "registry/mvp02-adapted-drafts.json",
       "gate_id": "mvp02-adaptation-transition-gate-2026-06-27",
       "checklist_id": "mvp02-adaptation-review-checklist-2026-06-27",
       "evidence_doc": "docs/mvp02-adaptation-approval-request.md",
@@ -19,7 +21,7 @@
         "code-review-and-quality"
       ],
       "current_permissions": {
-        "adapted_output_allowed": false,
+        "adapted_output_allowed": true,
         "approved_payload_allowed": false,
         "release_manifest_allowed": false,
         "routing_projection_allowed": false,

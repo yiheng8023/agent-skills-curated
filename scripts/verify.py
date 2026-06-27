@@ -64,6 +64,8 @@ REQUIRED_FILES = (
     "registry/mvp-approval-requests.json",
     "registry/mvp02-preflight-readiness.json",
     "registry/mvp02-post-approval-execution-plan.json",
+    "registry/mvp02-approval-events.json",
+    "registry/mvp02-adapted-drafts.json",
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
@@ -91,6 +93,10 @@ REQUIRED_FILES = (
     "docs/mvp02-adaptation-approval-request.md",
     "docs/mvp02-preflight-readiness.md",
     "docs/mvp02-post-approval-execution-plan.md",
+    "docs/mvp02-adapted-draft-review.md",
+    "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
+    "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
+    "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
 )
 
 
@@ -119,6 +125,8 @@ def verify() -> None:
     mvp_approval_requests_doc = load("registry/mvp-approval-requests.json")
     mvp02_preflight_doc = load("registry/mvp02-preflight-readiness.json")
     mvp02_post_approval_plan_doc = load("registry/mvp02-post-approval-execution-plan.json")
+    mvp02_approval_events_doc = load("registry/mvp02-approval-events.json")
+    mvp02_adapted_drafts_doc = load("registry/mvp02-adapted-drafts.json")
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
@@ -186,6 +194,8 @@ def verify() -> None:
         mvp_reviews_doc,
         skills_doc,
         manifest,
+        mvp02_approval_events_doc,
+        mvp02_adapted_drafts_doc,
     )
     validate_mvp_adaptation_review_checklist(
         mvp_adaptation_checklist_doc,
@@ -195,6 +205,8 @@ def verify() -> None:
         mvp_approval_requests_doc,
         mvp_transition_gates_doc,
         mvp_adaptation_checklist_doc,
+        mvp02_approval_events_doc,
+        mvp02_adapted_drafts_doc,
     )
     validate_mvp02_preflight_readiness(
         mvp02_preflight_doc,
@@ -203,6 +215,8 @@ def verify() -> None:
         mvp_transition_gates_doc,
         mvp_adaptation_checklist_doc,
         mvp_approval_requests_doc,
+        mvp02_approval_events_doc,
+        mvp02_adapted_drafts_doc,
         skills_doc,
         manifest,
     )
@@ -214,6 +228,27 @@ def verify() -> None:
         mvp_transition_gates_doc,
         mvp_adaptation_checklist_doc,
         mvp_approval_requests_doc,
+        mvp02_approval_events_doc,
+        mvp02_adapted_drafts_doc,
+        skills_doc,
+        manifest,
+    )
+    validate_mvp02_approval_events(
+        mvp02_approval_events_doc,
+        mvp_approval_requests_doc,
+    )
+    validate_mvp02_adapted_drafts(
+        mvp02_adapted_drafts_doc,
+        mvp02_approval_events_doc,
+        mvp_batches_doc,
+        mvp_reviews_doc,
+        mvp_transition_gates_doc,
+        mvp_adaptation_checklist_doc,
+        mvp_approval_requests_doc,
+        sources_doc,
+        selection_doc,
+        skills_doc,
+        manifest,
     )
     validate_references(
         {
@@ -443,11 +478,13 @@ def validate_mvp_transition_gates(
     reviews_doc: dict[str, object],
     skills_doc: dict[str, object],
     manifest: dict[str, object],
+    approval_events_doc: dict[str, object],
+    adapted_drafts_doc: dict[str, object],
 ) -> None:
     if gates_doc.get("schema_version") != 1:
         raise RuntimeError("MVP transition gates schema_version must be 1.")
-    if gates_doc.get("status") != "awaiting_human_approval":
-        raise RuntimeError("MVP transition gate must remain awaiting human approval.")
+    if gates_doc.get("status") != "adapted_draft_created_pending_next_gate":
+        raise RuntimeError("MVP transition gate must record adapted draft creation pending next gate.")
 
     gates = gates_doc.get("gates", [])
     if len(gates) != 1:
@@ -481,12 +518,24 @@ def validate_mvp_transition_gates(
         raise RuntimeError("MVP transition gate must reference the selected batch.")
     if gate.get("review_id") != review.get("id"):
         raise RuntimeError("MVP transition gate must reference the pre-adaptation review.")
-    if gate.get("transition_state") != "awaiting_human_approval":
-        raise RuntimeError("MVP transition gate must not advance without human approval.")
+    if gate.get("transition_state") != "adapted_draft_review_recorded_pending_next_gate":
+        raise RuntimeError("MVP transition gate must stop after adapted draft review.")
     if gate.get("explicit_human_approval_required") is not True:
         raise RuntimeError("MVP transition gate must require explicit human approval.")
-    if gate.get("current_human_approval_recorded") is not False:
-        raise RuntimeError("MVP transition gate must record that approval is not present yet.")
+    if gate.get("current_human_approval_recorded") is not True:
+        raise RuntimeError("MVP transition gate must record bounded approval.")
+    if gate.get("approval_event_id") != "mvp02-owner-approval-2026-06-27-adapted-draft":
+        raise RuntimeError("MVP transition gate approval event mismatch.")
+    if gate.get("adapted_draft_record") != "registry/mvp02-adapted-drafts.json":
+        raise RuntimeError("MVP transition gate adapted draft record mismatch.")
+    if gate.get("approval_event_id") not in {
+        event.get("id")
+        for event in approval_events_doc.get("events", [])
+        if isinstance(event, dict)
+    }:
+        raise RuntimeError("MVP transition gate approval event is not recorded.")
+    if adapted_drafts_doc.get("gate_id") != gate.get("id"):
+        raise RuntimeError("MVP transition gate does not match adapted draft record.")
 
     current_permissions = gate.get("current_permissions", {})
     for key in [
@@ -498,7 +547,8 @@ def validate_mvp_transition_gates(
         "live_install_allowed",
         "source_text_redistribution_allowed",
     ]:
-        if current_permissions.get(key) is not False:
+        expected = key == "adapted_output_allowed"
+        if current_permissions.get(key) is not expected:
             raise RuntimeError(f"MVP transition gate must keep {key} false.")
 
     gate_candidates = {
@@ -535,15 +585,16 @@ def validate_mvp_transition_gates(
         raise RuntimeError("MVP transition gate evidence doc path is unexpected.")
     doc = (ROOT / doc_path).read_text(encoding="utf-8")
     for phrase in [
-        "This is a gate, not approval",
-        "Current state: awaiting explicit human approval",
-        "Do not create adapted output",
+        "This is a gate record, not release approval",
+        "Current state: adapted draft created after explicit human approval",
+        "Adapted output allowed | yes, only under `drafts/mvp02-adaptation/`",
         "Do not edit `skills/`",
         "Do not update `release-manifest.json`",
         "Do not update generated routing projections",
         "Do not install or sync live Agent environments",
         "Fail closed",
         "Acceptance to leave this gate",
+        "separate next gate",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP transition gate doc missing phrase: {phrase}")
@@ -634,15 +685,17 @@ def validate_mvp_approval_requests(
     requests_doc: dict[str, object],
     gates_doc: dict[str, object],
     checklist_doc: dict[str, object],
+    approval_events_doc: dict[str, object],
+    adapted_drafts_doc: dict[str, object],
 ) -> None:
     if requests_doc.get("schema_version") != 1:
         raise RuntimeError("MVP approval requests schema_version must be 1.")
-    if requests_doc.get("status") != "pending_owner_decision":
-        raise RuntimeError("MVP approval request must remain pending owner decision.")
-    if requests_doc.get("approval_recorded") is not False:
-        raise RuntimeError("MVP approval request must not record approval.")
-    if requests_doc.get("adapted_output_present") is not False:
-        raise RuntimeError("MVP approval request must not claim adapted output exists.")
+    if requests_doc.get("status") != "owner_approved_adapted_draft_creation":
+        raise RuntimeError("MVP approval request must record owner-approved adapted draft creation.")
+    if requests_doc.get("approval_recorded") is not True:
+        raise RuntimeError("MVP approval request must record bounded approval.")
+    if requests_doc.get("adapted_output_present") is not True:
+        raise RuntimeError("MVP approval request must record adapted output.")
 
     requests = requests_doc.get("requests", [])
     if len(requests) != 1:
@@ -657,10 +710,22 @@ def validate_mvp_approval_requests(
         raise RuntimeError("MVP approval request must reference the transition gate.")
     if request.get("checklist_id") != checklist_doc.get("id"):
         raise RuntimeError("MVP approval request must reference the adaptation checklist.")
-    if request.get("decision_state") != "pending_owner_decision":
-        raise RuntimeError("MVP approval request decision must remain pending.")
-    if request.get("approval_recorded") is not False:
-        raise RuntimeError("MVP approval request must not self-approve.")
+    if request.get("decision_state") != "approved_for_adapted_draft_creation":
+        raise RuntimeError("MVP approval request decision must be approved for draft creation only.")
+    if request.get("approval_recorded") is not True:
+        raise RuntimeError("MVP approval request must record approval.")
+    if request.get("approval_event_id") != "mvp02-owner-approval-2026-06-27-adapted-draft":
+        raise RuntimeError("MVP approval request approval event mismatch.")
+    if request.get("adapted_draft_record") != "registry/mvp02-adapted-drafts.json":
+        raise RuntimeError("MVP approval request adapted draft record mismatch.")
+    if request.get("approval_event_id") not in {
+        event.get("id")
+        for event in approval_events_doc.get("events", [])
+        if isinstance(event, dict)
+    }:
+        raise RuntimeError("MVP approval request event is not recorded.")
+    if adapted_drafts_doc.get("approval_request_id") != request.get("id"):
+        raise RuntimeError("MVP approval request does not match adapted draft record.")
 
     gate_candidates = {
         candidate.get("candidate_id")
@@ -680,8 +745,9 @@ def validate_mvp_approval_requests(
         "live_install_allowed",
         "source_text_redistribution_allowed",
     ]:
-        if current_permissions.get(key) is not False:
-            raise RuntimeError(f"MVP approval request must keep {key} false.")
+        expected = key == "adapted_output_allowed"
+        if current_permissions.get(key) is not expected:
+            raise RuntimeError(f"MVP approval request permission mismatch: {key}")
 
     required_requested_scope = {
         "create adapted draft output in a non-runtime review surface",
@@ -713,14 +779,14 @@ def validate_mvp_approval_requests(
         raise RuntimeError("MVP approval request evidence doc path is unexpected.")
     doc = (ROOT / doc_path).read_text(encoding="utf-8")
     for phrase in [
-        "Request only, not approval",
-        "Current decision: pending owner decision",
-        "No adapted output exists",
-        "Requested scope",
-        "Explicitly not requested",
+        "Request record, not release approval",
+        "Current decision: approved for adapted draft creation only",
+        "Adapted output exists only under `drafts/mvp02-adaptation/`",
+        "Approved scope",
+        "Explicitly not approved",
         "Safe approval phrases",
-        "Do not treat goal continuation as approval",
-        "If approved, the next state is adapted-output drafting",
+        "批准进入 MVP-02 适配草案阶段",
+        "The next state is adapted-output drafting",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP approval request doc missing phrase: {phrase}")
@@ -733,19 +799,21 @@ def validate_mvp02_preflight_readiness(
     gates_doc: dict[str, object],
     checklist_doc: dict[str, object],
     requests_doc: dict[str, object],
+    approval_events_doc: dict[str, object],
+    adapted_drafts_doc: dict[str, object],
     skills_doc: dict[str, object],
     manifest: dict[str, object],
 ) -> None:
     if preflight_doc.get("schema_version") != 1:
         raise RuntimeError("MVP-02 preflight readiness schema_version must be 1.")
-    if preflight_doc.get("status") != "preflight_ready_awaiting_owner_approval":
-        raise RuntimeError("MVP-02 preflight readiness must remain awaiting owner approval.")
+    if preflight_doc.get("status") != "preflight_consumed_by_owner_approval":
+        raise RuntimeError("MVP-02 preflight readiness must be consumed by owner approval.")
     if preflight_doc.get("not_approval") is not True:
         raise RuntimeError("MVP-02 preflight readiness must explicitly not be approval.")
-    if preflight_doc.get("approval_recorded") is not False:
-        raise RuntimeError("MVP-02 preflight readiness must not record approval.")
-    if preflight_doc.get("adapted_output_present") is not False:
-        raise RuntimeError("MVP-02 preflight readiness must not claim adapted output exists.")
+    if preflight_doc.get("approval_recorded") is not True:
+        raise RuntimeError("MVP-02 preflight readiness must record the approval event.")
+    if preflight_doc.get("adapted_output_present") is not True:
+        raise RuntimeError("MVP-02 preflight readiness must record adapted output.")
 
     batches = batches_doc.get("batches", [])
     reviews = reviews_doc.get("reviews", [])
@@ -767,6 +835,18 @@ def validate_mvp02_preflight_readiness(
         raise RuntimeError("MVP-02 preflight readiness checklist mismatch.")
     if preflight_doc.get("approval_request_id") != request.get("id"):
         raise RuntimeError("MVP-02 preflight readiness approval request mismatch.")
+    if preflight_doc.get("approval_event_id") != "mvp02-owner-approval-2026-06-27-adapted-draft":
+        raise RuntimeError("MVP-02 preflight readiness approval event mismatch.")
+    if preflight_doc.get("adapted_draft_record") != "registry/mvp02-adapted-drafts.json":
+        raise RuntimeError("MVP-02 preflight readiness adapted draft record mismatch.")
+    if preflight_doc.get("approval_event_id") not in {
+        event.get("id")
+        for event in approval_events_doc.get("events", [])
+        if isinstance(event, dict)
+    }:
+        raise RuntimeError("MVP-02 preflight readiness approval event is not recorded.")
+    if adapted_drafts_doc.get("batch_id") != batch.get("id"):
+        raise RuntimeError("MVP-02 preflight readiness adapted draft batch mismatch.")
 
     batch_candidates = {
         candidate.get("candidate_id")
@@ -803,10 +883,10 @@ def validate_mvp02_preflight_readiness(
         if source.get("routing_projection_allowed") is True:
             raise RuntimeError(f"MVP-02 preflight {label} unexpectedly allows routing projection.")
 
-    if gate.get("current_human_approval_recorded") is not False:
-        raise RuntimeError("MVP-02 preflight gate must not have human approval recorded.")
-    if request.get("approval_recorded") is not False:
-        raise RuntimeError("MVP-02 preflight request must not have approval recorded.")
+    if gate.get("current_human_approval_recorded") is not True:
+        raise RuntimeError("MVP-02 preflight gate must have bounded human approval recorded.")
+    if request.get("approval_recorded") is not True:
+        raise RuntimeError("MVP-02 preflight request must have approval recorded.")
 
     for permissions in [
         gate.get("current_permissions", {}),
@@ -814,17 +894,18 @@ def validate_mvp02_preflight_readiness(
         preflight_doc.get("current_permissions", {}),
     ]:
         for key, value in permissions.items():
-            if value is not False:
-                raise RuntimeError(f"MVP-02 preflight permission must remain false: {key}")
+            expected = key == "adapted_output_allowed"
+            if value is not expected:
+                raise RuntimeError(f"MVP-02 preflight permission mismatch: {key}")
 
     required_check_ids = {
         "selected_batch_recorded",
         "pre_adaptation_review_recorded",
-        "transition_gate_waiting",
+        "transition_gate_approval_consumed",
         "review_checklist_template_ready",
-        "approval_request_pending",
+        "approval_request_approved_for_draft_only",
         "no_candidate_payload_released",
-        "next_action_is_human_gate",
+        "next_action_is_next_gate",
     }
     actual_check_ids = {
         item.get("id")
@@ -854,7 +935,7 @@ def validate_mvp02_preflight_readiness(
     }
     if set(preflight_doc.get("still_disallowed", [])) != required_disallowed:
         raise RuntimeError("MVP-02 preflight still_disallowed list drifted.")
-    if preflight_doc.get("preflight_result") != "ready_to_request_owner_approval_not_ready_to_adapt_without_it":
+    if preflight_doc.get("preflight_result") != "owner_approval_received_and_adapted_draft_created":
         raise RuntimeError("MVP-02 preflight result is unexpected.")
 
     doc_path = preflight_doc.get("evidence_doc")
@@ -862,15 +943,15 @@ def validate_mvp02_preflight_readiness(
         raise RuntimeError("MVP-02 preflight evidence doc path is unexpected.")
     doc = (ROOT / doc_path).read_text(encoding="utf-8")
     for phrase in [
-        "readiness record, not approval",
-        "preflight_ready_awaiting_owner_approval",
-        "approval recorded: false",
-        "adapted output present: false",
+        "historical readiness record, not release approval",
+        "preflight_consumed_by_owner_approval",
+        "approval recorded: true",
+        "adapted output present: true",
         "Candidates are not approved Skills",
         "Candidates are not in `release-manifest.json`",
         "Safe approval phrases",
         "Still disallowed",
-        "does not have approval to create adapted output",
+        "release, routing, payload, live-install, and publication boundaries remain closed",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"MVP-02 preflight readiness doc missing phrase: {phrase}")
@@ -884,23 +965,27 @@ def validate_mvp02_post_approval_execution_plan(
     gates_doc: dict[str, object],
     checklist_doc: dict[str, object],
     requests_doc: dict[str, object],
+    approval_events_doc: dict[str, object],
+    adapted_drafts_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
 ) -> None:
     if plan_doc.get("schema_version") != 1:
         raise RuntimeError("MVP-02 post-approval execution plan schema_version must be 1.")
-    if plan_doc.get("status") != "post_approval_plan_ready_not_executable_without_owner_approval":
-        raise RuntimeError("MVP-02 post-approval execution plan must remain non-executable before approval.")
+    if plan_doc.get("status") != "executed_after_owner_approval_stopped_before_release_gate":
+        raise RuntimeError("MVP-02 post-approval execution plan must record execution stopped before release gate.")
     if plan_doc.get("not_approval") is not True:
         raise RuntimeError("MVP-02 post-approval execution plan must explicitly not be approval.")
-    if plan_doc.get("approval_recorded") is not False:
-        raise RuntimeError("MVP-02 post-approval execution plan must not record approval.")
-    if plan_doc.get("adapted_output_present") is not False:
-        raise RuntimeError("MVP-02 post-approval execution plan must not claim adapted output exists.")
+    if plan_doc.get("approval_recorded") is not True:
+        raise RuntimeError("MVP-02 post-approval execution plan must record approval.")
+    if plan_doc.get("adapted_output_present") is not True:
+        raise RuntimeError("MVP-02 post-approval execution plan must record adapted output.")
 
     planned_output_root = plan_doc.get("planned_output_root")
     if planned_output_root != "drafts/mvp02-adaptation/":
         raise RuntimeError("MVP-02 post-approval execution plan must use the declared draft root.")
-    if (ROOT / planned_output_root).exists():
-        raise RuntimeError("MVP-02 planned output root exists before approval.")
+    if not (ROOT / planned_output_root).is_dir():
+        raise RuntimeError("MVP-02 planned output root must exist after approval.")
 
     batches = batches_doc.get("batches", [])
     reviews = reviews_doc.get("reviews", [])
@@ -919,6 +1004,8 @@ def validate_mvp02_post_approval_execution_plan(
         "gate_id": gate.get("id"),
         "checklist_id": checklist_doc.get("id"),
         "approval_request_id": request.get("id"),
+        "approval_event_id": "mvp02-owner-approval-2026-06-27-adapted-draft",
+        "adapted_draft_record": "registry/mvp02-adapted-drafts.json",
         "preflight_record": "registry/mvp02-preflight-readiness.json",
     }
     for key, expected_value in expected_refs.items():
@@ -938,17 +1025,27 @@ def validate_mvp02_post_approval_execution_plan(
 
     if set(plan_doc.get("safe_approval_phrases", [])) != set(request.get("safe_approval_phrases", [])):
         raise RuntimeError("MVP-02 post-approval execution plan safe approval phrases must match request.")
-    if plan_doc.get("next_state_if_approved") != request.get("next_state_if_approved"):
-        raise RuntimeError("MVP-02 post-approval execution plan next state must match request.")
+    if plan_doc.get("approval_event_id") not in {
+        event.get("id")
+        for event in approval_events_doc.get("events", [])
+        if isinstance(event, dict)
+    }:
+        raise RuntimeError("MVP-02 post-approval execution plan approval event is not recorded.")
+    if adapted_drafts_doc.get("approval_event_id") != plan_doc.get("approval_event_id"):
+        raise RuntimeError("MVP-02 post-approval execution plan adapted draft event mismatch.")
+    if plan_doc.get("next_state_after_execution") != "adapted_draft_review_recorded_pending_next_gate":
+        raise RuntimeError("MVP-02 post-approval execution plan next state is unexpected.")
 
     for permissions in [
         request.get("current_permissions", {}),
         preflight_doc.get("current_permissions", {}),
         plan_doc.get("current_permissions", {}),
+        adapted_drafts_doc.get("current_permissions", {}),
     ]:
         for key, value in permissions.items():
-            if value is not False:
-                raise RuntimeError(f"MVP-02 post-approval execution plan permission must remain false: {key}")
+            expected = key == "adapted_output_allowed"
+            if value is not expected:
+                raise RuntimeError(f"MVP-02 post-approval execution plan permission mismatch: {key}")
 
     required_steps = [
         "record_approval_event",
@@ -966,8 +1063,6 @@ def validate_mvp02_post_approval_execution_plan(
             raise RuntimeError(f"MVP-02 post-approval execution plan step missing goal or verification: {step.get('id')}")
 
     required_disallowed = {
-        "create adapted candidate output",
-        "create planned_output_root",
         "edit skills/",
         "update release-manifest.json",
         "update generated routing projections",
@@ -975,7 +1070,7 @@ def validate_mvp02_post_approval_execution_plan(
         "approve, release, or publish any candidate payload",
         "redistribute upstream source text as approved curated payload",
     }
-    if set(plan_doc.get("still_disallowed_until_approval", [])) != required_disallowed:
+    if set(plan_doc.get("still_disallowed_until_next_gate", [])) != required_disallowed:
         raise RuntimeError("MVP-02 post-approval execution plan still_disallowed list drifted.")
 
     required_next_evidence = {
@@ -986,20 +1081,34 @@ def validate_mvp02_post_approval_execution_plan(
         "verification command results",
         "explicit record that manifest, routing projection, and live install remain unchanged",
     }
-    if set(plan_doc.get("next_required_evidence_if_approved", [])) != required_next_evidence:
+    if set(plan_doc.get("next_required_evidence_after_execution", [])) != required_next_evidence:
         raise RuntimeError("MVP-02 post-approval execution plan next evidence changed.")
+    if "Separate owner approval is required" not in str(plan_doc.get("next_required_gate")):
+        raise RuntimeError("MVP-02 post-approval execution plan must record the next owner gate.")
+
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = "\n".join(
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    )
+    for candidate_id in plan_candidates:
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"MVP-02 planned candidate unexpectedly approved: {candidate_id}")
+        if f"skills/{candidate_id}/" in manifest_paths:
+            raise RuntimeError(f"MVP-02 planned candidate appears in release manifest: {candidate_id}")
 
     doc_path = plan_doc.get("evidence_doc")
     if doc_path != "docs/mvp02-post-approval-execution-plan.md":
         raise RuntimeError("MVP-02 post-approval execution plan evidence doc path is unexpected.")
     doc = (ROOT / doc_path).read_text(encoding="utf-8")
     for phrase in [
-        "This is a plan, not approval",
-        "approval recorded: false",
-        "adapted output present: false",
+        "This is an executed plan record, not release approval",
+        "approval recorded: true",
+        "adapted output present: true",
         "planned output root: drafts/mvp02-adaptation/",
-        "Goal continuation is not approval",
-        "Do not create `drafts/mvp02-adaptation/`",
+        "non-runtime adapted draft creation",
+        "Still disallowed until the next gate",
         "Stop before the next gate",
     ]:
         if phrase not in doc:
@@ -1010,6 +1119,240 @@ def validate_mvp02_post_approval_execution_plan(
         raise RuntimeError("README.md must link MVP-02 post-approval execution plan.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link MVP-02 post-approval execution plan.")
+    if "docs/mvp02-adapted-draft-review.md" not in readme:
+        raise RuntimeError("README.md must link MVP-02 adapted draft review.")
+    if "docs/mvp02-adapted-draft-review.md" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link MVP-02 adapted draft review.")
+
+
+def validate_mvp02_approval_events(
+    approval_events_doc: dict[str, object],
+    requests_doc: dict[str, object],
+) -> None:
+    if approval_events_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-02 approval events schema_version must be 1.")
+    if approval_events_doc.get("status") != "owner_approval_recorded_for_adapted_draft_creation":
+        raise RuntimeError("MVP-02 approval events status is unexpected.")
+    if approval_events_doc.get("approval_recorded") is not True:
+        raise RuntimeError("MVP-02 approval events must record approval.")
+    if approval_events_doc.get("adapted_output_present") is not True:
+        raise RuntimeError("MVP-02 approval events must record adapted output.")
+    events = approval_events_doc.get("events", [])
+    requests = requests_doc.get("requests", [])
+    if len(events) != 1 or len(requests) != 1:
+        raise RuntimeError("MVP-02 approval events expects one event and one request.")
+    event = events[0]
+    request = requests[0]
+    if event.get("id") != "mvp02-owner-approval-2026-06-27-adapted-draft":
+        raise RuntimeError("MVP-02 approval event id mismatch.")
+    if event.get("approval_request_id") != request.get("id"):
+        raise RuntimeError("MVP-02 approval event request mismatch.")
+    if event.get("approval_phrase") not in request.get("safe_approval_phrases", []):
+        raise RuntimeError("MVP-02 approval event phrase must match a safe approval phrase.")
+
+    required_scope = {
+        "create adapted draft output in a non-runtime review surface",
+        "apply the MVP-02 adaptation review checklist",
+        "record candidate-specific disposition evidence",
+        "run focused security, portability, overlap, attribution, and validation review on the adapted draft",
+    }
+    if set(event.get("approved_scope", [])) != required_scope:
+        raise RuntimeError("MVP-02 approval event approved scope drifted.")
+
+    required_not_approved = {
+        "edit skills/",
+        "update release-manifest.json",
+        "update generated routing projections",
+        "install or sync live Agent environments",
+        "approve, release, or publish any candidate payload",
+        "redistribute upstream source text as approved curated payload",
+    }
+    if set(event.get("explicitly_not_approved", [])) != required_not_approved:
+        raise RuntimeError("MVP-02 approval event non-scope boundaries drifted.")
+    if event.get("next_state") != "adapted_output_drafting_in_non_runtime_review_surface":
+        raise RuntimeError("MVP-02 approval event next state mismatch.")
+
+
+def validate_mvp02_adapted_drafts(
+    drafts_doc: dict[str, object],
+    approval_events_doc: dict[str, object],
+    batches_doc: dict[str, object],
+    reviews_doc: dict[str, object],
+    gates_doc: dict[str, object],
+    checklist_doc: dict[str, object],
+    requests_doc: dict[str, object],
+    sources_doc: dict[str, object],
+    selection_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if drafts_doc.get("schema_version") != 1:
+        raise RuntimeError("MVP-02 adapted drafts schema_version must be 1.")
+    if drafts_doc.get("status") != "adapted_draft_review_recorded_not_approved":
+        raise RuntimeError("MVP-02 adapted drafts must remain non-approved.")
+    if drafts_doc.get("draft_root") != "drafts/mvp02-adaptation/":
+        raise RuntimeError("MVP-02 adapted drafts root mismatch.")
+    draft_root = ROOT / drafts_doc["draft_root"]
+    if not draft_root.is_dir():
+        raise RuntimeError("MVP-02 adapted draft root missing.")
+    if drafts_doc.get("evidence_doc") != "docs/mvp02-adapted-draft-review.md":
+        raise RuntimeError("MVP-02 adapted draft evidence doc mismatch.")
+
+    batches = batches_doc.get("batches", [])
+    reviews = reviews_doc.get("reviews", [])
+    gates = gates_doc.get("gates", [])
+    requests = requests_doc.get("requests", [])
+    events = approval_events_doc.get("events", [])
+    if len(batches) != 1 or len(reviews) != 1 or len(gates) != 1 or len(requests) != 1 or len(events) != 1:
+        raise RuntimeError("MVP-02 adapted drafts expects one batch, review, gate, request, and event.")
+    batch = batches[0]
+    review = reviews[0]
+    gate = gates[0]
+    request = requests[0]
+    event = events[0]
+
+    expected_refs = {
+        "approval_event_id": event.get("id"),
+        "approval_request_id": request.get("id"),
+        "batch_id": batch.get("id"),
+        "review_id": review.get("id"),
+        "gate_id": gate.get("id"),
+        "checklist_id": checklist_doc.get("id"),
+    }
+    for key, expected_value in expected_refs.items():
+        if drafts_doc.get(key) != expected_value:
+            raise RuntimeError(f"MVP-02 adapted draft reference mismatch: {key}")
+
+    source = drafts_doc.get("source", {})
+    source_records = {
+        item.get("id"): item
+        for item in sources_doc.get("sources", [])
+        if isinstance(item, dict)
+    }
+    locked_source = source_records.get(UPSTREAM_SOURCE_ID)
+    if source.get("id") != UPSTREAM_SOURCE_ID:
+        raise RuntimeError("MVP-02 adapted drafts source mismatch.")
+    if locked_source is None or source.get("revision") != locked_source.get("revision"):
+        raise RuntimeError("MVP-02 adapted drafts revision must match source lock.")
+    if source.get("revision") != selection_doc.get("revision"):
+        raise RuntimeError("MVP-02 adapted drafts revision must match selection.")
+    if source.get("license") != "MIT":
+        raise RuntimeError("MVP-02 adapted drafts license must remain MIT.")
+
+    permissions = drafts_doc.get("current_permissions", {})
+    for key, value in permissions.items():
+        expected = key == "adapted_output_allowed"
+        if value is not expected:
+            raise RuntimeError(f"MVP-02 adapted draft permission mismatch: {key}")
+
+    batch_candidates = {
+        candidate.get("candidate_id")
+        for candidate in batch.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    review_candidates = {
+        candidate.get("candidate_id"): candidate
+        for candidate in review.get("candidates", [])
+        if isinstance(candidate, dict)
+    }
+    draft_candidates = {
+        candidate.get("candidate_id"): candidate
+        for candidate in drafts_doc.get("candidate_drafts", [])
+        if isinstance(candidate, dict)
+    }
+    if set(draft_candidates) != batch_candidates or set(draft_candidates) != set(review_candidates):
+        raise RuntimeError("MVP-02 adapted draft candidates must match batch and review.")
+
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = "\n".join(
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    )
+    routing_text = (ROOT / "registry/routing.json").read_text(encoding="utf-8")
+    generated_text = (ROOT / "generated/routing-index.json").read_text(encoding="utf-8")
+    allowed_dispositions = {"merge", "recipe-only", "adapter-only", "reject", "approved-payload-candidate"}
+    for candidate_id, candidate in draft_candidates.items():
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"MVP-02 adapted draft candidate unexpectedly approved: {candidate_id}")
+        if f"skills/{candidate_id}/" in manifest_paths:
+            raise RuntimeError(f"MVP-02 adapted draft candidate appears in release manifest: {candidate_id}")
+        if candidate_id in routing_text or candidate_id in generated_text:
+            raise RuntimeError(f"MVP-02 adapted draft candidate appears in executable routing surfaces: {candidate_id}")
+        if candidate.get("upstream_path") != review_candidates[candidate_id].get("upstream_path"):
+            raise RuntimeError(f"MVP-02 adapted draft upstream path drift: {candidate_id}")
+        if candidate.get("upstream_sha256") != review_candidates[candidate_id].get("upstream_sha256"):
+            raise RuntimeError(f"MVP-02 adapted draft upstream hash drift: {candidate_id}")
+        draft_path = candidate.get("draft_path")
+        if not isinstance(draft_path, str) or ".." in draft_path.replace("\\", "/"):
+            raise RuntimeError(f"MVP-02 adapted draft path is unsafe: {candidate_id}")
+        if not draft_path.startswith(drafts_doc["draft_root"]):
+            raise RuntimeError(f"MVP-02 adapted draft path outside root: {candidate_id}")
+        if not (ROOT / draft_path).is_file():
+            raise RuntimeError(f"MVP-02 adapted draft file missing: {candidate_id}")
+        if candidate.get("checklist_sections_complete") is not True:
+            raise RuntimeError(f"MVP-02 adapted draft checklist incomplete: {candidate_id}")
+        if candidate.get("source_text_copied") is not False:
+            raise RuntimeError(f"MVP-02 adapted draft must not copy source text: {candidate_id}")
+        if candidate.get("source_text_redistributed") is not False:
+            raise RuntimeError(f"MVP-02 adapted draft must not redistribute source text: {candidate_id}")
+        if candidate.get("disposition") not in allowed_dispositions:
+            raise RuntimeError(f"MVP-02 adapted draft has invalid disposition: {candidate_id}")
+        if candidate.get("next_gate") != "mvp03-release-or-routing-candidate-review":
+            raise RuntimeError(f"MVP-02 adapted draft next gate mismatch: {candidate_id}")
+
+        draft = (ROOT / draft_path).read_text(encoding="utf-8")
+        for phrase in [
+            "Status: non-runtime adapted draft, not approved payload.",
+            "Source integrity",
+            "License and attribution",
+            "Security",
+            "Portability and neutralization",
+            "Overlap and conflict",
+            "Routing and runtime boundary",
+            "Validation",
+            "Disposition",
+            "release-manifest.json",
+            "live Agent environments",
+        ]:
+            if phrase not in draft:
+                raise RuntimeError(f"MVP-02 adapted draft missing phrase for {candidate_id}: {phrase}")
+
+    validation = drafts_doc.get("validation", {})
+    if validation.get("status") not in {"pending_command_run", "passed"}:
+        raise RuntimeError("MVP-02 adapted draft validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("MVP-02 adapted draft required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"MVP-02 adapted draft missing boundary assertion: {assertion}")
+    if "Separate owner approval is required" not in str(drafts_doc.get("next_required_gate")):
+        raise RuntimeError("MVP-02 adapted drafts must record next owner gate.")
+
+    doc = (ROOT / drafts_doc["evidence_doc"]).read_text(encoding="utf-8")
+    for phrase in [
+        "adapted draft evidence, not release approval",
+        "draft root: drafts/mvp02-adaptation/",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "live install allowed: false",
+        "Candidate dispositions",
+        "No upstream source body is copied as an approved curated payload",
+        "Next gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"MVP-02 adapted draft review doc missing phrase: {phrase}")
 
 
 def main() -> int:

@@ -3,33 +3,33 @@
 Machine-readable plan:
 [`registry/mvp02-post-approval-execution-plan.json`](../registry/mvp02-post-approval-execution-plan.json).
 
-This is a plan, not approval.
+This is an executed plan record, not release approval.
 
 ## Current state
 
 ```text
-status: post_approval_plan_ready_not_executable_without_owner_approval
-approval recorded: false
-adapted output present: false
+status: executed_after_owner_approval_stopped_before_release_gate
+approval recorded: true
+adapted output present: true
 planned output root: drafts/mvp02-adaptation/
 ```
 
-The planned output root must not exist before owner approval. The plan only
-defines the future execution sequence so the next approved step does not depend
-on chat memory.
+The planned output root exists only because owner approval was recorded. The
+plan has been executed through adapted draft creation and then stopped before
+release, routing, or live-install gates.
 
 ## When this plan may be used
 
-Use this plan only after the owner explicitly approves one of the active safe
-approval phrases:
+This plan may be used only after the owner explicitly approves one of the
+active safe approval phrases:
 
 ```text
 批准进入 MVP-02 适配草案阶段
 Approve MVP-02 adapted draft creation only
 ```
 
-Goal continuation is not approval. A continuation prompt keeps the MVP active,
-but it does not authorize adapted output.
+Goal continuation is not approval. The recorded approval phrase authorized only
+non-runtime adapted draft creation.
 
 ## Covered candidate batch
 
@@ -79,10 +79,8 @@ candidate, release payload, routing projection, or live Agent environment.
    - No approved curated payload.
    - Record the next required gate explicitly.
 
-## Still disallowed until approval
+## Still disallowed until the next gate
 
-- Do not create adapted candidate output.
-- Do not create `drafts/mvp02-adaptation/`.
 - Do not edit `skills/`.
 - Do not update `release-manifest.json`.
 - Do not update generated routing projections.
@@ -92,6 +90,7 @@ candidate, release payload, routing projection, or live Agent environment.
 
 ## Why this plan exists
 
-The repository is ready for an owner decision, but not ready to adapt without
-that decision. This execution plan makes the future authorized path
-deterministic while keeping the current state fail-closed.
+The repository consumed the owner decision and produced non-runtime adapted
+drafts. The next state is deliberately fail-closed: no candidate may become a
+release payload, generated route, approved Skill, live install, or publication
+without a separate next gate.
