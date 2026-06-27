@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-这是一个私有、跨 Agent 的权威仓库，负责经过审查的 Skill 正文、来源、治理证据、
+这是一个公开安全、跨 Agent 的权威仓库，负责经过审查的 Skill 正文、来源、治理证据、
 能力拓扑和确定性发布清单。
 
 ## 仓库职责
@@ -123,6 +123,7 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
+- `CONTRIBUTING.md`、`CODE_OF_CONDUCT.md` 与 `SECURITY.md`：公开贡献、社区协作和安全报告边界；
 - `docs/license-policy.md`：仓库自有代码、文档、生成投影、第三方 Skill 正文和官方基线的分层许可证策略；
 - `docs/public-private-boundary.md`：公开/私有发布边界和用户配置模板指引；
 - `docs/sustainability.md`：成本姿态、赞助边界与 free-first 纪律；
@@ -171,9 +172,10 @@ python -B scripts/verify.py
 - 跨 Agent 可移植性不得削弱权限、安全、证据、许可证或真实环境限制；
 - 安装、账号连接、外部写入和信任边界变化由消费者侧处理，并需适用的授权。
 
-## 开源就绪
+## 公开发布状态
 
-本仓开发期仍为私有。公开前，仓库所有者必须单独确认仓库可见性、赞助入口、第三方再分发边界和私有 overlay 清除。
-仓库自有代码和治理机制采用 Apache-2.0；仓库自有文档和公开治理文本按
-[`docs/license-policy.md`](docs/license-policy.md) 的分层策略治理。当前路径不需要 GitHub Pro 或 Team；只有当私有
-Actions 分钟、组织治理或多人审查确实需要时，才考虑升级。
+本仓按公开安全原则设计，但公开可见不等于降低发布闸门。第三方再分发边界、来源证明、
+私有 overlay 排除和赞助入口仍由仓库所有者作为发布决策单独控制。仓库自有代码和治理机制
+采用 Apache-2.0；仓库自有文档和公开治理文本按
+[`docs/license-policy.md`](docs/license-policy.md) 的分层策略治理。当前路径不需要 GitHub Pro
+或 Team；只有当私有 Actions 分钟、组织治理或多人审查确实需要时，才考虑升级。

@@ -2,7 +2,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-A private, cross-agent authority for reviewed Skill content, provenance,
+A public-safe, cross-agent authority for reviewed Skill content, provenance,
 governance evidence, capability topology, and deterministic release manifests.
 
 ## Repository Role
@@ -170,6 +170,8 @@ consumer must probe its currently visible, authorized capability inventory.
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
   attribution, and third-party Skill notices.
+- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`: public
+  contribution, community, and vulnerability-reporting boundaries.
 - `docs/license-policy.md`: layered licensing for repo-owned code, docs,
   generated projections, third-party Skill bodies, and official baselines.
 - `docs/public-private-boundary.md`: public/private release boundary and user-config template guidance.
@@ -230,13 +232,14 @@ adaptation, validation, topology update, and release-manifest update.
 - Installation, account connection, external writes, and trust-boundary
   changes remain consumer-side actions requiring applicable authorization.
 
-## Open-source readiness
+## Public release posture
 
-This repository is private during development. Before making it public, the
-owner must explicitly confirm repository visibility, funding links, third-party
-redistribution boundaries, and private-overlay removal. Repository-owned code
-and governance machinery are Apache-2.0; repository-owned documentation and
-public governance text follow the layered policy in [`docs/license-policy.md`](docs/license-policy.md).
-GitHub Free is sufficient for the current path; GitHub Team or Pro is only a
-future option if private Actions minutes, organization governance, or team
-review needs require it.
+This repository is designed to be public-safe, but public visibility does not
+weaken the release gates. Third-party redistribution boundaries, provenance,
+private-overlay exclusion, and funding links remain owner-controlled release
+decisions. Repository-owned code and governance machinery are Apache-2.0;
+repository-owned documentation and public governance text follow the layered
+policy in [`docs/license-policy.md`](docs/license-policy.md). GitHub Free is
+sufficient for the current path; GitHub Team or Pro is only a future option if
+private Actions minutes, organization governance, or team review needs require
+it.

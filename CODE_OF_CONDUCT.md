@@ -1,0 +1,32 @@
+# Code of Conduct
+
+This project is for public-safe, cross-agent Skill governance. Participation
+should stay evidence-based, respectful, and focused on safer reuse.
+
+## Expected behavior
+
+- Be respectful when reviewing sources, licenses, risks, and adaptations.
+- Separate facts, assumptions, preferences, and unresolved questions.
+- Keep discussions public-safe: do not post secrets, private memory, account
+  state, personal data, proprietary dumps, leaked prompts, or restricted
+  third-party content.
+- Treat unapproved Skill candidates as untrusted review material, not runtime
+  instructions.
+- Prefer specific, actionable feedback over broad claims.
+
+## Unacceptable behavior
+
+- Harassment, personal attacks, or discriminatory language.
+- Publishing credentials, private configuration, private conversations, or
+  other sensitive material.
+- Encouraging users or agents to bypass permission, license, security,
+  provenance, or runtime-authorization boundaries.
+- Misrepresenting candidate material as approved, released, installed, or safe.
+
+## Enforcement
+
+Maintainers may edit, hide, close, or remove issues, comments, pull requests,
+or contributions that violate these expectations. Serious or repeated issues
+may result in blocked participation.
+
+For security-sensitive reports, use the process in `SECURITY.md`.

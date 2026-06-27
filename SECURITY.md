@@ -4,7 +4,9 @@
 
 ## Supported versions
 
-During the private pre-release phase, only the default branch and explicitly pinned release manifests are supported. After a public release, supported versions will be documented here.
+The default branch and explicitly pinned release manifests are supported. A
+Skill is not supported merely because it appears in source, intake, draft,
+audit, or candidate-review material.
 
 ## Reporting security issues
 
