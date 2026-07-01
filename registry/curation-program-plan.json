@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "id": "curation-program-plan-v1",
+  "purpose": "Overall execution plan for expanding curated Skills from discovery through reviewed release and final local Codex, agents, and cc Switch alignment. This is not approval, release inventory, runtime installation evidence, or local sync authorization.",
+  "status": "active",
+  "currentStep": "program-02-source-intake-and-filtering",
+  "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
+  "controlledSurfaces": [
+    "agent-skills-curated repository",
+    "approved release manifest",
+    "generated routing projections",
+    "local Codex skills directory",
+    "local agents skills directory",
+    "local cc Switch skills directory"
+  ],
+  "steps": [
+    {
+      "id": "program-01-discovery-and-coverage",
+      "status": "complete",
+      "mapsToRound": "round-01-broad-coverage-radar",
+      "goal": "Establish broad domain coverage and safe discovery inputs beyond software engineering.",
+      "actions": [
+        "define collaboration domains",
+        "record starred and GitHub-wide discovery inputs",
+        "keep stars as weak ranking evidence",
+        "keep discovery read-only and non-approval"
+      ],
+      "acceptanceCriteria": [
+        "coverage registry validates broad digital work domains",
+        "discovery profile is read-only",
+        "candidate sources are named without approval or runtime eligibility",
+        "software-engineering-only framing is rejected"
+      ],
+      "verificationStandards": [
+        "python -B scripts/verify.py",
+        "GitHub discovery workflow does not commit, install, or approve candidates",
+        "candidate records state non-approval and non-runtime boundaries"
+      ],
+      "allowedChanges": [
+        "coverage registry",
+        "discovery profile",
+        "non-approval source hints",
+        "read-only discovery automation"
+      ],
+      "blockedActions": [
+        "approved Skill payload admission",
+        "release manifest changes",
+        "source text redistribution",
+        "local Codex/agents/cc-switch sync"
+      ],
+      "closeoutEvidence": [
+        "registry/collaboration-domain-coverage.json",
+        "registry/github-skill-discovery-profile.json",
+        "registry/starred-skill-sources.json",
+        "docs/starred-capability-source-discovery.md"
+      ]
+    },
+    {
+      "id": "program-02-source-intake-and-filtering",
+      "status": "active",
+      "mapsToRound": "round-02-source-intake-and-filtering",
+      "goal": "Pin small, reviewable source batches and prepare them for license, provenance, security, portability, and overlap review.",
+      "actions": [
+        "pin source repository revisions as full SHAs",
+        "record license posture and source metadata",
+        "record detected Skill paths and coverage hints",
+        "name review focus for each source",
+        "block runtime and release actions until review closes"
+      ],
+      "acceptanceCriteria": [
+        "each source has a full pinned revision",
+        "each source has a supported or explicitly review-blocking license posture",
+        "each source has detected Skill evidence and coverage hints",
+        "each source has a review focus",
+        "the next gate is license-provenance-security-portability-overlap-review"
+      ],
+      "verificationStandards": [
+        "python -B scripts/verify.py",
+        "source-intake batch blocks release manifest changes",
+        "source-intake batch blocks runtime installation",
+        "source-intake batch blocks local Codex/agents/cc-switch sync"
+      ],
+      "allowedChanges": [
+        "source intake batch records",
+        "candidate inventory",
+        "review preparation evidence",
+        "non-runtime docs"
+      ],
+      "blockedActions": [
+        "unreviewed bulk import",
+        "approved payload admission",
+        "release manifest changes",
+        "source text redistribution",
+        "runtime installation",
+        "local Codex/agents/cc-switch sync"
+      ],
+      "closeoutEvidence": [
+        "registry/source-intake-batches.json",
+        "docs/round02-source-intake-2026-07-02.md"
+      ],
+      "nextGate": "program-03-review-and-adaptation"
+    },
+    {
+      "id": "program-03-review-and-adaptation",
+      "status": "planned",
+      "mapsToRound": "round-02-source-intake-and-filtering",
+      "goal": "Review pinned candidates and create neutral, portable, non-duplicative adaptation decisions before any release change.",
+      "actions": [
+        "review license and attribution requirements",
+        "review provenance and source stability",
+        "review executable commands, network calls, credentials, and file-system boundaries",
+        "review portability across agents and runtimes",
+        "resolve overlap with existing curated, official, runtime, and local capabilities",
+        "draft adaptations only when the source passes review"
+      ],
+      "acceptanceCriteria": [
+        "every candidate has adopt, merge, recipe-only, adapter-only, reference-only, or reject disposition",
+        "security-sensitive commands are removed, bounded, or rejected",
+        "agent-specific language is neutralized unless it is an explicit dependency boundary",
+        "duplicates are merged or rejected instead of added as parallel Skills",
+        "copyright and license constraints are preserved"
+      ],
+      "verificationStandards": [
+        "python -B scripts/verify.py",
+        "review evidence links to source pins",
+        "adaptation drafts are not in release-manifest.json",
+        "no candidate becomes executable routing target before approval"
+      ],
+      "allowedChanges": [
+        "audit evidence",
+        "candidate disposition records",
+        "adaptation drafts",
+        "overlap and conflict notes"
+      ],
+      "blockedActions": [
+        "approved payload admission without owner approval",
+        "release manifest changes",
+        "runtime installation",
+        "local Codex/agents/cc-switch sync"
+      ],
+      "closeoutEvidence": [
+        "license review evidence",
+        "security review evidence",
+        "portability review evidence",
+        "overlap review evidence",
+        "candidate disposition record"
+      ],
+      "nextGate": "program-04-curated-admission-and-release"
+    },
+    {
+      "id": "program-04-curated-admission-and-release",
+      "status": "planned",
+      "mapsToRound": "round-03-adaptation-and-curated-admission",
+      "goal": "Admit only approved adapted payload, update topology and release inventory, and prove the repository remains internally consistent.",
+      "actions": [
+        "apply approved adapted payload changes",
+        "update admissions, skills, capabilities, relations, conflicts, recipes, routing, and scenarios when needed",
+        "rebuild deterministic topology and release manifest",
+        "run full repository verification",
+        "record release decision and residual risks"
+      ],
+      "acceptanceCriteria": [
+        "all admitted payload is approved and source-attributed",
+        "release-manifest.json contains only approved curated payload",
+        "generated routing projections are deterministic",
+        "routing scenarios cover new or changed behavior",
+        "no official, runtime-owned, or built-in Skill body is vendored as curated payload"
+      ],
+      "verificationStandards": [
+        "python -B scripts/build_topology.py",
+        "python -B scripts/build_release_manifest.py",
+        "python -B scripts/simulate_routing.py --report generated/routing-simulation-report.json",
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v"
+      ],
+      "allowedChanges": [
+        "approved adapted Skill payload",
+        "release manifest",
+        "generated routing projection",
+        "governance registries",
+        "release evidence"
+      ],
+      "blockedActions": [
+        "local runtime sync",
+        "local Codex/agents/cc-switch sync",
+        "consumer repository write",
+        "account connection",
+        "unapproved source redistribution"
+      ],
+      "closeoutEvidence": [
+        "release manifest diff",
+        "generated projection diff",
+        "full validation results",
+        "release decision record"
+      ],
+      "nextGate": "program-05-consumer-projection-readiness"
+    },
+    {
+      "id": "program-05-consumer-projection-readiness",
+      "status": "planned",
+      "mapsToRound": "post-release-consumer-readiness",
+      "goal": "Prepare the approved curated release for downstream consumption without yet mutating local runtime directories.",
+      "actions": [
+        "record the exact curated repository SHA",
+        "prepare consumer sync plan",
+        "classify shared portable Skills versus environment-specific or runtime-owned Skills",
+        "prepare backup and rollback checks",
+        "define local parity checks for Codex, agents, and cc Switch"
+      ],
+      "acceptanceCriteria": [
+        "approved repository SHA is pinned",
+        "sync plan distinguishes portable curated Skills from ecosystem-specific Skills",
+        "Codex-specific official or runtime-owned Skills are not claimed as curated payload",
+        "agents and cc Switch parity target is explicit",
+        "Codex local target accounts for Codex-specific system or runtime surfaces"
+      ],
+      "verificationStandards": [
+        "git status --short --branch is clean before sync preparation closes",
+        "release-manifest.json hash set is the sync input",
+        "local inventory comparison is read-only",
+        "backup and rollback commands are reviewed before local writes"
+      ],
+      "allowedChanges": [
+        "consumer sync plan",
+        "read-only local inventory report",
+        "backup plan",
+        "rollback plan"
+      ],
+      "blockedActions": [
+        "writing local Codex skills",
+        "writing local agents skills",
+        "writing local cc Switch skills",
+        "deleting local Skills",
+        "modifying private consumer repositories"
+      ],
+      "closeoutEvidence": [
+        "consumer sync plan",
+        "read-only local inventory",
+        "approved release SHA"
+      ],
+      "nextGate": "program-06-local-runtime-alignment-closeout"
+    },
+    {
+      "id": "program-06-local-runtime-alignment-closeout",
+      "status": "planned",
+      "mapsToRound": "local-runtime-stage-closeout",
+      "goal": "Align local Codex, agents, and cc Switch Skill directories after approved release readiness and explicit local-write authorization.",
+      "actions": [
+        "back up or snapshot owned local Skill directories",
+        "sync approved portable curated Skills to agents and cc Switch targets",
+        "sync appropriate shared curated Skills into Codex without overwriting Codex system, plugin, or runtime-owned surfaces",
+        "preserve user-owned local custom Skills unless the current transaction owns them",
+        "verify no unintended reparse, shortcut, stale, or duplicate directory remains",
+        "record final parity and residual exceptions"
+      ],
+      "acceptanceCriteria": [
+        "local write authorization is explicit for this stage",
+        "agents and cc Switch contain the same approved portable curated Skill set or documented exceptions",
+        "Codex contains the approved shared curated Skill set plus documented Codex-specific surfaces",
+        "no source-intake-only or draft candidate becomes installed",
+        "backup, rollback, parity, and final inventory evidence exist",
+        "stage closeout states complete, partial, blocked, needs-verification, needs-user-confirmation, or cannot-close"
+      ],
+      "verificationStandards": [
+        "pre-sync inventory is recorded",
+        "post-sync inventory is recorded",
+        "approved release manifest hashes match synced curated payload where applicable",
+        "directory reparse or shortcut status is checked",
+        "git status for repository remains clean after local sync evidence is recorded"
+      ],
+      "allowedChanges": [
+        "authorized local Skill directory sync",
+        "owned backup artifacts",
+        "final local inventory evidence",
+        "consumer-side closeout record"
+      ],
+      "blockedActions": [
+        "local writes without explicit authorization",
+        "deleting unrelated user-owned Skills",
+        "overwriting official or runtime-owned Codex surfaces",
+        "syncing source-intake-only candidates",
+        "claiming global completion without residual exception review"
+      ],
+      "closeoutEvidence": [
+        "pre-sync inventory",
+        "post-sync inventory",
+        "backup or rollback evidence",
+        "hash or content parity evidence",
+        "documented exceptions",
+        "final stage closeout"
+      ]
+    }
+  ],
+  "globalVerificationSet": [
+    "python -B scripts/verify.py",
+    "python -B scripts/build_release_manifest.py --check",
+    "python -B scripts/build_topology.py --check",
+    "python -B scripts/simulate_routing.py --all",
+    "python -B -m unittest discover -s tests -v"
+  ],
+  "stageCloseoutRule": "Do not align local Codex, agents, or cc Switch Skill directories until the curated release is approved, consumer projection readiness is complete, and local-write authorization is explicit for the alignment stage."
+}

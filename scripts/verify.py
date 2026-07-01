@@ -59,6 +59,7 @@ REQUIRED_FILES = (
     "registry/conflicts.json", "registry/recipes.json",
     "registry/collaboration-domain-coverage.json",
     "registry/curation-expansion-rounds.json",
+    "registry/curation-program-plan.json",
     "registry/round-lifecycle-contract.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
@@ -139,6 +140,7 @@ def verify() -> None:
     recipes_doc = load("registry/recipes.json")
     collaboration_domain_coverage_doc = load("registry/collaboration-domain-coverage.json")
     curation_expansion_rounds_doc = load("registry/curation-expansion-rounds.json")
+    curation_program_plan_doc = load("registry/curation-program-plan.json")
     round_lifecycle_contract_doc = load("registry/round-lifecycle-contract.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
@@ -174,6 +176,7 @@ def verify() -> None:
     validate_recipes_document(recipes_doc, "registry/recipes.json")
     validate_collaboration_domain_coverage(collaboration_domain_coverage_doc)
     validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
+    validate_curation_program_plan(curation_program_plan_doc, curation_expansion_rounds_doc)
     validate_round_lifecycle_contract(round_lifecycle_contract_doc, curation_expansion_rounds_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
@@ -604,6 +607,8 @@ def validate_curation_expansion_rounds(
     for phrase in ["not approval", "release inventory", "runtime installation"]:
         if phrase not in purpose:
             raise RuntimeError(f"Curation expansion rounds purpose missing phrase: {phrase}")
+    if document.get("programPlan") != "registry/curation-program-plan.json":
+        raise RuntimeError("Curation expansion rounds must reference the curation program plan.")
     if document.get("lifecycleContract") != "registry/round-lifecycle-contract.json":
         raise RuntimeError("Curation expansion rounds must reference the round lifecycle contract.")
     rounds = document.get("rounds")
@@ -669,6 +674,131 @@ def validate_curation_expansion_rounds(
         raise RuntimeError("Curation expansion sync deferral must explain after-condition.")
     if not coverage_doc.get("domains"):
         raise RuntimeError("Curation expansion rounds require collaboration domain coverage.")
+
+
+def validate_curation_program_plan(
+    document: dict[str, object],
+    rounds_doc: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Curation program plan schema must be 1.")
+    purpose = str(document.get("purpose", "")).lower()
+    for phrase in ["not approval", "release inventory", "runtime installation", "local sync authorization"]:
+        if phrase not in purpose:
+            raise RuntimeError(f"Curation program plan purpose missing phrase: {phrase}")
+    if document.get("status") != "active":
+        raise RuntimeError("Curation program plan must be active.")
+    if document.get("currentStep") != "program-02-source-intake-and-filtering":
+        raise RuntimeError("Curation program plan currentStep drifted.")
+    if document.get("stageCloseoutTarget") != "program-06-local-runtime-alignment-closeout":
+        raise RuntimeError("Curation program plan stage closeout target drifted.")
+    surfaces = set(document.get("controlledSurfaces", []))
+    for required in {
+        "agent-skills-curated repository",
+        "approved release manifest",
+        "generated routing projections",
+        "local Codex skills directory",
+        "local agents skills directory",
+        "local cc Switch skills directory",
+    }:
+        if required not in surfaces:
+            raise RuntimeError(f"Curation program plan missing controlled surface: {required}")
+
+    expected_steps = [
+        "program-01-discovery-and-coverage",
+        "program-02-source-intake-and-filtering",
+        "program-03-review-and-adaptation",
+        "program-04-curated-admission-and-release",
+        "program-05-consumer-projection-readiness",
+        "program-06-local-runtime-alignment-closeout",
+    ]
+    steps = document.get("steps")
+    if not isinstance(steps, list) or [item.get("id") for item in steps if isinstance(item, dict)] != expected_steps:
+        raise RuntimeError("Curation program plan step order drifted.")
+    round_ids = {
+        item.get("id")
+        for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict)
+    }
+    expected_status = {
+        "program-01-discovery-and-coverage": "complete",
+        "program-02-source-intake-and-filtering": "active",
+        "program-03-review-and-adaptation": "planned",
+        "program-04-curated-admission-and-release": "planned",
+        "program-05-consumer-projection-readiness": "planned",
+        "program-06-local-runtime-alignment-closeout": "planned",
+    }
+    for step in steps:
+        if not isinstance(step, dict):
+            raise RuntimeError("Curation program plan steps must be objects.")
+        step_id = step.get("id")
+        if step.get("status") != expected_status.get(step_id):
+            raise RuntimeError(f"Curation program plan step status drifted: {step_id}")
+        if step.get("mapsToRound") not in round_ids and not str(step.get("mapsToRound", "")).startswith(("post-release", "local-runtime")):
+            raise RuntimeError(f"Curation program plan step mapsToRound is invalid: {step_id}")
+        for key in [
+            "goal",
+            "actions",
+            "acceptanceCriteria",
+            "verificationStandards",
+            "allowedChanges",
+            "blockedActions",
+            "closeoutEvidence",
+        ]:
+            value = step.get(key)
+            if key == "goal":
+                if not isinstance(value, str) or not value:
+                    raise RuntimeError(f"Curation program plan goal is required: {step_id}")
+            elif not isinstance(value, list) or not value:
+                raise RuntimeError(f"Curation program plan {key} is required: {step_id}")
+        blocked_actions = " ".join(str(item) for item in step.get("blockedActions", [])).lower()
+        if step_id != "program-06-local-runtime-alignment-closeout":
+            if "local codex/agents/cc-switch sync" not in blocked_actions and "writing local codex skills" not in blocked_actions:
+                raise RuntimeError(f"Curation program plan must block local sync before closeout: {step_id}")
+        if step_id == "program-06-local-runtime-alignment-closeout":
+            acceptance_text = " ".join(str(item) for item in step.get("acceptanceCriteria", [])).lower()
+            for phrase in [
+                "local write authorization",
+                "agents and cc switch",
+                "codex",
+                "source-intake-only",
+                "backup",
+            ]:
+                if phrase not in acceptance_text:
+                    raise RuntimeError(f"Local closeout acceptance missing phrase: {phrase}")
+    required_global_verification = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(document.get("globalVerificationSet", [])) != required_global_verification:
+        raise RuntimeError("Curation program plan global verification set drifted.")
+    closeout_rule = str(document.get("stageCloseoutRule", "")).lower()
+    for phrase in ["local codex", "agents", "cc switch", "approved", "authorization"]:
+        if phrase not in closeout_rule:
+            raise RuntimeError(f"Curation program plan closeout rule missing phrase: {phrase}")
+    doc = (ROOT / "docs/curation-program-plan.md").read_text(encoding="utf-8")
+    for phrase in [
+        "discovery and coverage",
+        "source intake and filtering",
+        "review and adaptation",
+        "curated admission and release",
+        "consumer projection readiness",
+        "local runtime alignment closeout",
+        ".agents/skills",
+        ".cc-switch/skills",
+        ".codex/skills",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if "docs/curation-program-plan.md" not in readme:
+        raise RuntimeError("README.md must link curation program plan.")
+    if "docs/curation-program-plan.md" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link curation program plan.")
 
 
 def validate_round_lifecycle_contract(

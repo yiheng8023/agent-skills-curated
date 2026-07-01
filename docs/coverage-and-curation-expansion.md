@@ -23,6 +23,8 @@ specialist Skills so the repository can grow without forcing every capability
 into one shape.
 
 The iterative control plan lives in `registry/curation-expansion-rounds.json`.
+The overall execution plan lives in `registry/curation-program-plan.json` and
+is explained in `docs/curation-program-plan.md`.
 The round lifecycle contract lives in
 `registry/round-lifecycle-contract.json` and is explained in
 `docs/round-lifecycle-contract.md`. Candidate radar and coverage records are

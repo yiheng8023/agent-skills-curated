@@ -2,6 +2,7 @@
   "schema": 1,
   "id": "curation-expansion-rounds-v1",
   "purpose": "Iterative expansion control for broad Skill discovery, filtering, adaptation, and curated intake. This is not approval, release inventory, or runtime installation evidence.",
+  "programPlan": "registry/curation-program-plan.json",
   "lifecycleContract": "registry/round-lifecycle-contract.json",
   "currentRound": "round-02-source-intake-and-filtering",
   "rounds": [
