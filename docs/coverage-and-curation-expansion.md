@@ -25,6 +25,8 @@ into one shape.
 The iterative control plan lives in `registry/curation-expansion-rounds.json`.
 The overall execution plan lives in `registry/curation-program-plan.json` and
 is explained in `docs/curation-program-plan.md`.
+The continuous curation harness and upstream input boundary are explained in
+`docs/curation-harness-model.md`.
 The round lifecycle contract lives in
 `registry/round-lifecycle-contract.json` and is explained in
 `docs/round-lifecycle-contract.md`. Candidate radar and coverage records are

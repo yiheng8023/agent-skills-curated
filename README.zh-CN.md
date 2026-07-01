@@ -139,6 +139,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   包含资源雷达去重元数据，以及下一批前先暂停观察的决策；
 - `docs/curation-program-plan.md`：从发现到发布再到本地同步的整体执行计划，
   并映射每一步的验收与验证标准；
+- `docs/curation-harness-model.md`：持续策展闭环，以及 Skill 专项下游消费链路
+  的上游输入边界；
 - `docs/round-lifecycle-contract.md`：迭代式策展轮次的计划、执行、验收和阶段性
   收官契约；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、

@@ -103,6 +103,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
     "docs/coverage-and-curation-expansion.md",
+    "docs/curation-harness-model.md",
     "docs/round02-source-intake-2026-07-02.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
@@ -704,6 +705,76 @@ def validate_curation_program_plan(
         if required not in surfaces:
             raise RuntimeError(f"Curation program plan missing controlled surface: {required}")
 
+    upstream_boundary = document.get("upstreamInputBoundary")
+    if not isinstance(upstream_boundary, dict):
+        raise RuntimeError("Curation program plan upstream input boundary is required.")
+    if upstream_boundary.get("role") != "downstream-consumer-of-broader-resource-governance-inputs":
+        raise RuntimeError("Curation program plan upstream boundary role drifted.")
+    entrypoints = upstream_boundary.get("knownUpstreamEntrypoints")
+    if not isinstance(entrypoints, list) or not entrypoints:
+        raise RuntimeError("Curation program plan upstream entrypoints are required.")
+    yi_entry = next(
+        (
+            entry for entry in entrypoints
+            if isinstance(entry, dict)
+            and entry.get("id") == "github:yiheng8023/YIYUAN-MERIDIAN"
+        ),
+        None,
+    )
+    if not yi_entry or yi_entry.get("currentHandling") != "recorded-boundary-only":
+        raise RuntimeError("YIYUAN-MERIDIAN must be recorded as boundary-only upstream input.")
+    if yi_entry.get("url") != "https://github.com/yiheng8023/YIYUAN-MERIDIAN":
+        raise RuntimeError("YIYUAN-MERIDIAN upstream URL drifted.")
+    blocked_here = " ".join(str(item) for item in upstream_boundary.get("blockedHere", [])).lower()
+    for phrase in [
+        "upstream discovery as approval",
+        "mutating yiyuan-meridian",
+        "global upstream hub",
+        "upstream completeness",
+    ]:
+        if phrase not in blocked_here:
+            raise RuntimeError(f"Curation program plan upstream boundary missing blocked phrase: {phrase}")
+    allowed_here = " ".join(str(item) for item in upstream_boundary.get("allowedHere", [])).lower()
+    for phrase in [
+        "stable upstream skill candidates",
+        "upstream provenance",
+        "curation and release gates",
+    ]:
+        if phrase not in allowed_here:
+            raise RuntimeError(f"Curation program plan upstream boundary missing allowed phrase: {phrase}")
+
+    harness_loop = document.get("harnessLoop")
+    if not isinstance(harness_loop, dict):
+        raise RuntimeError("Curation program plan harness loop is required.")
+    if harness_loop.get("model") != "continuous-curation-harness":
+        raise RuntimeError("Curation program plan harness model drifted.")
+    expected_loop = [
+        "discover",
+        "filter",
+        "review",
+        "adapt",
+        "verify",
+        "release",
+        "consume-sync",
+        "feedback",
+        "rediscover-or-revise",
+    ]
+    if harness_loop.get("loop") != expected_loop:
+        raise RuntimeError("Curation program plan harness loop order drifted.")
+    if harness_loop.get("completionModel") != "no-absolute-completion-only-versioned-stage-closeout":
+        raise RuntimeError("Curation program plan completion model drifted.")
+    standards = " ".join(str(item) for item in harness_loop.get("commercialDeliveryStandard", [])).lower()
+    for phrase in [
+        "source and license",
+        "security and portability",
+        "acceptance criteria",
+        "deterministic verification",
+        "release and rollback",
+        "stage closeout",
+    ]:
+        if phrase not in standards:
+            raise RuntimeError(f"Curation program plan commercial standard missing phrase: {phrase}")
+
     expected_steps = [
         "program-01-discovery-and-coverage",
         "program-02-source-intake-and-filtering",
@@ -793,12 +864,28 @@ def validate_curation_program_plan(
     ]:
         if phrase not in doc:
             raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
+    harness_doc = (ROOT / "docs/curation-harness-model.md").read_text(encoding="utf-8")
+    for phrase in [
+        "continuous curation harness",
+        "github:yiheng8023/YIYUAN-MERIDIAN",
+        "does not treat upstream discovery as approval",
+        "discover",
+        "rediscover-or-revise",
+        "commercial delivery artifacts",
+        "no absolute completion state",
+    ]:
+        if phrase not in harness_doc:
+            raise RuntimeError(f"Curation harness doc missing phrase: {phrase}")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
     if "docs/curation-program-plan.md" not in readme:
         raise RuntimeError("README.md must link curation program plan.")
     if "docs/curation-program-plan.md" not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link curation program plan.")
+    if "docs/curation-harness-model.md" not in readme:
+        raise RuntimeError("README.md must link curation harness model.")
+    if "docs/curation-harness-model.md" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link curation harness model.")
 
 
 def validate_round_lifecycle_contract(

@@ -7,6 +7,8 @@ directories.
 The machine-readable plan lives in
 `registry/curation-program-plan.json`. The round lifecycle contract lives in
 `registry/round-lifecycle-contract.json`.
+The continuous harness and upstream input boundary are explained in
+`docs/curation-harness-model.md`.
 
 ## Control Principle
 
@@ -25,6 +27,10 @@ discovery and coverage
 Each step has its own acceptance criteria and verification surface. Discovery,
 source intake, and adaptation drafts are not approval. Local runtime alignment
 is the stage closeout, not the starting point.
+
+This path is a loop, not a one-way conveyor. Feedback from validation,
+community review, upstream refreshes, security review, or local runtime
+alignment can send a candidate or rule back to an earlier step.
 
 ## Current Position
 

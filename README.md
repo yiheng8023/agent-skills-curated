@@ -191,6 +191,8 @@ consumer must probe its currently visible, authorized capability inventory.
   decision before the next batch.
 - `docs/curation-program-plan.md`: overall discovery-to-release-to-local-sync
   execution plan with mapped acceptance and verification standards.
+- `docs/curation-harness-model.md`: continuous curation loop and upstream
+  input boundary for the Skill-specific downstream consumer lane.
 - `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
   and stage-closeout contract for iterative curation rounds.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface

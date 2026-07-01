@@ -13,6 +13,65 @@
     "local agents skills directory",
     "local cc Switch skills directory"
   ],
+  "upstreamInputBoundary": {
+    "role": "downstream-consumer-of-broader-resource-governance-inputs",
+    "knownUpstreamEntrypoints": [
+      {
+        "id": "github:yiheng8023/YIYUAN-MERIDIAN",
+        "url": "https://github.com/yiheng8023/YIYUAN-MERIDIAN",
+        "status": "external-upstream-entrypoint",
+        "currentHandling": "recorded-boundary-only"
+      }
+    ],
+    "notOwnedHere": [
+      "upstream resource-radar architecture",
+      "upstream bookmark or research repositories",
+      "general non-Skill resource governance",
+      "YIYUAN-MERIDIAN release decisions"
+    ],
+    "allowedHere": [
+      "consume stable upstream Skill candidates after they are explicitly provided or discovered through approved intake",
+      "record upstream provenance as candidate evidence",
+      "route Skill candidates through this repository's curation and release gates"
+    ],
+    "blockedHere": [
+      "treating upstream discovery as approval",
+      "mutating YIYUAN-MERIDIAN from this repository plan",
+      "collapsing this repository into the global upstream hub",
+      "claiming upstream completeness from this repository verification"
+    ]
+  },
+  "harnessLoop": {
+    "model": "continuous-curation-harness",
+    "loop": [
+      "discover",
+      "filter",
+      "review",
+      "adapt",
+      "verify",
+      "release",
+      "consume-sync",
+      "feedback",
+      "rediscover-or-revise"
+    ],
+    "feedbackInputs": [
+      "repository validation failures",
+      "local runtime alignment findings",
+      "community issues and pull requests",
+      "upstream candidate refreshes",
+      "security or license review changes",
+      "usage feedback from Codex, agents, cc Switch, or other consumers"
+    ],
+    "commercialDeliveryStandard": [
+      "traceable source and license evidence",
+      "security and portability review",
+      "mapped acceptance criteria",
+      "deterministic verification",
+      "release and rollback evidence",
+      "stage closeout with residual risks"
+    ],
+    "completionModel": "no-absolute-completion-only-versioned-stage-closeout"
+  },
   "steps": [
     {
       "id": "program-01-discovery-and-coverage",
