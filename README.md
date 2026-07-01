@@ -195,6 +195,9 @@ consumer must probe its currently visible, authorized capability inventory.
   input boundary for the Skill-specific downstream consumer lane.
 - `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
   and stage-closeout contract for iterative curation rounds.
+- `docs/round02-candidate-review-2026-07-02.md`: round-02 candidate-specific
+  source disposition evidence; not approved payload, not manifest, not
+  routing, and not local runtime sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

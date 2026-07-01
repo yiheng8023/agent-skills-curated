@@ -65,6 +65,7 @@ REQUIRED_FILES = (
     "registry/github-skill-discovery-profile.json",
     "registry/starred-skill-sources.json",
     "registry/source-intake-batches.json",
+    "registry/round02-candidate-reviews.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -105,6 +106,7 @@ REQUIRED_FILES = (
     "docs/coverage-and-curation-expansion.md",
     "docs/curation-harness-model.md",
     "docs/round02-source-intake-2026-07-02.md",
+    "docs/round02-candidate-review-2026-07-02.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -147,6 +149,7 @@ def verify() -> None:
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
     starred_sources_doc = load("registry/starred-skill-sources.json")
     source_intake_batches_doc = load("registry/source-intake-batches.json")
+    round02_candidate_reviews_doc = load("registry/round02-candidate-reviews.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -183,6 +186,7 @@ def verify() -> None:
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
     validate_starred_skill_sources(starred_sources_doc)
     validate_source_intake_batches(source_intake_batches_doc, collaboration_domain_coverage_doc, curation_expansion_rounds_doc)
+    validate_round02_candidate_reviews(round02_candidate_reviews_doc, source_intake_batches_doc, skills_doc, manifest)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -1058,6 +1062,224 @@ def validate_source_intake_batches(
                 raise RuntimeError(f"Source intake source has unknown coverage hint: {source_id}")
             if not isinstance(source.get("reviewFocus"), list) or not source.get("reviewFocus"):
                 raise RuntimeError(f"Source intake source reviewFocus is required: {source_id}")
+
+
+def validate_round02_candidate_reviews(
+    document: dict[str, object],
+    source_intake_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if document.get("schema_version") != 1:
+        raise RuntimeError("Round-02 candidate reviews schema_version must be 1.")
+    if document.get("status") != "round02_candidate_review_recorded_not_release_approved":
+        raise RuntimeError("Round-02 candidate reviews must remain not release approved.")
+    if document.get("source_intake_batch") != "registry/source-intake-batches.json#round02-source-intake-2026-07-02":
+        raise RuntimeError("Round-02 candidate reviews must reference the source intake batch.")
+
+    permissions = document.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 candidate review permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "candidate_review_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 candidate review permission mismatch: {key}")
+
+    batches = source_intake_doc.get("batches", [])
+    current_batch = next(
+        (
+            batch
+            for batch in batches
+            if isinstance(batch, dict)
+            and batch.get("id") == "round02-source-intake-2026-07-02"
+        ),
+        None,
+    )
+    if current_batch is None:
+        raise RuntimeError("Round-02 source intake batch is missing.")
+    source_records = {
+        source.get("id"): source
+        for source in current_batch.get("sources", [])
+        if isinstance(source, dict)
+    }
+    expected_dispositions = {
+        "github:kepano/obsidian-skills": "split-adapt-candidates-not-approved",
+        "github:phuryn/pm-skills": "split-into-sub-batches-not-approved",
+        "github:alchaincyf/huashu-design": "reference-and-adapter-candidate-not-approved",
+    }
+    expected_candidates = {
+        "github:kepano/obsidian-skills": {
+            "json-canvas": "adapter-or-merge-candidate",
+            "obsidian-markdown": "merge-or-adapter-candidate",
+            "obsidian-bases": "specialist-adapter-candidate",
+            "obsidian-cli": "runtime-adapter-only-defer",
+            "defuddle": "reference-or-tool-adapter-defer",
+        },
+        "github:phuryn/pm-skills": {
+            "pm-ai-shipping-group": "merge-or-recipe-candidate",
+            "pm-data-analytics-group": "runtime-equivalence-or-reference-review",
+            "pm-execution-docs-group": "merge-into-existing-approved-skill-candidate",
+            "pm-gtm-market-strategy-group": "future-specialist-batch-candidate",
+            "pm-product-discovery-group": "future-product-discovery-batch-candidate",
+            "pm-toolkit-legal-privacy-group": "defer-or-reference-only",
+            "pm-synthetic-data-and-script-group": "tooling-or-reference-defer",
+        },
+        "github:alchaincyf/huashu-design": {
+            "huashu-design-principles": "reference-or-merge-candidate",
+            "huashu-brand-asset-protocol": "reference-candidate-with-copyright-boundary",
+            "huashu-html-deck-animation-pipeline": "adapter-candidate-defer",
+            "huashu-voiceover-tts-pipeline": "defer-high-boundary-toolchain",
+            "huashu-bundled-assets": "do-not-vendor-before-asset-provenance-review",
+        },
+    }
+    required_review_sections = {
+        "source_integrity",
+        "license_and_attribution",
+        "security",
+        "portability_and_neutralization",
+        "overlap_and_conflict",
+        "release_manifest_impact",
+        "consumer_install_impact",
+        "next_gate",
+    }
+    required_boundaries = {
+        "skills/ unchanged",
+        "release-manifest.json unchanged",
+        "generated routing projections unchanged",
+        "live Agent environments untouched",
+        "source text not redistributed",
+        "local Codex/agents/cc-switch sync blocked",
+        "candidate decisions are not approved payload",
+    }
+
+    reviews = document.get("source_reviews", [])
+    if not isinstance(reviews, list) or len(reviews) != len(source_records):
+        raise RuntimeError("Round-02 candidate reviews must cover every source exactly once.")
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+
+    seen_sources: set[str] = set()
+    for review in reviews:
+        if not isinstance(review, dict):
+            raise RuntimeError("Round-02 candidate review entries must be objects.")
+        source_id = review.get("source_id")
+        if source_id in seen_sources:
+            raise RuntimeError(f"Duplicate Round-02 candidate source review: {source_id}")
+        seen_sources.add(str(source_id))
+        source = source_records.get(source_id)
+        if source is None:
+            raise RuntimeError(f"Round-02 candidate review references unknown source: {source_id}")
+        if review.get("revision") != source.get("revision"):
+            raise RuntimeError(f"Round-02 candidate revision drifted: {source_id}")
+        if review.get("license") != source.get("license"):
+            raise RuntimeError(f"Round-02 candidate license drifted: {source_id}")
+        detected = source.get("detected", {})
+        if review.get("detected_skill_count") != detected.get("skillMdCount"):
+            raise RuntimeError(f"Round-02 candidate Skill count drifted: {source_id}")
+        if review.get("source_review_state") != "candidate_review_not_approved":
+            raise RuntimeError(f"Round-02 candidate review state must stay not approved: {source_id}")
+        if review.get("source_disposition") != expected_dispositions.get(source_id):
+            raise RuntimeError(f"Round-02 candidate source disposition drifted: {source_id}")
+
+        source_integrity = review.get("source_integrity", {})
+        if not source_integrity.get("pinned_revision_verified") or not source_integrity.get("license_verified"):
+            raise RuntimeError(f"Round-02 candidate source integrity not verified: {source_id}")
+        review_sections = review.get("review_sections", {})
+        if set(review_sections) != required_review_sections:
+            raise RuntimeError(f"Round-02 candidate review sections drifted: {source_id}")
+        if review_sections.get("source_integrity") != "pass":
+            raise RuntimeError(f"Round-02 candidate source integrity did not pass: {source_id}")
+        if review_sections.get("license_and_attribution") != "pass":
+            raise RuntimeError(f"Round-02 candidate license review did not pass: {source_id}")
+        if review_sections.get("release_manifest_impact") != "no_manifest_change":
+            raise RuntimeError(f"Round-02 candidate must not affect manifest: {source_id}")
+        if review_sections.get("consumer_install_impact") != "no_install_change":
+            raise RuntimeError(f"Round-02 candidate must not affect install: {source_id}")
+        for section_name in ["security", "portability_and_neutralization", "overlap_and_conflict"]:
+            if review_sections.get(section_name) != "review_required":
+                raise RuntimeError(f"Round-02 candidate section must require more review: {source_id}/{section_name}")
+
+        risk_findings = review.get("risk_findings", [])
+        if not isinstance(risk_findings, list) or len(risk_findings) < 3:
+            raise RuntimeError(f"Round-02 candidate risk findings are incomplete: {source_id}")
+        if set(review.get("boundary_assertions", [])) != required_boundaries:
+            raise RuntimeError(f"Round-02 candidate boundary assertions drifted: {source_id}")
+
+        decisions = {
+            item.get("candidate_id"): item
+            for item in review.get("candidate_dispositions", [])
+            if isinstance(item, dict)
+        }
+        expected = expected_candidates.get(source_id, {})
+        if set(decisions) != set(expected):
+            raise RuntimeError(f"Round-02 candidate decisions drifted: {source_id}")
+        for candidate_id, decision in decisions.items():
+            if candidate_id in approved_directories:
+                raise RuntimeError(f"Round-02 candidate unexpectedly approved: {candidate_id}")
+            if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+                raise RuntimeError(f"Round-02 candidate appears in release manifest: {candidate_id}")
+            if decision.get("decision") != expected[candidate_id]:
+                raise RuntimeError(f"Round-02 candidate disposition drifted: {candidate_id}")
+            if not decision.get("rationale"):
+                raise RuntimeError(f"Round-02 candidate rationale missing: {candidate_id}")
+            if "separate" not in str(decision.get("next_gate", "")).lower():
+                raise RuntimeError(f"Round-02 candidate next gate must be separate: {candidate_id}")
+
+    if seen_sources != set(source_records):
+        raise RuntimeError("Round-02 candidate reviews do not match source intake records.")
+
+    validation = document.get("validation", {})
+    if validation.get("status") not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 candidate review validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("Round-02 candidate review required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+        "source text is not redistributed as approved curated payload",
+        "local Codex/agents/cc-switch sync remains blocked",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"Round-02 candidate review missing boundary assertion: {assertion}")
+    if "Separate approval is required" not in str(document.get("next_required_gate")):
+        raise RuntimeError("Round-02 candidate review must require a separate next gate.")
+
+    doc_path = document.get("evidence_doc")
+    if doc_path != "docs/round02-candidate-review-2026-07-02.md":
+        raise RuntimeError("Round-02 candidate review evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "candidate review evidence, not release approval",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "live install allowed: false",
+        "local runtime sync allowed: false",
+        "Source Decisions",
+        "Boundary Checks",
+        "Next Gates",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 candidate review doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 candidate review.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 candidate review.")
 
 
 def validate_mvp06_radar_feedback_projection(
