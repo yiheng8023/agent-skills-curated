@@ -74,6 +74,7 @@ REQUIRED_FILES = (
     "registry/round02-huashu-design-guidance-adaptation-gate.json",
     "registry/round02-huashu-toolchain-media-adaptation-gate.json",
     "registry/round02-release-readiness-review.json",
+    "registry/round02-release-admission-review-template.json",
     "registry/round02-release-admission-approval-request.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -124,6 +125,7 @@ REQUIRED_FILES = (
     "docs/round02-huashu-design-guidance-adaptation-gate.md",
     "docs/round02-huashu-toolchain-media-adaptation-gate.md",
     "docs/round02-release-readiness-review.md",
+    "docs/round02-release-admission-review-template.md",
     "docs/round02-release-admission-approval-request.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
@@ -192,6 +194,7 @@ def verify() -> None:
     round02_huashu_design_guidance_adaptation_gate_doc = load("registry/round02-huashu-design-guidance-adaptation-gate.json")
     round02_huashu_toolchain_media_adaptation_gate_doc = load("registry/round02-huashu-toolchain-media-adaptation-gate.json")
     round02_release_readiness_review_doc = load("registry/round02-release-readiness-review.json")
+    round02_release_admission_review_template_doc = load("registry/round02-release-admission-review-template.json")
     round02_release_admission_approval_request_doc = load("registry/round02-release-admission-approval-request.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -253,9 +256,23 @@ def verify() -> None:
         skills_doc,
         manifest,
     )
+    validate_round02_release_admission_review_template(
+        round02_release_admission_review_template_doc,
+        round02_release_readiness_review_doc,
+        [
+            round02_obsidian_adaptation_gate_doc,
+            round02_pm_execution_adaptation_gate_doc,
+            round02_pm_analytics_adaptation_gate_doc,
+            round02_pm_market_discovery_adaptation_gate_doc,
+            round02_pm_toolkit_boundary_adaptation_gate_doc,
+            round02_huashu_design_guidance_adaptation_gate_doc,
+            round02_huashu_toolchain_media_adaptation_gate_doc,
+        ],
+    )
     validate_round02_release_admission_approval_request(
         round02_release_admission_approval_request_doc,
         round02_release_readiness_review_doc,
+        round02_release_admission_review_template_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -3108,9 +3125,169 @@ def validate_round02_release_readiness_review(
         raise RuntimeError("README.zh-CN.md must link Round-02 release readiness review.")
 
 
+def validate_round02_release_admission_review_template(
+    template_doc: dict[str, object],
+    readiness_doc: dict[str, object],
+    gate_docs: list[dict[str, object]],
+) -> None:
+    if template_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 release/admission review template schema_version must be 1.")
+    if template_doc.get("id") != "round02-release-admission-review-template-2026-07-02":
+        raise RuntimeError("Round-02 release/admission review template id mismatch.")
+    if template_doc.get("status") != "template_only_not_candidate_decision":
+        raise RuntimeError("Round-02 release/admission review template must remain template-only.")
+    if template_doc.get("not_approval") is not True:
+        raise RuntimeError("Round-02 release/admission review template must explicitly avoid approval.")
+    if template_doc.get("approval_required_before_use") is not True:
+        raise RuntimeError("Round-02 release/admission review template must require approval before use.")
+    if template_doc.get("source_readiness_record") != "registry/round02-release-readiness-review.json":
+        raise RuntimeError("Round-02 release/admission review template must reference readiness review.")
+    if template_doc.get("source_approval_request") != "registry/round02-release-admission-approval-request.json":
+        raise RuntimeError("Round-02 release/admission review template must reference approval request.")
+    if readiness_doc.get("release_readiness_conclusion") != "github_stage_ready_for_owner_review_not_release_approved":
+        raise RuntimeError("Round-02 release/admission review template expects readiness-only state.")
+
+    candidate_ids: list[str] = []
+    for gate_doc in gate_docs:
+        for draft in gate_doc.get("adaptation_drafts", []):
+            if isinstance(draft, dict) and isinstance(draft.get("candidate_id"), str):
+                candidate_ids.append(draft["candidate_id"])
+    expected_candidate_ids = [
+        "obsidian-open-format-knowledge-files",
+        "obsidian-cli-runtime-adapter",
+        "defuddle-tool-adapter",
+        "ai-shipping-governance",
+        "product-execution-documents",
+        "data-analytics-runtime-equivalence",
+        "synthetic-data-and-sql-tooling",
+        "market-strategy-evidence-boundary",
+        "product-discovery-research-planning",
+        "legal-privacy-document-boundary",
+        "personal-document-and-copyediting-boundary",
+        "design-direction-and-anti-slop-reference",
+        "brand-asset-provenance-protocol",
+        "html-deck-animation-toolchain-boundary",
+        "voiceover-tts-media-pipeline-boundary",
+        "bundled-assets-redistribution-boundary",
+    ]
+    if template_doc.get("candidate_ids") != expected_candidate_ids:
+        raise RuntimeError("Round-02 release/admission review template candidate id order drifted.")
+    if set(candidate_ids) != set(expected_candidate_ids):
+        raise RuntimeError("Round-02 release/admission review template candidates must match gate drafts.")
+    if template_doc.get("candidate_count") != len(expected_candidate_ids):
+        raise RuntimeError("Round-02 release/admission review template candidate count mismatch.")
+    if readiness_doc.get("draft_candidate_count") != len(expected_candidate_ids):
+        raise RuntimeError("Round-02 release/admission review template must match readiness candidate count.")
+
+    allowed_decisions = [
+        "proposed-approved-payload",
+        "merge-into-existing-approved-skill",
+        "recipe-only",
+        "adapter-only",
+        "reference-only",
+        "reject",
+    ]
+    if template_doc.get("allowed_decisions_after_approval") != allowed_decisions:
+        raise RuntimeError("Round-02 release/admission review template decision enum changed.")
+    required_sections = [
+        "source_integrity",
+        "license_and_attribution",
+        "security",
+        "portability_and_neutralization",
+        "overlap_and_conflict",
+        "native_or_runtime_equivalence",
+        "routing_semantics",
+        "release_manifest_impact",
+        "consumer_install_impact",
+        "source_text_redistribution_boundary",
+        "source_asset_redistribution_boundary",
+        "dependency_credential_and_media_boundary",
+        "validation_plan",
+        "rejected_alternatives",
+        "next_gate",
+    ]
+    if template_doc.get("required_review_sections") != required_sections:
+        raise RuntimeError("Round-02 release/admission review template sections changed.")
+
+    decision_rules = template_doc.get("decision_rules", [])
+    if {item.get("decision") for item in decision_rules if isinstance(item, dict)} != set(allowed_decisions):
+        raise RuntimeError("Round-02 release/admission review template must define every allowed decision.")
+    for item in decision_rules:
+        if not isinstance(item, dict) or not item.get("requires"):
+            raise RuntimeError(f"Round-02 decision rule missing requirements: {getattr(item, 'get', lambda _key: None)('decision')}")
+
+    required_fail_closed = {
+        "owner approval for Round-02 release/admission review is missing",
+        "candidate source revision or upstream hash differs from Round-02 gate evidence",
+        "license, provenance, attribution, source-text redistribution, or source-asset redistribution posture is unclear",
+        "security, portability, overlap, native/runtime equivalence, or routing review is incomplete",
+        "candidate would override repository, runtime, user, domain, legal, security, privacy, or human authority",
+        "candidate would enter skills/, release-manifest.json, generated routing, publication, local runtime sync, or live environment before its later specific gate",
+        "candidate would install dependencies, use credentials, call TTS providers, generate external media, or write files without explicit later authorization",
+        "candidate decision is based only on enthusiasm, source popularity, broad usefulness, or coverage pressure without evidence",
+    }
+    if set(template_doc.get("fail_closed_conditions", [])) != required_fail_closed:
+        raise RuntimeError("Round-02 release/admission review template fail-closed conditions changed.")
+
+    permissions = template_doc.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 release/admission review template permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "template_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 release/admission review template permission mismatch: {key}")
+
+    output_contract = template_doc.get("output_contract_after_approval", {})
+    required_output = {
+        "decision",
+        "rationale",
+        "evidence",
+        "rejected_alternatives",
+        "overlap_handling",
+        "security_boundary",
+        "portability_boundary",
+        "source_text_boundary",
+        "source_asset_boundary",
+        "dependency_credential_and_media_boundary",
+        "boundary_assertions",
+        "validation_results",
+        "next_gate",
+    }
+    if set(output_contract.get("must_include", [])) != required_output:
+        raise RuntimeError("Round-02 release/admission review template output contract changed.")
+    if output_contract.get("record_id") != "round02-release-admission-candidate-review-YYYY-MM-DD":
+        raise RuntimeError("Round-02 release/admission review template output record id mismatch.")
+    if "candidate_decisions" not in output_contract:
+        raise RuntimeError("Round-02 release/admission review template must define candidate_decisions output.")
+
+    doc_path = template_doc.get("evidence_doc")
+    if doc_path != "docs/round02-release-admission-review-template.md":
+        raise RuntimeError("Round-02 release/admission review template evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Template only, not approval.",
+        "Without that approval, this document remains scaffolding.",
+        "Allowed decisions after approval",
+        "does not by itself mutate `skills/`, `release-manifest.json`, generated",
+        "Fail-closed conditions",
+        "Output contract after approval",
+        "Until that record exists and passes verification, Round-02 remains",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 release/admission review template doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 release/admission review template.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 release/admission review template.")
+
+
 def validate_round02_release_admission_approval_request(
     request_doc: dict[str, object],
     readiness_doc: dict[str, object],
+    template_doc: dict[str, object],
 ) -> None:
     if request_doc.get("schema_version") != 1:
         raise RuntimeError("Round-02 release/admission approval request schema_version must be 1.")
@@ -3124,6 +3301,10 @@ def validate_round02_release_admission_approval_request(
         raise RuntimeError("Round-02 release/admission approval request must not record approval.")
     if request_doc.get("source_readiness_record") != "registry/round02-release-readiness-review.json":
         raise RuntimeError("Round-02 release/admission approval request must reference readiness review.")
+    if request_doc.get("review_template") != "registry/round02-release-admission-review-template.json":
+        raise RuntimeError("Round-02 release/admission approval request must reference review template.")
+    if template_doc.get("source_approval_request") != "registry/round02-release-admission-approval-request.json":
+        raise RuntimeError("Round-02 release/admission review template must point back to approval request.")
     if readiness_doc.get("closeout_outcome") != "needs_user_confirmation":
         raise RuntimeError("Round-02 release/admission approval request expects readiness to need user confirmation.")
 

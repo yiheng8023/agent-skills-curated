@@ -228,6 +228,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-release-readiness-review.md`: Round-02 GitHub-stage readiness
   review; summarizes all 3 reviewed sources and 7 sub-gates without approving
   release payload, routing, manifest changes, publication, or local sync.
+- `docs/round02-release-admission-review-template.md`: template-only contract
+  for a future Round-02 release/admission review after owner approval; not a
+  candidate decision and not approval for payload, routing, manifest, install,
+  publication, or local sync.
 - `docs/round02-release-admission-approval-request.md`: formal request for the
   smallest approval needed to enter Round-02 release/admission review; still
   blocks payload, manifest, routing, live install, publication, and local sync.

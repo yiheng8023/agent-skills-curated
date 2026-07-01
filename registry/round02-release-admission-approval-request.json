@@ -7,6 +7,7 @@
   "not_approval": true,
   "approval_recorded": false,
   "source_readiness_record": "registry/round02-release-readiness-review.json",
+  "review_template": "registry/round02-release-admission-review-template.json",
   "evidence_doc": "docs/round02-release-admission-approval-request.md",
   "source_ids": [
     "github:kepano/obsidian-skills",
