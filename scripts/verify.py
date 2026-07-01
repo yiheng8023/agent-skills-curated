@@ -50,6 +50,7 @@ FORBIDDEN_APPROVED_TEXT = (
     ".claude/",
 )
 REQUIRED_FILES = (
+    ".github/workflows/discover-candidate-sources.yml",
     "AGENTS.md", "README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md",
     "sources/lock.json", "sources/addyosmani-agent-skills/selection.json",
     "sources/addyosmani-agent-skills/LICENSE",
@@ -57,6 +58,8 @@ REQUIRED_FILES = (
     "registry/capabilities.json", "registry/relations.json",
     "registry/conflicts.json", "registry/recipes.json",
     "registry/radar-feedback.json",
+    "registry/github-skill-discovery-profile.json",
+    "registry/starred-skill-sources.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -76,6 +79,7 @@ REQUIRED_FILES = (
     "registry/admissions.json", "registry/routing.json", "registry/scenarios.json",
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
+    "scripts/discover_github_skill_sources.py",
     "scripts/build_topology.py", "scripts/build_release_manifest.py",
     "scripts/verify.py", "scripts/simulate_routing.py", "release-manifest.json",
     "generated/routing-index.json", "generated/routing-simulation-report.json",
@@ -128,6 +132,8 @@ def verify() -> None:
     conflicts_doc = load("registry/conflicts.json")
     recipes_doc = load("registry/recipes.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
+    github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
+    starred_sources_doc = load("registry/starred-skill-sources.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -157,6 +163,8 @@ def verify() -> None:
     validate_conflicts_document(conflicts_doc, "registry/conflicts.json")
     validate_recipes_document(recipes_doc, "registry/recipes.json")
     validate_radar_feedback(radar_feedback_doc)
+    validate_github_skill_discovery_profile(github_discovery_profile_doc)
+    validate_starred_skill_sources(starred_sources_doc)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -403,6 +411,117 @@ def validate_radar_feedback(feedback_doc: dict[str, object]) -> None:
         for ref in decision.get("reviewRefs", []):
             if not isinstance(ref, str) or not (ROOT / ref).is_file():
                 raise RuntimeError(f"Radar feedback has dead review ref: {decision_id}/{ref}")
+
+
+def validate_starred_skill_sources(document: dict[str, object]) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Starred Skill sources schema must be 1.")
+    snapshot = document.get("snapshot")
+    if not isinstance(snapshot, dict):
+        raise RuntimeError("Starred Skill sources snapshot is required.")
+    entry_count = snapshot.get("entryCount")
+    sources = document.get("sources")
+    if not isinstance(sources, list) or not sources:
+        raise RuntimeError("Starred Skill sources must contain sources.")
+    if entry_count != len(sources):
+        raise RuntimeError("Starred Skill source entryCount does not match sources.")
+    if snapshot.get("purpose") and "not approval" not in str(snapshot.get("purpose")).lower():
+        raise RuntimeError("Starred Skill sources purpose must state non-approval.")
+
+    allowed_classes = {
+        "official-external-baseline",
+        "index-awesome-list",
+        "large-skill-library",
+        "third-party-skill-source",
+        "methodology-skill-framework",
+        "methodology-guidance",
+    }
+    allowed_disposition_prefixes = (
+        "reference",
+        "discovery-index",
+        "candidate",
+        "already-reviewed",
+    )
+    seen: set[str] = set()
+    for source in sources:
+        if not isinstance(source, dict):
+            raise RuntimeError("Starred Skill source entries must be objects.")
+        source_id = source.get("id")
+        if not isinstance(source_id, str) or not source_id.startswith("github:"):
+            raise RuntimeError("Starred Skill source id must be a github: id.")
+        if source_id in seen:
+            raise RuntimeError(f"Duplicate Starred Skill source: {source_id}")
+        seen.add(source_id)
+        if source.get("class") not in allowed_classes:
+            raise RuntimeError(f"Unsupported Starred Skill source class: {source_id}")
+        disposition = source.get("initialDisposition")
+        if not isinstance(disposition, str) or not disposition.startswith(allowed_disposition_prefixes):
+            raise RuntimeError(f"Unsupported Starred Skill source disposition: {source_id}")
+        url = source.get("url")
+        if not isinstance(url, str) or not url.startswith("https://github.com/"):
+            raise RuntimeError(f"Starred Skill source URL must be a GitHub URL: {source_id}")
+        detected = source.get("detected")
+        if not isinstance(detected, dict):
+            raise RuntimeError(f"Starred Skill source detected block is required: {source_id}")
+        for key in ["skillMdCount", "claudeOrAgentsMdCount", "commandFileCount", "agentFileCount"]:
+            if not isinstance(detected.get(key), int) or detected.get(key) < 0:
+                raise RuntimeError(f"Starred Skill source detected count is invalid: {source_id}/{key}")
+        if not isinstance(source.get("notes"), list) or not source.get("notes"):
+            raise RuntimeError(f"Starred Skill source notes are required: {source_id}")
+
+        if source.get("license") is None:
+            text = " ".join(str(note).lower() for note in source.get("notes", []))
+            if "license" not in text and source.get("class") != "official-external-baseline":
+                raise RuntimeError(f"Unlicensed Starred Skill source must record a license caveat: {source_id}")
+        if source.get("class") == "large-skill-library":
+            text = " ".join(str(note).lower() for note in source.get("notes", []))
+            for phrase in ["do not bulk import", "duplicate", "safety"]:
+                if phrase not in text:
+                    raise RuntimeError(f"Large Skill library must record bulk-import controls: {source_id}")
+
+
+def validate_github_skill_discovery_profile(document: dict[str, object]) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("GitHub Skill discovery profile schema must be 1.")
+    purpose = str(document.get("purpose", "")).lower()
+    for phrase in ["read-only", "not approval", "runtime installation"]:
+        if phrase not in purpose:
+            raise RuntimeError(f"GitHub Skill discovery profile purpose missing phrase: {phrase}")
+    defaults = document.get("defaults")
+    if not isinstance(defaults, dict):
+        raise RuntimeError("GitHub Skill discovery profile defaults are required.")
+    for key in ["perQueryLimit", "maxTreeInspections", "minimumPriorityStars", "activeWithinDays"]:
+        if not isinstance(defaults.get(key), int) or defaults.get(key) <= 0:
+            raise RuntimeError(f"GitHub Skill discovery profile default is invalid: {key}")
+    schedule = document.get("schedule")
+    if not isinstance(schedule, dict) or not schedule.get("cron"):
+        raise RuntimeError("GitHub Skill discovery profile schedule is required.")
+    queries = document.get("queries")
+    if not isinstance(queries, list) or len(queries) < 3:
+        raise RuntimeError("GitHub Skill discovery profile must define at least three queries.")
+    seen: set[str] = set()
+    for query in queries:
+        if not isinstance(query, dict):
+            raise RuntimeError("GitHub Skill discovery profile query entries must be objects.")
+        query_id = query.get("id")
+        if not isinstance(query_id, str) or not query_id:
+            raise RuntimeError("GitHub Skill discovery profile query id is required.")
+        if query_id in seen:
+            raise RuntimeError(f"Duplicate GitHub Skill discovery query: {query_id}")
+        seen.add(query_id)
+        if not isinstance(query.get("query"), str) or not query.get("query"):
+            raise RuntimeError(f"GitHub Skill discovery query text is required: {query_id}")
+        if not isinstance(query.get("intent"), str) or not query.get("intent"):
+            raise RuntimeError(f"GitHub Skill discovery query intent is required: {query_id}")
+    policy = document.get("candidatePolicy")
+    if not isinstance(policy, dict):
+        raise RuntimeError("GitHub Skill discovery profile candidatePolicy is required.")
+    if policy.get("starsAreWeakSignal") is not True:
+        raise RuntimeError("GitHub Skill discovery profile must treat stars as weak signal.")
+    if policy.get("quantityIsNotApproval") is not True:
+        raise RuntimeError("GitHub Skill discovery profile must reject quantity as approval.")
+    if policy.get("requiresHumanGateForRuntime") is not True:
+        raise RuntimeError("GitHub Skill discovery profile must require a human runtime gate.")
 
 
 def validate_mvp06_radar_feedback_projection(

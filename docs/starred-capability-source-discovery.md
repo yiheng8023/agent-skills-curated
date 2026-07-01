@@ -7,6 +7,17 @@ This document records a user-curated discovery surface for future Skill and
 capability-source intake. It is not approval, not installation, not managed
 inventory, and not an execution path.
 
+Machine-readable candidate-source snapshots live in
+`registry/starred-skill-sources.json`. That registry is a radar input and
+non-approval surface only; it does not promote sources into `skills/`, release
+manifests, or runtime installation.
+
+GitHub-wide candidate discovery is governed by
+`registry/github-skill-discovery-profile.json` and the scheduled
+`discover-candidate-sources` workflow. That workflow performs read-only search
+and writes a run summary only; it does not star repositories, modify this
+repository, approve candidates, or install runtime Skills.
+
 This is not managed inventory.
 
 The goal is cross-agent capability sharing:

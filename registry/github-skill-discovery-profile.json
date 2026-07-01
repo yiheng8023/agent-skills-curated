@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "id": "github-skill-discovery-profile-v1",
+  "purpose": "Read-only GitHub-wide discovery profile for candidate Skill sources. This is not approval, release inventory, runtime installation evidence, or permission to vendor source text.",
+  "schedule": {
+    "cadence": "weekly",
+    "cron": "17 2 * * 1"
+  },
+  "defaults": {
+    "perQueryLimit": 25,
+    "maxTreeInspections": 60,
+    "minimumPriorityStars": 1000,
+    "activeWithinDays": 180
+  },
+  "queries": [
+    {
+      "id": "agent-skills",
+      "query": "agent skills",
+      "intent": "Find broad Agent Skills repositories, official baselines, indexes, and mature third-party sources."
+    },
+    {
+      "id": "claude-skills",
+      "query": "claude skills",
+      "intent": "Find Claude Skills sources and Claude-oriented indexes that may contain portable Skill bodies."
+    },
+    {
+      "id": "codex-skills",
+      "query": "codex skills",
+      "intent": "Find Codex-oriented Skill sources and manager/catalog tooling."
+    },
+    {
+      "id": "skill-md",
+      "query": "AI agent skills SKILL.md",
+      "intent": "Find repositories that explicitly mention the SKILL.md convention."
+    },
+    {
+      "id": "cross-agent-skills",
+      "query": "cross platform agent skills codex claude cursor",
+      "intent": "Find cross-agent Skill sources with explicit portability claims."
+    },
+    {
+      "id": "awesome-agent-skills",
+      "query": "awesome agent skills",
+      "intent": "Find indexes and aggregate lists for child-source discovery."
+    }
+  ],
+  "classificationRules": {
+    "officialOwnerLogins": [
+      "anthropics",
+      "github",
+      "google",
+      "nvidia",
+      "openai",
+      "vercel-labs"
+    ],
+    "permissiveLicenses": [
+      "apache-2.0",
+      "bsd-2-clause",
+      "bsd-3-clause",
+      "cc-by-4.0",
+      "cc0-1.0",
+      "mit"
+    ],
+    "indexTerms": [
+      "awesome",
+      "curated list",
+      "list of",
+      "resource list"
+    ],
+    "toolingTerms": [
+      "manager",
+      "package manager",
+      "scanner",
+      "sync",
+      "validator"
+    ],
+    "riskTerms": [
+      "credential",
+      "leak",
+      "proxy",
+      "token"
+    ]
+  },
+  "candidatePolicy": {
+    "starsAreWeakSignal": true,
+    "quantityIsNotApproval": true,
+    "missingLicenseDisposition": "reference-only-until-license-cleared",
+    "officialSourceDisposition": "official-external-baseline",
+    "indexDisposition": "discovery-index",
+    "toolingDisposition": "external-capability-baseline",
+    "directSkillSourceDisposition": "candidate",
+    "requiresHumanGateForRuntime": true
+  }
+}
