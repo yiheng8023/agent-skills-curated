@@ -221,6 +221,10 @@ consumer must probe its currently visible, authorized capability inventory.
   guidance adapted draft gate; records design-direction and brand-asset
   provenance dispositions without approving payload, routing, manifest,
   toolchains, bundled assets, external media generation, or local sync.
+- `docs/round02-huashu-toolchain-media-adaptation-gate.md`: Huashu toolchain
+  and media adapted draft gate; records HTML deck/export, voiceover/TTS, and
+  bundled asset redistribution boundaries without approving payload, routing,
+  manifest, dependency install, generated media, asset reuse, or local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

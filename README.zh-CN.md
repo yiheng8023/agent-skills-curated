@@ -161,6 +161,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-huashu-design-guidance-adaptation-gate.md`：Huashu design
   guidance 适配草案闸门；记录 design-direction 与 brand-asset provenance
   处置，但不批准 payload、routing、manifest、工具链、打包资产、外部媒体生成或本地 sync；
+- `docs/round02-huashu-toolchain-media-adaptation-gate.md`：Huashu toolchain
+  与 media 适配草案闸门；记录 HTML deck/export、voiceover/TTS 与打包资产再分发边界，
+  但不批准 payload、routing、manifest、依赖安装、生成媒体、资产复用或本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
