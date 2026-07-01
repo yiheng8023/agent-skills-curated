@@ -198,6 +198,9 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-candidate-review-2026-07-02.md`: round-02 candidate-specific
   source disposition evidence; not approved payload, not manifest, not
   routing, and not local runtime sync.
+- `docs/round02-obsidian-adaptation-gate.md`: Obsidian sub-batch adapted draft
+  gate; records open-format, CLI, and Defuddle dispositions without approving
+  payload, routing, manifest, or local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

@@ -66,6 +66,7 @@ REQUIRED_FILES = (
     "registry/starred-skill-sources.json",
     "registry/source-intake-batches.json",
     "registry/round02-candidate-reviews.json",
+    "registry/round02-obsidian-adaptation-gate.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -107,6 +108,7 @@ REQUIRED_FILES = (
     "docs/curation-harness-model.md",
     "docs/round02-source-intake-2026-07-02.md",
     "docs/round02-candidate-review-2026-07-02.md",
+    "docs/round02-obsidian-adaptation-gate.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -121,6 +123,9 @@ REQUIRED_FILES = (
     "docs/mvp03-release-or-routing-candidate-review.md",
     "docs/mvp03-release-routing-execution.md",
     "docs/mvp06-lifecycle-feedback.md",
+    "drafts/round02-obsidian-adaptation/open-format-knowledge-files/DRAFT.md",
+    "drafts/round02-obsidian-adaptation/obsidian-cli-runtime-adapter/DRAFT.md",
+    "drafts/round02-obsidian-adaptation/defuddle-tool-adapter/DRAFT.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -150,6 +155,7 @@ def verify() -> None:
     starred_sources_doc = load("registry/starred-skill-sources.json")
     source_intake_batches_doc = load("registry/source-intake-batches.json")
     round02_candidate_reviews_doc = load("registry/round02-candidate-reviews.json")
+    round02_obsidian_adaptation_gate_doc = load("registry/round02-obsidian-adaptation-gate.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -187,6 +193,7 @@ def verify() -> None:
     validate_starred_skill_sources(starred_sources_doc)
     validate_source_intake_batches(source_intake_batches_doc, collaboration_domain_coverage_doc, curation_expansion_rounds_doc)
     validate_round02_candidate_reviews(round02_candidate_reviews_doc, source_intake_batches_doc, skills_doc, manifest)
+    validate_round02_obsidian_adaptation_gate(round02_obsidian_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -1280,6 +1287,223 @@ def validate_round02_candidate_reviews(
         raise RuntimeError("README.md must link Round-02 candidate review.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 candidate review.")
+
+
+def validate_round02_obsidian_adaptation_gate(
+    document: dict[str, object],
+    round02_reviews_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if document.get("schema_version") != 1:
+        raise RuntimeError("Round-02 Obsidian adaptation gate schema_version must be 1.")
+    if document.get("status") != "obsidian_adaptation_gate_recorded_not_release_approved":
+        raise RuntimeError("Round-02 Obsidian adaptation gate status mismatch.")
+    if document.get("source_review") != "registry/round02-candidate-reviews.json#github:kepano/obsidian-skills":
+        raise RuntimeError("Round-02 Obsidian adaptation gate must reference the Kepano source review.")
+    if document.get("source_intake_batch") != "registry/source-intake-batches.json#round02-source-intake-2026-07-02":
+        raise RuntimeError("Round-02 Obsidian adaptation gate must reference the source intake batch.")
+    if document.get("draft_root") != "drafts/round02-obsidian-adaptation/":
+        raise RuntimeError("Round-02 Obsidian adaptation gate draft root drifted.")
+
+    source = document.get("source", {})
+    if source.get("id") != "github:kepano/obsidian-skills":
+        raise RuntimeError("Round-02 Obsidian adaptation gate source id drifted.")
+    if source.get("revision") != "a1dc48e68138490d522c04cbf5822214c6eb1202":
+        raise RuntimeError("Round-02 Obsidian adaptation gate source revision drifted.")
+    if source.get("license") != "MIT":
+        raise RuntimeError("Round-02 Obsidian adaptation gate source license drifted.")
+
+    source_reviews = {
+        review.get("source_id"): review
+        for review in round02_reviews_doc.get("source_reviews", [])
+        if isinstance(review, dict)
+    }
+    kepano_review = source_reviews.get("github:kepano/obsidian-skills")
+    if not kepano_review:
+        raise RuntimeError("Round-02 Obsidian adaptation gate cannot find source review.")
+    if kepano_review.get("revision") != source.get("revision"):
+        raise RuntimeError("Round-02 Obsidian adaptation gate revision does not match source review.")
+    if kepano_review.get("source_disposition") != "split-adapt-candidates-not-approved":
+        raise RuntimeError("Round-02 Obsidian source review disposition drifted.")
+
+    permissions = document.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 Obsidian adaptation gate permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "adapted_draft_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 Obsidian adaptation gate permission mismatch: {key}")
+
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    approved_names = {item["name"] for item in skills_doc.get("skills", [])}
+    if any("obsidian" in item.lower() for item in approved_directories | approved_names):
+        raise RuntimeError("Round-02 Obsidian gate assumes no approved Obsidian Skill exists, but one is present.")
+    repository_truths = document.get("repository_truths", {})
+    if repository_truths.get("approved_obsidian_skill_exists") is not False:
+        raise RuntimeError("Round-02 Obsidian gate must record that no approved Obsidian Skill exists.")
+    if "local runtime Skills are not repository release truth" not in str(repository_truths.get("reason", "")):
+        raise RuntimeError("Round-02 Obsidian gate repository truth reason is missing the local/runtime boundary.")
+
+    expected_drafts = {
+        "obsidian-open-format-knowledge-files": (
+            "new-skill-draft-candidate",
+            "drafts/round02-obsidian-adaptation/open-format-knowledge-files/DRAFT.md",
+            {
+                "skills/json-canvas/SKILL.md": "97d1ae0728955c4203922753d5656890e5e4dd371b8306ea11884f9b510f1b85",
+                "skills/obsidian-markdown/SKILL.md": "7ad72e1f0a9081ed325e76b6402ad5de50a00e63e2341fd403a92f147234a007",
+                "skills/obsidian-bases/SKILL.md": "c0037f20926c7d8591cdd040365e4c0e4c0c4146386a506f28f241faee9a27d9",
+            },
+        ),
+        "obsidian-cli-runtime-adapter": (
+            "external-runtime-adapter-defer",
+            "drafts/round02-obsidian-adaptation/obsidian-cli-runtime-adapter/DRAFT.md",
+            {
+                "skills/obsidian-cli/SKILL.md": "b54257cdc0e5d04488b35b0c797bfe427b24359f0848d3c73924dcacf8da6358",
+            },
+        ),
+        "defuddle-tool-adapter": (
+            "external-tool-adapter-defer",
+            "drafts/round02-obsidian-adaptation/defuddle-tool-adapter/DRAFT.md",
+            {
+                "skills/defuddle/SKILL.md": "10673a4dc70a0a057612d443243ab7a5aa4abdd4a0fadc3f6eec5fd71ad5a971",
+            },
+        ),
+    }
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    drafts = {
+        item.get("candidate_id"): item
+        for item in document.get("adaptation_drafts", [])
+        if isinstance(item, dict)
+    }
+    if set(drafts) != set(expected_drafts):
+        raise RuntimeError("Round-02 Obsidian adaptation draft ids drifted.")
+    for candidate_id, draft in drafts.items():
+        expected_disposition, draft_path, expected_sources = expected_drafts[candidate_id]
+        if draft.get("disposition") != expected_disposition:
+            raise RuntimeError(f"Round-02 Obsidian draft disposition drifted: {candidate_id}")
+        if draft.get("draft_path") != draft_path:
+            raise RuntimeError(f"Round-02 Obsidian draft path drifted: {candidate_id}")
+        if not (ROOT / draft_path).is_file():
+            raise RuntimeError(f"Round-02 Obsidian draft path missing: {candidate_id}")
+        if draft.get("source_text_copied") or draft.get("source_text_redistributed"):
+            raise RuntimeError(f"Round-02 Obsidian draft must not copy or redistribute source text: {candidate_id}")
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"Round-02 Obsidian draft unexpectedly approved: {candidate_id}")
+        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+            raise RuntimeError(f"Round-02 Obsidian draft appears in release manifest: {candidate_id}")
+        source_candidates = {
+            item.get("upstream_path"): item.get("upstream_sha256")
+            for item in draft.get("source_candidates", [])
+            if isinstance(item, dict)
+        }
+        if source_candidates != expected_sources:
+            raise RuntimeError(f"Round-02 Obsidian draft source hashes drifted: {candidate_id}")
+        if "separate" not in str(draft.get("next_gate", "")).lower():
+            raise RuntimeError(f"Round-02 Obsidian draft must require a separate next gate: {candidate_id}")
+
+    review_sections = document.get("review_sections", {})
+    expected_sections = {
+        "source_integrity": "pass",
+        "license_and_attribution": "pass",
+        "security": "bounded_in_drafts",
+        "portability_and_neutralization": "bounded_in_drafts",
+        "overlap_and_conflict": "repository_truth_recorded",
+        "release_manifest_impact": "no_manifest_change",
+        "consumer_install_impact": "no_install_change",
+        "next_gate": "separate-release-or-routing-review",
+    }
+    if review_sections != expected_sections:
+        raise RuntimeError("Round-02 Obsidian adaptation gate review sections drifted.")
+    required_boundaries = {
+        "skills/ unchanged",
+        "release-manifest.json unchanged",
+        "generated routing projections unchanged",
+        "live Agent environments untouched",
+        "source text not redistributed",
+        "local Codex/agents/cc-switch sync blocked",
+        "adaptation drafts are not approved payload",
+    }
+    if set(document.get("boundary_assertions", [])) != required_boundaries:
+        raise RuntimeError("Round-02 Obsidian adaptation gate boundary assertions drifted.")
+
+    validation = document.get("validation", {})
+    if validation.get("status") not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 Obsidian adaptation gate validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("Round-02 Obsidian adaptation gate required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+        "source text is not redistributed as approved curated payload",
+        "local Codex/agents/cc-switch sync remains blocked",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"Round-02 Obsidian adaptation gate missing boundary assertion: {assertion}")
+    if "Separate approval is required" not in str(document.get("next_required_gate")):
+        raise RuntimeError("Round-02 Obsidian adaptation gate must require a separate next gate.")
+
+    doc_path = document.get("evidence_doc")
+    if doc_path != "docs/round02-obsidian-adaptation-gate.md":
+        raise RuntimeError("Round-02 Obsidian adaptation gate evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Obsidian sub-batch adaptation gate evidence, not release approval",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "live install allowed: false",
+        "local runtime sync allowed: false",
+        "current approved release inventory has no Obsidian-specific curated Skill",
+        "Draft Decisions",
+        "Boundary Checks",
+        "Next Gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 Obsidian adaptation gate doc missing phrase: {phrase}")
+
+    draft_expectations = {
+        "drafts/round02-obsidian-adaptation/open-format-knowledge-files/DRAFT.md": [
+            "This is a file-format and knowledge-workflow candidate.",
+            "Do not invoke an Obsidian CLI",
+            "current repository release inventory has no approved `obsidian-vault` Skill",
+        ],
+        "drafts/round02-obsidian-adaptation/obsidian-cli-runtime-adapter/DRAFT.md": [
+            "This is not portable Skill payload by itself.",
+            "requires explicit confirmation",
+            "Do not install the CLI",
+        ],
+        "drafts/round02-obsidian-adaptation/defuddle-tool-adapter/DRAFT.md": [
+            "This is an external tool adapter",
+            "Do not install npm packages",
+            "Treat web fetching as an external network action.",
+        ],
+    }
+    for path, phrases in draft_expectations.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round-02 Obsidian draft missing phrase: {path}/{phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 Obsidian adaptation gate.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 Obsidian adaptation gate.")
 
 
 def validate_mvp06_radar_feedback_projection(

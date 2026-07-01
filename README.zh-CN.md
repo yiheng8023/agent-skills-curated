@@ -145,6 +145,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   收官契约；
 - `docs/round02-candidate-review-2026-07-02.md`：round-02 逐来源候选处置证据；
   不是 approved payload、不是 manifest、不是 routing，也不是本地 runtime sync；
+- `docs/round02-obsidian-adaptation-gate.md`：Obsidian 子批次适配草案闸门；
+  记录 open-format、CLI 与 Defuddle 处置，但不批准 payload、routing、manifest 或本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
