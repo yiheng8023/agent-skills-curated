@@ -73,6 +73,7 @@ REQUIRED_FILES = (
     "registry/round02-pm-toolkit-boundary-adaptation-gate.json",
     "registry/round02-huashu-design-guidance-adaptation-gate.json",
     "registry/round02-huashu-toolchain-media-adaptation-gate.json",
+    "registry/round02-release-readiness-review.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -121,6 +122,7 @@ REQUIRED_FILES = (
     "docs/round02-pm-toolkit-boundary-adaptation-gate.md",
     "docs/round02-huashu-design-guidance-adaptation-gate.md",
     "docs/round02-huashu-toolchain-media-adaptation-gate.md",
+    "docs/round02-release-readiness-review.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -187,6 +189,7 @@ def verify() -> None:
     round02_pm_toolkit_boundary_adaptation_gate_doc = load("registry/round02-pm-toolkit-boundary-adaptation-gate.json")
     round02_huashu_design_guidance_adaptation_gate_doc = load("registry/round02-huashu-design-guidance-adaptation-gate.json")
     round02_huashu_toolchain_media_adaptation_gate_doc = load("registry/round02-huashu-toolchain-media-adaptation-gate.json")
+    round02_release_readiness_review_doc = load("registry/round02-release-readiness-review.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -231,6 +234,22 @@ def verify() -> None:
     validate_round02_pm_toolkit_boundary_adaptation_gate(round02_pm_toolkit_boundary_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_round02_huashu_design_guidance_adaptation_gate(round02_huashu_design_guidance_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_round02_huashu_toolchain_media_adaptation_gate(round02_huashu_toolchain_media_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
+    validate_round02_release_readiness_review(
+        round02_release_readiness_review_doc,
+        source_intake_batches_doc,
+        round02_candidate_reviews_doc,
+        [
+            round02_obsidian_adaptation_gate_doc,
+            round02_pm_execution_adaptation_gate_doc,
+            round02_pm_analytics_adaptation_gate_doc,
+            round02_pm_market_discovery_adaptation_gate_doc,
+            round02_pm_toolkit_boundary_adaptation_gate_doc,
+            round02_huashu_design_guidance_adaptation_gate_doc,
+            round02_huashu_toolchain_media_adaptation_gate_doc,
+        ],
+        skills_doc,
+        manifest,
+    )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -2859,6 +2878,227 @@ def validate_round02_huashu_toolchain_media_adaptation_gate(
         raise RuntimeError("README.md must link Round-02 Huashu toolchain/media gate.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 Huashu toolchain/media gate.")
+
+
+def validate_round02_release_readiness_review(
+    document: dict[str, object],
+    source_intake_batches_doc: dict[str, object],
+    round02_reviews_doc: dict[str, object],
+    gate_docs: list[dict[str, object]],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if document.get("schema_version") != 1:
+        raise RuntimeError("Round-02 release readiness schema_version must be 1.")
+    if document.get("status") != "round02_release_readiness_recorded_not_release_approved":
+        raise RuntimeError("Round-02 release readiness status mismatch.")
+    if document.get("record_id") != "round02-release-readiness-review-2026-07-02":
+        raise RuntimeError("Round-02 release readiness record id mismatch.")
+    if document.get("scope") != "github-stage-readiness-only":
+        raise RuntimeError("Round-02 release readiness scope mismatch.")
+    if document.get("source_intake_batch") != "registry/source-intake-batches.json#round02-source-intake-2026-07-02":
+        raise RuntimeError("Round-02 release readiness source intake reference mismatch.")
+    if document.get("candidate_review_record") != "registry/round02-candidate-reviews.json":
+        raise RuntimeError("Round-02 release readiness candidate review reference mismatch.")
+    if document.get("round_lifecycle_contract") != "registry/round-lifecycle-contract.json#stageCloseout":
+        raise RuntimeError("Round-02 release readiness lifecycle reference mismatch.")
+    if document.get("closeout_outcome") != "needs_user_confirmation":
+        raise RuntimeError("Round-02 release readiness closeout outcome mismatch.")
+    if document.get("release_readiness_conclusion") != "github_stage_ready_for_owner_review_not_release_approved":
+        raise RuntimeError("Round-02 release readiness conclusion mismatch.")
+
+    permissions = document.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 release readiness permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "release_readiness_review_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 release readiness permission mismatch: {key}")
+
+    batches = {
+        batch.get("id"): batch
+        for batch in source_intake_batches_doc.get("batches", [])
+        if isinstance(batch, dict)
+    }
+    batch = batches.get("round02-source-intake-2026-07-02")
+    if not batch:
+        raise RuntimeError("Round-02 release readiness cannot find source intake batch.")
+    intake_sources = {
+        source.get("id"): source
+        for source in batch.get("sources", [])
+        if isinstance(source, dict)
+    }
+    expected_source_ids = {
+        "github:kepano/obsidian-skills",
+        "github:phuryn/pm-skills",
+        "github:alchaincyf/huashu-design",
+    }
+    if set(intake_sources) != expected_source_ids:
+        raise RuntimeError("Round-02 release readiness intake source set drifted.")
+
+    source_reviews = {
+        review.get("source_id"): review
+        for review in round02_reviews_doc.get("source_reviews", [])
+        if isinstance(review, dict)
+    }
+    if set(source_reviews) != expected_source_ids:
+        raise RuntimeError("Round-02 release readiness review source set drifted.")
+    expected_dispositions = {
+        "github:kepano/obsidian-skills": "split-adapt-candidates-not-approved",
+        "github:phuryn/pm-skills": "split-into-sub-batches-not-approved",
+        "github:alchaincyf/huashu-design": "reference-and-adapter-candidate-not-approved",
+    }
+
+    expected_gate_records = [
+        "registry/round02-obsidian-adaptation-gate.json",
+        "registry/round02-pm-execution-adaptation-gate.json",
+        "registry/round02-pm-analytics-adaptation-gate.json",
+        "registry/round02-pm-market-discovery-adaptation-gate.json",
+        "registry/round02-pm-toolkit-boundary-adaptation-gate.json",
+        "registry/round02-huashu-design-guidance-adaptation-gate.json",
+        "registry/round02-huashu-toolchain-media-adaptation-gate.json",
+    ]
+    if document.get("completed_gate_records") != expected_gate_records:
+        raise RuntimeError("Round-02 release readiness gate record list drifted.")
+    if document.get("processed_source_count") != 3:
+        raise RuntimeError("Round-02 release readiness processed source count mismatch.")
+    if document.get("completed_gate_count") != len(expected_gate_records):
+        raise RuntimeError("Round-02 release readiness completed gate count mismatch.")
+
+    processed_sources = {
+        item.get("source_id"): item
+        for item in document.get("processed_sources", [])
+        if isinstance(item, dict)
+    }
+    if set(processed_sources) != expected_source_ids:
+        raise RuntimeError("Round-02 release readiness processed source set drifted.")
+    for source_id, item in processed_sources.items():
+        review = source_reviews[source_id]
+        if item.get("revision") != review.get("revision") or item.get("revision") != intake_sources[source_id].get("revision"):
+            raise RuntimeError(f"Round-02 release readiness source revision mismatch: {source_id}")
+        if item.get("source_disposition") != expected_dispositions[source_id]:
+            raise RuntimeError(f"Round-02 release readiness source disposition mismatch: {source_id}")
+        if item.get("source_disposition") != review.get("source_disposition"):
+            raise RuntimeError(f"Round-02 release readiness review disposition mismatch: {source_id}")
+        if not item.get("gate_records"):
+            raise RuntimeError(f"Round-02 release readiness source gate list missing: {source_id}")
+
+    draft_candidate_ids: set[str] = set()
+    for gate_doc in gate_docs:
+        validation = gate_doc.get("validation", {})
+        if validation.get("status") != "passed":
+            raise RuntimeError("Round-02 release readiness requires all gate validations to pass.")
+        gate_boundaries = set(gate_doc.get("boundary_assertions", []))
+        for required in {
+            "skills/ unchanged",
+            "release-manifest.json unchanged",
+            "generated routing projections unchanged",
+            "live Agent environments untouched",
+            "source text not redistributed",
+            "local Codex/agents/cc-switch sync blocked",
+        }:
+            if required not in gate_boundaries:
+                raise RuntimeError(f"Round-02 release readiness gate missing boundary: {required}")
+        for draft in gate_doc.get("adaptation_drafts", []):
+            if not isinstance(draft, dict):
+                raise RuntimeError("Round-02 release readiness draft records must be objects.")
+            candidate_id = draft.get("candidate_id")
+            if not isinstance(candidate_id, str) or not candidate_id:
+                raise RuntimeError("Round-02 release readiness draft candidate id missing.")
+            draft_candidate_ids.add(candidate_id)
+
+    if document.get("draft_candidate_count") != len(draft_candidate_ids) or len(draft_candidate_ids) != 16:
+        raise RuntimeError("Round-02 release readiness draft candidate count mismatch.")
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    for candidate_id in draft_candidate_ids:
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"Round-02 draft candidate unexpectedly approved: {candidate_id}")
+        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+            raise RuntimeError(f"Round-02 draft candidate appears in release manifest: {candidate_id}")
+
+    expected_acceptance = {
+        "plan": "pass",
+        "execute": "pass",
+        "acceptance": "source_dispositions_recorded_no_release_decision",
+        "stageCloseout": "github_stage_ready_needs_owner_confirmation",
+    }
+    acceptance = {
+        item.get("phase"): item.get("status")
+        for item in document.get("acceptance_mapping", [])
+        if isinstance(item, dict)
+    }
+    if acceptance != expected_acceptance:
+        raise RuntimeError("Round-02 release readiness acceptance mapping drifted.")
+
+    required_boundaries = {
+        "skills/ unchanged",
+        "release-manifest.json unchanged",
+        "generated routing projections unchanged",
+        "live Agent environments untouched",
+        "source text not redistributed",
+        "source assets not redistributed",
+        "approved payload admission blocked",
+        "local Codex/agents/cc-switch sync blocked",
+        "round-02 drafts are not approved payload",
+        "next gate requires owner approval",
+    }
+    if set(document.get("boundary_assertions", [])) != required_boundaries:
+        raise RuntimeError("Round-02 release readiness boundary assertions drifted.")
+
+    validation = document.get("validation", {})
+    if validation.get("status") not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 release readiness validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("Round-02 release readiness required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+        "source text is not redistributed as approved curated payload",
+        "local Codex/agents/cc-switch sync remains blocked",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"Round-02 release readiness missing validation boundary: {assertion}")
+    if "Owner approval is required" not in str(document.get("next_required_gate", "")):
+        raise RuntimeError("Round-02 release readiness must require owner approval as next gate.")
+
+    doc_path = document.get("evidence_doc")
+    if doc_path != "docs/round02-release-readiness-review.md":
+        raise RuntimeError("Round-02 release readiness evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Round-02 GitHub-stage release readiness review, not release approval",
+        "closeout outcome: needs_user_confirmation",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "local runtime sync allowed: false",
+        "completed gate records: 7",
+        "No candidate entered `skills/`",
+        "Local Codex/agents/cc Switch alignment remains blocked",
+        "Next Gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 release readiness doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 release readiness review.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 release readiness review.")
 
 
 def validate_mvp06_radar_feedback_projection(
