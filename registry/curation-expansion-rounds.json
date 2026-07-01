@@ -2,11 +2,11 @@
   "schema": 1,
   "id": "curation-expansion-rounds-v1",
   "purpose": "Iterative expansion control for broad Skill discovery, filtering, adaptation, and curated intake. This is not approval, release inventory, or runtime installation evidence.",
-  "currentRound": "round-01-broad-coverage-radar",
+  "currentRound": "round-02-source-intake-and-filtering",
   "rounds": [
     {
       "id": "round-01-broad-coverage-radar",
-      "status": "active",
+      "status": "closed",
       "goal": "Broaden the repository beyond software engineering by making discovery, domain coverage, and candidate-source radar explicit and verifiable.",
       "allowedChanges": [
         "coverage registry",
@@ -27,7 +27,7 @@
     },
     {
       "id": "round-02-source-intake-and-filtering",
-      "status": "planned",
+      "status": "active",
       "goal": "Pin and audit small batches of direct third-party Skill sources with clear license posture and broad non-software-engineering value.",
       "candidateSourceIds": [
         "github:kepano/obsidian-skills",

@@ -62,6 +62,7 @@ REQUIRED_FILES = (
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
     "registry/starred-skill-sources.json",
+    "registry/source-intake-batches.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -100,6 +101,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
     "docs/coverage-and-curation-expansion.md",
+    "docs/round02-source-intake-2026-07-02.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -139,6 +141,7 @@ def verify() -> None:
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
     starred_sources_doc = load("registry/starred-skill-sources.json")
+    source_intake_batches_doc = load("registry/source-intake-batches.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -172,6 +175,7 @@ def verify() -> None:
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
     validate_starred_skill_sources(starred_sources_doc)
+    validate_source_intake_batches(source_intake_batches_doc, collaboration_domain_coverage_doc, curation_expansion_rounds_doc)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -629,6 +633,91 @@ def validate_curation_expansion_rounds(
         raise RuntimeError("Curation expansion sync deferral must explain after-condition.")
     if not coverage_doc.get("domains"):
         raise RuntimeError("Curation expansion rounds require collaboration domain coverage.")
+
+
+def validate_source_intake_batches(
+    document: dict[str, object],
+    coverage_doc: dict[str, object],
+    rounds_doc: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Source intake batches schema must be 1.")
+    batches = document.get("batches")
+    if not isinstance(batches, list) or not batches:
+        raise RuntimeError("Source intake batches must contain batches.")
+    current_batch = document.get("currentBatch")
+    batch_ids = {
+        batch.get("id")
+        for batch in batches
+        if isinstance(batch, dict)
+    }
+    if current_batch not in batch_ids:
+        raise RuntimeError("Source intake currentBatch must reference a known batch.")
+    domain_ids = {
+        domain.get("id")
+        for domain in coverage_doc.get("domains", [])
+        if isinstance(domain, dict)
+    }
+    round_ids = {
+        item.get("id")
+        for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict)
+    }
+    for batch in batches:
+        if not isinstance(batch, dict):
+            raise RuntimeError("Source intake batch entries must be objects.")
+        batch_id = batch.get("id")
+        if not isinstance(batch_id, str) or not batch_id:
+            raise RuntimeError("Source intake batch id is required.")
+        if batch.get("status") != "pinned_not_reviewed":
+            raise RuntimeError(f"Source intake batch must stay pinned_not_reviewed: {batch_id}")
+        purpose = str(batch.get("purpose", "")).lower()
+        for phrase in ["not approval", "release inventory", "runtime installation"]:
+            if phrase not in purpose:
+                raise RuntimeError(f"Source intake batch purpose missing phrase: {batch_id}/{phrase}")
+        if batch.get("round") not in round_ids:
+            raise RuntimeError(f"Source intake batch round is unknown: {batch_id}")
+        sources = batch.get("sources")
+        if not isinstance(sources, list) or not sources:
+            raise RuntimeError(f"Source intake batch sources are required: {batch_id}")
+        blocked_actions = batch.get("blockedActions")
+        if not isinstance(blocked_actions, list):
+            raise RuntimeError(f"Source intake batch blockedActions are required: {batch_id}")
+        for required in ["release manifest changes", "runtime installation", "local Codex/agents/cc-switch sync"]:
+            if required not in blocked_actions:
+                raise RuntimeError(f"Source intake batch must block action: {batch_id}/{required}")
+        if batch.get("nextGate") != "license-provenance-security-portability-overlap-review":
+            raise RuntimeError(f"Source intake batch nextGate is invalid: {batch_id}")
+
+        seen_sources: set[str] = set()
+        for source in sources:
+            if not isinstance(source, dict):
+                raise RuntimeError(f"Source intake source entries must be objects: {batch_id}")
+            source_id = source.get("id")
+            if not isinstance(source_id, str) or not source_id.startswith("github:"):
+                raise RuntimeError(f"Source intake source id must be github: {batch_id}")
+            if source_id in seen_sources:
+                raise RuntimeError(f"Duplicate source intake source: {source_id}")
+            seen_sources.add(source_id)
+            if not isinstance(source.get("url"), str) or not source.get("url", "").startswith("https://github.com/"):
+                raise RuntimeError(f"Source intake source URL must be GitHub: {source_id}")
+            revision = source.get("revision")
+            if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+                raise RuntimeError(f"Source intake source revision must be a full SHA: {source_id}")
+            if source.get("license") not in {"MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0", "CC0-1.0"}:
+                raise RuntimeError(f"Source intake source license requires review or is unsupported: {source_id}")
+            detected = source.get("detected")
+            if not isinstance(detected, dict) or not isinstance(detected.get("skillMdCount"), int) or detected.get("skillMdCount") <= 0:
+                raise RuntimeError(f"Source intake source must record positive Skill count: {source_id}")
+            if not isinstance(detected.get("sampleSkillPaths"), list) or not detected.get("sampleSkillPaths"):
+                raise RuntimeError(f"Source intake source must record sample Skill paths: {source_id}")
+            coverage_hints = source.get("coverageHints")
+            if not isinstance(coverage_hints, list) or not coverage_hints:
+                raise RuntimeError(f"Source intake source coverageHints are required: {source_id}")
+            if not set(coverage_hints).issubset(domain_ids):
+                raise RuntimeError(f"Source intake source has unknown coverage hint: {source_id}")
+            if not isinstance(source.get("reviewFocus"), list) or not source.get("reviewFocus"):
+                raise RuntimeError(f"Source intake source reviewFocus is required: {source_id}")
 
 
 def validate_mvp06_radar_feedback_projection(
