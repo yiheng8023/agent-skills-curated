@@ -158,6 +158,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-pm-toolkit-boundary-adaptation-gate.md`：PM toolkit 高边界
   适配草案闸门；记录 legal/privacy reference 与 personal-document/copyediting
   处置，但不批准 payload、routing、manifest、法律/合规声明、简历数据处理或本地 sync；
+- `docs/round02-huashu-design-guidance-adaptation-gate.md`：Huashu design
+  guidance 适配草案闸门；记录 design-direction 与 brand-asset provenance
+  处置，但不批准 payload、routing、manifest、工具链、打包资产、外部媒体生成或本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

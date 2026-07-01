@@ -71,6 +71,7 @@ REQUIRED_FILES = (
     "registry/round02-pm-analytics-adaptation-gate.json",
     "registry/round02-pm-market-discovery-adaptation-gate.json",
     "registry/round02-pm-toolkit-boundary-adaptation-gate.json",
+    "registry/round02-huashu-design-guidance-adaptation-gate.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -117,6 +118,7 @@ REQUIRED_FILES = (
     "docs/round02-pm-analytics-adaptation-gate.md",
     "docs/round02-pm-market-discovery-adaptation-gate.md",
     "docs/round02-pm-toolkit-boundary-adaptation-gate.md",
+    "docs/round02-huashu-design-guidance-adaptation-gate.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -142,6 +144,8 @@ REQUIRED_FILES = (
     "drafts/round02-pm-market-discovery-adaptation/product-discovery-research-planning/DRAFT.md",
     "drafts/round02-pm-toolkit-boundary-adaptation/legal-privacy-document-boundary/DRAFT.md",
     "drafts/round02-pm-toolkit-boundary-adaptation/personal-document-and-copyediting-boundary/DRAFT.md",
+    "drafts/round02-huashu-design-guidance-adaptation/design-direction-and-anti-slop-reference/DRAFT.md",
+    "drafts/round02-huashu-design-guidance-adaptation/brand-asset-provenance-protocol/DRAFT.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -176,6 +180,7 @@ def verify() -> None:
     round02_pm_analytics_adaptation_gate_doc = load("registry/round02-pm-analytics-adaptation-gate.json")
     round02_pm_market_discovery_adaptation_gate_doc = load("registry/round02-pm-market-discovery-adaptation-gate.json")
     round02_pm_toolkit_boundary_adaptation_gate_doc = load("registry/round02-pm-toolkit-boundary-adaptation-gate.json")
+    round02_huashu_design_guidance_adaptation_gate_doc = load("registry/round02-huashu-design-guidance-adaptation-gate.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -218,6 +223,7 @@ def verify() -> None:
     validate_round02_pm_analytics_adaptation_gate(round02_pm_analytics_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_round02_pm_market_discovery_adaptation_gate(round02_pm_market_discovery_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_round02_pm_toolkit_boundary_adaptation_gate(round02_pm_toolkit_boundary_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
+    validate_round02_huashu_design_guidance_adaptation_gate(round02_huashu_design_guidance_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -2391,6 +2397,215 @@ def validate_round02_pm_toolkit_boundary_adaptation_gate(
         raise RuntimeError("README.md must link Round-02 PM toolkit adaptation gate.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 PM toolkit adaptation gate.")
+
+
+def validate_round02_huashu_design_guidance_adaptation_gate(
+    document: dict[str, object],
+    round02_reviews_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if document.get("schema_version") != 1:
+        raise RuntimeError("Round-02 Huashu design guidance gate schema_version must be 1.")
+    if document.get("status") != "huashu_design_guidance_adaptation_gate_recorded_not_release_approved":
+        raise RuntimeError("Round-02 Huashu design guidance gate status mismatch.")
+    if document.get("source_review") != "registry/round02-candidate-reviews.json#github:alchaincyf/huashu-design":
+        raise RuntimeError("Round-02 Huashu design guidance gate must reference the Huashu source review.")
+    if document.get("source_intake_batch") != "registry/source-intake-batches.json#round02-source-intake-2026-07-02":
+        raise RuntimeError("Round-02 Huashu design guidance gate must reference the source intake batch.")
+    if document.get("draft_root") != "drafts/round02-huashu-design-guidance-adaptation/":
+        raise RuntimeError("Round-02 Huashu design guidance gate draft root drifted.")
+
+    source = document.get("source", {})
+    if source.get("id") != "github:alchaincyf/huashu-design":
+        raise RuntimeError("Round-02 Huashu design guidance gate source id drifted.")
+    if source.get("revision") != "ec9ec0fff8a66a932c4049b200ea4c2b09f8d25b":
+        raise RuntimeError("Round-02 Huashu design guidance gate source revision drifted.")
+    if source.get("license") != "MIT":
+        raise RuntimeError("Round-02 Huashu design guidance gate source license drifted.")
+
+    source_reviews = {
+        review.get("source_id"): review
+        for review in round02_reviews_doc.get("source_reviews", [])
+        if isinstance(review, dict)
+    }
+    huashu_review = source_reviews.get("github:alchaincyf/huashu-design")
+    if not huashu_review:
+        raise RuntimeError("Round-02 Huashu design guidance gate cannot find source review.")
+    if huashu_review.get("revision") != source.get("revision"):
+        raise RuntimeError("Round-02 Huashu design guidance gate revision does not match source review.")
+    if huashu_review.get("source_disposition") != "reference-and-adapter-candidate-not-approved":
+        raise RuntimeError("Round-02 Huashu source review disposition drifted.")
+
+    permissions = document.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 Huashu design guidance gate permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "adapted_draft_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 Huashu design guidance gate permission mismatch: {key}")
+
+    subset = document.get("subset_boundary", {})
+    if subset.get("included_candidates") != ["huashu-design-principles", "huashu-brand-asset-protocol"]:
+        raise RuntimeError("Round-02 Huashu design guidance included candidates drifted.")
+    expected_excluded = {
+        "huashu-html-deck-animation-pipeline",
+        "huashu-voiceover-tts-pipeline",
+        "huashu-bundled-assets",
+    }
+    if set(subset.get("excluded_candidates", [])) != expected_excluded:
+        raise RuntimeError("Round-02 Huashu design guidance excluded candidates drifted.")
+    if "require separate review" not in str(subset.get("reason", "")):
+        raise RuntimeError("Round-02 Huashu design guidance subset reason must preserve separate review boundary.")
+
+    expected_drafts = {
+        "design-direction-and-anti-slop-reference": (
+            "design-guidance-reference-or-merge-candidate",
+            "drafts/round02-huashu-design-guidance-adaptation/design-direction-and-anti-slop-reference/DRAFT.md",
+            {
+                "SKILL.md": "2830077dd711de0cccd4c3c00a840d7b5d69b14ac38446e19826540c99d914ad",
+            },
+        ),
+        "brand-asset-provenance-protocol": (
+            "asset-provenance-reference-candidate",
+            "drafts/round02-huashu-design-guidance-adaptation/brand-asset-provenance-protocol/DRAFT.md",
+            {
+                "references/brand-asset-protocol.md": "b9de11c57843dd8029611417d97c84da610890d2a450de9a3f24e3428767e1ea",
+            },
+        ),
+    }
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    drafts = {
+        item.get("candidate_id"): item
+        for item in document.get("adaptation_drafts", [])
+        if isinstance(item, dict)
+    }
+    if set(drafts) != set(expected_drafts):
+        raise RuntimeError("Round-02 Huashu design guidance draft ids drifted.")
+    for candidate_id, draft in drafts.items():
+        expected_disposition, draft_path, expected_sources = expected_drafts[candidate_id]
+        if draft.get("disposition") != expected_disposition:
+            raise RuntimeError(f"Round-02 Huashu design guidance draft disposition drifted: {candidate_id}")
+        if draft.get("draft_path") != draft_path:
+            raise RuntimeError(f"Round-02 Huashu design guidance draft path drifted: {candidate_id}")
+        if not (ROOT / draft_path).is_file():
+            raise RuntimeError(f"Round-02 Huashu design guidance draft path missing: {candidate_id}")
+        if draft.get("source_text_copied") or draft.get("source_text_redistributed"):
+            raise RuntimeError(f"Round-02 Huashu design guidance draft must not copy or redistribute source text: {candidate_id}")
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"Round-02 Huashu design guidance draft unexpectedly approved: {candidate_id}")
+        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+            raise RuntimeError(f"Round-02 Huashu design guidance draft appears in release manifest: {candidate_id}")
+        source_candidates = {
+            item.get("upstream_path"): item.get("upstream_sha256")
+            for item in draft.get("source_candidates", [])
+            if isinstance(item, dict)
+        }
+        if source_candidates != expected_sources:
+            raise RuntimeError(f"Round-02 Huashu design guidance draft source hashes drifted: {candidate_id}")
+        if "separate" not in str(draft.get("next_gate", "")).lower():
+            raise RuntimeError(f"Round-02 Huashu design guidance draft must require a separate next gate: {candidate_id}")
+        if not isinstance(draft.get("likely_targets"), list) or not draft.get("likely_targets"):
+            raise RuntimeError(f"Round-02 Huashu design guidance draft likely targets missing: {candidate_id}")
+
+    expected_sections = {
+        "source_integrity": "pass",
+        "license_and_attribution": "pass",
+        "security": "bounded_in_drafts",
+        "portability_and_neutralization": "bounded_in_drafts",
+        "overlap_and_conflict": "design_guidance_bounded",
+        "release_manifest_impact": "no_manifest_change",
+        "consumer_install_impact": "no_install_change",
+        "next_gate": "separate-release-or-routing-review",
+    }
+    if document.get("review_sections") != expected_sections:
+        raise RuntimeError("Round-02 Huashu design guidance gate review sections drifted.")
+    required_boundaries = {
+        "skills/ unchanged",
+        "release-manifest.json unchanged",
+        "generated routing projections unchanged",
+        "live Agent environments untouched",
+        "source text not redistributed",
+        "local Codex/agents/cc-switch sync blocked",
+        "adaptation drafts are not approved payload",
+        "Huashu toolchain and bundled assets remain outside this gate",
+    }
+    if set(document.get("boundary_assertions", [])) != required_boundaries:
+        raise RuntimeError("Round-02 Huashu design guidance gate boundary assertions drifted.")
+
+    validation = document.get("validation", {})
+    if validation.get("status") not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 Huashu design guidance gate validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("Round-02 Huashu design guidance gate required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+        "source text is not redistributed as approved curated payload",
+        "local Codex/agents/cc-switch sync remains blocked",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"Round-02 Huashu design guidance gate missing boundary assertion: {assertion}")
+    if "Separate approval is required" not in str(document.get("next_required_gate")):
+        raise RuntimeError("Round-02 Huashu design guidance gate must require a separate next gate.")
+
+    doc_path = document.get("evidence_doc")
+    if doc_path != "docs/round02-huashu-design-guidance-adaptation-gate.md":
+        raise RuntimeError("Round-02 Huashu design guidance gate evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Huashu design-guidance adaptation gate evidence, not release approval",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "live install allowed: false",
+        "local runtime sync allowed: false",
+        "It explicitly excludes HTML deck, voiceover, and bundled asset toolchain candidates.",
+        "Draft Decisions",
+        "Boundary Checks",
+        "Next Gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 Huashu design guidance gate doc missing phrase: {phrase}")
+
+    draft_expectations = {
+        "drafts/round02-huashu-design-guidance-adaptation/design-direction-and-anti-slop-reference/DRAFT.md": [
+            "This is a design-direction and anti-slop reference candidate.",
+            "Do not hard-code a single visual style as universal good design.",
+            "Do not rely on a tool-specific WebSearch name or agent-specific workflow.",
+        ],
+        "drafts/round02-huashu-design-guidance-adaptation/brand-asset-provenance-protocol/DRAFT.md": [
+            "This is a brand-asset provenance protocol candidate.",
+            "Do not scrape, download, or redistribute brand assets without permission and source review.",
+            "Do not use CSS silhouettes, hand-drawn SVGs, or generic placeholders as if they were official product assets.",
+        ],
+    }
+    for path, phrases in draft_expectations.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round-02 Huashu design guidance draft missing phrase: {path}/{phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 Huashu design guidance gate.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 Huashu design guidance gate.")
 
 
 def validate_mvp06_radar_feedback_projection(
