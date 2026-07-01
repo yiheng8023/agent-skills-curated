@@ -204,6 +204,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-pm-execution-adaptation-gate.md`: PM AI-shipping and
   execution-document adapted draft gate; excludes analytics, market/GTM,
   discovery, legal/privacy, and script/tooling groups for separate review.
+- `docs/round02-pm-analytics-adaptation-gate.md`: PM analytics and data-safety
+  adapted draft gate; records analytics runtime-equivalence and synthetic
+  data/SQL tooling dispositions without approving payload, routing, manifest,
+  execution, or local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

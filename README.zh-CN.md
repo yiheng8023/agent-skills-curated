@@ -149,6 +149,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   记录 open-format、CLI 与 Defuddle 处置，但不批准 payload、routing、manifest 或本地 sync；
 - `docs/round02-pm-execution-adaptation-gate.md`：PM AI-shipping 与执行文档
   适配草案闸门；analytics、market/GTM、discovery、legal/privacy、script/tooling 组另行审查；
+- `docs/round02-pm-analytics-adaptation-gate.md`：PM analytics 与 data-safety
+  适配草案闸门；记录 analytics runtime-equivalence 与 synthetic data/SQL tooling
+  处置，但不批准 payload、routing、manifest、执行或本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
