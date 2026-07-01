@@ -67,6 +67,7 @@ REQUIRED_FILES = (
     "registry/source-intake-batches.json",
     "registry/round02-candidate-reviews.json",
     "registry/round02-obsidian-adaptation-gate.json",
+    "registry/round02-pm-execution-adaptation-gate.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -109,6 +110,7 @@ REQUIRED_FILES = (
     "docs/round02-source-intake-2026-07-02.md",
     "docs/round02-candidate-review-2026-07-02.md",
     "docs/round02-obsidian-adaptation-gate.md",
+    "docs/round02-pm-execution-adaptation-gate.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -126,6 +128,8 @@ REQUIRED_FILES = (
     "drafts/round02-obsidian-adaptation/open-format-knowledge-files/DRAFT.md",
     "drafts/round02-obsidian-adaptation/obsidian-cli-runtime-adapter/DRAFT.md",
     "drafts/round02-obsidian-adaptation/defuddle-tool-adapter/DRAFT.md",
+    "drafts/round02-pm-execution-adaptation/ai-shipping-governance/DRAFT.md",
+    "drafts/round02-pm-execution-adaptation/product-execution-documents/DRAFT.md",
     "drafts/mvp02-adaptation/spec-driven-development/DRAFT.md",
     "drafts/mvp02-adaptation/documentation-and-adrs/DRAFT.md",
     "drafts/mvp02-adaptation/code-review-and-quality/DRAFT.md",
@@ -156,6 +160,7 @@ def verify() -> None:
     source_intake_batches_doc = load("registry/source-intake-batches.json")
     round02_candidate_reviews_doc = load("registry/round02-candidate-reviews.json")
     round02_obsidian_adaptation_gate_doc = load("registry/round02-obsidian-adaptation-gate.json")
+    round02_pm_execution_adaptation_gate_doc = load("registry/round02-pm-execution-adaptation-gate.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -194,6 +199,7 @@ def verify() -> None:
     validate_source_intake_batches(source_intake_batches_doc, collaboration_domain_coverage_doc, curation_expansion_rounds_doc)
     validate_round02_candidate_reviews(round02_candidate_reviews_doc, source_intake_batches_doc, skills_doc, manifest)
     validate_round02_obsidian_adaptation_gate(round02_obsidian_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
+    validate_round02_pm_execution_adaptation_gate(round02_pm_execution_adaptation_gate_doc, round02_candidate_reviews_doc, skills_doc, manifest)
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -1504,6 +1510,222 @@ def validate_round02_obsidian_adaptation_gate(
         raise RuntimeError("README.md must link Round-02 Obsidian adaptation gate.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 Obsidian adaptation gate.")
+
+
+def validate_round02_pm_execution_adaptation_gate(
+    document: dict[str, object],
+    round02_reviews_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    manifest: dict[str, object],
+) -> None:
+    if document.get("schema_version") != 1:
+        raise RuntimeError("Round-02 PM execution adaptation gate schema_version must be 1.")
+    if document.get("status") != "pm_execution_adaptation_gate_recorded_not_release_approved":
+        raise RuntimeError("Round-02 PM execution adaptation gate status mismatch.")
+    if document.get("source_review") != "registry/round02-candidate-reviews.json#github:phuryn/pm-skills":
+        raise RuntimeError("Round-02 PM execution adaptation gate must reference the PM source review.")
+    if document.get("source_intake_batch") != "registry/source-intake-batches.json#round02-source-intake-2026-07-02":
+        raise RuntimeError("Round-02 PM execution adaptation gate must reference the source intake batch.")
+    if document.get("draft_root") != "drafts/round02-pm-execution-adaptation/":
+        raise RuntimeError("Round-02 PM execution adaptation gate draft root drifted.")
+
+    source = document.get("source", {})
+    if source.get("id") != "github:phuryn/pm-skills":
+        raise RuntimeError("Round-02 PM execution adaptation gate source id drifted.")
+    if source.get("revision") != "a0cd730d4c61e519ca8568b172334402257a74a9":
+        raise RuntimeError("Round-02 PM execution adaptation gate source revision drifted.")
+    if source.get("license") != "MIT":
+        raise RuntimeError("Round-02 PM execution adaptation gate source license drifted.")
+
+    source_reviews = {
+        review.get("source_id"): review
+        for review in round02_reviews_doc.get("source_reviews", [])
+        if isinstance(review, dict)
+    }
+    pm_review = source_reviews.get("github:phuryn/pm-skills")
+    if not pm_review:
+        raise RuntimeError("Round-02 PM execution adaptation gate cannot find source review.")
+    if pm_review.get("revision") != source.get("revision"):
+        raise RuntimeError("Round-02 PM execution adaptation gate revision does not match source review.")
+    if pm_review.get("source_disposition") != "split-into-sub-batches-not-approved":
+        raise RuntimeError("Round-02 PM source review disposition drifted.")
+
+    permissions = document.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 PM execution adaptation gate permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "adapted_draft_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 PM execution adaptation gate permission mismatch: {key}")
+
+    subset = document.get("subset_boundary", {})
+    if subset.get("included_groups") != ["pm-ai-shipping-group", "pm-execution-docs-group"]:
+        raise RuntimeError("Round-02 PM execution adaptation included groups drifted.")
+    expected_excluded = {
+        "pm-data-analytics-group",
+        "pm-gtm-market-strategy-group",
+        "pm-product-discovery-group",
+        "pm-toolkit-legal-privacy-group",
+        "pm-synthetic-data-and-script-group",
+    }
+    if set(subset.get("excluded_groups", [])) != expected_excluded:
+        raise RuntimeError("Round-02 PM execution adaptation excluded groups drifted.")
+    if "require separate review" not in str(subset.get("reason", "")):
+        raise RuntimeError("Round-02 PM execution adaptation subset reason must preserve separate review boundary.")
+
+    expected_drafts = {
+        "ai-shipping-governance": (
+            "merge-or-recipe-candidate",
+            "drafts/round02-pm-execution-adaptation/ai-shipping-governance/DRAFT.md",
+            {
+                "pm-ai-shipping/skills/intended-vs-implemented/SKILL.md": "66016f358e3e98275db3e9b0c48fe1fb533c0f7e8d10ed7c5dcd2230db42e5e4",
+                "pm-ai-shipping/skills/shipping-artifacts/SKILL.md": "3f919b2181b21199c87a392afb5cfcc7ca677f140622e2871ef86853e8b40e28",
+            },
+        ),
+        "product-execution-documents": (
+            "merge-into-existing-approved-skill-candidate",
+            "drafts/round02-pm-execution-adaptation/product-execution-documents/DRAFT.md",
+            {
+                "pm-execution/skills/create-prd/SKILL.md": "2a4059f16301c5559e10d0dfd00c9bdcde04d2cd964d8c360dbe43bd0161ed32",
+                "pm-execution/skills/user-stories/SKILL.md": "8ce89cd81de5a3df7d504380d18c54cec6c59ccdb7fd18cbcb62b6b6183d0a55",
+                "pm-execution/skills/job-stories/SKILL.md": "69f75264b311418a1ebaf06c9872ed1271203cfc6316466fcb99cc948ade800b",
+                "pm-execution/skills/test-scenarios/SKILL.md": "2dc10ebb6359604275f26234d3c66c9ccc952e501ad5b685c23a5c0f34f634d4",
+                "pm-execution/skills/release-notes/SKILL.md": "b617edd39e721267c9726286b6304f086991f5e2215b848c952a8ad9e001a0d3",
+            },
+        ),
+    }
+    approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    drafts = {
+        item.get("candidate_id"): item
+        for item in document.get("adaptation_drafts", [])
+        if isinstance(item, dict)
+    }
+    if set(drafts) != set(expected_drafts):
+        raise RuntimeError("Round-02 PM execution adaptation draft ids drifted.")
+    for candidate_id, draft in drafts.items():
+        expected_disposition, draft_path, expected_sources = expected_drafts[candidate_id]
+        if draft.get("disposition") != expected_disposition:
+            raise RuntimeError(f"Round-02 PM execution draft disposition drifted: {candidate_id}")
+        if draft.get("draft_path") != draft_path:
+            raise RuntimeError(f"Round-02 PM execution draft path drifted: {candidate_id}")
+        if not (ROOT / draft_path).is_file():
+            raise RuntimeError(f"Round-02 PM execution draft path missing: {candidate_id}")
+        if draft.get("source_text_copied") or draft.get("source_text_redistributed"):
+            raise RuntimeError(f"Round-02 PM execution draft must not copy or redistribute source text: {candidate_id}")
+        if candidate_id in approved_directories:
+            raise RuntimeError(f"Round-02 PM execution draft unexpectedly approved: {candidate_id}")
+        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+            raise RuntimeError(f"Round-02 PM execution draft appears in release manifest: {candidate_id}")
+        source_candidates = {
+            item.get("upstream_path"): item.get("upstream_sha256")
+            for item in draft.get("source_candidates", [])
+            if isinstance(item, dict)
+        }
+        if source_candidates != expected_sources:
+            raise RuntimeError(f"Round-02 PM execution draft source hashes drifted: {candidate_id}")
+        if "separate" not in str(draft.get("next_gate", "")).lower():
+            raise RuntimeError(f"Round-02 PM execution draft must require a separate next gate: {candidate_id}")
+        if not isinstance(draft.get("likely_targets"), list) or not draft.get("likely_targets"):
+            raise RuntimeError(f"Round-02 PM execution draft likely targets missing: {candidate_id}")
+
+    expected_sections = {
+        "source_integrity": "pass",
+        "license_and_attribution": "pass",
+        "security": "bounded_in_drafts",
+        "portability_and_neutralization": "bounded_in_drafts",
+        "overlap_and_conflict": "bounded_in_drafts",
+        "release_manifest_impact": "no_manifest_change",
+        "consumer_install_impact": "no_install_change",
+        "next_gate": "separate-release-or-routing-review",
+    }
+    if document.get("review_sections") != expected_sections:
+        raise RuntimeError("Round-02 PM execution adaptation gate review sections drifted.")
+    required_boundaries = {
+        "skills/ unchanged",
+        "release-manifest.json unchanged",
+        "generated routing projections unchanged",
+        "live Agent environments untouched",
+        "source text not redistributed",
+        "local Codex/agents/cc-switch sync blocked",
+        "adaptation drafts are not approved payload",
+        "excluded PM groups remain unreviewed by this gate",
+    }
+    if set(document.get("boundary_assertions", [])) != required_boundaries:
+        raise RuntimeError("Round-02 PM execution adaptation gate boundary assertions drifted.")
+
+    validation = document.get("validation", {})
+    if validation.get("status") not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 PM execution adaptation gate validation status is invalid.")
+    required_commands = {
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    }
+    if set(validation.get("required_commands", [])) != required_commands:
+        raise RuntimeError("Round-02 PM execution adaptation gate required commands drifted.")
+    for assertion in [
+        "release-manifest.json remains unchanged",
+        "generated routing projections remain unchanged",
+        "skills/ remains unchanged",
+        "live Agent environments are untouched",
+        "source text is not redistributed as approved curated payload",
+        "local Codex/agents/cc-switch sync remains blocked",
+    ]:
+        if assertion not in validation.get("boundary_assertions", []):
+            raise RuntimeError(f"Round-02 PM execution adaptation gate missing boundary assertion: {assertion}")
+    if "Separate approval is required" not in str(document.get("next_required_gate")):
+        raise RuntimeError("Round-02 PM execution adaptation gate must require a separate next gate.")
+
+    doc_path = document.get("evidence_doc")
+    if doc_path != "docs/round02-pm-execution-adaptation-gate.md":
+        raise RuntimeError("Round-02 PM execution adaptation gate evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "adaptation gate evidence, not",
+        "approved payload allowed: false",
+        "release manifest allowed: false",
+        "routing projection allowed: false",
+        "live install allowed: false",
+        "local runtime sync allowed: false",
+        "It explicitly excludes PM analytics",
+        "Draft Decisions",
+        "Boundary Checks",
+        "Next Gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 PM execution adaptation gate doc missing phrase: {phrase}")
+
+    draft_expectations = {
+        "drafts/round02-pm-execution-adaptation/ai-shipping-governance/DRAFT.md": [
+            "This is a governance and review workflow candidate.",
+            "Do not fabricate product intent from code behavior.",
+            "does not replace a security scanner",
+        ],
+        "drafts/round02-pm-execution-adaptation/product-execution-documents/DRAFT.md": [
+            "This is an execution-document workflow candidate.",
+            "Do not save files by default",
+            "Do not claim a release note describes shipped behavior without shipped evidence.",
+        ],
+    }
+    for path, phrases in draft_expectations.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round-02 PM execution draft missing phrase: {path}/{phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 PM execution adaptation gate.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 PM execution adaptation gate.")
 
 
 def validate_mvp06_radar_feedback_projection(

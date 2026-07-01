@@ -201,6 +201,9 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-obsidian-adaptation-gate.md`: Obsidian sub-batch adapted draft
   gate; records open-format, CLI, and Defuddle dispositions without approving
   payload, routing, manifest, or local sync.
+- `docs/round02-pm-execution-adaptation-gate.md`: PM AI-shipping and
+  execution-document adapted draft gate; excludes analytics, market/GTM,
+  discovery, legal/privacy, and script/tooling groups for separate review.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
