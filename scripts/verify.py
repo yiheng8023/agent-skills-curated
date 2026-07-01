@@ -57,6 +57,8 @@ REQUIRED_FILES = (
     "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
     "registry/capabilities.json", "registry/relations.json",
     "registry/conflicts.json", "registry/recipes.json",
+    "registry/collaboration-domain-coverage.json",
+    "registry/curation-expansion-rounds.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
     "registry/starred-skill-sources.json",
@@ -97,6 +99,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/security.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
+    "docs/coverage-and-curation-expansion.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -131,6 +134,8 @@ def verify() -> None:
     relations_doc = load("registry/relations.json")
     conflicts_doc = load("registry/conflicts.json")
     recipes_doc = load("registry/recipes.json")
+    collaboration_domain_coverage_doc = load("registry/collaboration-domain-coverage.json")
+    curation_expansion_rounds_doc = load("registry/curation-expansion-rounds.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
     starred_sources_doc = load("registry/starred-skill-sources.json")
@@ -162,6 +167,8 @@ def verify() -> None:
     validate_relations_document(relations_doc, "registry/relations.json")
     validate_conflicts_document(conflicts_doc, "registry/conflicts.json")
     validate_recipes_document(recipes_doc, "registry/recipes.json")
+    validate_collaboration_domain_coverage(collaboration_domain_coverage_doc)
+    validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
     validate_starred_skill_sources(starred_sources_doc)
@@ -522,6 +529,106 @@ def validate_github_skill_discovery_profile(document: dict[str, object]) -> None
         raise RuntimeError("GitHub Skill discovery profile must reject quantity as approval.")
     if policy.get("requiresHumanGateForRuntime") is not True:
         raise RuntimeError("GitHub Skill discovery profile must require a human runtime gate.")
+
+
+def validate_collaboration_domain_coverage(document: dict[str, object]) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Collaboration domain coverage schema must be 1.")
+    purpose = str(document.get("purpose", "")).lower()
+    for phrase in ["not approval", "release inventory", "runtime installation"]:
+        if phrase not in purpose:
+            raise RuntimeError(f"Collaboration domain coverage purpose missing phrase: {phrase}")
+    skill_types = document.get("skillTypes")
+    if not isinstance(skill_types, list) or len(skill_types) < 2:
+        raise RuntimeError("Collaboration domain coverage must define skill types.")
+    type_ids = {
+        item.get("id")
+        for item in skill_types
+        if isinstance(item, dict)
+    }
+    if type_ids != {"general", "specialist"}:
+        raise RuntimeError("Collaboration domain coverage must define general and specialist Skill types.")
+    domains = document.get("domains")
+    if not isinstance(domains, list) or len(domains) < 8:
+        raise RuntimeError("Collaboration domain coverage must define broad digital collaboration domains.")
+    required_domains = {
+        "daily-life-and-personal-productivity",
+        "office-and-knowledge-work",
+        "software-engineering",
+        "business-and-commercial-work",
+        "education-and-training",
+        "academic-and-research-work",
+        "creative-production-and-design",
+        "data-analytics-and-reporting",
+        "operations-projects-and-process",
+        "security-privacy-and-compliance",
+    }
+    seen: set[str] = set()
+    for domain in domains:
+        if not isinstance(domain, dict):
+            raise RuntimeError("Collaboration domain entries must be objects.")
+        domain_id = domain.get("id")
+        if not isinstance(domain_id, str) or not domain_id:
+            raise RuntimeError("Collaboration domain id is required.")
+        if domain_id in seen:
+            raise RuntimeError(f"Duplicate collaboration domain: {domain_id}")
+        seen.add(domain_id)
+        for key in ["label", "coverageGoal"]:
+            if not isinstance(domain.get(key), str) or not domain.get(key):
+                raise RuntimeError(f"Collaboration domain missing {key}: {domain_id}")
+        preferred = domain.get("preferredSkillTypes")
+        if not isinstance(preferred, list) or not preferred or not set(preferred).issubset(type_ids):
+            raise RuntimeError(f"Collaboration domain preferredSkillTypes invalid: {domain_id}")
+        for key in ["candidateSignals", "riskNotes"]:
+            if not isinstance(domain.get(key), list) or not domain.get(key):
+                raise RuntimeError(f"Collaboration domain missing {key}: {domain_id}")
+    if not required_domains.issubset(seen):
+        missing = sorted(required_domains - seen)
+        raise RuntimeError("Collaboration domain coverage missing required domains: " + ", ".join(missing))
+
+
+def validate_curation_expansion_rounds(
+    document: dict[str, object],
+    coverage_doc: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Curation expansion rounds schema must be 1.")
+    purpose = str(document.get("purpose", "")).lower()
+    for phrase in ["not approval", "release inventory", "runtime installation"]:
+        if phrase not in purpose:
+            raise RuntimeError(f"Curation expansion rounds purpose missing phrase: {phrase}")
+    rounds = document.get("rounds")
+    if not isinstance(rounds, list) or len(rounds) < 3:
+        raise RuntimeError("Curation expansion rounds must define at least three rounds.")
+    round_ids: list[str] = []
+    for item in rounds:
+        if not isinstance(item, dict):
+            raise RuntimeError("Curation expansion round entries must be objects.")
+        round_id = item.get("id")
+        if not isinstance(round_id, str) or not round_id:
+            raise RuntimeError("Curation expansion round id is required.")
+        round_ids.append(round_id)
+        if item.get("status") not in {"active", "planned", "closed"}:
+            raise RuntimeError(f"Curation expansion round status invalid: {round_id}")
+        for key in ["goal", "allowedChanges", "blockedChanges", "exitCriteria"]:
+            value = item.get(key)
+            if key == "goal":
+                if not isinstance(value, str) or not value:
+                    raise RuntimeError(f"Curation expansion round goal is required: {round_id}")
+            elif not isinstance(value, list) or not value:
+                raise RuntimeError(f"Curation expansion round {key} is required: {round_id}")
+    if len(round_ids) != len(set(round_ids)):
+        raise RuntimeError("Curation expansion round ids must be unique.")
+    if document.get("currentRound") not in round_ids:
+        raise RuntimeError("Curation expansion currentRound must reference a known round.")
+    sync_deferral = document.get("syncDeferral")
+    if not isinstance(sync_deferral, dict) or sync_deferral.get("status") != "deferred":
+        raise RuntimeError("Curation expansion must defer local runtime sync.")
+    reason = str(sync_deferral.get("reason", "")).lower()
+    if "after" not in reason:
+        raise RuntimeError("Curation expansion sync deferral must explain after-condition.")
+    if not coverage_doc.get("domains"):
+        raise RuntimeError("Curation expansion rounds require collaboration domain coverage.")
 
 
 def validate_mvp06_radar_feedback_projection(

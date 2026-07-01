@@ -18,6 +18,11 @@ GitHub-wide candidate discovery is governed by
 and writes a run summary only; it does not star repositories, modify this
 repository, approve candidates, or install runtime Skills.
 
+Broad coverage planning is governed by
+`registry/collaboration-domain-coverage.json` and
+`registry/curation-expansion-rounds.json`. Local runtime alignment is deferred
+until enough curated coverage has been admitted and release validation is stable.
+
 This is not managed inventory.
 
 The goal is cross-agent capability sharing:

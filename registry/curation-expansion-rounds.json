@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "id": "curation-expansion-rounds-v1",
+  "purpose": "Iterative expansion control for broad Skill discovery, filtering, adaptation, and curated intake. This is not approval, release inventory, or runtime installation evidence.",
+  "currentRound": "round-01-broad-coverage-radar",
+  "rounds": [
+    {
+      "id": "round-01-broad-coverage-radar",
+      "status": "active",
+      "goal": "Broaden the repository beyond software engineering by making discovery, domain coverage, and candidate-source radar explicit and verifiable.",
+      "allowedChanges": [
+        "coverage registry",
+        "candidate-source discovery profile",
+        "non-approval radar records",
+        "read-only discovery automation"
+      ],
+      "blockedChanges": [
+        "approved Skill payload import",
+        "release manifest changes",
+        "local Codex/agents/cc-switch sync"
+      ],
+      "exitCriteria": [
+        "domain coverage registry is validated",
+        "candidate discovery runs read-only",
+        "next-batch candidate sources are named but not approved"
+      ]
+    },
+    {
+      "id": "round-02-source-intake-and-filtering",
+      "status": "planned",
+      "goal": "Pin and audit small batches of direct third-party Skill sources with clear license posture and broad non-software-engineering value.",
+      "candidateSourceIds": [
+        "github:kepano/obsidian-skills",
+        "github:phuryn/pm-skills",
+        "github:alchaincyf/huashu-design"
+      ],
+      "allowedChanges": [
+        "source lock records",
+        "candidate inventory",
+        "security, portability, and overlap audit evidence",
+        "adaptation drafts"
+      ],
+      "blockedChanges": [
+        "unreviewed bulk import",
+        "runtime installation",
+        "license-unclear payload redistribution"
+      ],
+      "exitCriteria": [
+        "each source has pinned revision and license review",
+        "candidate Skills have adopt, merge, recipe-only, adapter-only, reference, or reject decisions",
+        "no candidate enters release inventory without approval"
+      ]
+    },
+    {
+      "id": "round-03-adaptation-and-curated-admission",
+      "status": "planned",
+      "goal": "Adapt approved candidates into neutral, portable, non-duplicative Skill payloads or route them into existing Skills, recipes, references, or rejections.",
+      "allowedChanges": [
+        "approved adapted Skill payloads",
+        "admissions updates",
+        "routing and conflict updates",
+        "release manifest updates after approval"
+      ],
+      "blockedChanges": [
+        "source-text redistribution without license clearance",
+        "tool-specific claims without dependency boundaries",
+        "local runtime sync"
+      ],
+      "exitCriteria": [
+        "all admitted payloads pass repository verification",
+        "overlap and conflict decisions are explicit",
+        "release manifest reflects only approved curated payloads"
+      ]
+    }
+  ],
+  "syncDeferral": {
+    "status": "deferred",
+    "reason": "Local Codex, agents, and cc Switch alignment happens only after enough curated coverage has been admitted and repository release validation is stable.",
+    "notBefore": "post-curated-release-expansion"
+  }
+}
