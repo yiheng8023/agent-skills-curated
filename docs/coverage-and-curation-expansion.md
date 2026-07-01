@@ -23,7 +23,10 @@ specialist Skills so the repository can grow without forcing every capability
 into one shape.
 
 The iterative control plan lives in `registry/curation-expansion-rounds.json`.
-Candidate radar and coverage records are not approval. A candidate becomes
-runtime-relevant only after source pinning, license/provenance review, security
-review, portability review, overlap resolution, adaptation, and repository
-verification.
+The round lifecycle contract lives in
+`registry/round-lifecycle-contract.json` and is explained in
+`docs/round-lifecycle-contract.md`. Candidate radar and coverage records are
+not approval. A candidate becomes runtime-relevant only after source pinning,
+license/provenance review, security review, portability review, overlap
+resolution, adaptation, acceptance, repository verification, and stage
+closeout.

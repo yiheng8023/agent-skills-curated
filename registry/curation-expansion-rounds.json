@@ -2,6 +2,7 @@
   "schema": 1,
   "id": "curation-expansion-rounds-v1",
   "purpose": "Iterative expansion control for broad Skill discovery, filtering, adaptation, and curated intake. This is not approval, release inventory, or runtime installation evidence.",
+  "lifecycleContract": "registry/round-lifecycle-contract.json",
   "currentRound": "round-02-source-intake-and-filtering",
   "rounds": [
     {
@@ -23,7 +24,13 @@
         "domain coverage registry is validated",
         "candidate discovery runs read-only",
         "next-batch candidate sources are named but not approved"
-      ]
+      ],
+      "lifecycle": {
+        "plan": "recorded",
+        "execute": "closed",
+        "acceptance": "passed",
+        "stageCloseout": "closed"
+      }
     },
     {
       "id": "round-02-source-intake-and-filtering",
@@ -49,7 +56,13 @@
         "each source has pinned revision and license review",
         "candidate Skills have adopt, merge, recipe-only, adapter-only, reference, or reject decisions",
         "no candidate enters release inventory without approval"
-      ]
+      ],
+      "lifecycle": {
+        "plan": "recorded",
+        "execute": "active",
+        "acceptance": "pending",
+        "stageCloseout": "pending"
+      }
     },
     {
       "id": "round-03-adaptation-and-curated-admission",
@@ -70,7 +83,13 @@
         "all admitted payloads pass repository verification",
         "overlap and conflict decisions are explicit",
         "release manifest reflects only approved curated payloads"
-      ]
+      ],
+      "lifecycle": {
+        "plan": "planned",
+        "execute": "pending",
+        "acceptance": "pending",
+        "stageCloseout": "pending"
+      }
     }
   ],
   "syncDeferral": {

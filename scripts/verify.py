@@ -59,6 +59,7 @@ REQUIRED_FILES = (
     "registry/conflicts.json", "registry/recipes.json",
     "registry/collaboration-domain-coverage.json",
     "registry/curation-expansion-rounds.json",
+    "registry/round-lifecycle-contract.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
     "registry/starred-skill-sources.json",
@@ -138,6 +139,7 @@ def verify() -> None:
     recipes_doc = load("registry/recipes.json")
     collaboration_domain_coverage_doc = load("registry/collaboration-domain-coverage.json")
     curation_expansion_rounds_doc = load("registry/curation-expansion-rounds.json")
+    round_lifecycle_contract_doc = load("registry/round-lifecycle-contract.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
     starred_sources_doc = load("registry/starred-skill-sources.json")
@@ -172,6 +174,7 @@ def verify() -> None:
     validate_recipes_document(recipes_doc, "registry/recipes.json")
     validate_collaboration_domain_coverage(collaboration_domain_coverage_doc)
     validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
+    validate_round_lifecycle_contract(round_lifecycle_contract_doc, curation_expansion_rounds_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
     validate_starred_skill_sources(starred_sources_doc)
@@ -601,6 +604,8 @@ def validate_curation_expansion_rounds(
     for phrase in ["not approval", "release inventory", "runtime installation"]:
         if phrase not in purpose:
             raise RuntimeError(f"Curation expansion rounds purpose missing phrase: {phrase}")
+    if document.get("lifecycleContract") != "registry/round-lifecycle-contract.json":
+        raise RuntimeError("Curation expansion rounds must reference the round lifecycle contract.")
     rounds = document.get("rounds")
     if not isinstance(rounds, list) or len(rounds) < 3:
         raise RuntimeError("Curation expansion rounds must define at least three rounds.")
@@ -621,6 +626,37 @@ def validate_curation_expansion_rounds(
                     raise RuntimeError(f"Curation expansion round goal is required: {round_id}")
             elif not isinstance(value, list) or not value:
                 raise RuntimeError(f"Curation expansion round {key} is required: {round_id}")
+        lifecycle = item.get("lifecycle")
+        if not isinstance(lifecycle, dict):
+            raise RuntimeError(f"Curation expansion round lifecycle is required: {round_id}")
+        if set(lifecycle) != {"plan", "execute", "acceptance", "stageCloseout"}:
+            raise RuntimeError(f"Curation expansion round lifecycle keys drifted: {round_id}")
+        allowed_lifecycle_values = {"planned", "recorded", "pending", "active", "passed", "closed"}
+        if not set(lifecycle.values()).issubset(allowed_lifecycle_values):
+            raise RuntimeError(f"Curation expansion round lifecycle value invalid: {round_id}")
+        if item.get("status") == "closed":
+            expected = {
+                "plan": "recorded",
+                "execute": "closed",
+                "acceptance": "passed",
+                "stageCloseout": "closed",
+            }
+            if lifecycle != expected:
+                raise RuntimeError(f"Closed curation round lifecycle mismatch: {round_id}")
+        elif item.get("status") == "active":
+            if lifecycle.get("plan") != "recorded" or lifecycle.get("execute") != "active":
+                raise RuntimeError(f"Active curation round must have recorded plan and active execution: {round_id}")
+            if lifecycle.get("stageCloseout") != "pending":
+                raise RuntimeError(f"Active curation round must not be stage-closed: {round_id}")
+        elif item.get("status") == "planned":
+            expected = {
+                "plan": "planned",
+                "execute": "pending",
+                "acceptance": "pending",
+                "stageCloseout": "pending",
+            }
+            if lifecycle != expected:
+                raise RuntimeError(f"Planned curation round lifecycle mismatch: {round_id}")
     if len(round_ids) != len(set(round_ids)):
         raise RuntimeError("Curation expansion round ids must be unique.")
     if document.get("currentRound") not in round_ids:
@@ -633,6 +669,93 @@ def validate_curation_expansion_rounds(
         raise RuntimeError("Curation expansion sync deferral must explain after-condition.")
     if not coverage_doc.get("domains"):
         raise RuntimeError("Curation expansion rounds require collaboration domain coverage.")
+
+
+def validate_round_lifecycle_contract(
+    document: dict[str, object],
+    rounds_doc: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Round lifecycle contract schema must be 1.")
+    purpose = str(document.get("purpose", "")).lower()
+    for phrase in ["not approval", "release inventory", "runtime installation"]:
+        if phrase not in purpose:
+            raise RuntimeError(f"Round lifecycle contract purpose missing phrase: {phrase}")
+    phase_order = document.get("phaseOrder")
+    expected_phase_order = ["plan", "execute", "acceptance", "stageCloseout"]
+    if phase_order != expected_phase_order:
+        raise RuntimeError("Round lifecycle contract phase order drifted.")
+    phase_contracts = document.get("phaseContracts")
+    if not isinstance(phase_contracts, list) or len(phase_contracts) != len(expected_phase_order):
+        raise RuntimeError("Round lifecycle contract must define all phase contracts.")
+    seen_phases: list[str] = []
+    for phase in phase_contracts:
+        if not isinstance(phase, dict):
+            raise RuntimeError("Round lifecycle phase contracts must be objects.")
+        phase_id = phase.get("id")
+        if not isinstance(phase_id, str):
+            raise RuntimeError("Round lifecycle phase id is required.")
+        seen_phases.append(phase_id)
+        for key in ["requiredInputs", "allowedOutputs", "blockedActions", "verificationSurface", "exitEvidence"]:
+            value = phase.get(key)
+            if not isinstance(value, list) or not value:
+                raise RuntimeError(f"Round lifecycle phase {key} is required: {phase_id}")
+        blocked_actions = " ".join(str(item) for item in phase.get("blockedActions", [])).lower()
+        if phase_id in {"plan", "execute", "stageCloseout"} and "local codex/agents/cc-switch sync" not in blocked_actions:
+            raise RuntimeError(f"Round lifecycle phase must preserve local sync boundary: {phase_id}")
+    if seen_phases != expected_phase_order:
+        raise RuntimeError("Round lifecycle phase contracts must follow phase order.")
+    expected_outcomes = {
+        "complete",
+        "partial",
+        "blocked",
+        "needs_verification",
+        "needs_user_confirmation",
+        "cannot_close",
+    }
+    if set(document.get("closeoutOutcomes", [])) != expected_outcomes:
+        raise RuntimeError("Round lifecycle closeout outcomes drifted.")
+    current_application = document.get("currentApplication")
+    if not isinstance(current_application, dict):
+        raise RuntimeError("Round lifecycle contract currentApplication is required.")
+    if current_application.get("roundRegistry") != "registry/curation-expansion-rounds.json":
+        raise RuntimeError("Round lifecycle currentApplication must reference the round registry.")
+    if current_application.get("currentRound") != rounds_doc.get("currentRound"):
+        raise RuntimeError("Round lifecycle currentRound must match the round registry.")
+    if current_application.get("phaseState") != "execute_active":
+        raise RuntimeError("Round lifecycle current phase state must reflect active execution.")
+    if current_application.get("stageCloseout") != "not_ready":
+        raise RuntimeError("Round lifecycle current stage closeout must not be ready yet.")
+    deferred_actions = current_application.get("deferredActions")
+    if not isinstance(deferred_actions, list):
+        raise RuntimeError("Round lifecycle deferred actions are required.")
+    for required in [
+        "approved payload admission",
+        "release manifest changes",
+        "runtime installation",
+        "local Codex/agents/cc-switch sync",
+    ]:
+        if required not in deferred_actions:
+            raise RuntimeError(f"Round lifecycle deferred action missing: {required}")
+    if not isinstance(current_application.get("nextRequiredEvidence"), list) or not current_application.get("nextRequiredEvidence"):
+        raise RuntimeError("Round lifecycle next required evidence is required.")
+    doc = (ROOT / "docs/round-lifecycle-contract.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Plan",
+        "Execute",
+        "Acceptance",
+        "Stage closeout",
+        "not approval",
+        "local Codex, agents, and cc Switch sync",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round lifecycle doc missing phrase: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if "docs/round-lifecycle-contract.md" not in readme:
+        raise RuntimeError("README.md must link round lifecycle contract.")
+    if "docs/round-lifecycle-contract.md" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link round lifecycle contract.")
 
 
 def validate_source_intake_batches(

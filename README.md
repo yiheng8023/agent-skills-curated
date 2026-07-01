@@ -189,6 +189,8 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/mvp06-lifecycle-feedback.md`: lifecycle feedback from the verified
   consumer install, including radar dedupe metadata and the pause/observe
   decision before the next batch.
+- `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
+  and stage-closeout contract for iterative curation rounds.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

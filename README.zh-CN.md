@@ -137,6 +137,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   recipe/routing projection，并把 runtime install proof 交给消费仓执行；
 - `docs/mvp06-lifecycle-feedback.md`：来自已验证消费仓安装结果的生命周期反馈，
   包含资源雷达去重元数据，以及下一批前先暂停观察的决策；
+- `docs/round-lifecycle-contract.md`：迭代式策展轮次的计划、执行、验收和阶段性
+  收官契约；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
