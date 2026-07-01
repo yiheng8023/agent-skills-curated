@@ -208,6 +208,10 @@ consumer must probe its currently visible, authorized capability inventory.
   adapted draft gate; records analytics runtime-equivalence and synthetic
   data/SQL tooling dispositions without approving payload, routing, manifest,
   execution, or local sync.
+- `docs/round02-pm-market-discovery-adaptation-gate.md`: PM market and
+  product-discovery adapted draft gate; records strategy evidence and discovery
+  research dispositions without approving payload, routing, manifest, external
+  research, participant-data handling, or local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

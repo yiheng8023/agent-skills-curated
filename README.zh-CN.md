@@ -152,6 +152,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-pm-analytics-adaptation-gate.md`：PM analytics 与 data-safety
   适配草案闸门；记录 analytics runtime-equivalence 与 synthetic data/SQL tooling
   处置，但不批准 payload、routing、manifest、执行或本地 sync；
+- `docs/round02-pm-market-discovery-adaptation-gate.md`：PM market 与
+  product-discovery 适配草案闸门；记录 strategy evidence 与 discovery research
+  处置，但不批准 payload、routing、manifest、外部调研、参与者数据处理或本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
