@@ -74,6 +74,7 @@ REQUIRED_FILES = (
     "registry/round02-huashu-design-guidance-adaptation-gate.json",
     "registry/round02-huashu-toolchain-media-adaptation-gate.json",
     "registry/round02-release-readiness-review.json",
+    "registry/round02-release-admission-approval-request.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -123,6 +124,7 @@ REQUIRED_FILES = (
     "docs/round02-huashu-design-guidance-adaptation-gate.md",
     "docs/round02-huashu-toolchain-media-adaptation-gate.md",
     "docs/round02-release-readiness-review.md",
+    "docs/round02-release-admission-approval-request.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -190,6 +192,7 @@ def verify() -> None:
     round02_huashu_design_guidance_adaptation_gate_doc = load("registry/round02-huashu-design-guidance-adaptation-gate.json")
     round02_huashu_toolchain_media_adaptation_gate_doc = load("registry/round02-huashu-toolchain-media-adaptation-gate.json")
     round02_release_readiness_review_doc = load("registry/round02-release-readiness-review.json")
+    round02_release_admission_approval_request_doc = load("registry/round02-release-admission-approval-request.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -249,6 +252,10 @@ def verify() -> None:
         ],
         skills_doc,
         manifest,
+    )
+    validate_round02_release_admission_approval_request(
+        round02_release_admission_approval_request_doc,
+        round02_release_readiness_review_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -3099,6 +3106,110 @@ def validate_round02_release_readiness_review(
         raise RuntimeError("README.md must link Round-02 release readiness review.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 release readiness review.")
+
+
+def validate_round02_release_admission_approval_request(
+    request_doc: dict[str, object],
+    readiness_doc: dict[str, object],
+) -> None:
+    if request_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 release/admission approval request schema_version must be 1.")
+    if request_doc.get("id") != "round02-release-admission-review-approval-request-2026-07-02":
+        raise RuntimeError("Round-02 release/admission approval request id mismatch.")
+    if request_doc.get("status") != "awaiting_owner_approval":
+        raise RuntimeError("Round-02 release/admission approval request must await owner approval.")
+    if request_doc.get("not_approval") is not True:
+        raise RuntimeError("Round-02 release/admission approval request must explicitly avoid approval.")
+    if request_doc.get("approval_recorded") is not False:
+        raise RuntimeError("Round-02 release/admission approval request must not record approval.")
+    if request_doc.get("source_readiness_record") != "registry/round02-release-readiness-review.json":
+        raise RuntimeError("Round-02 release/admission approval request must reference readiness review.")
+    if readiness_doc.get("closeout_outcome") != "needs_user_confirmation":
+        raise RuntimeError("Round-02 release/admission approval request expects readiness to need user confirmation.")
+
+    expected_sources = {
+        item.get("source_id")
+        for item in readiness_doc.get("processed_sources", [])
+        if isinstance(item, dict)
+    }
+    if set(request_doc.get("source_ids", [])) != expected_sources:
+        raise RuntimeError("Round-02 release/admission approval request source ids drifted.")
+    if request_doc.get("gate_records") != readiness_doc.get("completed_gate_records"):
+        raise RuntimeError("Round-02 release/admission approval request gate records must match readiness review.")
+
+    permissions = request_doc.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 release/admission approval request permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "approval_request_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 release/admission approval request permission mismatch: {key}")
+
+    required_requested_scope = {
+        "enter Round-02 release/admission review for the 16 recorded draft candidates",
+        "decide per candidate whether it is rejected, reference-only, adapter-only, recipe-only, merged into an existing approved Skill, or proposed as approved payload",
+        "record rationale, evidence, rejected alternatives, overlap handling, security boundaries, portability boundaries, validation results, and next gate for each candidate",
+        "keep any approved payload diff, release manifest update, generated routing projection update, publication, live install, and local runtime sync behind separate follow-up approval unless explicitly approved later",
+    }
+    if set(request_doc.get("requested_scope_if_approved", [])) != required_requested_scope:
+        raise RuntimeError("Round-02 release/admission approval request requested scope changed.")
+
+    required_disallowed = {
+        "edit skills/",
+        "update release-manifest.json",
+        "update generated routing projections",
+        "install or sync live Agent environments",
+        "approve, release, or publish any candidate payload",
+        "redistribute upstream source text as approved curated payload",
+        "redistribute upstream source assets as approved curated payload",
+        "install dependencies, use credentials, call TTS providers, or generate external media",
+    }
+    if set(request_doc.get("explicitly_not_requested", [])) != required_disallowed:
+        raise RuntimeError("Round-02 release/admission approval request explicitly_not_requested changed.")
+    if set(request_doc.get("still_disallowed", [])) != required_disallowed:
+        raise RuntimeError("Round-02 release/admission approval request still_disallowed changed.")
+    if request_doc.get("safe_approval_phrases") != [
+        "批准进入 Round-02 release/admission 审查阶段",
+        "Approve Round-02 release/admission review only",
+    ]:
+        raise RuntimeError("Round-02 release/admission approval request safe approval phrases changed.")
+    if request_doc.get("next_state_if_approved") != "round02_release_admission_review":
+        raise RuntimeError("Round-02 release/admission approval request next state mismatch.")
+
+    required_next_evidence = {
+        "owner approval event record",
+        "candidate-specific release/admission disposition record",
+        "rationale for reject, reference-only, adapter-only, recipe-only, merge, or proposed approved payload",
+        "explicit record of overlap, security, portability, license, source-text, asset, dependency, credential, and media boundaries",
+        "verification command results",
+        "explicit record that live install, local runtime sync, publication, source redistribution, and asset redistribution remain unchanged unless separately approved",
+    }
+    if set(request_doc.get("next_required_evidence_if_approved", [])) != required_next_evidence:
+        raise RuntimeError("Round-02 release/admission approval request next required evidence changed.")
+
+    doc_path = request_doc.get("evidence_doc")
+    if doc_path != "docs/round02-release-admission-approval-request.md":
+        raise RuntimeError("Round-02 release/admission approval request evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "This is an approval request, not approval.",
+        "approval recorded: false",
+        "release/admission review allowed: false",
+        "Requested Approval",
+        "批准进入 Round-02 release/admission 审查阶段",
+        "Approve Round-02 release/admission review only",
+        "Explicitly Not Requested",
+        "Until the approval event exists, Round-02 remains readiness-only",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 release/admission approval request doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 release/admission approval request.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 release/admission approval request.")
 
 
 def validate_mvp06_radar_feedback_projection(

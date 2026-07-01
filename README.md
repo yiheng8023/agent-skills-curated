@@ -228,6 +228,9 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-release-readiness-review.md`: Round-02 GitHub-stage readiness
   review; summarizes all 3 reviewed sources and 7 sub-gates without approving
   release payload, routing, manifest changes, publication, or local sync.
+- `docs/round02-release-admission-approval-request.md`: formal request for the
+  smallest approval needed to enter Round-02 release/admission review; still
+  blocks payload, manifest, routing, live install, publication, and local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

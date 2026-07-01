@@ -167,6 +167,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-release-readiness-review.md`：Round-02 GitHub 侧 readiness
   review；汇总 3 个已审查来源和 7 个子闸门，但不批准 release payload、routing、
   manifest 变更、发布或本地 sync；
+- `docs/round02-release-admission-approval-request.md`：进入 Round-02
+  release/admission 审查阶段所需的最小正式授权请求；仍阻断 payload、manifest、
+  routing、live install、发布和本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
