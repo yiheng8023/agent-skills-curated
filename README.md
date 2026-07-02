@@ -243,6 +243,9 @@ consumer must probe its currently visible, authorized capability inventory.
   next GitHub-only approved-payload and routing proposal gate; excludes
   adapter runtime work, reference-only promotion, rejected assets, publication,
   live install, and local sync.
+- `docs/round02-approved-payload-routing-proposal-template.md`: template-only
+  execution contract for the future Round-02 approved-payload/routing proposal
+  after owner approval; not release execution and not local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

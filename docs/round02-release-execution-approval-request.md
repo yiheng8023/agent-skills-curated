@@ -3,6 +3,9 @@
 Machine-readable request:
 [`registry/round02-release-execution-approval-request.json`](../registry/round02-release-execution-approval-request.json).
 
+Execution template:
+[`registry/round02-approved-payload-routing-proposal-template.json`](../registry/round02-approved-payload-routing-proposal-template.json).
+
 This is an approval request, not approval.
 
 ## Current State

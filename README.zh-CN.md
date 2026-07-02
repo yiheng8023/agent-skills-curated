@@ -179,6 +179,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-release-execution-approval-request.md`：下一道 GitHub-only
   approved-payload 与 routing 提案 gate 的正式授权请求；排除 adapter runtime、
   reference-only 晋升、已拒绝资产、发布、live install 和本地 sync；
+- `docs/round02-approved-payload-routing-proposal-template.md`：未来 owner 批准后才可使用的
+  Round-02 approved-payload/routing proposal 模板契约；不是 release execution，
+  也不是本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

@@ -78,6 +78,7 @@ REQUIRED_FILES = (
     "registry/round02-release-admission-approval-request.json",
     "registry/round02-release-admission-approval-events.json",
     "registry/round02-release-admission-candidate-review.json",
+    "registry/round02-approved-payload-routing-proposal-template.json",
     "registry/round02-release-execution-approval-request.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -131,6 +132,7 @@ REQUIRED_FILES = (
     "docs/round02-release-admission-review-template.md",
     "docs/round02-release-admission-approval-request.md",
     "docs/round02-release-admission-candidate-review.md",
+    "docs/round02-approved-payload-routing-proposal-template.md",
     "docs/round02-release-execution-approval-request.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
@@ -203,6 +205,7 @@ def verify() -> None:
     round02_release_admission_approval_request_doc = load("registry/round02-release-admission-approval-request.json")
     round02_release_admission_approval_events_doc = load("registry/round02-release-admission-approval-events.json")
     round02_release_admission_candidate_review_doc = load("registry/round02-release-admission-candidate-review.json")
+    round02_approved_payload_routing_proposal_template_doc = load("registry/round02-approved-payload-routing-proposal-template.json")
     round02_release_execution_approval_request_doc = load("registry/round02-release-execution-approval-request.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -303,9 +306,14 @@ def verify() -> None:
         skills_doc,
         manifest,
     )
+    validate_round02_approved_payload_routing_proposal_template(
+        round02_approved_payload_routing_proposal_template_doc,
+        round02_release_admission_candidate_review_doc,
+    )
     validate_round02_release_execution_approval_request(
         round02_release_execution_approval_request_doc,
         round02_release_admission_candidate_review_doc,
+        round02_approved_payload_routing_proposal_template_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -3717,9 +3725,183 @@ def validate_round02_release_admission_candidate_review(
         raise RuntimeError("README.zh-CN.md must link Round-02 release/admission candidate review.")
 
 
+def validate_round02_approved_payload_routing_proposal_template(
+    template_doc: dict[str, object],
+    candidate_review_doc: dict[str, object],
+) -> None:
+    if template_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 approved-payload/routing template schema_version must be 1.")
+    if template_doc.get("id") != "round02-approved-payload-routing-proposal-template-2026-07-02":
+        raise RuntimeError("Round-02 approved-payload/routing template id mismatch.")
+    if template_doc.get("status") != "template_only_not_execution":
+        raise RuntimeError("Round-02 approved-payload/routing template must remain template-only.")
+    if template_doc.get("not_approval") is not True:
+        raise RuntimeError("Round-02 approved-payload/routing template must explicitly avoid approval.")
+    if template_doc.get("approval_required_before_use") is not True:
+        raise RuntimeError("Round-02 approved-payload/routing template must require approval before use.")
+    if template_doc.get("source_candidate_review") != "registry/round02-release-admission-candidate-review.json":
+        raise RuntimeError("Round-02 approved-payload/routing template must reference candidate review.")
+    if template_doc.get("source_approval_request") != "registry/round02-release-execution-approval-request.json":
+        raise RuntimeError("Round-02 approved-payload/routing template must reference approval request.")
+
+    decisions = {
+        item.get("candidate_id"): item.get("decision")
+        for item in candidate_review_doc.get("candidate_decisions", [])
+        if isinstance(item, dict)
+    }
+    expected_included = [
+        "obsidian-open-format-knowledge-files",
+        "ai-shipping-governance",
+        "product-execution-documents",
+        "product-discovery-research-planning",
+        "personal-document-and-copyediting-boundary",
+        "design-direction-and-anti-slop-reference",
+        "brand-asset-provenance-protocol",
+    ]
+    expected_excluded = [
+        "obsidian-cli-runtime-adapter",
+        "defuddle-tool-adapter",
+        "data-analytics-runtime-equivalence",
+        "synthetic-data-and-sql-tooling",
+        "market-strategy-evidence-boundary",
+        "legal-privacy-document-boundary",
+        "html-deck-animation-toolchain-boundary",
+        "voiceover-tts-media-pipeline-boundary",
+        "bundled-assets-redistribution-boundary",
+    ]
+    if template_doc.get("included_candidate_ids") != expected_included:
+        raise RuntimeError("Round-02 approved-payload/routing template included candidates drifted.")
+    if template_doc.get("excluded_candidate_ids") != expected_excluded:
+        raise RuntimeError("Round-02 approved-payload/routing template excluded candidates drifted.")
+    for candidate_id in expected_included:
+        if decisions.get(candidate_id) not in {
+            "proposed-approved-payload",
+            "merge-into-existing-approved-skill",
+        }:
+            raise RuntimeError(f"Round-02 template included non-release candidate: {candidate_id}")
+    for candidate_id in expected_excluded:
+        if decisions.get(candidate_id) in {
+            "proposed-approved-payload",
+            "merge-into-existing-approved-skill",
+        }:
+            raise RuntimeError(f"Round-02 template excluded release candidate: {candidate_id}")
+
+    allowed_changes = {
+        "create or update source-text-neutral approved Skill body text for obsidian-open-format-knowledge-files",
+        "merge bounded improvements into existing approved Skill bodies for the 6 merge candidates",
+        "update governed registries only where required by the approved payload or merge proposal",
+        "rebuild release-manifest.json only after approved payload changes exist",
+        "rebuild deterministic generated projections only from governed registry inputs",
+        "record validation and boundary evidence in a dedicated execution record",
+    }
+    if set(template_doc.get("allowed_changes_after_approval", [])) != allowed_changes:
+        raise RuntimeError("Round-02 approved-payload/routing template allowed changes drifted.")
+    required_sections = [
+        "approval_event",
+        "candidate_scope",
+        "payload_diff",
+        "merge_diff",
+        "registry_diff",
+        "release_manifest_diff",
+        "generated_projection_diff",
+        "excluded_candidate_boundary",
+        "source_text_boundary",
+        "source_asset_boundary",
+        "dependency_credential_and_media_boundary",
+        "local_runtime_sync_boundary",
+        "validation_results",
+        "next_gate",
+    ]
+    if template_doc.get("required_execution_sections") != required_sections:
+        raise RuntimeError("Round-02 approved-payload/routing template sections changed.")
+    required_exclusions = {
+        "adapter-only candidates",
+        "reference-only candidates",
+        "rejected candidates",
+        "live Agent environment install or sync",
+        r"writes to C:\Users\15521\.codex\skills",
+        r"writes to C:\Users\15521\.agents\skills",
+        r"writes to C:\Users\15521\.cc-switch\skills",
+        "source text redistribution as approved curated payload",
+        "source asset redistribution as approved curated payload",
+        "dependency installation",
+        "credential use",
+        "external media generation",
+    }
+    if set(template_doc.get("must_remain_excluded", [])) != required_exclusions:
+        raise RuntimeError("Round-02 approved-payload/routing template exclusions changed.")
+    required_fail_closed = {
+        "owner approval for Round-02 approved-payload/routing proposal is missing",
+        "included or excluded candidate set differs from the approval request",
+        "a proposed Skill body copies upstream source text instead of using source-text-neutral adaptation",
+        "a merge diff creates conflicting triggers, duplicate workflow authority, or hidden runtime dependencies",
+        "a registry, manifest, or generated projection update is not explained by a bounded payload or merge diff",
+        "an adapter-only, reference-only, or rejected candidate enters approved payload, manifest, routing, generated projection, publication, live install, or local sync",
+        "source assets are copied, vendored, or redistributed",
+        "dependencies are installed, credentials are used, TTS providers are called, or external media is generated",
+        "local Codex, agents, or cc-switch directories are modified before a separate local runtime sync gate",
+        "validation commands are missing or fail",
+    }
+    if set(template_doc.get("fail_closed_conditions", [])) != required_fail_closed:
+        raise RuntimeError("Round-02 approved-payload/routing template fail-closed conditions changed.")
+
+    permissions = template_doc.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 approved-payload/routing template permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "template_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 approved-payload/routing template permission mismatch: {key}")
+
+    output_contract = template_doc.get("output_contract_after_approval", {})
+    required_output = {
+        "approval_event_id",
+        "candidate_id",
+        "execution_type",
+        "target_files",
+        "rationale",
+        "diff_summary",
+        "rejected_alternatives",
+        "boundary_assertions",
+        "validation_results",
+        "next_gate",
+    }
+    if set(output_contract.get("must_include", [])) != required_output:
+        raise RuntimeError("Round-02 approved-payload/routing template output contract changed.")
+    if output_contract.get("record_id") != "round02-approved-payload-routing-proposal-YYYY-MM-DD":
+        raise RuntimeError("Round-02 approved-payload/routing template output record id mismatch.")
+    if "candidate_executions" not in output_contract:
+        raise RuntimeError("Round-02 approved-payload/routing template must define candidate_executions output.")
+
+    doc_path = template_doc.get("evidence_doc")
+    if doc_path != "docs/round02-approved-payload-routing-proposal-template.md":
+        raise RuntimeError("Round-02 approved-payload/routing template evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Template only, not approval.",
+        "Without that approval, this document remains scaffolding.",
+        "Included Candidates",
+        "Excluded Candidates",
+        "Required Execution Sections",
+        "Fail-Closed Conditions",
+        "Output Contract After Approval",
+        "Until that record exists and passes verification, Round-02 remains",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 approved-payload/routing template doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 approved-payload/routing template.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 approved-payload/routing template.")
+
+
 def validate_round02_release_execution_approval_request(
     request_doc: dict[str, object],
     candidate_review_doc: dict[str, object],
+    template_doc: dict[str, object],
 ) -> None:
     if request_doc.get("schema_version") != 1:
         raise RuntimeError("Round-02 release execution approval request schema_version must be 1.")
@@ -3733,6 +3915,10 @@ def validate_round02_release_execution_approval_request(
         raise RuntimeError("Round-02 release execution approval request must not record approval.")
     if request_doc.get("source_candidate_review") != "registry/round02-release-admission-candidate-review.json":
         raise RuntimeError("Round-02 release execution approval request must reference candidate review.")
+    if request_doc.get("execution_template") != "registry/round02-approved-payload-routing-proposal-template.json":
+        raise RuntimeError("Round-02 release execution approval request must reference execution template.")
+    if template_doc.get("source_approval_request") != "registry/round02-release-execution-approval-request.json":
+        raise RuntimeError("Round-02 release execution approval request must be referenced by template.")
     if candidate_review_doc.get("status") != "release_admission_candidate_review_recorded_not_release_approved":
         raise RuntimeError("Round-02 release execution approval request expects admission-reviewed state.")
 
@@ -3765,6 +3951,10 @@ def validate_round02_release_execution_approval_request(
         raise RuntimeError("Round-02 release execution included candidates drifted.")
     if request_doc.get("excluded_candidate_ids") != expected_excluded:
         raise RuntimeError("Round-02 release execution excluded candidates drifted.")
+    if template_doc.get("included_candidate_ids") != expected_included:
+        raise RuntimeError("Round-02 release execution template included candidates must match request.")
+    if template_doc.get("excluded_candidate_ids") != expected_excluded:
+        raise RuntimeError("Round-02 release execution template excluded candidates must match request.")
     if set(expected_included + expected_excluded) != set(decisions):
         raise RuntimeError("Round-02 release execution request must partition all reviewed candidates.")
     for candidate_id in expected_included:
@@ -3864,6 +4054,7 @@ def validate_round02_release_execution_approval_request(
     doc = (ROOT / doc_path).read_text(encoding="utf-8")
     for phrase in [
         "This is an approval request, not approval.",
+        "Execution template:",
         "approval recorded: false",
         "approved payload diff allowed: false",
         "adapter runtime work allowed: false",

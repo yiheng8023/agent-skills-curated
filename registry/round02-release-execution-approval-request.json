@@ -7,6 +7,7 @@
   "not_approval": true,
   "approval_recorded": false,
   "source_candidate_review": "registry/round02-release-admission-candidate-review.json",
+  "execution_template": "registry/round02-approved-payload-routing-proposal-template.json",
   "evidence_doc": "docs/round02-release-execution-approval-request.md",
   "included_candidate_ids": [
     "obsidian-open-format-knowledge-files",
