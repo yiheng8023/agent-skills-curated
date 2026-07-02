@@ -78,6 +78,7 @@ REQUIRED_FILES = (
     "registry/round02-release-admission-approval-request.json",
     "registry/round02-release-admission-approval-events.json",
     "registry/round02-release-admission-candidate-review.json",
+    "registry/round02-release-execution-approval-request.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -130,6 +131,7 @@ REQUIRED_FILES = (
     "docs/round02-release-admission-review-template.md",
     "docs/round02-release-admission-approval-request.md",
     "docs/round02-release-admission-candidate-review.md",
+    "docs/round02-release-execution-approval-request.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -201,6 +203,7 @@ def verify() -> None:
     round02_release_admission_approval_request_doc = load("registry/round02-release-admission-approval-request.json")
     round02_release_admission_approval_events_doc = load("registry/round02-release-admission-approval-events.json")
     round02_release_admission_candidate_review_doc = load("registry/round02-release-admission-candidate-review.json")
+    round02_release_execution_approval_request_doc = load("registry/round02-release-execution-approval-request.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -299,6 +302,10 @@ def verify() -> None:
         ],
         skills_doc,
         manifest,
+    )
+    validate_round02_release_execution_approval_request(
+        round02_release_execution_approval_request_doc,
+        round02_release_admission_candidate_review_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -3708,6 +3715,174 @@ def validate_round02_release_admission_candidate_review(
         raise RuntimeError("README.md must link Round-02 release/admission candidate review.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 release/admission candidate review.")
+
+
+def validate_round02_release_execution_approval_request(
+    request_doc: dict[str, object],
+    candidate_review_doc: dict[str, object],
+) -> None:
+    if request_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 release execution approval request schema_version must be 1.")
+    if request_doc.get("id") != "round02-approved-payload-routing-proposal-approval-request-2026-07-02":
+        raise RuntimeError("Round-02 release execution approval request id mismatch.")
+    if request_doc.get("status") != "awaiting_owner_approval":
+        raise RuntimeError("Round-02 release execution approval request must await owner approval.")
+    if request_doc.get("not_approval") is not True:
+        raise RuntimeError("Round-02 release execution approval request must explicitly avoid approval.")
+    if request_doc.get("approval_recorded") is not False:
+        raise RuntimeError("Round-02 release execution approval request must not record approval.")
+    if request_doc.get("source_candidate_review") != "registry/round02-release-admission-candidate-review.json":
+        raise RuntimeError("Round-02 release execution approval request must reference candidate review.")
+    if candidate_review_doc.get("status") != "release_admission_candidate_review_recorded_not_release_approved":
+        raise RuntimeError("Round-02 release execution approval request expects admission-reviewed state.")
+
+    decisions = {
+        item.get("candidate_id"): item.get("decision")
+        for item in candidate_review_doc.get("candidate_decisions", [])
+        if isinstance(item, dict)
+    }
+    expected_included = [
+        "obsidian-open-format-knowledge-files",
+        "ai-shipping-governance",
+        "product-execution-documents",
+        "product-discovery-research-planning",
+        "personal-document-and-copyediting-boundary",
+        "design-direction-and-anti-slop-reference",
+        "brand-asset-provenance-protocol",
+    ]
+    expected_excluded = [
+        "obsidian-cli-runtime-adapter",
+        "defuddle-tool-adapter",
+        "data-analytics-runtime-equivalence",
+        "synthetic-data-and-sql-tooling",
+        "market-strategy-evidence-boundary",
+        "legal-privacy-document-boundary",
+        "html-deck-animation-toolchain-boundary",
+        "voiceover-tts-media-pipeline-boundary",
+        "bundled-assets-redistribution-boundary",
+    ]
+    if request_doc.get("included_candidate_ids") != expected_included:
+        raise RuntimeError("Round-02 release execution included candidates drifted.")
+    if request_doc.get("excluded_candidate_ids") != expected_excluded:
+        raise RuntimeError("Round-02 release execution excluded candidates drifted.")
+    if set(expected_included + expected_excluded) != set(decisions):
+        raise RuntimeError("Round-02 release execution request must partition all reviewed candidates.")
+    for candidate_id in expected_included:
+        if decisions.get(candidate_id) not in {
+            "proposed-approved-payload",
+            "merge-into-existing-approved-skill",
+        }:
+            raise RuntimeError(f"Round-02 release execution included non-release candidate: {candidate_id}")
+    for candidate_id in expected_excluded:
+        if decisions.get(candidate_id) in {
+            "proposed-approved-payload",
+            "merge-into-existing-approved-skill",
+        }:
+            raise RuntimeError(f"Round-02 release execution excluded release candidate: {candidate_id}")
+
+    scope = request_doc.get("candidate_scope", {})
+    if not isinstance(scope, dict):
+        raise RuntimeError("Round-02 release execution request must include candidate_scope.")
+    if scope.get("proposed_approved_payload_candidates") != ["obsidian-open-format-knowledge-files"]:
+        raise RuntimeError("Round-02 release execution payload candidate scope drifted.")
+    if scope.get("merge_into_existing_skill_candidates") != expected_included[1:]:
+        raise RuntimeError("Round-02 release execution merge candidate scope drifted.")
+    if scope.get("adapter_only_candidates_excluded") != [
+        "obsidian-cli-runtime-adapter",
+        "defuddle-tool-adapter",
+        "synthetic-data-and-sql-tooling",
+        "html-deck-animation-toolchain-boundary",
+        "voiceover-tts-media-pipeline-boundary",
+    ]:
+        raise RuntimeError("Round-02 release execution adapter exclusion drifted.")
+    if scope.get("reference_only_candidates_excluded") != [
+        "data-analytics-runtime-equivalence",
+        "market-strategy-evidence-boundary",
+        "legal-privacy-document-boundary",
+    ]:
+        raise RuntimeError("Round-02 release execution reference exclusion drifted.")
+    if scope.get("rejected_candidates_excluded") != ["bundled-assets-redistribution-boundary"]:
+        raise RuntimeError("Round-02 release execution reject exclusion drifted.")
+
+    permissions = request_doc.get("current_permissions", {})
+    if not isinstance(permissions, dict):
+        raise RuntimeError("Round-02 release execution approval request permissions are required.")
+    for key, value in permissions.items():
+        expected = key == "approval_request_allowed"
+        if value is not expected:
+            raise RuntimeError(f"Round-02 release execution approval request permission mismatch: {key}")
+
+    required_requested_scope = {
+        "enter a GitHub-only Round-02 approved-payload and routing proposal stage for the included 7 non-runtime candidates",
+        "create a bounded approved-payload diff for obsidian-open-format-knowledge-files if its final Skill body remains source-text-neutral, agent-neutral, public-safe, and dependency-free",
+        "create bounded merge diffs for the 6 merge candidates only where they improve existing approved Skills without conflicting triggers or hidden runtime dependencies",
+        "update registry/skills.json, registry/capabilities.json, registry/relations.json, registry/conflicts.json, registry/recipes.json, registry/routing.json, release-manifest.json, and generated projections only as required by the approved GitHub-stage proposal",
+        "run repository verification and record validation evidence before any follow-up local runtime sync request",
+    }
+    if set(request_doc.get("requested_scope_if_approved", [])) != required_requested_scope:
+        raise RuntimeError("Round-02 release execution approval request requested scope changed.")
+
+    required_disallowed = {
+        "install or sync live Agent environments",
+        r"write to C:\Users\15521\.codex\skills",
+        r"write to C:\Users\15521\.agents\skills",
+        r"write to C:\Users\15521\.cc-switch\skills",
+        "publish a release outside GitHub repository commits",
+        "redistribute upstream source text as approved curated payload",
+        "redistribute upstream source assets as approved curated payload",
+        "install dependencies, use credentials, call TTS providers, or generate external media",
+        "execute adapter-only candidates or add their runtime dependencies",
+        "promote reference-only candidates into runtime behavior",
+        "reconsider rejected bundled assets without asset-level provenance review",
+    }
+    if set(request_doc.get("explicitly_not_requested", [])) != required_disallowed:
+        raise RuntimeError("Round-02 release execution approval request explicitly_not_requested changed.")
+    if set(request_doc.get("still_disallowed", [])) != required_disallowed:
+        raise RuntimeError("Round-02 release execution approval request still_disallowed changed.")
+    if request_doc.get("safe_approval_phrases") != [
+        "批准进入 Round-02 approved-payload/routing 提案阶段",
+        "Approve Round-02 approved-payload and routing proposal only",
+    ]:
+        raise RuntimeError("Round-02 release execution approval request safe approval phrases changed.")
+    if request_doc.get("next_state_if_approved") != "round02_approved_payload_routing_proposal":
+        raise RuntimeError("Round-02 release execution approval request next state mismatch.")
+
+    required_next_evidence = {
+        "owner approval event record",
+        "bounded payload and merge execution record",
+        "before/after inventory, manifest, routing, and generated projection diff summary",
+        "candidate-specific rationale for each included payload or merge change",
+        "explicit record that adapter-only, reference-only, rejected, live install, local sync, source redistribution, asset redistribution, dependency, credential, and media actions remain excluded",
+        "verification command results",
+    }
+    if set(request_doc.get("next_required_evidence_if_approved", [])) != required_next_evidence:
+        raise RuntimeError("Round-02 release execution approval request next required evidence changed.")
+
+    doc_path = request_doc.get("evidence_doc")
+    if doc_path != "docs/round02-release-execution-approval-request.md":
+        raise RuntimeError("Round-02 release execution approval request evidence doc path is unexpected.")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "This is an approval request, not approval.",
+        "approval recorded: false",
+        "approved payload diff allowed: false",
+        "adapter runtime work allowed: false",
+        "Included Candidates",
+        "Excluded Candidates",
+        "批准进入 Round-02 approved-payload/routing 提案阶段",
+        "Approve Round-02 approved-payload and routing proposal only",
+        "Explicitly Not Requested",
+        "Until the approval event exists, Round-02 remains admission-reviewed but not",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 release execution approval request doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 release execution approval request.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 release execution approval request.")
 
 
 def validate_mvp06_radar_feedback_projection(

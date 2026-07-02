@@ -239,6 +239,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-release-admission-candidate-review.md`: candidate-specific
   Round-02 release/admission disposition evidence; not approved payload, not
   manifest, not routing, not publication, and not local sync.
+- `docs/round02-release-execution-approval-request.md`: formal request for the
+  next GitHub-only approved-payload and routing proposal gate; excludes
+  adapter runtime work, reference-only promotion, rejected assets, publication,
+  live install, and local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
