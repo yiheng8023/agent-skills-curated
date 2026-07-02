@@ -21,9 +21,10 @@ agent 环境迁移、云端同步/备份、验证和恢复模式。
 - Skills、能力、关系、冲突和 Recipes 的权威 registry；
 - 确定性的派生投影和 schema 1 发布清单。
 
-当前批准发布包含 19 个 Skills、41 个文件：5 个来自
-`addyosmani/agent-skills`，14 个来自 `mattpocock/skills`。它们都具备完整、固定的
-Git 来源；原先来源不完整的本地基线仅保留为非运行时历史证据。
+当前批准发布包含 20 个 Skills、42 个文件：5 个来自
+`addyosmani/agent-skills`，14 个来自 `mattpocock/skills`，1 个来自
+`kepano/obsidian-skills`。它们都具备完整、固定的 Git 来源；原先来源不完整的
+本地基线仅保留为非运行时历史证据。
 
 ## 本仓库不负责什么
 
@@ -182,6 +183,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-approved-payload-routing-proposal-template.md`：未来 owner 批准后才可使用的
   Round-02 approved-payload/routing proposal 模板契约；不是 release execution，
   也不是本地 sync；
+- `docs/round02-approved-payload-routing-proposal.md`：owner 已批准的 GitHub-only
+  执行记录；准入 Obsidian 开放格式 payload，合并有边界的 Round-02 改进，更新
+  routing/manifest/generated 投影，并继续阻止本地 sync；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；
@@ -190,7 +194,7 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/public-private-boundary.md`：公开/私有发布边界和用户配置模板指引；
 - `docs/sustainability.md`：成本姿态、赞助边界与 free-first 纪律；
 - `generated/`：确定性派生投影，不是第二真相源；
-- `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 104 场景
+- `registry/routing.json` 与 `registry/scenarios.json`：批准路由元数据和 105 场景
   结构化策略语料；
 - `release-manifest.json`：批准 payload 的精确路径、大小和哈希；
 - `scripts/`：只负责验证和确定性投影生成。
@@ -206,7 +210,7 @@ python -B scripts/verify.py
 ```
 
 验证覆盖 registry 契约、引用、派生文件一致性、来源证据、精确 payload、输入绑定的
-路由投影、全部 26 个生命周期节点和 104 个确定性对抗场景。自然语言理解仍由 Agent
+路由投影、全部 27 个生命周期节点和 105 个确定性对抗场景。自然语言理解仍由 Agent
 负责；模拟器验证归一化后的策略决策，不伪装成关键词分类器。它不会安装 Skill。
 
 ## 更新规则

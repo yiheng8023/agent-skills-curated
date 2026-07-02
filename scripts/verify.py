@@ -80,6 +80,8 @@ REQUIRED_FILES = (
     "registry/round02-release-admission-candidate-review.json",
     "registry/round02-approved-payload-routing-proposal-template.json",
     "registry/round02-release-execution-approval-request.json",
+    "registry/round02-approved-payload-routing-approval-events.json",
+    "registry/round02-approved-payload-routing-proposal.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -117,6 +119,7 @@ REQUIRED_FILES = (
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/security.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/overlap.md",
     "audits/mattpocock-skills/6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461/portability.md",
+    "sources/kepano-obsidian-skills/LICENSE",
     "docs/coverage-and-curation-expansion.md",
     "docs/curation-harness-model.md",
     "docs/round02-source-intake-2026-07-02.md",
@@ -134,6 +137,7 @@ REQUIRED_FILES = (
     "docs/round02-release-admission-candidate-review.md",
     "docs/round02-approved-payload-routing-proposal-template.md",
     "docs/round02-release-execution-approval-request.md",
+    "docs/round02-approved-payload-routing-proposal.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -207,6 +211,8 @@ def verify() -> None:
     round02_release_admission_candidate_review_doc = load("registry/round02-release-admission-candidate-review.json")
     round02_approved_payload_routing_proposal_template_doc = load("registry/round02-approved-payload-routing-proposal-template.json")
     round02_release_execution_approval_request_doc = load("registry/round02-release-execution-approval-request.json")
+    round02_approved_payload_routing_approval_events_doc = load("registry/round02-approved-payload-routing-approval-events.json")
+    round02_approved_payload_routing_proposal_doc = load("registry/round02-approved-payload-routing-proposal.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -314,6 +320,23 @@ def verify() -> None:
         round02_release_execution_approval_request_doc,
         round02_release_admission_candidate_review_doc,
         round02_approved_payload_routing_proposal_template_doc,
+    )
+    validate_round02_approved_payload_routing_approval_events(
+        round02_approved_payload_routing_approval_events_doc,
+        round02_release_execution_approval_request_doc,
+    )
+    validate_round02_approved_payload_routing_proposal(
+        round02_approved_payload_routing_proposal_doc,
+        round02_approved_payload_routing_approval_events_doc,
+        round02_release_execution_approval_request_doc,
+        round02_release_admission_candidate_review_doc,
+        skills_doc,
+        capabilities_doc,
+        relations_doc,
+        routing_doc,
+        scenarios_doc,
+        manifest,
+        sources_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -1458,11 +1481,16 @@ def validate_round02_obsidian_adaptation_gate(
 
     approved_directories = {item["directory"] for item in skills_doc.get("skills", [])}
     approved_names = {item["name"] for item in skills_doc.get("skills", [])}
-    if any("obsidian" in item.lower() for item in approved_directories | approved_names):
-        raise RuntimeError("Round-02 Obsidian gate assumes no approved Obsidian Skill exists, but one is present.")
+    approved_obsidian_items = {
+        item
+        for item in approved_directories | approved_names
+        if "obsidian" in item.lower()
+    }
+    if approved_obsidian_items - {"obsidian-open-format-knowledge-files"}:
+        raise RuntimeError("Round-02 Obsidian gate found an unexpected approved Obsidian Skill.")
     repository_truths = document.get("repository_truths", {})
     if repository_truths.get("approved_obsidian_skill_exists") is not False:
-        raise RuntimeError("Round-02 Obsidian gate must record that no approved Obsidian Skill exists.")
+        raise RuntimeError("Round-02 Obsidian gate must record that no approved Obsidian Skill existed at gate time.")
     if "local runtime Skills are not repository release truth" not in str(repository_truths.get("reason", "")):
         raise RuntimeError("Round-02 Obsidian gate repository truth reason is missing the local/runtime boundary.")
 
@@ -1513,9 +1541,9 @@ def validate_round02_obsidian_adaptation_gate(
             raise RuntimeError(f"Round-02 Obsidian draft path missing: {candidate_id}")
         if draft.get("source_text_copied") or draft.get("source_text_redistributed"):
             raise RuntimeError(f"Round-02 Obsidian draft must not copy or redistribute source text: {candidate_id}")
-        if candidate_id in approved_directories:
+        if candidate_id in approved_directories and candidate_id != "obsidian-open-format-knowledge-files":
             raise RuntimeError(f"Round-02 Obsidian draft unexpectedly approved: {candidate_id}")
-        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+        if candidate_id != "obsidian-open-format-knowledge-files" and any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
             raise RuntimeError(f"Round-02 Obsidian draft appears in release manifest: {candidate_id}")
         source_candidates = {
             item.get("upstream_path"): item.get("upstream_sha256")
@@ -3080,10 +3108,11 @@ def validate_round02_release_readiness_review(
         for item in manifest.get("files", [])
         if isinstance(item, dict)
     }
+    approved_round02_payload_candidate = "obsidian-open-format-knowledge-files"
     for candidate_id in draft_candidate_ids:
-        if candidate_id in approved_directories:
+        if candidate_id in approved_directories and candidate_id != approved_round02_payload_candidate:
             raise RuntimeError(f"Round-02 draft candidate unexpectedly approved: {candidate_id}")
-        if any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
+        if candidate_id != approved_round02_payload_candidate and any(path.startswith(f"skills/{candidate_id}/") for path in manifest_paths):
             raise RuntimeError(f"Round-02 draft candidate appears in release manifest: {candidate_id}")
 
     expected_acceptance = {
@@ -3605,12 +3634,18 @@ def validate_round02_release_admission_candidate_review(
         "source assets not redistributed",
         "candidate decision is not approved payload",
     }
+    approved_round02_payload_candidate = "obsidian-open-format-knowledge-files"
     for candidate_id, decision in decisions.items():
-        if candidate_id in approved_directories:
+        if candidate_id == approved_round02_payload_candidate:
+            if candidate_id not in approved_directories:
+                raise RuntimeError(f"Round-02 approved payload candidate missing from approved skills: {candidate_id}")
+            if f"skills/{candidate_id}/SKILL.md" not in manifest_paths:
+                raise RuntimeError(f"Round-02 approved payload candidate missing from release manifest: {candidate_id}")
+        elif candidate_id in approved_directories:
             raise RuntimeError(f"Round-02 candidate unexpectedly appears in approved skills: {candidate_id}")
-        if f"skills/{candidate_id}/" in manifest_paths:
+        if candidate_id != approved_round02_payload_candidate and f"skills/{candidate_id}/" in manifest_paths:
             raise RuntimeError(f"Round-02 candidate appears in release manifest: {candidate_id}")
-        if candidate_id in routing_text:
+        if candidate_id != approved_round02_payload_candidate and candidate_id in routing_text:
             raise RuntimeError(f"Round-02 candidate appears as a direct routing surface: {candidate_id}")
         if decision.get("decision") != expected_decisions[candidate_id]:
             raise RuntimeError(f"Round-02 candidate decision mismatch: {candidate_id}")
@@ -4074,6 +4109,374 @@ def validate_round02_release_execution_approval_request(
         raise RuntimeError("README.md must link Round-02 release execution approval request.")
     if doc_path not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link Round-02 release execution approval request.")
+
+
+def validate_round02_approved_payload_routing_approval_events(
+    events_doc: dict[str, object],
+    request_doc: dict[str, object],
+) -> None:
+    if events_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 approved payload/routing approval events schema_version must be 1.")
+    if events_doc.get("status") != "owner_approval_recorded_for_round02_approved_payload_routing_proposal":
+        raise RuntimeError("Round-02 approved payload/routing approval events status mismatch.")
+
+    expected_true = {
+        "approval_recorded",
+        "approved_payload_allowed",
+        "release_manifest_allowed",
+        "routing_projection_allowed",
+        "generated_projection_allowed",
+    }
+    expected_false = {
+        "publication_allowed",
+        "live_install_allowed",
+        "local_runtime_sync_allowed",
+        "source_text_redistribution_allowed",
+        "source_asset_redistribution_allowed",
+        "dependency_install_allowed",
+        "credential_use_allowed",
+        "external_media_generation_allowed",
+        "adapter_runtime_work_allowed",
+    }
+    for key in expected_true:
+        if events_doc.get(key) is not True:
+            raise RuntimeError(f"Round-02 approved payload/routing approval event must allow {key}.")
+    for key in expected_false:
+        if events_doc.get(key) is not False:
+            raise RuntimeError(f"Round-02 approved payload/routing approval event must block {key}.")
+
+    events = events_doc.get("events")
+    if not isinstance(events, list) or len(events) != 1 or not isinstance(events[0], dict):
+        raise RuntimeError("Round-02 approved payload/routing approval events must contain one event.")
+    event = events[0]
+    if event.get("id") != "round02-owner-approval-2026-07-02-approved-payload-routing-proposal":
+        raise RuntimeError("Round-02 approved payload/routing event id mismatch.")
+    if event.get("approval_phrase") != "批准进入 Round-02 approved-payload/routing 提案阶段":
+        raise RuntimeError("Round-02 approved payload/routing approval phrase mismatch.")
+    if event.get("approval_request_id") != request_doc.get("id"):
+        raise RuntimeError("Round-02 approved payload/routing approval request id mismatch.")
+    if event.get("approved_scope") != request_doc.get("requested_scope_if_approved"):
+        raise RuntimeError("Round-02 approved payload/routing approved scope must match request.")
+    if event.get("explicitly_not_approved") != request_doc.get("explicitly_not_requested"):
+        raise RuntimeError("Round-02 approved payload/routing disallowed scope must match request.")
+    if event.get("next_state") != request_doc.get("next_state_if_approved"):
+        raise RuntimeError("Round-02 approved payload/routing next state mismatch.")
+
+
+def validate_round02_approved_payload_routing_proposal(
+    proposal_doc: dict[str, object],
+    approval_events_doc: dict[str, object],
+    request_doc: dict[str, object],
+    candidate_review_doc: dict[str, object],
+    skills_doc: dict[str, object],
+    capabilities_doc: dict[str, object],
+    relations_doc: dict[str, object],
+    routing_doc: dict[str, object],
+    scenarios_doc: dict[str, object],
+    manifest: dict[str, object],
+    sources_doc: dict[str, object],
+) -> None:
+    expected_event_id = "round02-owner-approval-2026-07-02-approved-payload-routing-proposal"
+    expected_included = [
+        "obsidian-open-format-knowledge-files",
+        "ai-shipping-governance",
+        "product-execution-documents",
+        "product-discovery-research-planning",
+        "personal-document-and-copyediting-boundary",
+        "design-direction-and-anti-slop-reference",
+        "brand-asset-provenance-protocol",
+    ]
+    expected_excluded = [
+        "obsidian-cli-runtime-adapter",
+        "defuddle-tool-adapter",
+        "data-analytics-runtime-equivalence",
+        "synthetic-data-and-sql-tooling",
+        "market-strategy-evidence-boundary",
+        "legal-privacy-document-boundary",
+        "html-deck-animation-toolchain-boundary",
+        "voiceover-tts-media-pipeline-boundary",
+        "bundled-assets-redistribution-boundary",
+    ]
+    expected_payload = ["obsidian-open-format-knowledge-files"]
+    expected_merge = expected_included[1:]
+    expected_deferred_targets = [
+        "design-an-interface",
+        "doc",
+        "edit-article",
+        "grill-me",
+        "security-ownership-map",
+        "writing-shape",
+    ]
+    required_commands = [
+        "python -B scripts/build_topology.py",
+        "python -B scripts/build_release_manifest.py",
+        "python -B scripts/simulate_routing.py --report generated/routing-simulation-report.json",
+        "python -B scripts/verify.py",
+        "python -B scripts/build_topology.py --check",
+        "python -B scripts/build_release_manifest.py --check",
+        "python -B scripts/simulate_routing.py --all",
+        "python -B -m unittest discover -s tests -v",
+    ]
+
+    if proposal_doc.get("schema_version") != 1:
+        raise RuntimeError("Round-02 approved payload/routing proposal schema_version must be 1.")
+    if proposal_doc.get("record_id") != "round02-approved-payload-routing-proposal-2026-07-02":
+        raise RuntimeError("Round-02 approved payload/routing proposal record id mismatch.")
+    if proposal_doc.get("status") not in {
+        "approved_payload_routing_proposal_recorded_pending_final_validation",
+        "approved_payload_routing_proposal_validated_github_only",
+    }:
+        raise RuntimeError("Round-02 approved payload/routing proposal status mismatch.")
+    if proposal_doc.get("approval_event_id") != expected_event_id:
+        raise RuntimeError("Round-02 approved payload/routing proposal event id mismatch.")
+    if proposal_doc.get("approval_request_id") != request_doc.get("id"):
+        raise RuntimeError("Round-02 approved payload/routing proposal request id mismatch.")
+    if proposal_doc.get("source_candidate_review") != "registry/round02-release-admission-candidate-review.json":
+        raise RuntimeError("Round-02 approved payload/routing proposal must reference candidate review.")
+    if proposal_doc.get("execution_template") != "registry/round02-approved-payload-routing-proposal-template.json":
+        raise RuntimeError("Round-02 approved payload/routing proposal must reference template.")
+    if proposal_doc.get("approval_events") != "registry/round02-approved-payload-routing-approval-events.json":
+        raise RuntimeError("Round-02 approved payload/routing proposal approval events path mismatch.")
+    if proposal_doc.get("evidence_doc") != "docs/round02-approved-payload-routing-proposal.md":
+        raise RuntimeError("Round-02 approved payload/routing proposal evidence doc path mismatch.")
+
+    approval_events = approval_events_doc.get("events", [])
+    if not isinstance(approval_events, list) or not approval_events:
+        raise RuntimeError("Round-02 approved payload/routing proposal needs an approval event.")
+    approval_event = approval_events[0]
+    if not isinstance(approval_event, dict) or approval_event.get("id") != expected_event_id:
+        raise RuntimeError("Round-02 approved payload/routing proposal approval event not found.")
+
+    scope = proposal_doc.get("candidate_scope")
+    if not isinstance(scope, dict):
+        raise RuntimeError("Round-02 approved payload/routing proposal candidate_scope is required.")
+    if scope.get("included_candidate_ids") != expected_included:
+        raise RuntimeError("Round-02 approved payload/routing included candidate scope drifted.")
+    if scope.get("excluded_candidate_ids") != expected_excluded:
+        raise RuntimeError("Round-02 approved payload/routing excluded candidate scope drifted.")
+    if scope.get("approved_payload_candidates") != expected_payload:
+        raise RuntimeError("Round-02 approved payload/routing payload candidate scope drifted.")
+    if scope.get("merge_candidates") != expected_merge:
+        raise RuntimeError("Round-02 approved payload/routing merge candidate scope drifted.")
+    if scope.get("deferred_merge_targets_not_in_approved_inventory") != expected_deferred_targets:
+        raise RuntimeError("Round-02 approved payload/routing deferred target scope drifted.")
+
+    decisions = {
+        item.get("candidate_id"): item.get("decision")
+        for item in candidate_review_doc.get("candidate_decisions", [])
+        if isinstance(item, dict)
+    }
+    if set(decisions) != set(expected_included + expected_excluded):
+        raise RuntimeError("Round-02 approved payload/routing proposal must cover all reviewed candidates.")
+    for candidate_id in expected_payload:
+        if decisions.get(candidate_id) != "proposed-approved-payload":
+            raise RuntimeError(f"Round-02 approved payload candidate decision mismatch: {candidate_id}")
+    for candidate_id in expected_merge:
+        if decisions.get(candidate_id) != "merge-into-existing-approved-skill":
+            raise RuntimeError(f"Round-02 merge candidate decision mismatch: {candidate_id}")
+    for candidate_id in expected_excluded:
+        if decisions.get(candidate_id) in {"proposed-approved-payload", "merge-into-existing-approved-skill"}:
+            raise RuntimeError(f"Round-02 excluded candidate entered approved scope: {candidate_id}")
+
+    executions = proposal_doc.get("candidate_executions")
+    if not isinstance(executions, list) or len(executions) != len(expected_included):
+        raise RuntimeError("Round-02 approved payload/routing proposal must include seven candidate executions.")
+    execution_by_candidate = {
+        item.get("candidate_id"): item
+        for item in executions
+        if isinstance(item, dict)
+    }
+    if set(execution_by_candidate) != set(expected_included):
+        raise RuntimeError("Round-02 approved payload/routing candidate execution ids drifted.")
+    for candidate_id, execution in execution_by_candidate.items():
+        if execution.get("approval_event_id") != expected_event_id:
+            raise RuntimeError(f"Round-02 candidate execution event id mismatch: {candidate_id}")
+        if not execution.get("target_files"):
+            raise RuntimeError(f"Round-02 candidate execution missing target files: {candidate_id}")
+        for field in ["rationale", "diff_summary", "rejected_alternatives", "boundary_assertions", "next_gate"]:
+            if not execution.get(field):
+                raise RuntimeError(f"Round-02 candidate execution missing {field}: {candidate_id}")
+    if execution_by_candidate["obsidian-open-format-knowledge-files"].get("execution_type") != "new-approved-skill-payload":
+        raise RuntimeError("Round-02 Obsidian open-format candidate must be new approved payload.")
+    for candidate_id in expected_merge:
+        if execution_by_candidate[candidate_id].get("execution_type") != "bounded-merge-into-existing-approved-skills":
+            raise RuntimeError(f"Round-02 candidate must be a bounded merge: {candidate_id}")
+
+    skill_id = "skill.curated.obsidian-open-format-knowledge-files"
+    skill_path = "skills/obsidian-open-format-knowledge-files/SKILL.md"
+    skills = {
+        item.get("id"): item
+        for item in skills_doc.get("skills", [])
+        if isinstance(item, dict)
+    }
+    skill = skills.get(skill_id)
+    if not skill:
+        raise RuntimeError("Round-02 approved payload skill missing from registry/skills.json.")
+    if skill.get("directory") != "obsidian-open-format-knowledge-files":
+        raise RuntimeError("Round-02 approved payload skill directory mismatch.")
+    if skill.get("source") != "github:kepano/obsidian-skills":
+        raise RuntimeError("Round-02 approved payload skill source mismatch.")
+    if skill.get("status") != "approved":
+        raise RuntimeError("Round-02 approved payload skill must be approved.")
+    expected_description = (
+        "Use when reading, creating, editing, or reviewing Obsidian-compatible Markdown notes, "
+        "JSON Canvas files, or Bases files as portable open-format knowledge artifacts without "
+        "assuming a live Obsidian app, CLI, plugin, or vault."
+    )
+    if skill.get("description") != expected_description:
+        raise RuntimeError("Round-02 approved payload skill description drifted.")
+
+    skill_text = (ROOT / skill_path).read_text(encoding="utf-8")
+    for phrase in [
+        "JSON Canvas",
+        "Bases",
+        "live Obsidian app",
+        "Do not invoke an Obsidian CLI",
+        "Do not install packages, plugins, CLIs, or dependencies.",
+        "Do not fetch external links or assets as part of open-format editing.",
+    ]:
+        if phrase not in skill_text:
+            raise RuntimeError(f"Round-02 approved payload skill missing phrase: {phrase}")
+
+    capabilities = {
+        item.get("id"): item
+        for item in capabilities_doc.get("capabilities", [])
+        if isinstance(item, dict)
+    }
+    capability = capabilities.get("capability.open-format-knowledge-files")
+    if not capability:
+        raise RuntimeError("Round-02 open-format knowledge-files capability missing.")
+    if capability.get("coverageState") != "curated":
+        raise RuntimeError("Round-02 open-format knowledge-files capability must be curated.")
+    if capability.get("curatedOwners") != [skill_id]:
+        raise RuntimeError("Round-02 open-format knowledge-files capability owner mismatch.")
+
+    relations = {
+        (item.get("from"), item.get("type"), item.get("to"))
+        for item in relations_doc.get("relations", [])
+        if isinstance(item, dict)
+    }
+    if (skill_id, "provides", "capability.open-format-knowledge-files") not in relations:
+        raise RuntimeError("Round-02 open-format knowledge-files provides relation missing.")
+    if ("capability.open-format-knowledge-files", "complements", "capability.knowledge-capture") not in relations:
+        raise RuntimeError("Round-02 open-format knowledge-files complement relation missing.")
+
+    routes = {
+        item.get("skill"): item
+        for item in routing_doc.get("routes", [])
+        if isinstance(item, dict)
+    }
+    route = routes.get(skill_id)
+    if not route:
+        raise RuntimeError("Round-02 open-format knowledge-files routing entry missing.")
+    if route.get("lifecycleCapabilities") != ["capability.open-format-knowledge-files"]:
+        raise RuntimeError("Round-02 open-format knowledge-files route capability mismatch.")
+    route_text = json.dumps(route, ensure_ascii=False)
+    for phrase in ["JSON Canvas", "Bases", "live Obsidian app", "Obsidian CLI", "asset fetch"]:
+        if phrase not in route_text:
+            raise RuntimeError(f"Round-02 open-format knowledge-files route missing phrase: {phrase}")
+
+    scenarios = {
+        item.get("id"): item
+        for item in scenarios_doc.get("scenarios", [])
+        if isinstance(item, dict)
+    }
+    scenario = scenarios.get("scenario.lifecycle-27")
+    if not scenario:
+        raise RuntimeError("Round-02 open-format knowledge-files lifecycle scenario missing.")
+    if scenario.get("expectedSkills") != [skill_id]:
+        raise RuntimeError("Round-02 open-format knowledge-files scenario skill mismatch.")
+    if scenario.get("expectedCapabilities") != ["capability.open-format-knowledge-files"]:
+        raise RuntimeError("Round-02 open-format knowledge-files scenario capability mismatch.")
+
+    sources = {
+        item.get("id"): item
+        for item in sources_doc.get("sources", [])
+        if isinstance(item, dict)
+    }
+    source = sources.get("github:kepano/obsidian-skills")
+    if not source:
+        raise RuntimeError("Round-02 kepano source lock missing.")
+    if source.get("revision") != "a1dc48e68138490d522c04cbf5822214c6eb1202":
+        raise RuntimeError("Round-02 kepano source revision mismatch.")
+    if source.get("license") != "MIT":
+        raise RuntimeError("Round-02 kepano source license mismatch.")
+    if "obsidian-open-format-knowledge-files" not in source.get("candidateIds", []):
+        raise RuntimeError("Round-02 kepano source candidate id missing.")
+
+    manifest_paths = {
+        item.get("path", "")
+        for item in manifest.get("files", [])
+        if isinstance(item, dict)
+    }
+    if manifest.get("skillCount") != 20 or manifest.get("fileCount") != 42:
+        raise RuntimeError("Round-02 approved payload manifest counts must be 20 Skills and 42 files.")
+    if skill_path not in manifest_paths:
+        raise RuntimeError("Round-02 approved payload skill missing from release manifest.")
+
+    excluded_skill_ids = {f"skill.curated.{candidate_id}" for candidate_id in expected_excluded}
+    approved_skill_ids = set(skills)
+    routed_skill_ids = set(routes)
+    if excluded_skill_ids & approved_skill_ids:
+        raise RuntimeError("Round-02 excluded candidates entered skill registry.")
+    if excluded_skill_ids & routed_skill_ids:
+        raise RuntimeError("Round-02 excluded candidates entered routing registry.")
+    for candidate_id in expected_excluded:
+        if f"skills/{candidate_id}/" in "\n".join(sorted(manifest_paths)):
+            raise RuntimeError(f"Round-02 excluded candidate entered manifest: {candidate_id}")
+
+    validation_results = proposal_doc.get("validation_results")
+    if not isinstance(validation_results, dict):
+        raise RuntimeError("Round-02 approved payload/routing validation_results missing.")
+    if validation_results.get("required_commands") != required_commands:
+        raise RuntimeError("Round-02 approved payload/routing required command set drifted.")
+    validation_status = validation_results.get("status")
+    if validation_status not in {"pending_final_run", "passed"}:
+        raise RuntimeError("Round-02 approved payload/routing validation status mismatch.")
+    if proposal_doc.get("status") == "approved_payload_routing_proposal_validated_github_only":
+        if validation_status != "passed":
+            raise RuntimeError("Round-02 approved payload/routing validated proposal must have passed validation.")
+        executed = validation_results.get("executed_commands")
+        if not isinstance(executed, list) or len(executed) < len(required_commands):
+            raise RuntimeError("Round-02 approved payload/routing proposal must record executed commands.")
+        executed_commands = {
+            item.get("command")
+            for item in executed
+            if isinstance(item, dict) and item.get("result") == "passed"
+        }
+        if set(required_commands) - executed_commands:
+            raise RuntimeError("Round-02 approved payload/routing proposal missing passed command evidence.")
+    else:
+        if validation_status != "pending_final_run":
+            raise RuntimeError("Round-02 approved payload/routing pending proposal must be pending final run.")
+
+    doc_path = proposal_doc.get("evidence_doc")
+    doc = (ROOT / doc_path).read_text(encoding="utf-8")
+    for phrase in [
+        "Round-02 Approved Payload And Routing Proposal",
+        "Owner approval phrase",
+        "local runtime sync",
+        "open-format Obsidian payload",
+        "Validation",
+        "Next Gate",
+    ]:
+        if phrase not in doc:
+            raise RuntimeError(f"Round-02 approved payload/routing doc missing phrase: {phrase}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    if doc_path not in readme:
+        raise RuntimeError("README.md must link Round-02 approved payload/routing proposal.")
+    if doc_path not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link Round-02 approved payload/routing proposal.")
+    notices = (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
+    for phrase in ["kepano/obsidian-skills", "Steph Ango", "sources/kepano-obsidian-skills/LICENSE"]:
+        if phrase not in notices:
+            raise RuntimeError(f"Third-party notices missing Round-02 kepano phrase: {phrase}")
+
+    simulation_report = load("generated/routing-simulation-report.json")
+    if simulation_report.get("scenarioCount") != 105 or simulation_report.get("failed") != 0:
+        raise RuntimeError("Round-02 routing simulation report must cover 105 passing scenarios.")
 
 
 def validate_mvp06_radar_feedback_projection(

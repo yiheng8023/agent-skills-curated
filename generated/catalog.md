@@ -11,6 +11,7 @@ Do not edit manually.
 - `improve-codebase-architecture` (phase: `general`, source: `github:mattpocock/skills`)
 - `migrate-to-shoehorn` (phase: `general`, source: `github:mattpocock/skills`)
 - `observability-and-instrumentation` (phase: `operate`, source: `github:addyosmani/agent-skills`)
+- `obsidian-open-format-knowledge-files` (phase: `evolve`, source: `github:kepano/obsidian-skills`)
 - `performance-optimization` (phase: `verify`, source: `github:addyosmani/agent-skills`)
 - `prototype` (phase: `general`, source: `github:mattpocock/skills`)
 - `review` (phase: `general`, source: `github:mattpocock/skills`)

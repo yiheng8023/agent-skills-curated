@@ -16,6 +16,13 @@ Identify which question is being answered — from the user's prompt, the surrou
 
 The two branches produce very different artifacts — getting this wrong wastes the whole prototype. If the question is genuinely ambiguous and the user isn't reachable, default to whichever branch better matches the surrounding code (a backend module → logic; a page or component → UI) and state the assumption at the top of the prototype.
 
+For UI prototypes, treat design quality and asset provenance as part of the
+question. Avoid generic, template-looking output when the task asks for a
+meaningful visual direction. If brand assets, screenshots, logos, fonts,
+icons, or reference images are needed, use only user-provided, official,
+licensed, or clearly attributable sources. Do not scrape, download, copy, or
+bundle assets without explicit permission and provenance.
+
 ## Rules that apply to both
 
 1. **Throwaway from day one, and clearly marked as such.** Locate the prototype code close to where it will actually be used (next to the module or page it's prototyping for) so context is obvious — but name it so a casual reader can see it's a prototype, not production. For throwaway UI routes, obey whatever routing convention the project already uses; don't invent a new top-level structure.
@@ -24,6 +31,7 @@ The two branches produce very different artifacts — getting this wrong wastes 
 4. **Skip the polish.** No tests, no error handling beyond what makes the prototype _runnable_, no abstractions. The point is to learn something fast and then delete it.
 5. **Surface the state.** After every action (logic) or on every variant switch (UI), print or render the full relevant state so the user can see what changed.
 6. **Delete or absorb when done.** When the prototype has answered its question, either delete it or fold the validated decision into the real code — don't leave it rotting in the repo.
+7. **Record visual assumptions.** For UI work, name the design intent, target audience, known constraints, and provenance of non-generated visual inputs. A prototype can answer "this direction works"; it must not launder uncertain assets or unreviewed brand claims into production.
 
 ## When done
 

@@ -212,6 +212,21 @@
       "validated": true
     },
     {
+      "skill": "skill.curated.obsidian-open-format-knowledge-files",
+      "source": "github:kepano/obsidian-skills",
+      "thirdParty": true,
+      "nativeBaselineCompared": true,
+      "nativeIncrement": "Provides a file-format workflow for Obsidian-flavored Markdown, JSON Canvas, and Bases artifacts with explicit vault, CLI, parser, rendering, and write-authority boundaries.",
+      "overlapReviewed": true,
+      "disposition": "approve",
+      "reviewRefs": [
+        "docs/round02-obsidian-adaptation-gate.md",
+        "docs/round02-release-admission-candidate-review.md",
+        "drafts/round02-obsidian-adaptation/open-format-knowledge-files/DRAFT.md"
+      ],
+      "validated": true
+    },
+    {
       "skill": "skill.curated.obsidian-vault",
       "source": "github:mattpocock/skills",
       "thirdParty": true,

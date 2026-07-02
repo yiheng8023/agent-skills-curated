@@ -981,6 +981,44 @@
       }
     },
     {
+      "id": "scenario.lifecycle-27",
+      "family": "lifecycle",
+      "language": "mixed",
+      "request": "把 open-format-knowledge-files 按 current context 跑通，但不要调用 live Obsidian 或 CLI。",
+      "decisionClass": "curated",
+      "expectedDecision": "curated",
+      "expectedSkills": [
+        "skill.curated.obsidian-open-format-knowledge-files"
+      ],
+      "excludedSkills": [],
+      "requestedCapabilities": [
+        "capability.open-format-knowledge-files"
+      ],
+      "expectedCapabilities": [
+        "capability.open-format-knowledge-files"
+      ],
+      "humanConfirmation": false,
+      "validationExpectations": [
+        "Open-format knowledge-file work should select the curated portable Skill while excluding live app, CLI, plugin, and vault-control behavior."
+      ],
+      "routingFacts": {
+        "available": [
+          "native",
+          "runtime",
+          "curated"
+        ],
+        "contextSatisfied": true,
+        "negativeMatch": false,
+        "nativeEquivalent": false,
+        "runtimeEquivalent": false,
+        "risk": "low",
+        "cost": "low",
+        "permissionExpansion": false,
+        "unresolvedConflict": false,
+        "ambiguous": false
+      }
+    },
+    {
       "id": "scenario.native-no-skill-01",
       "family": "native-no-skill",
       "language": "zh-CN",

@@ -25,8 +25,9 @@ sync/backup, verification, and restore.
   recipes.
 - Deterministic generated projections and a schema-1 release manifest.
 
-The current approved release contains 19 Skills and 41 files: 5 reviewed
-adaptations from `addyosmani/agent-skills` and 14 from `mattpocock/skills`.
+The current approved release contains 20 Skills and 42 files: 5 reviewed
+adaptations from `addyosmani/agent-skills`, 14 from `mattpocock/skills`, and
+1 from `kepano/obsidian-skills`.
 All have complete pinned Git provenance; the prior incomplete local baseline is
 retained only as non-runtime historical evidence.
 
@@ -246,6 +247,10 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-approved-payload-routing-proposal-template.md`: template-only
   execution contract for the future Round-02 approved-payload/routing proposal
   after owner approval; not release execution and not local sync.
+- `docs/round02-approved-payload-routing-proposal.md`: owner-approved
+  GitHub-only execution record that admits open-format Obsidian payload, merges
+  bounded Round-02 improvements, updates routing/manifest/generated
+  projections, and still blocks local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
@@ -258,7 +263,7 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/sustainability.md`: cost posture, funding boundaries, and free-first discipline.
 - `generated/`: deterministic derived projections, never a second truth source.
 - `registry/routing.json` and `registry/scenarios.json`: approved routing
-  metadata and the 104-case structured policy corpus.
+  metadata and the 105-case structured policy corpus.
 - `release-manifest.json`: exact approved payload paths, sizes, and hashes.
 - `scripts/`: validation and deterministic projection generation only.
 
@@ -273,8 +278,8 @@ python -B scripts/verify.py
 ```
 
 Verification covers registry contracts, references, generated parity, source
-evidence, the exact manifest payload, input-bound routing projection, all 26
-lifecycle nodes, and 104 deterministic adversarial scenarios. Natural-language
+evidence, the exact manifest payload, input-bound routing projection, all 27
+lifecycle nodes, and 105 deterministic adversarial scenarios. Natural-language
 interpretation remains an Agent responsibility; the simulator verifies the
 normalized policy decision and does not pretend to be a keyword classifier.
 It does not install a Skill.

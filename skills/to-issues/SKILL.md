@@ -25,10 +25,17 @@ Break the plan into **tracer bullet** issues. Each issue is a thin vertical slic
 
 Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
 
+When the source material contains product stories, job stories, test
+scenarios, or launch notes, keep each issue tied to the smallest observable
+outcome it helps prove. Do not create issues that only restate document
+sections or process labels.
+
 <vertical-slice-rules>
 - Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
 - A completed slice is demoable or verifiable on its own
 - Prefer many thin slices over few thick ones
+- Each slice names its acceptance evidence and any release-note or support-note
+  impact
 </vertical-slice-rules>
 
 ### 4. Quiz the user
@@ -71,6 +78,10 @@ Avoid specific file paths or code snippets — they go stale fast. Exception: if
 - [ ] Criterion 1
 - [ ] Criterion 2
 - [ ] Criterion 3
+
+Acceptance criteria should include scenario or test evidence when the parent
+plan supplied it. Keep evidence explicit instead of using vague "works as
+expected" wording.
 
 ## Blocked by
 

@@ -34,6 +34,7 @@ EXPECTED_CAPABILITIES = {
         "fault-diagnosis",
         "issue-triage",
         "documentation-governance",
+        "open-format-knowledge-files",
         "knowledge-capture",
         "technical-debt",
         "cross-agent-handoff",

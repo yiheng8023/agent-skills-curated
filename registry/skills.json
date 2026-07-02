@@ -83,6 +83,15 @@
       "source": "github:addyosmani/agent-skills"
     },
     {
+      "id": "skill.curated.obsidian-open-format-knowledge-files",
+      "directory": "obsidian-open-format-knowledge-files",
+      "name": "obsidian-open-format-knowledge-files",
+      "description": "Use when reading, creating, editing, or reviewing Obsidian-compatible Markdown notes, JSON Canvas files, or Bases files as portable open-format knowledge artifacts without assuming a live Obsidian app, CLI, plugin, or vault.",
+      "status": "approved",
+      "phase": "evolve",
+      "source": "github:kepano/obsidian-skills"
+    },
+    {
       "id": "skill.curated.performance-optimization",
       "directory": "performance-optimization",
       "name": "performance-optimization",

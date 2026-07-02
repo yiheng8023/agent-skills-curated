@@ -18,6 +18,19 @@ metadata:
 
 Ship with confidence. The goal is not just to deploy — it's to deploy safely, with monitoring in place, a rollback plan ready, and a clear understanding of what success looks like. Every launch should be reversible, observable, and incremental.
 
+AI-assisted or multi-agent work needs an extra evidence split before launch:
+
+- **Intended:** accepted problem, non-goals, user stories, and acceptance
+  criteria.
+- **Implemented:** what the reviewed diff, configuration, and generated
+  artifacts actually changed.
+- **Ready to ship:** tests, risk review, rollout, monitoring, rollback, support
+  notes, and release communication.
+
+Do not collapse these into a single "looks done" claim. If any layer is
+missing, the launch decision is hold or no-go until the missing evidence is
+closed by the accountable owner.
+
 ## When to Use
 
 - Deploying a feature to production for the first time
@@ -82,6 +95,10 @@ Ship with confidence. The goal is not just to deploy — it's to deploy safely, 
 - [ ] ADRs written for any architectural decisions
 - [ ] Changelog updated
 - [ ] User-facing documentation updated (if applicable)
+- [ ] Release notes separate user-visible changes, operational changes, and
+      known limitations
+- [ ] Support or handoff notes name ownership, rollback contact, and evidence
+      location for the first monitoring window
 
 ## Feature Flag Strategy
 

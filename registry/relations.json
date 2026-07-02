@@ -23,6 +23,7 @@
     {"from": "skill.curated.diagnose", "type": "provides", "to": "capability.fault-diagnosis"},
     {"from": "skill.curated.triage", "type": "provides", "to": "capability.issue-triage"},
     {"from": "skill.curated.grill-with-docs", "type": "provides", "to": "capability.documentation-governance"},
+    {"from": "skill.curated.obsidian-open-format-knowledge-files", "type": "provides", "to": "capability.open-format-knowledge-files"},
     {"from": "skill.curated.improve-codebase-architecture", "type": "provides", "to": "capability.technical-debt"},
     {"from": "skill.curated.handoff", "type": "provides", "to": "capability.cross-agent-handoff"},
     {"from": "skill.curated.prototype", "type": "provides", "to": "capability.architecture-design"},
@@ -56,6 +57,7 @@
     {"from": "capability.issue-triage", "type": "handoff", "to": "capability.fault-diagnosis", "condition": "an issue is accepted as a reproducible fault"},
     {"from": "capability.retrospective-evolution", "type": "produces", "to": "capability.knowledge-capture"},
     {"from": "capability.knowledge-capture", "type": "enriches", "to": "capability.documentation-governance"},
+    {"from": "capability.open-format-knowledge-files", "type": "complements", "to": "capability.knowledge-capture"},
     {"from": "capability.retrospective-evolution", "type": "triggers", "to": "capability.technical-debt", "condition": "feedback exposes a structural liability"},
     {"from": "capability.cross-agent-handoff", "type": "complements", "to": "capability.problem-decomposition"}
   ]

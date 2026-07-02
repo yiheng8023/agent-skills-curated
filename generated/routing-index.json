@@ -1,10 +1,10 @@
 {
   "authoritativeInputDigests": {
-    "registry/capabilities.json": "6aa0c1f629ae24d2f6df5c11611bd11e034fe9bcdec5444e9dc96a75d7483de3",
+    "registry/capabilities.json": "3b1c7496c33b44c33688f941f57d20628205f8b5d645fc998f89d6ec83c4a264",
     "registry/conflicts.json": "29510b16fbc22258e99b585a910a40e8626c7912d461673f904ac7180b74c360",
     "registry/recipes.json": "bd2e00ed1d9f1cc84dd9b47bb39f7bb4be9737c15948262ff2c293970001a622",
-    "registry/relations.json": "068aba389cb60b276f08da0c42c2d469f598431e48cffecd92dfc87d2358f892",
-    "registry/routing.json": "68f7c0a650faf1ae23736410fa578c5dc1d15051f22e089cdbeddca9579a16d1"
+    "registry/relations.json": "fd3dc8b34c313aa7ae5fb3fec8d9d280b27e5dac78731d9dc3498da89942c5ae",
+    "registry/routing.json": "bebd34179ebf36d653c4acf698b612ea43a75d70071ceac5fda228ed4d799ea9"
   },
   "capabilities": [
     {
@@ -326,6 +326,21 @@
       "stage": "govern",
       "validation": [
         "Cross-check updated documentation with authoritative repository and decision records."
+      ]
+    },
+    {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.obsidian-open-format-knowledge-files"
+      ],
+      "description": "Read, create, edit, or review portable knowledge artifacts such as Obsidian-flavored Markdown, JSON Canvas, and Bases files without assuming live app or vault control.",
+      "fallback": [
+        "Return a patch-ready proposal and mark parser, renderer, vault, or write-authority gaps explicitly."
+      ],
+      "id": "capability.open-format-knowledge-files",
+      "stage": "evolve",
+      "validation": [
+        "Check Markdown/YAML/JSON syntax, Obsidian-specific assumptions, link/embed uncertainty, and write authority before claiming a usable artifact."
       ]
     },
     {
@@ -756,6 +771,11 @@
       "type": "provides"
     },
     {
+      "from": "skill.curated.obsidian-open-format-knowledge-files",
+      "to": "capability.open-format-knowledge-files",
+      "type": "provides"
+    },
+    {
       "from": "skill.curated.improve-codebase-architecture",
       "to": "capability.technical-debt",
       "type": "provides"
@@ -926,6 +946,11 @@
       "from": "capability.knowledge-capture",
       "to": "capability.documentation-governance",
       "type": "enriches"
+    },
+    {
+      "from": "capability.open-format-knowledge-files",
+      "to": "capability.knowledge-capture",
+      "type": "complements"
     },
     {
       "condition": "feedback exposes a structural liability",
@@ -1185,14 +1210,16 @@
       ],
       "outputs": [
         "Resolved ambiguities and reviewed updates to domain/decision documents.",
-        "ADR or documentation update proposal with context, decision, alternatives, consequences, status, supersession path, and evidence when warranted."
+        "ADR or documentation update proposal with context, decision, alternatives, consequences, status, supersession path, and evidence when warranted.",
+        "Discovery or personal-document boundary notes that avoid invented research, participant data, legal claims, employment claims, or unsupported durable statements."
       ],
       "permissionsRequired": [
         "Read domain documents; write permission for documentation updates."
       ],
       "positiveTriggers": [
         "Stress-test a plan against existing domain language, ADRs, constraints, and documented decisions.",
-        "Clarify whether a document is current authority, historical context, generated projection, or working notes before editing."
+        "Clarify whether a document is current authority, historical context, generated projection, or working notes before editing.",
+        "A product-discovery plan or sensitive document needs questions that separate evidence, assumptions, and authority boundaries."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1201,7 +1228,8 @@
       "skill": "skill.curated.grill-with-docs",
       "validation": [
         "Terms, decisions, unresolved branches, and document changes are internally consistent.",
-        "Generated projections, handoff notes, and working notes are not promoted to authority without explicit responsible-subject acceptance."
+        "Generated projections, handoff notes, and working notes are not promoted to authority without explicit responsible-subject acceptance.",
+        "Research, personal, legal, employment, privacy, and identity-sensitive claims remain marked until the responsible subject accepts them."
       ]
     },
     {
@@ -1420,6 +1448,59 @@
         "optional tools are capability-checked at runtime"
       ],
       "aliases": [
+        "Obsidian markdown",
+        "JSON Canvas",
+        "Bases file",
+        "\u77e5\u8bc6\u5e93\u6587\u4ef6",
+        "Obsidian\u5f00\u653e\u683c\u5f0f"
+      ],
+      "contextRequirements": [
+        "Target format, target path or workspace, mode, write authority, and Obsidian-specific rendering assumptions are known."
+      ],
+      "fallback": [
+        "Return a patch-ready proposal and mark unavailable parser, renderer, vault, or write authority."
+      ],
+      "humanConfirmWhen": [
+        "Before writing a vault, following external links, changing private knowledge files, or relying on Obsidian rendering."
+      ],
+      "inputs": [
+        "Markdown, JSON Canvas, or Bases content plus the user's requested read, proposal, or write mode."
+      ],
+      "languages": [
+        "en",
+        "zh-CN",
+        "mixed"
+      ],
+      "lifecycleCapabilities": [
+        "capability.open-format-knowledge-files"
+      ],
+      "negativeTriggers": [
+        "A live Obsidian app, Obsidian CLI command, plugin install, vault sync, webpage extraction, or asset fetch is required."
+      ],
+      "outputs": [
+        "Validated or patch-ready open-format knowledge artifact with parser, link, embed, formula, and rendering assumptions stated."
+      ],
+      "permissionsRequired": [
+        "Read access for review; explicit write authority for file changes; live app or CLI access is out of scope."
+      ],
+      "positiveTriggers": [
+        "Read, create, edit, or review Obsidian-compatible Markdown notes, JSON Canvas files, or Bases files as open-format knowledge artifacts."
+      ],
+      "riskLevel": "medium",
+      "sideEffects": [
+        "May write files only after explicit path-level write authority."
+      ],
+      "skill": "skill.curated.obsidian-open-format-knowledge-files",
+      "validation": [
+        "Markdown/YAML/JSON parsing, id/link/embed/formula checks, and renderer uncertainty are reported."
+      ]
+    },
+    {
+      "agentCompatibility": [
+        "cross-agent instruction following",
+        "optional tools are capability-checked at runtime"
+      ],
+      "aliases": [
         "performance optimization",
         "latency",
         "throughput",
@@ -1505,13 +1586,15 @@
         "Requirements and production design are already settled and implementation should be durable."
       ],
       "outputs": [
-        "Disposable runnable prototype and evidence answering the stated question."
+        "Disposable runnable prototype and evidence answering the stated question.",
+        "For UI prototypes, design intent and non-generated visual input provenance are recorded."
       ],
       "permissionsRequired": [
         "Write permission for an isolated prototype; external services require separate authorization."
       ],
       "positiveTriggers": [
-        "A design, state model, interaction, or technical assumption needs a disposable runnable experiment."
+        "A design, state model, interaction, or technical assumption needs a disposable runnable experiment.",
+        "A visual prototype needs design-direction evidence, anti-generic quality checks, or asset-provenance boundaries."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1519,7 +1602,8 @@
       ],
       "skill": "skill.curated.prototype",
       "validation": [
-        "The prototype answers the question and is clearly separated from production code."
+        "The prototype answers the question and is clearly separated from production code.",
+        "Visual assumptions, brand or asset provenance, and production promotion boundaries are explicit."
       ]
     },
     {
@@ -1559,14 +1643,16 @@
       ],
       "outputs": [
         "Prioritized findings separated by standards and spec compliance.",
-        "Quality-axis escalation notes when security, performance, observability, CI/CD, migration, or release readiness should own the next pass."
+        "Quality-axis escalation notes when security, performance, observability, CI/CD, migration, or release readiness should own the next pass.",
+        "Intent-fidelity, design-quality, and asset-provenance findings when those axes are material."
       ],
       "permissionsRequired": [
         "Repository read access."
       ],
       "positiveTriggers": [
         "Changes since a fixed Git point need independent standards and specification compliance review.",
-        "A diff needs risk-proportionate review across correctness, clarity, architecture, security, privacy, operability, tests, or release evidence."
+        "A diff needs risk-proportionate review across correctness, clarity, architecture, security, privacy, operability, tests, or release evidence.",
+        "AI-assisted changes, design-heavy diffs, or brand/asset use need intent-fidelity and provenance review."
       ],
       "riskLevel": "low",
       "sideEffects": [
@@ -1575,7 +1661,8 @@
       "skill": "skill.curated.review",
       "validation": [
         "Every finding cites evidence and the review base is explicit and reproducible.",
-        "Review depth is justified by change impact, reversibility, risk, and spec authority."
+        "Review depth is justified by change impact, reversibility, risk, and spec authority.",
+        "Generated-code, visual-quality, and asset-source claims are separated from verified facts."
       ]
     },
     {
@@ -1667,13 +1754,15 @@
         "Ordinary Git publication without production readiness decisions should use normal version control."
       ],
       "outputs": [
-        "GO/NO-GO decision package, rollout, monitoring, rollback, and post-launch checks."
+        "GO/NO-GO decision package, rollout, monitoring, rollback, and post-launch checks.",
+        "Release notes and support handoff that separate user-visible changes, operational changes, known limits, owners, and evidence locations."
       ],
       "permissionsRequired": [
         "Read for assessment; publish/deploy/migration authority only when explicit."
       ],
       "positiveTriggers": [
-        "A product or service change is approaching production, beta, staged rollout, migration, or launch decision."
+        "A product or service change is approaching production, beta, staged rollout, migration, or launch decision.",
+        "An AI-assisted or multi-agent change needs intended-vs-implemented-vs-ready launch evidence."
       ],
       "riskLevel": "critical",
       "sideEffects": [
@@ -1681,7 +1770,8 @@
       ],
       "skill": "skill.curated.shipping-and-launch",
       "validation": [
-        "All gates have evidence and rollback/monitoring are executable."
+        "All gates have evidence and rollback/monitoring are executable.",
+        "Intended behavior, implemented behavior, and launch evidence are each traceable before a go decision."
       ]
     },
     {
@@ -1773,13 +1863,14 @@
         "The plan is still ambiguous or no issue tracker/output authority is known."
       ],
       "outputs": [
-        "Ordered vertical-slice issues with scope, acceptance, dependencies, and validation."
+        "Ordered vertical-slice issues with scope, acceptance, dependencies, validation, and release/support-note impact when relevant."
       ],
       "permissionsRequired": [
         "Read by default; issue-tracker write only when explicit."
       ],
       "positiveTriggers": [
-        "An approved plan, spec, or PRD must become independently grabbable vertical-slice issues."
+        "An approved plan, spec, or PRD must become independently grabbable vertical-slice issues.",
+        "Product stories, job stories, scenarios, or launch notes need to be converted into bounded implementation issues."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1787,7 +1878,8 @@
       ],
       "skill": "skill.curated.to-issues",
       "validation": [
-        "Each issue is independently actionable and the set closes the source plan without horizontal-layer gaps."
+        "Each issue is independently actionable and the set closes the source plan without horizontal-layer gaps.",
+        "Acceptance criteria name observable scenario or test evidence instead of vague completion claims."
       ]
     },
     {
@@ -1825,13 +1917,14 @@
         "A technical implementation plan with settled product intent should use planning/decomposition instead."
       ],
       "outputs": [
-        "PRD with problem, goals, non-goals, requirements, risks, and acceptance."
+        "PRD with problem, goals, non-goals, requirements, risks, acceptance, evidence state, and unresolved discovery questions."
       ],
       "permissionsRequired": [
         "Read context; external publication only when explicit."
       ],
       "positiveTriggers": [
-        "Conversation context must be converted into a reviewable product requirements document."
+        "Conversation context must be converted into a reviewable product requirements document.",
+        "Product-discovery context must become a PRD while separating known evidence from unvalidated assumptions."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1839,7 +1932,8 @@
       ],
       "skill": "skill.curated.to-prd",
       "validation": [
-        "The PRD separates facts/assumptions, resolves scope, and has testable acceptance criteria."
+        "The PRD separates facts/assumptions, resolves scope, and has testable acceptance criteria.",
+        "User stories, job stories, and scenarios do not invent research, validation, or participant quotes."
       ]
     },
     {
@@ -1883,7 +1977,8 @@
         "Read by default; issue-tracker write only when explicit."
       ],
       "positiveTriggers": [
-        "Issues, bugs, or feature requests need state, priority, ownership, readiness, or next-action classification."
+        "Issues, bugs, or feature requests need state, priority, ownership, readiness, or next-action classification.",
+        "Product-execution documents need readiness classification before agent or maintainer pickup."
       ],
       "riskLevel": "medium",
       "sideEffects": [
@@ -1891,7 +1986,8 @@
       ],
       "skill": "skill.curated.triage",
       "validation": [
-        "Every transition follows the declared state machine and unresolved evidence remains visible."
+        "Every transition follows the declared state machine and unresolved evidence remains visible.",
+        "Ready-for-agent decisions have bounded outcome, acceptance evidence, dependency state, and ownership."
       ]
     },
     {

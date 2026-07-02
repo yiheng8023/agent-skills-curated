@@ -25,8 +25,20 @@ Use these quality axes when they matter:
 - **Architecture** — boundaries, dependencies, ownership, and evolution paths remain coherent.
 - **Security and privacy** — trust boundaries, secrets, data exposure, and authorization are not weakened.
 - **Operability** — tests, observability, rollback, performance, and release evidence are sufficient for the change.
+- **Intent fidelity** — implementation, generated code, and assistant-made edits still match the accepted intent, not just a plausible nearby interpretation.
+- **Design and asset provenance** — user-facing UI changes avoid generic or sloppy visual output, and any brand, logo, image, icon, or template asset has a traceable permitted source.
 
 Escalate to a specialized capability when one axis dominates the review, for example security audit, performance, observability, CI/CD, migration, or release readiness. Do not post comments, change code, merge, publish, or release unless the user separately authorized that action.
+
+For AI-assisted shipping reviews, compare intended behavior, implemented
+behavior, and release evidence as separate facts. Do not let a green diff hide
+missing acceptance criteria, unreviewed generated code, unowned security paths,
+or absent rollout/rollback evidence.
+
+For design-heavy diffs, call out generic layout, weak information hierarchy,
+unverified responsive behavior, inaccessible color or motion choices, and
+assets whose provenance is missing or unsafe. Do not download, copy, or
+redistribute assets during review.
 
 ## Process
 

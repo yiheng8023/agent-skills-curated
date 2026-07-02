@@ -322,6 +322,21 @@
       ]
     },
     {
+      "coverageState": "curated",
+      "curatedOwners": [
+        "skill.curated.obsidian-open-format-knowledge-files"
+      ],
+      "description": "Read, create, edit, or review portable knowledge artifacts such as Obsidian-flavored Markdown, JSON Canvas, and Bases files without assuming live app or vault control.",
+      "fallback": [
+        "Return a patch-ready proposal and mark parser, renderer, vault, or write-authority gaps explicitly."
+      ],
+      "id": "capability.open-format-knowledge-files",
+      "stage": "evolve",
+      "validation": [
+        "Check Markdown/YAML/JSON syntax, Obsidian-specific assumptions, link/embed uncertainty, and write authority before claiming a usable artifact."
+      ]
+    },
+    {
       "coverageState": "recipe",
       "description": "Capture reusable, source-linked learning without promoting transient state to authority.",
       "fallback": [
@@ -749,6 +764,11 @@
       "type": "provides"
     },
     {
+      "from": "skill.curated.obsidian-open-format-knowledge-files",
+      "to": "capability.open-format-knowledge-files",
+      "type": "provides"
+    },
+    {
       "from": "skill.curated.improve-codebase-architecture",
       "to": "capability.technical-debt",
       "type": "provides"
@@ -921,6 +941,11 @@
       "type": "enriches"
     },
     {
+      "from": "capability.open-format-knowledge-files",
+      "to": "capability.knowledge-capture",
+      "type": "complements"
+    },
+    {
       "condition": "feedback exposes a structural liability",
       "from": "capability.retrospective-evolution",
       "to": "capability.technical-debt",
@@ -1013,6 +1038,15 @@
       "name": "observability-and-instrumentation",
       "phase": "operate",
       "source": "github:addyosmani/agent-skills",
+      "status": "approved"
+    },
+    {
+      "description": "Use when reading, creating, editing, or reviewing Obsidian-compatible Markdown notes, JSON Canvas files, or Bases files as portable open-format knowledge artifacts without assuming a live Obsidian app, CLI, plugin, or vault.",
+      "directory": "obsidian-open-format-knowledge-files",
+      "id": "skill.curated.obsidian-open-format-knowledge-files",
+      "name": "obsidian-open-format-knowledge-files",
+      "phase": "evolve",
+      "source": "github:kepano/obsidian-skills",
       "status": "approved"
     },
     {

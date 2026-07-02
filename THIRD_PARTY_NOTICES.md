@@ -26,3 +26,16 @@ The retained bodies were re-audited for native overlap, security, portability,
 author-specific naming, product assumptions, and executable surfaces. The
 historical incomplete local source record remains only as provenance history;
 it is not runtime-approved and contributes no Skill to the release manifest.
+
+## kepano/obsidian-skills
+
+One source-text-neutral open-format adaptation was reviewed against
+<https://github.com/kepano/obsidian-skills> at commit
+`a1dc48e68138490d522c04cbf5822214c6eb1202` and is used under the MIT
+License. Copyright (c) 2026 Steph Ango (@kepano). The original license is
+preserved at `sources/kepano-obsidian-skills/LICENSE`.
+
+Only the portable Markdown, JSON Canvas, and Bases file-format workflow was
+admitted. CLI behavior, Defuddle/web extraction, live vault control, app or
+plugin runtime behavior, dependency installation, credential use, and upstream
+asset redistribution remain excluded.

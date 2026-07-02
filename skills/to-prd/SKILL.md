@@ -15,7 +15,17 @@ The issue tracker and triage label vocabulary should have been provided to you â
 
 Check with the user that these seams match their expectations.
 
-3. Write the PRD using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Before drafting product-discovery-heavy PRDs, separate what is known from
+   what is only assumed:
+
+   - observed user problem or job;
+   - target users or affected subjects;
+   - alternatives considered;
+   - decision criteria and measurable success signals;
+   - research, interview, analytics, or market evidence that actually exists;
+   - open questions that must not be treated as validated research.
+
+4. Write the PRD using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
 <prd-template>
 
@@ -38,6 +48,10 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 </user-story-example>
 
 This list of user stories should be extremely extensive and cover all aspects of the feature.
+
+When useful, add job stories or scenario stories alongside user stories, but
+keep them grounded in the accepted problem. Do not invent customer research,
+market validation, or participant quotes.
 
 ## Implementation Decisions
 
@@ -62,6 +76,8 @@ A list of testing decisions that were made. Include:
 - A description of what makes a good test (only test external behavior, not implementation details)
 - Which modules will be tested
 - Prior art for the tests (i.e. similar types of tests in the codebase)
+- Scenario coverage for core happy path, edge cases, permission boundaries,
+  and release-note-worthy behavior
 
 ## Out of Scope
 

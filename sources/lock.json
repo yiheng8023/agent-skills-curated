@@ -105,6 +105,35 @@
       ]
     },
     {
+      "id": "github:kepano/obsidian-skills",
+      "kind": "git",
+      "provenanceStatus": "complete",
+      "redistribution": "license-governed",
+      "reviewRefs": [
+        "docs/round02-candidate-review-2026-07-02.md",
+        "docs/round02-obsidian-adaptation-gate.md",
+        "docs/round02-release-admission-candidate-review.md"
+      ],
+      "url": "https://github.com/kepano/obsidian-skills",
+      "revision": "a1dc48e68138490d522c04cbf5822214c6eb1202",
+      "candidateIds": [
+        "defuddle",
+        "json-canvas",
+        "obsidian-bases",
+        "obsidian-cli",
+        "obsidian-markdown",
+        "obsidian-open-format-knowledge-files"
+      ],
+      "license": "MIT",
+      "status": "intake-reviewed",
+      "approvedForRuntime": false,
+      "notes": [
+        "Round-02 admits only the open-format knowledge-file adaptation as portable payload.",
+        "Obsidian CLI, Defuddle, live vault mutation, webpage extraction, plugin installation, and app control remain excluded runtime or adapter work.",
+        "The original license is preserved at sources/kepano-obsidian-skills/LICENSE."
+      ]
+    },
+    {
       "id": "local:reviewed-baseline",
       "kind": "local",
       "provenanceStatus": "incomplete",
