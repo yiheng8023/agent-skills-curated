@@ -186,6 +186,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-approved-payload-routing-proposal.md`：owner 已批准的 GitHub-only
   执行记录；准入 Obsidian 开放格式 payload，合并有边界的 Round-02 改进，更新
   routing/manifest/generated 投影，并继续阻止本地 sync；
+- `docs/round02-local-runtime-sync-approval-request.md`：将已验证的 Round-02
+  release payload 同步到本地 cc-switch、agents 和 Codex Skill 目录前所需的最小
+  有界授权请求；不是 sync approval，也不是本地写入；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

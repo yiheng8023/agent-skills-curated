@@ -251,6 +251,10 @@ consumer must probe its currently visible, authorized capability inventory.
   GitHub-only execution record that admits open-format Obsidian payload, merges
   bounded Round-02 improvements, updates routing/manifest/generated
   projections, and still blocks local sync.
+- `docs/round02-local-runtime-sync-approval-request.md`: formal request for
+  the smallest bounded approval needed to sync the validated Round-02 release
+  payload into local cc-switch, agents, and Codex Skill directories; not sync
+  approval and not a local write.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
