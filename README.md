@@ -255,6 +255,9 @@ consumer must probe its currently visible, authorized capability inventory.
   the smallest bounded approval needed to sync the validated Round-02 release
   payload into local cc-switch, agents, and Codex Skill directories; not sync
   approval and not a local write.
+- `docs/round02-local-runtime-sync-execution.md`: recorded local runtime sync
+  execution; aligns cc-switch hashes to the Round-02 manifest and records
+  Junction fallback links for agents and Codex.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

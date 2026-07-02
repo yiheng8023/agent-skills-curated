@@ -189,6 +189,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-local-runtime-sync-approval-request.md`：将已验证的 Round-02
   release payload 同步到本地 cc-switch、agents 和 Codex Skill 目录前所需的最小
   有界授权请求；不是 sync approval，也不是本地写入；
+- `docs/round02-local-runtime-sync-execution.md`：已记录的本地 runtime sync
+  执行结果；将 cc-switch hash 对齐到 Round-02 manifest，并记录 agents 与 Codex
+  使用 Junction fallback 链接；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

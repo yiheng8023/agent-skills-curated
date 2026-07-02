@@ -15,6 +15,8 @@ class Round02LocalRuntimeSyncRequestTests(unittest.TestCase):
         self.request = load("registry/round02-local-runtime-sync-approval-request.json")
         self.proposal = load("registry/round02-approved-payload-routing-proposal.json")
         self.manifest = load("release-manifest.json")
+        self.events = load("registry/round02-local-runtime-sync-approval-events.json")
+        self.execution = load("registry/round02-local-runtime-sync-execution.json")
 
     def test_request_is_not_approval_and_binds_validated_source(self) -> None:
         self.assertEqual(self.request["schema_version"], 1)
@@ -80,8 +82,8 @@ class Round02LocalRuntimeSyncRequestTests(unittest.TestCase):
         self.assertEqual(
             self.request["safe_approval_phrases"],
             [
-                "批准执行 Round-02 local runtime sync",
-                "Approve Round-02 local runtime sync only",
+                "批准执行 Round-02 local runtime sync（允许 junction fallback）",
+                "Approve Round-02 local runtime sync with junction fallback only",
             ],
         )
         disallowed = set(self.request["still_disallowed"])
@@ -98,12 +100,75 @@ class Round02LocalRuntimeSyncRequestTests(unittest.TestCase):
         for phrase in [
             "This is an approval request, not approval.",
             "Read-Only Preflight",
-            "批准执行 Round-02 local runtime sync",
+            "批准执行 Round-02 local runtime sync（允许 junction fallback）",
+            "Junction fallback",
             "Explicitly Not Requested",
             "Until the approval event exists, local runtime sync remains blocked",
         ]:
             self.assertIn(phrase, doc)
 
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+        self.assertIn(doc_path, readme)
+        self.assertIn(doc_path, readme_zh)
+
+    def test_approval_event_matches_request_scope(self) -> None:
+        self.assertEqual(
+            self.events["status"],
+            "owner_approval_recorded_for_round02_local_runtime_sync",
+        )
+        self.assertTrue(self.events["approval_recorded"])
+        self.assertTrue(self.events["local_runtime_sync_allowed"])
+        self.assertTrue(self.events["create_junction_fallback_allowed"])
+        event = self.events["events"][0]
+        self.assertEqual(
+            event["approval_request_id"],
+            "round02-local-runtime-sync-approval-request-2026-07-02",
+        )
+        self.assertEqual(event["approved_scope"], self.request["requested_scope_if_approved"])
+        self.assertEqual(event["explicitly_not_approved"], self.request["explicitly_not_requested"])
+        self.assertEqual(event["next_state"], "round02_local_runtime_sync_execution")
+
+    def test_execution_records_junction_fallback_and_local_verification(self) -> None:
+        self.assertEqual(
+            self.execution["status"],
+            "passed_with_junction_fallback",
+        )
+        self.assertEqual(
+            self.execution["approval_event_id"],
+            "round02-owner-approval-2026-07-02-local-runtime-sync",
+        )
+        attempts = {item["id"]: item for item in self.execution["attempts"]}
+        self.assertEqual(attempts["round02-local-runtime-sync-attempt-1"]["status"], "failed_rolled_back_and_cleaned")
+        self.assertEqual(attempts["round02-local-runtime-sync-attempt-2"]["status"], "passed")
+        self.assertEqual(attempts["round02-local-runtime-sync-attempt-2"]["fallback_used"], "directory-junction")
+        self.assertEqual(
+            self.execution["verification_results"]["cc_switch_manifest_hashes"],
+            {"checked": 42, "matched": 42, "drift": 0, "missing": 0},
+        )
+        links = self.execution["verification_results"]["link_entries"]
+        self.assertEqual(len(links), 2)
+        for link in links:
+            self.assertEqual(link["linkType"], "Junction")
+            self.assertTrue(link["exists"])
+            self.assertEqual(
+                link["target"],
+                r"C:\Users\15521\.cc-switch\skills\obsidian-open-format-knowledge-files",
+            )
+        boundaries = self.execution["boundary_results"]
+        self.assertFalse(any(boundaries.values()))
+
+    def test_execution_doc_and_readmes_link_the_result(self) -> None:
+        doc_path = self.execution["evidence_doc"]
+        doc = (ROOT / doc_path).read_text(encoding="utf-8")
+        for phrase in [
+            "Round 02 Local Runtime Sync Execution",
+            "Attempt 1",
+            "Attempt 2",
+            "Junction fallback",
+            "cc-switch manifest files matched: 42",
+        ]:
+            self.assertIn(phrase, doc)
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
         self.assertIn(doc_path, readme)

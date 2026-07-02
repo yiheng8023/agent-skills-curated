@@ -18,6 +18,7 @@ write cc-switch skills allowed: false
 write agents skills allowed: false
 write codex skills allowed: false
 create symlink allowed: false
+create junction fallback allowed: false
 backup or rollback snapshot allowed: false
 delete or cleanup allowed: false
 publish or release allowed: false
@@ -73,13 +74,13 @@ Missing release root in all three local Skill directories:
 The smallest useful approval phrase is:
 
 ```text
-批准执行 Round-02 local runtime sync
+批准执行 Round-02 local runtime sync（允许 junction fallback）
 ```
 
 or:
 
 ```text
-Approve Round-02 local runtime sync only
+Approve Round-02 local runtime sync with junction fallback only
 ```
 
 If approved, the next work may synchronize only the release-manifest payload
@@ -92,6 +93,9 @@ portable Skill layout:
 3. create or repair only the missing `obsidian-open-format-knowledge-files`
    symbolic links in `C:\Users\15521\.agents\skills` and
    `C:\Users\15521\.codex\skills`;
+   if SymbolicLink creation fails because administrator privilege is
+   unavailable, create directory Junction fallback links only for the same
+   missing entries and record their LinkType explicitly;
 4. preserve `.system`, `codex-primary-runtime`, plugin/cache-owned Skills, and
    all non-release local Skills;
 5. create a temporary rollback snapshot for changed local files and remove it
@@ -117,7 +121,7 @@ This request does not ask permission to:
 - sync adapter-only, reference-only, or rejected Round-02 candidates;
 - change `C:\Users\15521\.agents\skills` or
   `C:\Users\15521\.codex\skills` entries other than the missing
-  `obsidian-open-format-knowledge-files` symbolic links.
+  `obsidian-open-format-knowledge-files` link entries.
 
 ## Evidence That Must Exist After Approval
 
@@ -128,6 +132,8 @@ If the owner approves this request, the next record must include:
 3. temporary rollback snapshot path and cleanup result;
 4. cc-switch manifest hash verification;
 5. agents and codex symbolic-link target verification;
+   if Junction fallback is used, agents and codex Junction target
+   verification;
 6. explicit record that official/runtime/plugin/cache directories and
    non-release local Skills were preserved;
 7. repository verification result after recording the sync execution.
