@@ -233,8 +233,12 @@ consumer must probe its currently visible, authorized capability inventory.
   candidate decision and not approval for payload, routing, manifest, install,
   publication, or local sync.
 - `docs/round02-release-admission-approval-request.md`: formal request for the
-  smallest approval needed to enter Round-02 release/admission review; still
-  blocks payload, manifest, routing, live install, publication, and local sync.
+  smallest approval needed to enter Round-02 release/admission review; now
+  consumed by a bounded approval event and still blocks payload, manifest,
+  routing, live install, publication, and local sync.
+- `docs/round02-release-admission-candidate-review.md`: candidate-specific
+  Round-02 release/admission disposition evidence; not approved payload, not
+  manifest, not routing, not publication, and not local sync.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

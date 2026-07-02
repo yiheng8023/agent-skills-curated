@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
   "id": "round02-release-admission-review-approval-request-2026-07-02",
-  "status": "awaiting_owner_approval",
+  "status": "owner_approval_recorded_for_round02_release_admission_review",
   "date": "2026-07-02",
   "purpose": "Ask the owner for the smallest explicit approval needed to enter Round-02 release/admission review for the already recorded candidate drafts and gate evidence.",
   "not_approval": true,
-  "approval_recorded": false,
+  "approval_recorded": true,
+  "approval_event_record": "registry/round02-release-admission-approval-events.json",
   "source_readiness_record": "registry/round02-release-readiness-review.json",
   "review_template": "registry/round02-release-admission-review-template.json",
   "evidence_doc": "docs/round02-release-admission-approval-request.md",
@@ -25,7 +26,7 @@
   ],
   "current_permissions": {
     "approval_request_allowed": true,
-    "release_admission_review_allowed": false,
+    "release_admission_review_allowed": true,
     "approved_payload_allowed": false,
     "release_manifest_allowed": false,
     "routing_projection_allowed": false,
