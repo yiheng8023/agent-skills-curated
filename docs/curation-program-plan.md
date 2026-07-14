@@ -1,19 +1,68 @@
 # Curation Program Plan
 
-This is the overall execution plan for expanding `agent-skills-curated` and
-then closing the stage by aligning local Codex, agents, and cc Switch Skill
-directories.
-
-The machine-readable plan lives in
-`registry/curation-program-plan.json`. The round lifecycle contract lives in
+This is the human-readable projection of the machine program authority in
+`registry/curation-program-plan.json`. The objective, acceptance, verification,
+and evidence mapping lives in `registry/program-acceptance-map.json`. Bounded
+execution rounds live in `registry/curation-expansion-rounds.json` and follow
 `registry/round-lifecycle-contract.json`.
-The continuous harness and upstream input boundary are explained in
-`docs/curation-harness-model.md`.
 
-## Control Principle
+## Program Position
 
-The work is not complete when sources are discovered, and it is not complete
-when one repository batch validates. The intended path is:
+`agent-skills-curated` governs the reviewed Skills terminal inside a broader
+resource-governance funnel. Skills are the first terminal MVP because they are
+portable, comparatively low burden, usable by internal and external consumers,
+and able to carry instructions, resources, scripts, and deterministic checks.
+They are not the boundary of `YIYUAN-MERIDIAN`, resource discovery, or future
+terminal types.
+
+The authority split is:
+
+```text
+broader resource discovery and candidate signals
+-> reviewed Skill intake, adaptation, release, and lifecycle governance here
+-> consumer-owned installation, projection, backup, restore, and live checks
+-> bounded research and standard-candidate delivery to YIYUAN-CALIBRATION
+-> project-owned admission of any hard standard
+```
+
+This repository does not own upstream radar architecture, live Agent state,
+consumer configuration, or project hard-standard admission. Consumer
+configuration repositories are consumption, validation, and feedback surfaces;
+they are not the durable home for cross-project research or standards. After
+repeated evidence exists, this repository may produce a traceable standard
+candidate package for delivery to `YIYUAN-CALIBRATION`, which provides durable
+calibration custody. `YIYUAN-ASSETS` retains the separate decision to admit a
+candidate as a project hard standard. Any cross-repository write remains a
+separately authorized transaction.
+
+## Strategic Objectives
+
+The program has six stable objectives:
+
+1. Operate Skills as the first terminal MVP without turning the broader funnel
+   into a Skills-only system.
+2. Govern third-party Skill bodies through provenance, license, security,
+   portability, overlap, adaptation, validation, release, and lifecycle gates.
+3. Keep releases agent-neutral while requiring evidence-backed consumer
+   mappings for each Agent's instruction, Skill, precedence, projection,
+   verification, backup, and restore behavior.
+4. Improve collaboration reliability through the smallest sufficient layered
+   combination of instructions, Skills, deterministic mechanisms, project
+   standards, evidence, and accountable human decisions.
+5. Extract standard candidates from repeated governance evidence, target their
+   durable calibration custody in `YIYUAN-CALIBRATION`, and preserve separate
+   `YIYUAN-ASSETS` project-admission authority.
+6. Support update, conflict handling, supersession, deprecation, migration,
+   rollback, and retirement instead of accumulating Skills indefinitely.
+
+Each objective maps to stable acceptance, verification, and evidence IDs in
+`registry/program-acceptance-map.json`. `verified` means the stated criterion
+has checked-in evidence; it does not upgrade a partial implementation or dated
+runtime observation into current live truth.
+
+## Delivery Lifecycle
+
+The reviewed Skill delivery lifecycle remains:
 
 ```text
 discovery and coverage
@@ -24,69 +73,58 @@ discovery and coverage
 -> local runtime alignment closeout
 ```
 
-Each step has its own acceptance criteria and verification surface. Discovery,
-source intake, and adaptation drafts are not approval. Local runtime alignment
-is the stage closeout, not the starting point.
+These stages are gates, not a one-way conveyor. Feedback, an upstream update,
+a security or license change, a consumer failure, or project-standard conflict
+can return released content to an earlier gate.
 
-This path is a loop, not a one-way conveyor. Feedback from validation,
-community review, upstream refreshes, security review, or local runtime
-alignment can send a candidate or rule back to an earlier step.
+Discovery and coverage is accepted only when broad domains, read-only discovery,
+and non-approval candidate records validate. Source intake is accepted only
+when every source is pinned and has license, provenance, detected Skill,
+coverage, review-focus, and blocked-action evidence. Review and adaptation is
+accepted only when dispositions, safety, portability, overlap, and license
+boundaries are explicit. Curated admission and release is accepted only when
+approved payload, registries, topology, routing, scenarios, generated
+projections, and the release manifest validate together.
+
+Consumer projection readiness and local alignment are consumer-owned actions.
+They require a pinned release, read-only inventory, owned-path classification,
+backup, rollback, explicit local-write authority, and fresh post-action evidence.
+This repository may retain dated evidence without claiming it owns or currently
+controls the consumer environment.
 
 ## Current Position
 
-The current active step is `program-02-source-intake-and-filtering`.
+Round 02 is not active source-intake execution anymore. The repository contains
+evidence for candidate review, admission decisions, approved payload and routing,
+and a bounded local runtime sync transaction:
 
-The current evidence is the pinned round-02 source batch. It is review evidence,
-not approved payload and not runtime inventory. The next gate is candidate
-review and adaptation:
+- `registry/round02-release-admission-candidate-review.json`
+- `registry/round02-approved-payload-routing-proposal.json`
+- `registry/round02-local-runtime-sync-execution.json`
 
-- license and attribution review;
-- provenance and source stability review;
-- security review for commands, network calls, credentials, and file access;
-- portability review across agents and runtimes;
-- overlap and conflict review against curated, official, runtime, and local
-  capabilities;
-- disposition as adopt, merge, recipe-only, adapter-only, reference-only, or
-  reject.
+Those records prove that the bounded actions occurred on their recorded dates.
+They do not prove current live parity, and they do not include a distinct Round
+02 stage-closeout reconciliation. The current state is therefore
+`needs-reconciliation`, not `complete`.
 
-## Acceptance And Verification Mapping
+The next gate is a requirement-by-requirement stage-closeout reconciliation
+that records covered scope, verification evidence, residual risks, deferred
+work, current authority boundaries, and the explicit next-round or pause
+decision. No new candidate intake should inherit an unclosed Round 02 state.
 
-Discovery and coverage is accepted only when broad domain coverage, read-only
-discovery, and non-approval candidate records validate.
+## Verification And Closeout
 
-Source intake and filtering is accepted only when each source is pinned to a
-full revision, has license posture, detected Skill evidence, coverage hints,
-review focus, and explicit blocked actions for release and runtime sync.
+The global deterministic set remains:
 
-Review and adaptation is accepted only when every candidate has a reviewed
-disposition, unsafe behavior is removed or rejected, agent-specific assumptions
-are neutralized or bounded, and duplicate Skills are merged or rejected.
+```text
+python -B scripts/verify.py
+python -B scripts/build_release_manifest.py --check
+python -B scripts/build_topology.py --check
+python -B scripts/simulate_routing.py --all
+python -B -m unittest discover -s tests -v
+```
 
-Curated admission and release is accepted only when approved payload,
-registries, topology, routing scenarios, generated projections, and the release
-manifest all validate together.
-
-Consumer projection readiness is accepted only when the exact release SHA,
-consumer sync plan, read-only local inventory, backup plan, rollback plan, and
-directory-specific parity rules are recorded.
-
-Local runtime alignment closeout is accepted only when local write authorization
-is explicit, approved portable Skills are synced to the intended directories,
-Codex-specific system or runtime surfaces are preserved, source-intake-only
-candidates are not installed, backups and parity checks exist, and residual
-exceptions are documented.
-
-## Final Local Alignment Shape
-
-The final closeout target is:
-
-- `.agents/skills` and `.cc-switch/skills` align to the same approved portable
-  curated Skill set, except for documented, intentionally local exceptions.
-- `.codex/skills` receives the appropriate shared curated Skill set while
-  preserving Codex-specific system, plugin, or runtime-owned surfaces.
-- No source-intake-only candidate, adaptation draft, or official/runtime-owned
-  body is installed as curated payload.
-
-That final sync is a later authorized local-write stage. Until then, this
-repository work remains discovery, review, adaptation, release, and readiness
-work.
+Passing these commands proves only the contracts they actually cover. Program
+closeout additionally requires the mapped acceptance evidence and an honest
+closeout outcome. A dated local sync execution record must never be treated as
+current live Agent availability or as global completion.

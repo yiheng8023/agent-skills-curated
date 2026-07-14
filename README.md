@@ -31,6 +31,31 @@ adaptations from `addyosmani/agent-skills`, 14 from `mattpocock/skills`, and
 All have complete pinned Git provenance; the prior incomplete local baseline is
 retained only as non-runtime historical evidence.
 
+## Strategic Positioning
+
+Reviewed Skills are the first terminal MVP in the broader `YIYUAN-MERIDIAN`
+resource-governance funnel. They are a low-burden, cross-Agent entry point that
+can carry guidance, resources, scripts, and deterministic checks for internal
+and external consumers. They are not the only possible terminal and do not
+constrain upstream discovery to Skills.
+
+Reliability is layered rather than text-only: instructions and rules may route
+to Skills and Recipes; deterministic scripts, schemas, and validators cover
+machine-checkable behavior; consumer-owned controls and project-owned hard
+standards remain higher-authority integration surfaces. This repository may
+extract traceable standard candidates from repeated governance evidence, but it
+does not admit, publish, or install project hard standards. Consumer
+configuration repositories are temporary consumption, validation, and feedback
+surfaces for this purpose, not durable research or standards custody. Bounded
+research and standard-candidate packages are intended for delivery to
+`YIYUAN-CALIBRATION`; `YIYUAN-ASSETS` separately decides project hard-standard
+admission.
+
+The strategic objective-to-acceptance-to-verification-to-evidence mapping is
+`registry/program-acceptance-map.json`. Partial or dated evidence remains
+partial or stale; a green repository verifier does not prove current live Agent
+state.
+
 ## What This Repository Does Not Own
 
 This repository does not own user configuration, authentication, runtime
@@ -38,6 +63,9 @@ memory, Plugins, Apps, MCP account state, installation permissions, or live
 environment state. It does not install, does not write to
 private consumer configuration repositories such as `codex-user-config` or
 `claude-user-config`, and does not write to a live Agent environment.
+Cross-repository delivery to `YIYUAN-CALIBRATION` is therefore a separate,
+explicitly authorized transaction rather than an implicit side effect of this
+repository's verification or release workflow.
 
 Official, runtime-owned, or built-in Skill bodies remain environment-owned.
 This curated repository governs third-party Skill bodies and an abstract,
@@ -104,10 +132,11 @@ public template such as `codex-user-config-template` or
 `claude-user-config-template`, with placeholders and user-owned setup guidance,
 not a copy of the private repository.
 
-The broader public-facing repository family may be explained through
-`open-resource-governance`. That hub can map this repository, `resource-radar`,
-configuration templates, and bookmark taxonomy repositories, but it does not
-own Skill release decisions, manifests, or runtime installation.
+The broader public-facing repository family is mapped through
+`YIYUAN-MERIDIAN`. That hub can map this repository, `resource-radar`,
+configuration templates, bookmark taxonomy repositories, and future terminal
+lanes, but it does not own Skill release decisions, manifests, or runtime
+installation.
 
 ## Capability Layers And Routing
 
@@ -190,10 +219,13 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/mvp06-lifecycle-feedback.md`: lifecycle feedback from the verified
   consumer install, including radar dedupe metadata and the pause/observe
   decision before the next batch.
-- `docs/curation-program-plan.md`: overall discovery-to-release-to-local-sync
-  execution plan with mapped acceptance and verification standards.
-- `docs/curation-harness-model.md`: continuous curation loop and upstream
-  input boundary for the Skill-specific downstream consumer lane.
+- `registry/program-acceptance-map.json`: stable strategic objective,
+  acceptance, verification, and evidence relationships with honest current
+  assessments.
+- `docs/curation-program-plan.md`: machine-plan projection, strategic baseline,
+  delivery lifecycle, and current stage-closeout reconciliation state.
+- `docs/curation-harness-model.md`: continuous curation loop, first-terminal MVP,
+  layered reliability, multi-Agent consumer, and standard-candidate boundaries.
 - `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
   and stage-closeout contract for iterative curation rounds.
 - `docs/round02-candidate-review-2026-07-02.md`: round-02 candidate-specific

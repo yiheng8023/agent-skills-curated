@@ -1,0 +1,377 @@
+{
+  "schema": 1,
+  "id": "curation-program-acceptance-map-v1",
+  "programPlan": "registry/curation-program-plan.json",
+  "assessmentVocabulary": [
+    "planned",
+    "partial",
+    "verified",
+    "stale",
+    "blocked",
+    "not-applicable"
+  ],
+  "objectives": [
+    {
+      "id": "objective.skills-terminal-mvp",
+      "acceptanceIds": [
+        "acceptance.skills-terminal-positioning",
+        "acceptance.future-terminal-boundary"
+      ]
+    },
+    {
+      "id": "objective.reviewed-third-party-governance",
+      "acceptanceIds": [
+        "acceptance.third-party-admission-gates",
+        "acceptance.official-runtime-boundary"
+      ]
+    },
+    {
+      "id": "objective.multi-agent-consumer-mapping",
+      "acceptanceIds": [
+        "acceptance.agent-neutral-release",
+        "acceptance.consumer-mapping-evidence"
+      ]
+    },
+    {
+      "id": "objective.layered-collaboration-reliability",
+      "acceptanceIds": [
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence"
+      ]
+    },
+    {
+      "id": "objective.standard-candidate-extraction",
+      "acceptanceIds": [
+        "acceptance.standard-candidate-contract",
+        "acceptance.calibration-custody-boundary",
+        "acceptance.external-standard-authority-boundary"
+      ]
+    },
+    {
+      "id": "objective.lifecycle-metabolism",
+      "acceptanceIds": [
+        "acceptance.feedback-loop",
+        "acceptance.deprecation-retirement-loop"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "acceptance.skills-terminal-positioning",
+      "statement": "The program identifies reviewed Skills as the first low-burden terminal MVP inside a broader resource-governance funnel.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.program-role-projection"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.harness-model"
+      ]
+    },
+    {
+      "id": "acceptance.future-terminal-boundary",
+      "statement": "The program does not claim that this repository owns future non-Skill terminal releases or upstream resource governance.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.program-role-projection"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.readme"
+      ]
+    },
+    {
+      "id": "acceptance.third-party-admission-gates",
+      "statement": "Third-party Skill payload requires pinned provenance, license, security, portability, overlap, adaptation, validation, and approval evidence before release.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.repository-governance"
+      ],
+      "evidenceIds": [
+        "evidence.verify-script",
+        "evidence.release-manifest",
+        "evidence.round02-admission"
+      ]
+    },
+    {
+      "id": "acceptance.official-runtime-boundary",
+      "statement": "Official, runtime-owned, built-in, plugin-owned, and first-party Skill bodies remain environment-owned baselines rather than curated inventory.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.repository-governance"
+      ],
+      "evidenceIds": [
+        "evidence.readme",
+        "evidence.intake-policy"
+      ]
+    },
+    {
+      "id": "acceptance.agent-neutral-release",
+      "statement": "Approved release content and abstract capability topology remain agent-neutral, with product-specific integration kept outside curated payload authority.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.release-neutrality"
+      ],
+      "evidenceIds": [
+        "evidence.verify-script",
+        "evidence.release-manifest",
+        "evidence.readme"
+      ]
+    },
+    {
+      "id": "acceptance.consumer-mapping-evidence",
+      "statement": "Every supported consumer Agent has dated evidence for instruction discovery, Skill locations and ownership, precedence, projection, verification, backup, and restore behavior.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.consumer-mapping-inventory"
+      ],
+      "evidenceIds": [
+        "evidence.readme",
+        "evidence.round02-local-sync"
+      ]
+    },
+    {
+      "id": "acceptance.layered-reliability-model",
+      "statement": "The program defines a smallest-sufficient layered path from instructions through Skills, deterministic mechanisms, project standards, evidence, and human authority.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.layered-reliability-projection"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan"
+      ]
+    },
+    {
+      "id": "acceptance.project-standard-precedence",
+      "statement": "Conflicting generic Skill guidance defers to an admitted project-owned hard standard, while standard admission remains outside this repository.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.layered-reliability-projection"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan"
+      ]
+    },
+    {
+      "id": "acceptance.standard-candidate-contract",
+      "statement": "A reusable standard candidate package contract preserves source lineage, repeated evidence, scope, counterexamples, verification, versioning, migration, and authority boundaries.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.standard-candidate-contract"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.calibration-custody-boundary",
+      "statement": "Cross-project research and standard candidates do not remain solely in consumer configuration repositories; bounded packages target YIYUAN-CALIBRATION for durable calibration custody before any YIYUAN-ASSETS admission decision.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.calibration-custody-boundary"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.harness-model",
+        "evidence.readme",
+        "evidence.readme-zh"
+      ]
+    },
+    {
+      "id": "acceptance.external-standard-authority-boundary",
+      "statement": "This repository does not itself admit or publish CALIBRATION or ASSETS standards; cross-repository delivery requires separate authority, and YIYUAN-ASSETS retains project hard-standard admission authority.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.standard-authority-boundary"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan"
+      ]
+    },
+    {
+      "id": "acceptance.feedback-loop",
+      "statement": "Consumer, community, security, license, upstream-refresh, and validation feedback can return released content to review and revision.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.lifecycle-loop"
+      ],
+      "evidenceIds": [
+        "evidence.harness-model",
+        "evidence.lifecycle-policy"
+      ]
+    },
+    {
+      "id": "acceptance.deprecation-retirement-loop",
+      "statement": "The lifecycle supports update, supersession, deprecation, migration, rollback, and retirement without optimizing for inventory growth.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.lifecycle-loop"
+      ],
+      "evidenceIds": [
+        "evidence.lifecycle-policy"
+      ]
+    }
+  ],
+  "verifications": [
+    {
+      "id": "verification.program-role-projection",
+      "method": "Compare the machine program authority with the English and Chinese public projections and the continuous harness model.",
+      "expectedResult": "The first-terminal MVP, upstream boundary, future-terminal boundary, and non-ownership claims agree.",
+      "evidenceRequirement": "Current checked-in program, harness, and README paths."
+    },
+    {
+      "id": "verification.repository-governance",
+      "method": "Run the deterministic repository verifier and inspect the approved manifest and admission evidence.",
+      "command": "python -B scripts/verify.py",
+      "expectedResult": "Only approved, provenance-complete third-party payload is released and official/runtime bodies remain excluded.",
+      "evidenceRequirement": "Passing command output plus checked-in admission and manifest records."
+    },
+    {
+      "id": "verification.release-neutrality",
+      "method": "Run repository verification, topology checks, and release-manifest checks against agent-neutral contracts.",
+      "command": "python -B scripts/verify.py",
+      "expectedResult": "Approved payload and abstract topology do not claim consumer-specific runtime ownership.",
+      "evidenceRequirement": "Passing deterministic checks and reviewed public boundary text."
+    },
+    {
+      "id": "verification.consumer-mapping-inventory",
+      "method": "For each consumer, compare official documentation, local read-only configuration inventory, and minimal behavior probes under a separately authorized consumer-side task.",
+      "expectedResult": "Every claimed consumer mapping has dated evidence and unresolved consumers remain partial rather than inferred.",
+      "evidenceRequirement": "Consumer-owned dated mapping reports; current repository evidence alone is insufficient."
+    },
+    {
+      "id": "verification.layered-reliability-projection",
+      "method": "Check that program and harness projections define carrier roles, authority order, conflict precedence, and no-text-only reliability claim.",
+      "expectedResult": "Text, Skill, deterministic mechanism, project standard, evidence, and human authority roles are distinct and minimally sufficient.",
+      "evidenceRequirement": "Current program and harness projections; implementation coverage remains separately assessed."
+    },
+    {
+      "id": "verification.standard-candidate-contract",
+      "method": "Validate a future standard candidate schema and at least one evidence-backed fixture without performing an unauthorized cross-repository write.",
+      "expectedResult": "Candidate packages preserve lineage, declare YIYUAN-CALIBRATION as their calibration custody target, and remain non-authoritative until project admission.",
+      "evidenceRequirement": "A checked-in contract, fixtures, deterministic tests, an explicit calibration handoff target, and an external authority boundary."
+    },
+    {
+      "id": "verification.calibration-custody-boundary",
+      "method": "Inspect the machine-readable delivery fields and public projections for consumer configuration role, calibration custody target, and project admission authority.",
+      "expectedResult": "Consumer configuration repositories are evidence and feedback surfaces, YIYUAN-CALIBRATION is the durable calibration custody target, and YIYUAN-ASSETS owns project admission decisions.",
+      "evidenceRequirement": "Current program plan, harness model, and English and Chinese README projections."
+    },
+    {
+      "id": "verification.standard-authority-boundary",
+      "method": "Inspect the program authority and repository write boundaries.",
+      "expectedResult": "No calibration or product standard path is owned, written, or claimed as admitted by this repository.",
+      "evidenceRequirement": "Machine-readable non-goals and public boundary documentation."
+    },
+    {
+      "id": "verification.lifecycle-loop",
+      "method": "Inspect lifecycle policy, harness feedback inputs, and future round evidence for update, deprecation, migration, rollback, and retirement decisions.",
+      "expectedResult": "Lifecycle outcomes are evidence-backed and do not accumulate indefinitely by default.",
+      "evidenceRequirement": "Current policy and harness plus future decision records for implemented metabolism paths."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence.program-plan",
+      "path": "registry/curation-program-plan.json",
+      "kind": "machine-authority",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.skills-terminal-positioning",
+        "acceptance.future-terminal-boundary",
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence",
+        "acceptance.calibration-custody-boundary",
+        "acceptance.external-standard-authority-boundary"
+      ]
+    },
+    {
+      "id": "evidence.harness-model",
+      "path": "docs/curation-harness-model.md",
+      "kind": "human-projection",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.skills-terminal-positioning",
+        "acceptance.calibration-custody-boundary",
+        "acceptance.feedback-loop"
+      ]
+    },
+    {
+      "id": "evidence.readme",
+      "path": "README.md",
+      "kind": "public-projection",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.future-terminal-boundary",
+        "acceptance.official-runtime-boundary",
+        "acceptance.agent-neutral-release",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.calibration-custody-boundary"
+      ]
+    },
+    {
+      "id": "evidence.readme-zh",
+      "path": "README.zh-CN.md",
+      "kind": "public-projection-zh",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.calibration-custody-boundary"
+      ]
+    },
+    {
+      "id": "evidence.verify-script",
+      "path": "scripts/verify.py",
+      "kind": "deterministic-verifier",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.third-party-admission-gates",
+        "acceptance.agent-neutral-release"
+      ]
+    },
+    {
+      "id": "evidence.release-manifest",
+      "path": "release-manifest.json",
+      "kind": "release-projection",
+      "asOf": "2026-07-02",
+      "supports": [
+        "acceptance.third-party-admission-gates",
+        "acceptance.agent-neutral-release"
+      ]
+    },
+    {
+      "id": "evidence.round02-admission",
+      "path": "registry/round02-release-admission-candidate-review.json",
+      "kind": "admission-evidence",
+      "asOf": "2026-07-02",
+      "supports": [
+        "acceptance.third-party-admission-gates"
+      ]
+    },
+    {
+      "id": "evidence.intake-policy",
+      "path": "policies/intake.md",
+      "kind": "governance-policy",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.official-runtime-boundary"
+      ]
+    },
+    {
+      "id": "evidence.round02-local-sync",
+      "path": "registry/round02-local-runtime-sync-execution.json",
+      "kind": "dated-consumer-execution-evidence",
+      "asOf": "2026-07-02",
+      "supports": [
+        "acceptance.consumer-mapping-evidence"
+      ]
+    },
+    {
+      "id": "evidence.lifecycle-policy",
+      "path": "policies/lifecycle.md",
+      "kind": "governance-policy",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.feedback-loop",
+        "acceptance.deprecation-retirement-loop"
+      ]
+    }
+  ]
+}

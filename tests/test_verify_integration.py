@@ -78,6 +78,12 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             "schemas/v2/capabilities.schema.json", verify_script.REQUIRED_FILES
         )
 
+    def test_program_acceptance_map_is_a_required_verifier_input(self) -> None:
+        self.assertIn(
+            "registry/program-acceptance-map.json",
+            verify_script.REQUIRED_FILES,
+        )
+
     def test_current_verifier_accepts_the_checked_in_schema2_capability_registry(self) -> None:
         document = verify_script.load("registry/capabilities.json")
         self.assertEqual(document["schema"], 2)
@@ -108,6 +114,91 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             with self.assertRaises(ContractError) as raised:
                 verify_script.verify()
         self.assertEqual(raised.exception.pointer, pointer)
+
+    def assert_verify_runtime_error(
+        self,
+        path: str,
+        mutation: dict[str, object],
+        message: str,
+    ) -> None:
+        original_load = verify_script.load
+
+        def load_with_mutation(candidate: str) -> dict[str, object]:
+            if candidate == path:
+                return deepcopy(mutation)
+            return original_load(candidate)
+
+        with patch.object(verify_script, "load", side_effect=load_with_mutation):
+            with self.assertRaisesRegex(RuntimeError, message):
+                verify_script.verify()
+
+    def test_rejects_program_objective_with_unknown_acceptance_reference(self) -> None:
+        path = "registry/program-acceptance-map.json"
+        document = verify_script.load(path)
+        document["objectives"][0]["acceptanceIds"] = ["acceptance.missing"]
+        self.assert_verify_runtime_error(path, document, "unknown acceptance id")
+
+    def test_rejects_verified_program_acceptance_without_evidence(self) -> None:
+        path = "registry/program-acceptance-map.json"
+        document = verify_script.load(path)
+        criterion = document["acceptanceCriteria"][0]
+        criterion["assessment"] = "verified"
+        criterion["evidenceIds"] = []
+        self.assert_verify_runtime_error(
+            path,
+            document,
+            "verified acceptance requires evidence",
+        )
+
+    def test_round02_waits_for_closeout_instead_of_claiming_active_execution(self) -> None:
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        round02 = next(
+            item
+            for item in rounds["rounds"]
+            if item["id"] == "round-02-source-intake-and-filtering"
+        )
+        self.assertEqual(round02["status"], "needs-closeout")
+        self.assertEqual(round02["lifecycle"]["execute"], "closed")
+        self.assertEqual(round02["lifecycle"]["acceptance"], "passed")
+        self.assertEqual(round02["lifecycle"]["stageCloseout"], "pending")
+
+    def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        program["steps"][0]["status"] = "evidence-recorded"
+        verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_program_rejects_current_state_mismatch(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        program["currentState"] = "complete"
+        with self.assertRaisesRegex(
+            RuntimeError,
+            "currentState must match the current step status",
+        ):
+            verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_program_routes_standard_candidate_custody_to_calibration(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        delivery = program["strategicPositioning"]["standardCandidateDelivery"]
+        self.assertEqual(delivery["researchAndCandidateCustody"], "YIYUAN-CALIBRATION")
+        self.assertFalse(delivery["consumerConfigurationMayBeDurableAuthority"])
+        self.assertEqual(delivery["projectAdmissionAuthority"], "YIYUAN-ASSETS")
+        objective = next(
+            item
+            for item in program["strategicObjectives"]
+            if item["id"] == "objective.standard-candidate-extraction"
+        )
+        self.assertIn("acceptance.calibration-custody-boundary", objective["acceptanceIds"])
+
+    def test_program_rejects_user_configuration_as_standard_custody(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        program["strategicPositioning"]["standardCandidateDelivery"][
+            "researchAndCandidateCustody"
+        ] = "codex-user-config"
+        with self.assertRaisesRegex(RuntimeError, "preserve CALIBRATION custody"):
+            verify_script.validate_curation_program_plan(program, rounds)
 
     def test_rejects_skill_unknown_field_before_semantic_access(self) -> None:
         document = verify_script.load("registry/skills.json")

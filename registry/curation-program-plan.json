@@ -1,17 +1,122 @@
 {
   "schema": 1,
   "id": "curation-program-plan-v1",
-  "purpose": "Overall execution plan for expanding curated Skills from discovery through reviewed release and final local Codex, agents, and cc Switch alignment. This is not approval, release inventory, runtime installation evidence, or local sync authorization.",
+  "purpose": "Overall execution plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from candidate intake through release, consumer-owned projection evidence, feedback, and lifecycle renewal. This is not approval, release inventory, runtime installation evidence, local sync authorization, or project hard-standard admission.",
   "status": "active",
-  "currentStep": "program-02-source-intake-and-filtering",
+  "currentStep": "program-06-local-runtime-alignment-closeout",
+  "currentState": "needs-reconciliation",
   "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
+  "acceptanceMap": "registry/program-acceptance-map.json",
   "controlledSurfaces": [
     "agent-skills-curated repository",
     "approved release manifest",
     "generated routing projections",
-    "local Codex skills directory",
-    "local agents skills directory",
-    "local cc Switch skills directory"
+    "reviewed third-party Skill bodies and provenance",
+    "program acceptance mapping",
+    "dated consumer integration evidence"
+  ],
+  "strategicPositioning": {
+    "systemRole": "first-terminal-mvp-for-reviewed-skills",
+    "broaderFunnel": "YIYUAN-MERIDIAN and upstream resource-governance systems may feed many terminal projections; this repository governs only the reviewed Skills terminal.",
+    "internalAndExternalAudience": true,
+    "authorityOrder": [
+      "consumer or project instructions and rules",
+      "reviewed Skills and Recipes",
+      "scripts, schemas, and validators",
+      "consumer-owned Hooks, CI, or runtime controls",
+      "project-owned hard standards",
+      "evidence and accountable human decisions"
+    ],
+    "standardCandidateBoundary": "This repository may extract reusable standard candidate packages from reviewed Skill evidence. Those packages are intended for delivery to YIYUAN-CALIBRATION for durable calibration custody; YIYUAN-ASSETS retains project hard-standard admission authority. Consumer configuration repositories are consumption, validation, and feedback surfaces, not durable research or standards custody.",
+    "standardCandidateDelivery": {
+      "researchAndCandidateCustody": "YIYUAN-CALIBRATION",
+      "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
+      "consumerConfigurationMayBeDurableAuthority": false,
+      "projectAdmissionAuthority": "YIYUAN-ASSETS",
+      "currentTransactionCrossRepositoryWritesAuthorized": false
+    },
+    "futureTerminalBoundary": "Future non-Skill terminals may reuse broader upstream governance, but they are not release inventory owned by this repository."
+  },
+  "strategicObjectives": [
+    {
+      "id": "objective.skills-terminal-mvp",
+      "statement": "Operate reviewed Skills as the first low-burden terminal MVP without collapsing the broader resource funnel into a Skills-only system.",
+      "authorityOwner": "agent-skills-curated",
+      "nonGoals": [
+        "owning YIYUAN-MERIDIAN or resource-radar architecture",
+        "releasing every future terminal type"
+      ],
+      "acceptanceIds": [
+        "acceptance.skills-terminal-positioning",
+        "acceptance.future-terminal-boundary"
+      ]
+    },
+    {
+      "id": "objective.reviewed-third-party-governance",
+      "statement": "Govern third-party Skill bodies through pinned provenance, license, security, portability, overlap, adaptation, validation, release, and lifecycle gates.",
+      "authorityOwner": "agent-skills-curated",
+      "nonGoals": [
+        "vendoring official or runtime-owned Skill bodies",
+        "treating candidates as executable inventory"
+      ],
+      "acceptanceIds": [
+        "acceptance.third-party-admission-gates",
+        "acceptance.official-runtime-boundary"
+      ]
+    },
+    {
+      "id": "objective.multi-agent-consumer-mapping",
+      "statement": "Provide agent-neutral release assets while requiring evidence-backed consumer mappings for each Agent's instruction, Skill, ownership, precedence, projection, restore, and verification behavior.",
+      "authorityOwner": "consumer-configuration-or-runtime-layer",
+      "nonGoals": [
+        "claiming a universal AGENTS.md or Skills-directory precedence",
+        "owning live Agent installation state"
+      ],
+      "acceptanceIds": [
+        "acceptance.agent-neutral-release",
+        "acceptance.consumer-mapping-evidence"
+      ]
+    },
+    {
+      "id": "objective.layered-collaboration-reliability",
+      "statement": "Use the smallest sufficient combination of text, Skills, deterministic mechanisms, project standards, evidence, and human authority instead of relying on instruction prose alone.",
+      "authorityOwner": "shared-by-curated-consumer-and-project-layers",
+      "nonGoals": [
+        "claiming Skills raise model capability ceilings",
+        "turning every task into a heavy control workflow"
+      ],
+      "acceptanceIds": [
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence"
+      ]
+    },
+    {
+      "id": "objective.standard-candidate-extraction",
+      "statement": "Extract bounded, traceable standard candidate packages from repeated Skill-governance evidence without claiming project-standard authority.",
+      "authorityOwner": "agent-skills-curated-for-candidate-evidence-only",
+      "nonGoals": [
+        "writing directly to YIYUAN-CALIBRATION or YIYUAN-ASSETS in this program",
+        "publishing private ASSETS hard standards"
+      ],
+      "acceptanceIds": [
+        "acceptance.standard-candidate-contract",
+        "acceptance.calibration-custody-boundary",
+        "acceptance.external-standard-authority-boundary"
+      ]
+    },
+    {
+      "id": "objective.lifecycle-metabolism",
+      "statement": "Continuously re-evaluate upstream updates, conflicts, safety, usage feedback, deprecation, migration, rollback, and retirement instead of accumulating Skills indefinitely.",
+      "authorityOwner": "agent-skills-curated-for-release-lifecycle",
+      "nonGoals": [
+        "optimizing for Skill count",
+        "claiming an absolute completion state"
+      ],
+      "acceptanceIds": [
+        "acceptance.feedback-loop",
+        "acceptance.deprecation-retirement-loop"
+      ]
+    }
   ],
   "upstreamInputBoundary": {
     "role": "downstream-consumer-of-broader-resource-governance-inputs",
@@ -116,7 +221,7 @@
     },
     {
       "id": "program-02-source-intake-and-filtering",
-      "status": "active",
+      "status": "evidence-recorded",
       "mapsToRound": "round-02-source-intake-and-filtering",
       "goal": "Pin small, reviewable source batches and prepare them for license, provenance, security, portability, and overlap review.",
       "actions": [
@@ -161,7 +266,7 @@
     },
     {
       "id": "program-03-review-and-adaptation",
-      "status": "planned",
+      "status": "evidence-recorded",
       "mapsToRound": "round-02-source-intake-and-filtering",
       "goal": "Review pinned candidates and create neutral, portable, non-duplicative adaptation decisions before any release change.",
       "actions": [
@@ -198,18 +303,16 @@
         "local Codex/agents/cc-switch sync"
       ],
       "closeoutEvidence": [
-        "license review evidence",
-        "security review evidence",
-        "portability review evidence",
-        "overlap review evidence",
-        "candidate disposition record"
+        "registry/round02-candidate-reviews.json",
+        "registry/round02-release-admission-candidate-review.json",
+        "docs/round02-candidate-review-2026-07-02.md"
       ],
       "nextGate": "program-04-curated-admission-and-release"
     },
     {
       "id": "program-04-curated-admission-and-release",
-      "status": "planned",
-      "mapsToRound": "round-03-adaptation-and-curated-admission",
+      "status": "evidence-recorded",
+      "mapsToRound": "round-02-source-intake-and-filtering",
       "goal": "Admit only approved adapted payload, update topology and release inventory, and prove the repository remains internally consistent.",
       "actions": [
         "apply approved adapted payload changes",
@@ -250,16 +353,16 @@
         "unapproved source redistribution"
       ],
       "closeoutEvidence": [
-        "release manifest diff",
-        "generated projection diff",
-        "full validation results",
-        "release decision record"
+        "registry/round02-approved-payload-routing-proposal.json",
+        "release-manifest.json",
+        "generated/routing-index.json",
+        "generated/routing-simulation-report.json"
       ],
       "nextGate": "program-05-consumer-projection-readiness"
     },
     {
       "id": "program-05-consumer-projection-readiness",
-      "status": "planned",
+      "status": "evidence-recorded",
       "mapsToRound": "post-release-consumer-readiness",
       "goal": "Prepare the approved curated release for downstream consumption without yet mutating local runtime directories.",
       "actions": [
@@ -296,15 +399,15 @@
         "modifying private consumer repositories"
       ],
       "closeoutEvidence": [
-        "consumer sync plan",
-        "read-only local inventory",
-        "approved release SHA"
+        "registry/round02-local-runtime-sync-approval-request.json",
+        "registry/round02-approved-payload-routing-proposal.json",
+        "docs/round02-local-runtime-sync-approval-request.md"
       ],
       "nextGate": "program-06-local-runtime-alignment-closeout"
     },
     {
       "id": "program-06-local-runtime-alignment-closeout",
-      "status": "planned",
+      "status": "needs-reconciliation",
       "mapsToRound": "local-runtime-stage-closeout",
       "goal": "Align local Codex, agents, and cc Switch Skill directories after approved release readiness and explicit local-write authorization.",
       "actions": [
@@ -344,12 +447,9 @@
         "claiming global completion without residual exception review"
       ],
       "closeoutEvidence": [
-        "pre-sync inventory",
-        "post-sync inventory",
-        "backup or rollback evidence",
-        "hash or content parity evidence",
-        "documented exceptions",
-        "final stage closeout"
+        "registry/round02-local-runtime-sync-execution.json",
+        "docs/round02-local-runtime-sync-execution.md",
+        "explicit Round 02 stage closeout is still missing"
       ]
     }
   ],
@@ -360,5 +460,5 @@
     "python -B scripts/simulate_routing.py --all",
     "python -B -m unittest discover -s tests -v"
   ],
-  "stageCloseoutRule": "Do not align local Codex, agents, or cc Switch Skill directories until the curated release is approved, consumer projection readiness is complete, and local-write authorization is explicit for the alignment stage."
+  "stageCloseoutRule": "Do not align local Codex, agents, cc Switch, or any future consumer Skill directories until the curated release is approved, consumer projection readiness is complete, and local-write authorization is explicit for that alignment stage. A dated execution record does not prove current live parity or completed program closeout."
 }

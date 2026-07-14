@@ -26,11 +26,30 @@ agent 环境迁移、云端同步/备份、验证和恢复模式。
 `kepano/obsidian-skills`。它们都具备完整、固定的 Git 来源；原先来源不完整的
 本地基线仅保留为非运行时历史证据。
 
+## 战略定位
+
+经过审查的 Skills 是 `YIYUAN-MERIDIAN` 更广资源治理漏斗中的首个末端 MVP。
+它们是低负担、跨 Agent 的切入点，可以为内外部消费者携带指导、资源、脚本和
+确定性检查；它们不是唯一可能的末端，也不把上游发现范围限制为 Skills。
+
+可靠性采用分层保障，而不是只依赖文本：instructions 与 rules 可以路由到 Skills 和
+Recipes；脚本、schemas 与 validators 负责可机器检查的行为；消费侧控制和项目内置
+硬标准仍属于更高权威的集成面。本仓可以从重复治理证据中提取可追溯的标准候选，
+但不负责准入、发布或安装项目硬标准。用户配置仓在这条链路中只承担消费、验证和
+反馈，不是跨项目调研或标准的长期托管位置；有边界的调研与标准候选包后续应交付到
+`YIYUAN-CALIBRATION` 校准和保管，再由 `YIYUAN-ASSETS` 独立决定是否准入为项目硬标准。
+
+战略目标到验收、验证和证据的稳定映射位于
+`registry/program-acceptance-map.json`。局部或带日期的证据必须保持 partial 或
+stale；仓库验证器通过不能证明当前 live Agent 状态。
+
 ## 本仓库不负责什么
 
 本仓库不负责用户配置、认证、运行时记忆、Plugins、Apps、MCP 账号状态、安装权限
 或 live 环境状态；不执行安装，不写入 `codex-user-config`、`claude-user-config`
 这类私有消费配置仓，也不写入 live Agent 环境。
+向 `YIYUAN-CALIBRATION` 交付材料属于另一项需要单独授权的跨仓事务，不是本仓验证或
+发布流程可以顺带执行的隐含副作用。
 
 本精选仓只治理第三方 Skill 正文和抽象、产品中立的能力分类，不治理、也不盘点官方、
 运行时所有、内置或第一方 Skill 正文。它们只能作为带日期的重叠审查证据出现；这类
@@ -79,8 +98,9 @@ agent-skills-curated
 除非经过专门脱敏，否则应保持私有。如需公开配置示例，应另建 `codex-user-config-template`
 或 `claude-user-config-template` 这类公开模板，使用占位值和用户自建指引，而不是复制私人仓库。
 
-更宽的公开侧仓库家族可由 `open-resource-governance` 解释。该总入口可以映射本仓、
-`resource-radar`、配置模板和书签分类仓，但不拥有 Skill release 决策、manifest 或运行时安装。
+更宽的公开侧仓库家族由 `YIYUAN-MERIDIAN` 映射。该总入口可以映射本仓、
+`resource-radar`、配置模板、书签分类仓和未来末端链路，但不拥有 Skill release
+决策、manifest 或运行时安装。
 
 ## 能力分层与路由
 
@@ -138,10 +158,12 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   recipe/routing projection，并把 runtime install proof 交给消费仓执行；
 - `docs/mvp06-lifecycle-feedback.md`：来自已验证消费仓安装结果的生命周期反馈，
   包含资源雷达去重元数据，以及下一批前先暂停观察的决策；
-- `docs/curation-program-plan.md`：从发现到发布再到本地同步的整体执行计划，
-  并映射每一步的验收与验证标准；
-- `docs/curation-harness-model.md`：持续策展闭环，以及 Skill 专项下游消费链路
-  的上游输入边界；
+- `registry/program-acceptance-map.json`：稳定的战略目标、验收、验证和证据关系，
+  并记录诚实的当前评估；
+- `docs/curation-program-plan.md`：机器计划的人类投影、战略基线、交付生命周期和
+  当前阶段收官对账状态；
+- `docs/curation-harness-model.md`：持续策展闭环、首个末端 MVP、分层可靠性、
+  多 Agent 消费边界和标准候选边界；
 - `docs/round-lifecycle-contract.md`：迭代式策展轮次的计划、执行、验收和阶段性
   收官契约；
 - `docs/round02-candidate-review-2026-07-02.md`：round-02 逐来源候选处置证据；

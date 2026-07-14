@@ -7,6 +7,7 @@ import json
 import re
 import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 
 from contracts import (
@@ -60,6 +61,7 @@ REQUIRED_FILES = (
     "registry/collaboration-domain-coverage.json",
     "registry/curation-expansion-rounds.json",
     "registry/curation-program-plan.json",
+    "registry/program-acceptance-map.json",
     "registry/round-lifecycle-contract.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
@@ -191,6 +193,7 @@ def verify() -> None:
     collaboration_domain_coverage_doc = load("registry/collaboration-domain-coverage.json")
     curation_expansion_rounds_doc = load("registry/curation-expansion-rounds.json")
     curation_program_plan_doc = load("registry/curation-program-plan.json")
+    program_acceptance_map_doc = load("registry/program-acceptance-map.json")
     round_lifecycle_contract_doc = load("registry/round-lifecycle-contract.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
@@ -244,6 +247,7 @@ def verify() -> None:
     validate_collaboration_domain_coverage(collaboration_domain_coverage_doc)
     validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
     validate_curation_program_plan(curation_program_plan_doc, curation_expansion_rounds_doc)
+    validate_program_acceptance_map(program_acceptance_map_doc, curation_program_plan_doc)
     validate_round_lifecycle_contract(round_lifecycle_contract_doc, curation_expansion_rounds_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
@@ -753,6 +757,170 @@ def validate_collaboration_domain_coverage(document: dict[str, object]) -> None:
         raise RuntimeError("Collaboration domain coverage missing required domains: " + ", ".join(missing))
 
 
+def validate_program_acceptance_map(
+    document: dict[str, object],
+    program_doc: dict[str, object],
+) -> None:
+    """Validate objective -> acceptance -> verification -> evidence traceability."""
+    if document.get("schema") != 1:
+        raise RuntimeError("Program acceptance map schema must be 1.")
+    if document.get("programPlan") != "registry/curation-program-plan.json":
+        raise RuntimeError("Program acceptance map must reference the curation program plan.")
+    if program_doc.get("acceptanceMap") != "registry/program-acceptance-map.json":
+        raise RuntimeError("Curation program plan must reference the program acceptance map.")
+
+    expected_assessments = {
+        "planned",
+        "partial",
+        "verified",
+        "stale",
+        "blocked",
+        "not-applicable",
+    }
+    if set(document.get("assessmentVocabulary", [])) != expected_assessments:
+        raise RuntimeError("Program acceptance assessment vocabulary drifted.")
+
+    def records(key: str) -> list[dict[str, object]]:
+        value = document.get(key)
+        if not isinstance(value, list) or not value:
+            raise RuntimeError(f"Program acceptance map {key} must be a non-empty list.")
+        if not all(isinstance(item, dict) for item in value):
+            raise RuntimeError(f"Program acceptance map {key} entries must be objects.")
+        return value
+
+    def index_by_id(key: str) -> dict[str, dict[str, object]]:
+        indexed: dict[str, dict[str, object]] = {}
+        for item in records(key):
+            item_id = item.get("id")
+            if not isinstance(item_id, str) or not item_id:
+                raise RuntimeError(f"Program acceptance map {key} id is required.")
+            if item_id in indexed:
+                raise RuntimeError(f"Program acceptance map duplicate id: {item_id}")
+            indexed[item_id] = item
+        return indexed
+
+    objectives = index_by_id("objectives")
+    criteria = index_by_id("acceptanceCriteria")
+    verifications = index_by_id("verifications")
+    evidence = index_by_id("evidence")
+
+    program_objectives = program_doc.get("strategicObjectives")
+    if not isinstance(program_objectives, list) or not program_objectives:
+        raise RuntimeError("Curation program strategic objectives are required.")
+    program_objective_ids = {
+        item.get("id")
+        for item in program_objectives
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    if program_objective_ids != set(objectives):
+        raise RuntimeError("Program acceptance objective set must match the program plan.")
+
+    referenced_criteria: set[str] = set()
+    for objective_id, objective in objectives.items():
+        acceptance_ids = objective.get("acceptanceIds")
+        if not isinstance(acceptance_ids, list) or not acceptance_ids:
+            raise RuntimeError(f"Program objective requires acceptance ids: {objective_id}")
+        for acceptance_id in acceptance_ids:
+            if acceptance_id not in criteria:
+                raise RuntimeError(
+                    f"Program objective {objective_id} references unknown acceptance id: {acceptance_id}"
+                )
+            referenced_criteria.add(str(acceptance_id))
+        program_objective = next(
+            item
+            for item in program_objectives
+            if isinstance(item, dict) and item.get("id") == objective_id
+        )
+        if program_objective.get("acceptanceIds") != acceptance_ids:
+            raise RuntimeError(f"Program objective acceptance mapping drifted: {objective_id}")
+    if referenced_criteria != set(criteria):
+        raise RuntimeError("Every program acceptance criterion must be referenced by an objective.")
+
+    referenced_verifications: set[str] = set()
+    referenced_evidence: set[str] = set()
+    for criterion_id, criterion in criteria.items():
+        statement = criterion.get("statement")
+        if not isinstance(statement, str) or not statement:
+            raise RuntimeError(f"Program acceptance statement is required: {criterion_id}")
+        assessment = criterion.get("assessment")
+        if assessment not in expected_assessments:
+            raise RuntimeError(f"Program acceptance assessment invalid: {criterion_id}")
+        verification_ids = criterion.get("verificationIds")
+        if not isinstance(verification_ids, list) or not verification_ids:
+            raise RuntimeError(f"Program acceptance requires verification ids: {criterion_id}")
+        for verification_id in verification_ids:
+            if verification_id not in verifications:
+                raise RuntimeError(
+                    f"Program acceptance {criterion_id} references unknown verification id: {verification_id}"
+                )
+            referenced_verifications.add(str(verification_id))
+        evidence_ids = criterion.get("evidenceIds")
+        if not isinstance(evidence_ids, list):
+            raise RuntimeError(f"Program acceptance evidence ids must be a list: {criterion_id}")
+        if assessment == "verified" and not evidence_ids:
+            raise RuntimeError(
+                f"Program verified acceptance requires evidence: {criterion_id}"
+            )
+        for evidence_id in evidence_ids:
+            if evidence_id not in evidence:
+                raise RuntimeError(
+                    f"Program acceptance {criterion_id} references unknown evidence id: {evidence_id}"
+                )
+            supports = evidence[evidence_id].get("supports")
+            if not isinstance(supports, list) or criterion_id not in supports:
+                raise RuntimeError(
+                    f"Program evidence {evidence_id} does not declare support for {criterion_id}"
+                )
+            referenced_evidence.add(str(evidence_id))
+
+    if referenced_verifications != set(verifications):
+        raise RuntimeError("Every program verification must be referenced by acceptance criteria.")
+    if referenced_evidence != set(evidence):
+        raise RuntimeError("Every program evidence record must be referenced by acceptance criteria.")
+
+    for verification_id, verification in verifications.items():
+        for key in ["method", "expectedResult", "evidenceRequirement"]:
+            value = verification.get(key)
+            if not isinstance(value, str) or not value:
+                raise RuntimeError(
+                    f"Program verification {key} is required: {verification_id}"
+                )
+        command = verification.get("command")
+        if command is not None and not isinstance(command, str):
+            raise RuntimeError(f"Program verification command must be text: {verification_id}")
+
+    criterion_ids = set(criteria)
+    for evidence_id, evidence_record in evidence.items():
+        path = evidence_record.get("path")
+        if not isinstance(path, str) or not path:
+            raise RuntimeError(f"Program evidence path is required: {evidence_id}")
+        if not (ROOT / path).is_file():
+            raise RuntimeError(f"Program evidence path does not exist: {path}")
+        kind = evidence_record.get("kind")
+        if not isinstance(kind, str) or not kind:
+            raise RuntimeError(f"Program evidence kind is required: {evidence_id}")
+        as_of = evidence_record.get("asOf")
+        try:
+            evidence_date = date.fromisoformat(str(as_of))
+        except ValueError as error:
+            raise RuntimeError(f"Program evidence asOf date invalid: {evidence_id}") from error
+        if evidence_date > date.today():
+            raise RuntimeError(f"Program evidence asOf date is in the future: {evidence_id}")
+        supports = evidence_record.get("supports")
+        if not isinstance(supports, list) or not supports:
+            raise RuntimeError(f"Program evidence supports are required: {evidence_id}")
+        unknown_supports = set(supports) - criterion_ids
+        if unknown_supports:
+            raise RuntimeError(
+                f"Program evidence {evidence_id} references unknown acceptance ids: {sorted(unknown_supports)}"
+            )
+        for criterion_id in supports:
+            if evidence_id not in criteria[criterion_id].get("evidenceIds", []):
+                raise RuntimeError(
+                    f"Program evidence support is not referenced by acceptance {criterion_id}: {evidence_id}"
+                )
+
+
 def validate_curation_expansion_rounds(
     document: dict[str, object],
     coverage_doc: dict[str, object],
@@ -778,7 +946,7 @@ def validate_curation_expansion_rounds(
         if not isinstance(round_id, str) or not round_id:
             raise RuntimeError("Curation expansion round id is required.")
         round_ids.append(round_id)
-        if item.get("status") not in {"active", "planned", "closed"}:
+        if item.get("status") not in {"active", "planned", "needs-closeout", "closed"}:
             raise RuntimeError(f"Curation expansion round status invalid: {round_id}")
         for key in ["goal", "allowedChanges", "blockedChanges", "exitCriteria"]:
             value = item.get(key)
@@ -809,6 +977,23 @@ def validate_curation_expansion_rounds(
                 raise RuntimeError(f"Active curation round must have recorded plan and active execution: {round_id}")
             if lifecycle.get("stageCloseout") != "pending":
                 raise RuntimeError(f"Active curation round must not be stage-closed: {round_id}")
+        elif item.get("status") == "needs-closeout":
+            expected = {
+                "plan": "recorded",
+                "execute": "closed",
+                "acceptance": "passed",
+                "stageCloseout": "pending",
+            }
+            if lifecycle != expected:
+                raise RuntimeError(f"Closeout-pending curation round lifecycle mismatch: {round_id}")
+            evidence = item.get("evidence")
+            if not isinstance(evidence, list) or not evidence:
+                raise RuntimeError(f"Closeout-pending curation round requires evidence: {round_id}")
+            for path in evidence:
+                if not isinstance(path, str) or not (ROOT / path).is_file():
+                    raise RuntimeError(f"Closeout-pending curation round evidence is missing: {path}")
+            if not isinstance(item.get("nextGate"), str) or not item.get("nextGate"):
+                raise RuntimeError(f"Closeout-pending curation round requires next gate: {round_id}")
         elif item.get("status") == "planned":
             expected = {
                 "plan": "planned",
@@ -822,12 +1007,22 @@ def validate_curation_expansion_rounds(
         raise RuntimeError("Curation expansion round ids must be unique.")
     if document.get("currentRound") not in round_ids:
         raise RuntimeError("Curation expansion currentRound must reference a known round.")
-    sync_deferral = document.get("syncDeferral")
-    if not isinstance(sync_deferral, dict) or sync_deferral.get("status") != "deferred":
-        raise RuntimeError("Curation expansion must defer local runtime sync.")
-    reason = str(sync_deferral.get("reason", "")).lower()
-    if "after" not in reason:
-        raise RuntimeError("Curation expansion sync deferral must explain after-condition.")
+    consumer_boundary = document.get("consumerProjectionBoundary")
+    if not isinstance(consumer_boundary, dict):
+        raise RuntimeError("Curation expansion consumer projection boundary is required.")
+    if consumer_boundary.get("status") != "consumer-owned":
+        raise RuntimeError("Curation expansion live integration must remain consumer-owned.")
+    latest_evidence = consumer_boundary.get("latestDatedEvidence")
+    if not isinstance(latest_evidence, str) or not (ROOT / latest_evidence).is_file():
+        raise RuntimeError("Curation expansion consumer projection evidence is missing.")
+    if consumer_boundary.get("currentLiveStateClaimed") is not False:
+        raise RuntimeError("Curation expansion must not claim current live consumer state.")
+    reason = str(consumer_boundary.get("reason", "")).lower()
+    for phrase in ["dated", "consumer-owned", "fresh evidence"]:
+        if phrase not in reason:
+            raise RuntimeError(
+                f"Curation expansion consumer projection boundary missing phrase: {phrase}"
+            )
     if not coverage_doc.get("domains"):
         raise RuntimeError("Curation expansion rounds require collaboration domain coverage.")
 
@@ -844,8 +1039,18 @@ def validate_curation_program_plan(
             raise RuntimeError(f"Curation program plan purpose missing phrase: {phrase}")
     if document.get("status") != "active":
         raise RuntimeError("Curation program plan must be active.")
-    if document.get("currentStep") != "program-02-source-intake-and-filtering":
-        raise RuntimeError("Curation program plan currentStep drifted.")
+    current_step = document.get("currentStep")
+    if not isinstance(current_step, str) or not current_step:
+        raise RuntimeError("Curation program plan currentStep is required.")
+    allowed_program_states = {
+        "planned",
+        "active",
+        "evidence-recorded",
+        "needs-reconciliation",
+        "complete",
+    }
+    if document.get("currentState") not in allowed_program_states:
+        raise RuntimeError("Curation program plan currentState is invalid.")
     if document.get("stageCloseoutTarget") != "program-06-local-runtime-alignment-closeout":
         raise RuntimeError("Curation program plan stage closeout target drifted.")
     surfaces = set(document.get("controlledSurfaces", []))
@@ -853,12 +1058,67 @@ def validate_curation_program_plan(
         "agent-skills-curated repository",
         "approved release manifest",
         "generated routing projections",
-        "local Codex skills directory",
-        "local agents skills directory",
-        "local cc Switch skills directory",
+        "reviewed third-party Skill bodies and provenance",
+        "program acceptance mapping",
+        "dated consumer integration evidence",
     }:
         if required not in surfaces:
             raise RuntimeError(f"Curation program plan missing controlled surface: {required}")
+
+    positioning = document.get("strategicPositioning")
+    if not isinstance(positioning, dict):
+        raise RuntimeError("Curation program strategic positioning is required.")
+    if positioning.get("systemRole") != "first-terminal-mvp-for-reviewed-skills":
+        raise RuntimeError("Curation program must identify the reviewed Skills terminal MVP.")
+    if positioning.get("internalAndExternalAudience") is not True:
+        raise RuntimeError("Curation program must preserve its internal and external audience.")
+    positioning_text = " ".join(str(value) for value in positioning.values()).lower()
+    for phrase in [
+        "resource-governance systems",
+        "project-owned hard standards",
+        "standard candidate",
+        "future non-skill terminals",
+    ]:
+        if phrase not in positioning_text:
+            raise RuntimeError(f"Curation program strategic positioning missing phrase: {phrase}")
+
+    delivery = positioning.get("standardCandidateDelivery")
+    expected_delivery = {
+        "researchAndCandidateCustody": "YIYUAN-CALIBRATION",
+        "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
+        "consumerConfigurationMayBeDurableAuthority": False,
+        "projectAdmissionAuthority": "YIYUAN-ASSETS",
+        "currentTransactionCrossRepositoryWritesAuthorized": False,
+    }
+    if delivery != expected_delivery:
+        raise RuntimeError(
+            "Curation program standard candidate delivery must preserve CALIBRATION custody, "
+            "consumer non-authority, ASSETS admission, and the current no-write boundary."
+        )
+
+    strategic_objectives = document.get("strategicObjectives")
+    if not isinstance(strategic_objectives, list) or len(strategic_objectives) != 6:
+        raise RuntimeError("Curation program must define six strategic objectives.")
+    objective_ids: list[str] = []
+    for objective in strategic_objectives:
+        if not isinstance(objective, dict):
+            raise RuntimeError("Curation program strategic objectives must be objects.")
+        objective_id = objective.get("id")
+        if not isinstance(objective_id, str) or not objective_id:
+            raise RuntimeError("Curation program strategic objective id is required.")
+        objective_ids.append(objective_id)
+        for key in ["statement", "authorityOwner"]:
+            if not isinstance(objective.get(key), str) or not objective.get(key):
+                raise RuntimeError(
+                    f"Curation program strategic objective {key} is required: {objective_id}"
+                )
+        for key in ["nonGoals", "acceptanceIds"]:
+            if not isinstance(objective.get(key), list) or not objective.get(key):
+                raise RuntimeError(
+                    f"Curation program strategic objective {key} is required: {objective_id}"
+                )
+    if len(objective_ids) != len(set(objective_ids)):
+        raise RuntimeError("Curation program strategic objective ids must be unique.")
 
     upstream_boundary = document.get("upstreamInputBoundary")
     if not isinstance(upstream_boundary, dict):
@@ -946,20 +1206,15 @@ def validate_curation_program_plan(
         for item in rounds_doc.get("rounds", [])
         if isinstance(item, dict)
     }
-    expected_status = {
-        "program-01-discovery-and-coverage": "complete",
-        "program-02-source-intake-and-filtering": "active",
-        "program-03-review-and-adaptation": "planned",
-        "program-04-curated-admission-and-release": "planned",
-        "program-05-consumer-projection-readiness": "planned",
-        "program-06-local-runtime-alignment-closeout": "planned",
-    }
+    step_statuses: dict[str, str] = {}
     for step in steps:
         if not isinstance(step, dict):
             raise RuntimeError("Curation program plan steps must be objects.")
         step_id = step.get("id")
-        if step.get("status") != expected_status.get(step_id):
-            raise RuntimeError(f"Curation program plan step status drifted: {step_id}")
+        step_status = step.get("status")
+        if step_status not in allowed_program_states:
+            raise RuntimeError(f"Curation program plan step status invalid: {step_id}")
+        step_statuses[str(step_id)] = str(step_status)
         if step.get("mapsToRound") not in round_ids and not str(step.get("mapsToRound", "")).startswith(("post-release", "local-runtime")):
             raise RuntimeError(f"Curation program plan step mapsToRound is invalid: {step_id}")
         for key in [
@@ -992,6 +1247,23 @@ def validate_curation_program_plan(
             ]:
                 if phrase not in acceptance_text:
                     raise RuntimeError(f"Local closeout acceptance missing phrase: {phrase}")
+        if step.get("status") in {"evidence-recorded", "needs-reconciliation", "complete"}:
+            closeout_evidence = step.get("closeoutEvidence", [])
+            existing_paths = [
+                item
+                for item in closeout_evidence
+                if isinstance(item, str) and (ROOT / item).is_file()
+            ]
+            if not existing_paths:
+                raise RuntimeError(
+                    f"Curation program evidence state requires checked-in evidence: {step_id}"
+                )
+    if current_step not in step_statuses:
+        raise RuntimeError("Curation program currentStep must reference a known step.")
+    if step_statuses[current_step] != document.get("currentState"):
+        raise RuntimeError("Curation program currentState must match the current step status.")
+    if document.get("stageCloseoutTarget") not in step_statuses:
+        raise RuntimeError("Curation program stageCloseoutTarget must reference a known step.")
     required_global_verification = {
         "python -B scripts/verify.py",
         "python -B scripts/build_release_manifest.py --check",
@@ -1005,27 +1277,35 @@ def validate_curation_program_plan(
     for phrase in ["local codex", "agents", "cc switch", "approved", "authorization"]:
         if phrase not in closeout_rule:
             raise RuntimeError(f"Curation program plan closeout rule missing phrase: {phrase}")
-    doc = (ROOT / "docs/curation-program-plan.md").read_text(encoding="utf-8")
+    doc = " ".join(
+        (ROOT / "docs/curation-program-plan.md").read_text(encoding="utf-8").split()
+    )
     for phrase in [
+        "first terminal MVP",
+        "registry/program-acceptance-map.json",
+        "stage-closeout reconciliation",
         "discovery and coverage",
         "source intake and filtering",
         "review and adaptation",
         "curated admission and release",
         "consumer projection readiness",
         "local runtime alignment closeout",
-        ".agents/skills",
-        ".cc-switch/skills",
-        ".codex/skills",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
-    harness_doc = (ROOT / "docs/curation-harness-model.md").read_text(encoding="utf-8")
+    harness_doc = " ".join(
+        (ROOT / "docs/curation-harness-model.md").read_text(encoding="utf-8").split()
+    )
     for phrase in [
         "continuous curation harness",
         "github:yiheng8023/YIYUAN-MERIDIAN",
         "does not treat upstream discovery as approval",
-        "discover",
-        "rediscover-or-revise",
+        "broader resource discovery",
+        "standard candidate",
+        "YIYUAN-CALIBRATION",
+        "not the durable authority",
+        "project-owned hard standards",
+        "Future terminals",
         "commercial delivery artifacts",
         "no absolute completion state",
     ]:
@@ -1041,6 +1321,14 @@ def validate_curation_program_plan(
         raise RuntimeError("README.md must link curation harness model.")
     if "docs/curation-harness-model.md" not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link curation harness model.")
+    if "registry/program-acceptance-map.json" not in readme:
+        raise RuntimeError("README.md must link program acceptance map.")
+    if "registry/program-acceptance-map.json" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must link program acceptance map.")
+    if "YIYUAN-CALIBRATION" not in readme or "durable research or standards custody" not in readme:
+        raise RuntimeError("README.md must preserve the calibration custody boundary.")
+    if "YIYUAN-CALIBRATION" not in readme_zh or "长期托管位置" not in readme_zh:
+        raise RuntimeError("README.zh-CN.md must preserve the calibration custody boundary.")
 
 
 def validate_round_lifecycle_contract(
@@ -1094,24 +1382,51 @@ def validate_round_lifecycle_contract(
         raise RuntimeError("Round lifecycle currentApplication must reference the round registry.")
     if current_application.get("currentRound") != rounds_doc.get("currentRound"):
         raise RuntimeError("Round lifecycle currentRound must match the round registry.")
-    if current_application.get("phaseState") != "execute_active":
-        raise RuntimeError("Round lifecycle current phase state must reflect active execution.")
-    if current_application.get("stageCloseout") != "not_ready":
-        raise RuntimeError("Round lifecycle current stage closeout must not be ready yet.")
+    current_round = next(
+        (
+            item
+            for item in rounds_doc.get("rounds", [])
+            if isinstance(item, dict) and item.get("id") == rounds_doc.get("currentRound")
+        ),
+        None,
+    )
+    if current_round is None:
+        raise RuntimeError("Round lifecycle current round must resolve.")
+    expected_application_state = {
+        "planned": ("plan_pending", "not_ready"),
+        "active": ("execute_active", "not_ready"),
+        "needs-closeout": ("stage_closeout_pending", "needs_reconciliation"),
+        "closed": ("stage_closed", "closed"),
+    }.get(current_round.get("status"))
+    if expected_application_state is None:
+        raise RuntimeError("Round lifecycle current round status is unsupported.")
+    if current_application.get("phaseState") != expected_application_state[0]:
+        raise RuntimeError("Round lifecycle phase state must match the current round status.")
+    if current_application.get("stageCloseout") != expected_application_state[1]:
+        raise RuntimeError("Round lifecycle closeout state must match the current round status.")
+    evidence = current_application.get("evidence")
+    if not isinstance(evidence, list) or not evidence:
+        raise RuntimeError("Round lifecycle current application evidence is required.")
+    for path in evidence:
+        if not isinstance(path, str) or not (ROOT / path).is_file():
+            raise RuntimeError(f"Round lifecycle current evidence is missing: {path}")
     deferred_actions = current_application.get("deferredActions")
     if not isinstance(deferred_actions, list):
         raise RuntimeError("Round lifecycle deferred actions are required.")
-    for required in [
-        "approved payload admission",
-        "release manifest changes",
-        "runtime installation",
-        "local Codex/agents/cc-switch sync",
-    ]:
-        if required not in deferred_actions:
-            raise RuntimeError(f"Round lifecycle deferred action missing: {required}")
+    if not deferred_actions:
+        raise RuntimeError("Round lifecycle deferred actions must not be empty.")
+    if current_round.get("status") == "needs-closeout":
+        deferred_text = " ".join(str(item) for item in deferred_actions).lower()
+        for phrase in ["claiming", "live runtime parity", "new candidate intake"]:
+            if phrase not in deferred_text:
+                raise RuntimeError(
+                    f"Round lifecycle closeout deferral missing phrase: {phrase}"
+                )
     if not isinstance(current_application.get("nextRequiredEvidence"), list) or not current_application.get("nextRequiredEvidence"):
         raise RuntimeError("Round lifecycle next required evidence is required.")
-    doc = (ROOT / "docs/round-lifecycle-contract.md").read_text(encoding="utf-8")
+    doc = " ".join(
+        (ROOT / "docs/round-lifecycle-contract.md").read_text(encoding="utf-8").split()
+    )
     for phrase in [
         "Plan",
         "Execute",
