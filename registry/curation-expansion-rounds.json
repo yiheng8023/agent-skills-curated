@@ -67,9 +67,10 @@
       "evidence": [
         "registry/round02-release-admission-candidate-review.json",
         "registry/round02-approved-payload-routing-proposal.json",
-        "registry/round02-local-runtime-sync-execution.json"
+        "registry/round02-local-runtime-sync-execution.json",
+        "registry/round02-stage-closeout-review.json"
       ],
-      "nextGate": "round-02-stage-closeout-reconciliation"
+      "nextGate": "owner-reviewed-round-02-stage-closeout-decision"
     },
     {
       "id": "round-03-adaptation-and-curated-admission",

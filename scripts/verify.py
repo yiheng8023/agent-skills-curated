@@ -85,6 +85,10 @@ REQUIRED_FILES = (
     "registry/round02-release-execution-approval-request.json",
     "registry/round02-approved-payload-routing-approval-events.json",
     "registry/round02-approved-payload-routing-proposal.json",
+    "registry/round02-local-runtime-sync-approval-request.json",
+    "registry/round02-local-runtime-sync-approval-events.json",
+    "registry/round02-local-runtime-sync-execution.json",
+    "registry/round02-stage-closeout-review.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -141,6 +145,10 @@ REQUIRED_FILES = (
     "docs/round02-approved-payload-routing-proposal-template.md",
     "docs/round02-release-execution-approval-request.md",
     "docs/round02-approved-payload-routing-proposal.md",
+    "docs/round02-local-runtime-sync-approval-request.md",
+    "docs/round02-local-runtime-sync-execution.md",
+    "docs/round02-stage-closeout-review.md",
+    "docs/round02-stage-closeout-review.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -218,6 +226,8 @@ def verify() -> None:
     round02_release_execution_approval_request_doc = load("registry/round02-release-execution-approval-request.json")
     round02_approved_payload_routing_approval_events_doc = load("registry/round02-approved-payload-routing-approval-events.json")
     round02_approved_payload_routing_proposal_doc = load("registry/round02-approved-payload-routing-proposal.json")
+    round02_local_runtime_sync_execution_doc = load("registry/round02-local-runtime-sync-execution.json")
+    round02_stage_closeout_review_doc = load("registry/round02-stage-closeout-review.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -348,6 +358,16 @@ def verify() -> None:
         scenarios_doc,
         manifest,
         sources_doc,
+    )
+    validate_round02_stage_closeout_review(
+        round02_stage_closeout_review_doc,
+        curation_expansion_rounds_doc,
+        curation_program_plan_doc,
+        round_lifecycle_contract_doc,
+        source_intake_batches_doc,
+        round02_release_admission_candidate_review_doc,
+        round02_approved_payload_routing_proposal_doc,
+        round02_local_runtime_sync_execution_doc,
     )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
@@ -5260,6 +5280,234 @@ def validate_round02_approved_payload_routing_proposal(
     simulation_report = load("generated/routing-simulation-report.json")
     if simulation_report.get("scenarioCount") != 105 or simulation_report.get("failed") != 0:
         raise RuntimeError("Round-02 routing simulation report must cover 105 passing scenarios.")
+
+
+def validate_round02_stage_closeout_review(
+    document: dict[str, object],
+    rounds_doc: dict[str, object],
+    program_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    intake_doc: dict[str, object],
+    admission_review_doc: dict[str, object],
+    proposal_doc: dict[str, object],
+    runtime_sync_doc: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Round 02 stage-closeout review schema must be 1.")
+    if document.get("id") != "round02-stage-closeout-review-2026-07-15":
+        raise RuntimeError("Round 02 stage-closeout review id drifted.")
+    if document.get("status") != "owner_decision_required":
+        raise RuntimeError("Round 02 stage-closeout review must remain owner-decision pending.")
+    if document.get("roundId") != "round-02-source-intake-and-filtering":
+        raise RuntimeError("Round 02 stage-closeout review round id drifted.")
+    if document.get("lifecycleContract") != "registry/round-lifecycle-contract.json#stageCloseout":
+        raise RuntimeError("Round 02 stage-closeout review lifecycle contract drifted.")
+    if document.get("programPlan") != "registry/curation-program-plan.json#initiative.round02-stage-closeout-reconciliation":
+        raise RuntimeError("Round 02 stage-closeout review program initiative drifted.")
+
+    expected_docs = {
+        "docs/round02-stage-closeout-review.md",
+        "docs/round02-stage-closeout-review.zh-CN.md",
+    }
+    if set(document.get("evidenceDocs", [])) != expected_docs:
+        raise RuntimeError("Round 02 stage-closeout review evidence docs drifted.")
+    for path in expected_docs:
+        if not (ROOT / path).is_file():
+            raise RuntimeError(f"Round 02 stage-closeout review evidence doc is missing: {path}")
+    evidence = document.get("evidence")
+    if not isinstance(evidence, list) or not evidence:
+        raise RuntimeError("Round 02 stage-closeout review evidence is required.")
+    for reference in evidence:
+        if not isinstance(reference, str):
+            raise RuntimeError("Round 02 stage-closeout evidence references must be strings.")
+        path = reference.split("#", 1)[0]
+        if not (ROOT / path).is_file():
+            raise RuntimeError(f"Round 02 stage-closeout evidence is missing: {path}")
+
+    round02 = next(
+        (
+            item
+            for item in rounds_doc.get("rounds", [])
+            if isinstance(item, dict)
+            and item.get("id") == "round-02-source-intake-and-filtering"
+        ),
+        None,
+    )
+    if round02 is None:
+        raise RuntimeError("Round 02 stage-closeout review cannot resolve Round 02.")
+    if round02.get("status") != "needs-closeout":
+        raise RuntimeError("Round 02 must remain needs-closeout before owner decision.")
+    lifecycle = round02.get("lifecycle", {})
+    if lifecycle.get("stageCloseout") != "pending":
+        raise RuntimeError("Round 02 stageCloseout must remain pending before owner decision.")
+    if "registry/round02-stage-closeout-review.json" not in round02.get("evidence", []):
+        raise RuntimeError("Round 02 round registry must link the closeout review.")
+    if round02.get("nextGate") != "owner-reviewed-round-02-stage-closeout-decision":
+        raise RuntimeError("Round 02 next gate must be the owner closeout decision.")
+
+    initiative = next(
+        (
+            item
+            for item in program_doc.get("currentInitiatives", [])
+            if isinstance(item, dict)
+            and item.get("id") == "initiative.round02-stage-closeout-reconciliation"
+        ),
+        None,
+    )
+    if initiative is None or initiative.get("status") != "needs-reconciliation":
+        raise RuntimeError("Round 02 closeout initiative must remain pending.")
+    if initiative.get("decisionPreparation") != "registry/round02-stage-closeout-review.json":
+        raise RuntimeError("Round 02 closeout initiative must link the decision preparation.")
+
+    current_application = lifecycle_doc.get("currentApplication", {})
+    if current_application.get("stageCloseout") != "needs_reconciliation":
+        raise RuntimeError("Round lifecycle must remain in closeout reconciliation.")
+    if "registry/round02-stage-closeout-review.json" not in current_application.get("evidence", []):
+        raise RuntimeError("Round lifecycle must link the closeout review.")
+    if current_application.get("nextRequiredEvidence") != [
+        "owner-reviewed Round 02 stage-closeout decision event"
+    ]:
+        raise RuntimeError("Round lifecycle next evidence must be the owner decision event.")
+
+    expected_requirement_ids = {
+        "round02.exit.source-pin-and-license-review",
+        "round02.exit.candidate-dispositions",
+        "round02.exit.approval-before-release",
+        "round02.closeout.verification",
+        "round02.closeout.residual-risk-and-next-decision",
+    }
+    reconciliation = document.get("requirementReconciliation")
+    if not isinstance(reconciliation, list):
+        raise RuntimeError("Round 02 requirement reconciliation is required.")
+    requirement_ids = {
+        item.get("id") for item in reconciliation if isinstance(item, dict)
+    }
+    if requirement_ids != expected_requirement_ids:
+        raise RuntimeError("Round 02 requirement reconciliation coverage drifted.")
+    if any(item.get("assessment") != "covered" for item in reconciliation):
+        raise RuntimeError("Round 02 proposed closeout requires every stated requirement to be covered.")
+    for item in reconciliation:
+        if not item.get("evidence") or not item.get("result"):
+            raise RuntimeError("Round 02 reconciled requirements need evidence and results.")
+
+    batch = next(
+        (
+            item
+            for item in intake_doc.get("batches", [])
+            if isinstance(item, dict) and item.get("id") == "round02-source-intake-2026-07-02"
+        ),
+        None,
+    )
+    if batch is None:
+        raise RuntimeError("Round 02 source intake batch is missing.")
+    source_ids = [
+        item.get("id") for item in batch.get("sources", []) if isinstance(item, dict)
+    ]
+    source_summary = document.get("sourceSummary", {})
+    if source_summary.get("sourceCount") != 3 or source_summary.get("pinnedAndLicenseReviewedCount") != 3:
+        raise RuntimeError("Round 02 source closeout counts drifted.")
+    if source_summary.get("sourceIds") != source_ids:
+        raise RuntimeError("Round 02 source closeout ids must match the intake batch.")
+    if source_ids != round02.get("candidateSourceIds"):
+        raise RuntimeError("Round 02 source intake and round registry drifted.")
+    for source in batch.get("sources", []):
+        if not isinstance(source, dict):
+            raise RuntimeError("Round 02 source intake entries must be objects.")
+        revision = str(source.get("revision", ""))
+        if len(revision) != 40 or source.get("license") != "MIT":
+            raise RuntimeError("Round 02 closeout requires full revisions and reviewed MIT licenses.")
+
+    decisions = [
+        item
+        for item in admission_review_doc.get("candidate_decisions", [])
+        if isinstance(item, dict)
+    ]
+    observed_dispositions: dict[str, int] = {}
+    for item in decisions:
+        decision = str(item.get("decision", ""))
+        observed_dispositions[decision] = observed_dispositions.get(decision, 0) + 1
+    candidate_summary = document.get("candidateOutcomeSummary", {})
+    if candidate_summary.get("reviewedCandidateCount") != len(decisions):
+        raise RuntimeError("Round 02 reviewed candidate count drifted.")
+    if candidate_summary.get("reviewDispositionCounts") != observed_dispositions:
+        raise RuntimeError("Round 02 candidate disposition counts drifted.")
+    executions = [
+        item for item in proposal_doc.get("candidate_executions", []) if isinstance(item, dict)
+    ]
+    execution_types: dict[str, int] = {}
+    for item in executions:
+        execution_type = str(item.get("execution_type", ""))
+        execution_types[execution_type] = execution_types.get(execution_type, 0) + 1
+    if candidate_summary.get("executedApprovedChangeCount") != len(executions):
+        raise RuntimeError("Round 02 executed approved change count drifted.")
+    if candidate_summary.get("executedApprovedChanges") != execution_types:
+        raise RuntimeError("Round 02 executed approved change classes drifted.")
+    if candidate_summary.get("deferredOrNonReleaseCount") != len(decisions) - len(executions):
+        raise RuntimeError("Round 02 deferred candidate count drifted.")
+    if runtime_sync_doc.get("status") != "passed_with_junction_fallback":
+        raise RuntimeError("Round 02 closeout must reference the recorded passing runtime sync evidence.")
+
+    expected_risks = {
+        "risk.current-live-consumer-parity-unverified": "unverified",
+        "risk.deferred-high-boundary-candidates": "deferred",
+        "risk.upstream-evidence-aging": "deferred",
+        "risk.round03-contract-overlap": "needs-rebaseline",
+    }
+    risks = {
+        item.get("id"): item.get("status")
+        for item in document.get("residualRisks", [])
+        if isinstance(item, dict)
+    }
+    if risks != expected_risks:
+        raise RuntimeError("Round 02 residual-risk record drifted.")
+    if not document.get("deferredWork"):
+        raise RuntimeError("Round 02 deferred work must remain visible.")
+    if document.get("recommendedOutcome") != "complete":
+        raise RuntimeError("Round 02 review recommendation drifted.")
+    if document.get("recommendedNextDecision") != "close-round-02-and-pause-for-round-03-rebaseline":
+        raise RuntimeError("Round 02 next-decision recommendation drifted.")
+
+    authority = document.get("authorityBoundary", {})
+    expected_authority = {
+        "ownerDecisionRequired": True,
+        "roundStateMutationApplied": False,
+        "round03ActivationAuthorized": False,
+        "remotePushAuthorized": False,
+        "globalProgramCompletionClaimed": False,
+    }
+    if authority != expected_authority:
+        raise RuntimeError("Round 02 closeout authority boundary drifted.")
+    option_ids = {
+        item.get("id")
+        for item in document.get("decisionOptions", [])
+        if isinstance(item, dict)
+    }
+    if option_ids != {"accept-recommended-closeout", "return-for-more-evidence"}:
+        raise RuntimeError("Round 02 owner decision options drifted.")
+    if document.get("nextGate") != "owner-reviewed Round 02 stage-closeout decision":
+        raise RuntimeError("Round 02 stage-closeout next gate drifted.")
+
+    doc_requirements = {
+        "docs/round02-stage-closeout-review.md": [
+            "Owner Decision Required",
+            "Recommended Round 02 outcome: `complete`",
+            "Round 03 remains inactive",
+            "does not mutate the round state",
+            "Remote push remains outside",
+        ],
+        "docs/round02-stage-closeout-review.zh-CN.md": [
+            "等待所有者决策",
+            "建议将 Round 02 的阶段结果判定为：`complete`",
+            "Round 03 仍未激活",
+            "不允许修改 Round 02 的关闭状态",
+            "不包含远端推送授权",
+        ],
+    }
+    for path, phrases in doc_requirements.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 02 closeout doc missing phrase in {path}: {phrase}")
 
 
 def validate_mvp06_radar_feedback_projection(

@@ -165,11 +165,12 @@ The program-control completeness initiative was accepted by the owner and
 merged locally into `main`; the bounded event is recorded in
 `registry/program-control-acceptance-event-2026-07-15.json`. The machine-bound
 current initiative is now `initiative.round02-stage-closeout-reconciliation`
-with status `needs-reconciliation`. The next execution gate is a
-requirement-by-requirement Round 02 stage-closeout reconciliation
-that records covered scope, verification evidence, residual risks, deferred
-work, current authority boundaries, and the explicit next-round or pause
-decision. No new candidate intake should inherit an unclosed Round 02 state.
+with status `needs-reconciliation`. The requirement-by-requirement review is
+recorded in `registry/round02-stage-closeout-review.json` with English and
+Chinese human projections. It recommends closing Round 02 and pausing before
+Round 03 is rebaselined, but it does not mutate the round state. The next gate
+is the owner-reviewed Round 02 stage-closeout decision. No new candidate intake
+should inherit an unclosed Round 02 state.
 
 The capability-survey and residual-gap initiative is planned. Its plan and
 acceptance design may proceed, but external discovery execution remains blocked

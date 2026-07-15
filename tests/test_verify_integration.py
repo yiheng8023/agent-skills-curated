@@ -162,6 +162,25 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         self.assertEqual(round02["lifecycle"]["acceptance"], "passed")
         self.assertEqual(round02["lifecycle"]["stageCloseout"], "pending")
 
+    def test_round02_closeout_review_prepares_but_does_not_apply_owner_decision(self) -> None:
+        review = verify_script.load("registry/round02-stage-closeout-review.json")
+        self.assertEqual(review["status"], "owner_decision_required")
+        self.assertEqual(review["recommendedOutcome"], "complete")
+        self.assertEqual(
+            review["recommendedNextDecision"],
+            "close-round-02-and-pause-for-round-03-rebaseline",
+        )
+        self.assertTrue(review["authorityBoundary"]["ownerDecisionRequired"])
+        self.assertFalse(review["authorityBoundary"]["roundStateMutationApplied"])
+        self.assertFalse(review["authorityBoundary"]["round03ActivationAuthorized"])
+        self.assertFalse(review["authorityBoundary"]["remotePushAuthorized"])
+
+    def test_round02_closeout_review_rejects_premature_state_mutation(self) -> None:
+        path = "registry/round02-stage-closeout-review.json"
+        review = verify_script.load(path)
+        review["authorityBoundary"]["roundStateMutationApplied"] = True
+        self.assert_verify_runtime_error(path, review, "authority boundary drifted")
+
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         rounds = verify_script.load("registry/curation-expansion-rounds.json")

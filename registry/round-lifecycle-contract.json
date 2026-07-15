@@ -150,7 +150,8 @@
     "stageCloseout": "needs_reconciliation",
     "evidence": [
       "registry/round02-approved-payload-routing-proposal.json",
-      "registry/round02-local-runtime-sync-execution.json"
+      "registry/round02-local-runtime-sync-execution.json",
+      "registry/round02-stage-closeout-review.json"
     ],
     "deferredActions": [
       "claiming Round 02 stage closeout",
@@ -158,9 +159,7 @@
       "starting a new candidate intake round before closeout reconciliation"
     ],
     "nextRequiredEvidence": [
-      "Round 02 requirement-by-requirement closeout reconciliation",
-      "explicit residual-risk and deferred-work record",
-      "next-round or pause decision"
+      "owner-reviewed Round 02 stage-closeout decision event"
     ]
   }
 }

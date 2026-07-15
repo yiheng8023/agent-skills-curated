@@ -243,7 +243,8 @@
       "evidenceIds": [
         "evidence.program-plan",
         "evidence.verify-script",
-        "evidence.completeness-audit"
+        "evidence.completeness-audit",
+        "evidence.round02-stage-closeout-review"
       ]
     },
     {
@@ -271,7 +272,8 @@
       "evidenceIds": [
         "evidence.verify-script",
         "evidence.release-manifest",
-        "evidence.round02-admission"
+        "evidence.round02-admission",
+        "evidence.round02-stage-closeout-review"
       ]
     },
     {
@@ -668,6 +670,16 @@
       "asOf": "2026-07-02",
       "supports": [
         "acceptance.consumer-mapping-evidence"
+      ]
+    },
+    {
+      "id": "evidence.round02-stage-closeout-review",
+      "path": "registry/round02-stage-closeout-review.json",
+      "kind": "closeout-decision-preparation",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.third-party-admission-gates",
+        "acceptance.sequence-integrity"
       ]
     },
     {

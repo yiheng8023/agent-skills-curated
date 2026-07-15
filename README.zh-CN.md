@@ -233,6 +233,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-local-runtime-sync-execution.md`：已记录的本地 runtime sync
   执行结果；将 cc-switch hash 对齐到 Round-02 manifest，并记录 agents 与 Codex
   使用 Junction fallback 链接；
+- `docs/round02-stage-closeout-review.zh-CN.md`：Round 02 逐项收口决策包；建议关闭
+  本轮并暂停，先重基线 Round 03，但它本身不关闭轮次，也不授权远端推送；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

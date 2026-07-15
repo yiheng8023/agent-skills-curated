@@ -259,7 +259,8 @@
       "blockedActions": ["new candidate-intake round activation", "claiming current live runtime parity", "claiming global program completion"],
       "resultPackage": ["Round 02 requirement reconciliation", "residual risks and deferred work", "next-round or pause decision"],
       "acceptanceIds": ["acceptance.third-party-admission-gates", "acceptance.sequence-integrity"],
-      "decisionGate": "owner-reviewed Round 02 stage-closeout outcome"
+      "decisionGate": "owner-reviewed Round 02 stage-closeout outcome",
+      "decisionPreparation": "registry/round02-stage-closeout-review.json"
     },
     {
       "id": "initiative.capability-survey-gap-proof",
@@ -737,7 +738,8 @@
       "closeoutEvidence": [
         "registry/round02-local-runtime-sync-execution.json",
         "docs/round02-local-runtime-sync-execution.md",
-        "explicit Round 02 stage closeout is still missing"
+        "registry/round02-stage-closeout-review.json",
+        "owner-reviewed Round 02 closeout decision is still missing"
       ]
     }
   ],

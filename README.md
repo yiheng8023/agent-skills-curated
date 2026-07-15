@@ -320,6 +320,9 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-local-runtime-sync-execution.md`: recorded local runtime sync
   execution; aligns cc-switch hashes to the Round-02 manifest and records
   Junction fallback links for agents and Codex.
+- `docs/round02-stage-closeout-review.md`: requirement-by-requirement Round-02
+  closeout decision package; recommends bounded round closure plus a pause for
+  Round-03 rebaselining, but does not close the round or authorize a push.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
