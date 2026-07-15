@@ -240,6 +240,8 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   `complete` 结论，并继续明确残余风险与不授权事项；
 - `docs/round03-capability-survey-rebaseline.zh-CN.md`：用证据优先的能力调研替换
   已与实际成果重叠的旧 Round 03 计划；所有者审查前不激活发现执行；
+- `docs/round03-demand-coordinate-source-contract.zh-CN.md`：锁定 STM/P/SG 只读输入、
+  证据状态和晋升防火墙；不复制外部研究正文，也不授权发现执行；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

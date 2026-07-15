@@ -92,6 +92,7 @@
       ],
       "exitCriteria": [
         "the capability-survey goal, scope, sequence, data boundary, authority boundary, and stop rule are explicit",
+        "the read-only STM, P, and SG source identities, evidence states, and promotion firewall are source-pinned and verified",
         "all ten required result-package items map to acceptance and verification surfaces",
         "owner review decides whether bounded read-only discovery may activate"
       ],
@@ -103,7 +104,8 @@
       },
       "evidence": [
         "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
-        "registry/round03-capability-survey-rebaseline.json"
+        "registry/round03-capability-survey-rebaseline.json",
+        "registry/round03-demand-coordinate-source-contract.json"
       ],
       "nextGate": "owner-reviewed-round-03-capability-survey-rebaseline"
     }

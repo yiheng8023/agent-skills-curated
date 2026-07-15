@@ -6,6 +6,10 @@ Round 03 仍未激活。原先的“适配与精选准入”计划，与 Round 0
 完成的工作存在重叠。本提案建议把 Round 03 的直接执行方向改为：先做证据驱动的能力
 调研与残余缺口证明。
 
+`registry/round03-demand-coordinate-source-contract.json` 现已按来源锁定只读 STM、P、SG
+输入，明确研究权威状态、证据词汇和晋升防火墙，同时不复制外部研究正文。具体需求记录
+仍要等所有者激活 Round 03 后再提取。
+
 ## 建议工序
 
 ```text

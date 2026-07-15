@@ -175,6 +175,9 @@ separately approved Round 02 follow-on gates. The machine-bound current
 initiative is `initiative.round03-capability-survey-rebaseline`, and its review
 package is `registry/round03-capability-survey-rebaseline.json`. The next gate
 is owner review of that rebaseline before any external discovery execution.
+Its demand inputs are pinned separately by
+`registry/round03-demand-coordinate-source-contract.json`; the source contract
+does not activate discovery or promote the consumer research into a standard.
 
 The capability-survey and residual-gap initiative remains planned behind the
 Round 03 rebaseline gate. Plan and acceptance design may proceed, but external

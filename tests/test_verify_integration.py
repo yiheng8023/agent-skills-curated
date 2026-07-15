@@ -84,6 +84,12 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             verify_script.REQUIRED_FILES,
         )
 
+    def test_round03_demand_coordinate_contract_is_a_required_verifier_input(self) -> None:
+        self.assertIn(
+            "registry/round03-demand-coordinate-source-contract.json",
+            verify_script.REQUIRED_FILES,
+        )
+
     def test_current_verifier_accepts_the_checked_in_schema2_capability_registry(self) -> None:
         document = verify_script.load("registry/capabilities.json")
         self.assertEqual(document["schema"], 2)
@@ -226,6 +232,34 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         rebaseline = verify_script.load(path)
         rebaseline["activationGate"]["externalDiscoveryAuthorizedByThisRecord"] = True
         self.assert_verify_runtime_error(path, rebaseline, "activation gate drifted")
+
+    def test_round03_demand_contract_pins_sources_without_promoting_them(self) -> None:
+        contract = verify_script.load(
+            "registry/round03-demand-coordinate-source-contract.json"
+        )
+        self.assertEqual(contract["status"], "verified-input-contract")
+        self.assertEqual(
+            {item["family"]: item["count"] for item in contract["coordinateFamilies"]},
+            {"STM": 26, "P": 24, "SG": 12},
+        )
+        self.assertTrue(contract["readiness"]["sourceIdentityVerified"])
+        self.assertFalse(contract["readiness"]["demandRecordExtractionComplete"])
+        self.assertFalse(contract["readiness"]["externalDiscoveryAuthorized"])
+        self.assertTrue(
+            all(not item["bodyRedistributionAuthorized"] for item in contract["sources"])
+        )
+
+    def test_round03_demand_contract_rejects_source_identity_drift(self) -> None:
+        path = "registry/round03-demand-coordinate-source-contract.json"
+        contract = verify_script.load(path)
+        contract["sources"][0]["sha256"] = "0" * 64
+        self.assert_verify_runtime_error(path, contract, "source identity drifted")
+
+    def test_round03_demand_contract_rejects_premature_discovery_authority(self) -> None:
+        path = "registry/round03-demand-coordinate-source-contract.json"
+        contract = verify_script.load(path)
+        contract["readiness"]["externalDiscoveryAuthorized"] = True
+        self.assert_verify_runtime_error(path, contract, "readiness drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")

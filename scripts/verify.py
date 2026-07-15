@@ -91,6 +91,7 @@ REQUIRED_FILES = (
     "registry/round02-stage-closeout-review.json",
     "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
     "registry/round03-capability-survey-rebaseline.json",
+    "registry/round03-demand-coordinate-source-contract.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -155,6 +156,8 @@ REQUIRED_FILES = (
     "docs/round02-stage-closeout-acceptance.zh-CN.md",
     "docs/round03-capability-survey-rebaseline.md",
     "docs/round03-capability-survey-rebaseline.zh-CN.md",
+    "docs/round03-demand-coordinate-source-contract.md",
+    "docs/round03-demand-coordinate-source-contract.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -236,6 +239,7 @@ def verify() -> None:
     round02_stage_closeout_review_doc = load("registry/round02-stage-closeout-review.json")
     round02_stage_closeout_acceptance_event_doc = load("registry/round02-stage-closeout-acceptance-event-2026-07-15.json")
     round03_capability_survey_rebaseline_doc = load("registry/round03-capability-survey-rebaseline.json")
+    round03_demand_coordinate_source_contract_doc = load("registry/round03-demand-coordinate-source-contract.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -385,8 +389,16 @@ def verify() -> None:
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
     )
+    validate_round03_demand_coordinate_source_contract(
+        round03_demand_coordinate_source_contract_doc,
+        curation_expansion_rounds_doc,
+        curation_program_plan_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
     validate_round03_capability_survey_rebaseline(
         round03_capability_survey_rebaseline_doc,
+        round03_demand_coordinate_source_contract_doc,
         curation_expansion_rounds_doc,
         curation_program_plan_doc,
         round_lifecycle_contract_doc,
@@ -5683,8 +5695,251 @@ def validate_round02_stage_closeout_acceptance_event(
                 raise RuntimeError(f"Round 02 closeout acceptance doc missing phrase in {path}: {phrase}")
 
 
+def validate_round03_demand_coordinate_source_contract(
+    document: dict[str, object],
+    rounds_doc: dict[str, object],
+    program_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-demand-coordinate-source-contract-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-input-contract",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "nextGate": "owner-reviewed Round 03 capability-survey rebaseline",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 demand-coordinate source contract {key} drifted.")
+
+    expected_binding = {
+        "kind": "user-provided-handoff",
+        "locator": "C:/tmp/agent-skills-curated-capability-survey-handoff-20260714.md",
+        "sha256": "0baedfbf6cb25ff3f30ffba0322f131e02509b37e56a8574cc4d2528a2d0d7a7",
+        "bytes": 20564,
+        "lines": 441,
+    }
+    binding = document.get("bindingSource", {})
+    for key, expected in expected_binding.items():
+        if binding.get(key) != expected:
+            raise RuntimeError(f"Round 03 demand-coordinate handoff {key} drifted.")
+    if "navigation aid" not in str(binding.get("role", "")).lower():
+        raise RuntimeError("Round 03 handoff must remain a non-authoritative navigation aid.")
+
+    expected_sources = {
+        "demand-source.research-refresh": (
+            "docs/audits/human-ai-shortfall-research-refresh-20260712.md",
+            "6c284d003529495d454d5bd8035348a8c347869f2b670a07602fd31380c2f0cd",
+            22234,
+            293,
+        ),
+        "demand-source.evidence-ledger": (
+            "docs/audits/human-ai-shortfall-evidence-ledger-20260712.md",
+            "fb6f339f40a711a0943c956b6fcd6e6a3ee8434bddc1ab9169c65c8fce90c496",
+            50688,
+            331,
+        ),
+        "demand-source.two-layer-taxonomy": (
+            "docs/audits/human-ai-shortfall-two-layer-taxonomy-20260712.md",
+            "2b134dcea65d6e3c6bfdd1386debc421ca1572a4e6bb1610f393dea1eeaa5f4a",
+            21330,
+            369,
+        ),
+        "demand-source.problem-owner-gap-matrix": (
+            "docs/audits/m1-problem-owner-standard-gap-matrix-20260712.md",
+            "dd671768dba9c5ce408f5c33dd88f42125fb4b4027bbbcfc0c36cc679991b9f5",
+            39151,
+            338,
+        ),
+    }
+    sources = {
+        item.get("id"): item
+        for item in document.get("sources", [])
+        if isinstance(item, dict)
+    }
+    if set(sources) != set(expected_sources):
+        raise RuntimeError("Round 03 demand-coordinate source set drifted.")
+    for source_id, expected in expected_sources.items():
+        source = sources[source_id]
+        path, digest, size, lines = expected
+        if (
+            source.get("sourceRepository") != "codex-user-config"
+            or source.get("repositoryRelativePath") != path
+            or source.get("sha256") != digest
+            or source.get("bytes") != size
+            or source.get("lines") != lines
+            or source.get("stage") != "M1/A1"
+        ):
+            raise RuntimeError(f"Round 03 demand-coordinate source identity drifted: {source_id}")
+        if source.get("bodyRedistributionAuthorized") is not False:
+            raise RuntimeError(f"Round 03 demand source body redistribution must remain blocked: {source_id}")
+        authority = str(source.get("authority", "")).lower()
+        if not any(marker in authority for marker in ["not", "only", "authorize no"]) or not any(
+            phrase in authority for phrase in ["standard", "audit structure", "diagnostic routing"]
+        ):
+            raise RuntimeError(f"Round 03 demand source authority is incomplete: {source_id}")
+
+    expected_families = {
+        "STM": ("STM-01", "STM-26", 26, "demand-source.two-layer-taxonomy", "candidate-audit-structure-only"),
+        "P": ("P1", "P24", 24, "demand-source.two-layer-taxonomy", "historical-alias-and-candidate-control-axis"),
+        "SG": ("SG-01", "SG-12", 12, "demand-source.problem-owner-gap-matrix", "candidate-routing-aid-only"),
+    }
+    families = {
+        item.get("family"): item
+        for item in document.get("coordinateFamilies", [])
+        if isinstance(item, dict)
+    }
+    if set(families) != set(expected_families):
+        raise RuntimeError("Round 03 demand-coordinate family set drifted.")
+    for family_id, expected in expected_families.items():
+        family = families[family_id]
+        actual = (
+            family.get("firstId"),
+            family.get("lastId"),
+            family.get("count"),
+            family.get("sourceId"),
+            family.get("authorityState"),
+        )
+        if actual != expected or not family.get("axis"):
+            raise RuntimeError(f"Round 03 demand-coordinate family drifted: {family_id}")
+
+    expected_vocabulary = {
+        "claimClass": ["FACT", "INTERPRETATION", "INFERENCE", "RECOMMENDATION", "NORMATIVE", "APPLICABILITY"],
+        "sourceKind": ["META", "PRIMARY-EMPIRICAL", "BENCHMARK", "PREPRINT", "LAW", "STANDARD", "OFFICIAL-GUIDANCE", "COMMUNITY-GUIDANCE", "VENDOR-PRACTICE", "PRACTITIONER-REFERENCE", "STANDARD-CATALOGUE", "SECONDARY-SYNTHESIS", "PROJECT-INFERENCE"],
+        "directness": ["D2-direct", "D1-indirect", "D0-unsupported"],
+        "empiricalStrength": ["ES-NA", "ES0", "ES1", "ES2", "ES3"],
+        "normativeAuthority": ["NA0", "NA1", "NA2", "NA3"],
+        "applicability": ["direct", "bounded-analogy", "out-of-scope", "unknown"],
+        "verificationState": ["not-checked", "locator-checked", "claim-checked", "version-mismatch", "contradicted", "held-source-gap"],
+        "adoptionState": ["not-adopted", "candidate", "candidate-with-limits", "held", "rejected", "superseded"],
+        "freshnessRequired": ["publication-or-update-date", "version-edition-article-report-or-stable-locator", "checked-at-date", "recheck-trigger"],
+    }
+    if document.get("evidenceVocabulary") != expected_vocabulary:
+        raise RuntimeError("Round 03 demand-coordinate evidence vocabulary drifted.")
+
+    binding_rules = " ".join(str(item) for item in document.get("bindingRules", [])).lower()
+    if len(document.get("bindingRules", [])) != 5:
+        raise RuntimeError("Round 03 demand-coordinate binding rules are incomplete.")
+    for phrase in [
+        "distinct many-to-many axes",
+        "does not prove recurrence",
+        "held claims",
+        "cannot support a residual-gap claim",
+        "not vendored",
+    ]:
+        if phrase not in binding_rules:
+            raise RuntimeError(f"Round 03 demand-coordinate binding rule missing phrase: {phrase}")
+
+    firewall = " ".join(str(item) for item in document.get("promotionFirewall", [])).lower()
+    if len(document.get("promotionFirewall", [])) != 4:
+        raise RuntimeError("Round 03 demand-coordinate promotion firewall is incomplete.")
+    for phrase in [
+        "cannot directly authorize a skill",
+        "residual failure",
+        "yiyuan-calibration",
+        "default remains no hook",
+    ]:
+        if phrase not in firewall:
+            raise RuntimeError(f"Round 03 demand-coordinate firewall missing phrase: {phrase}")
+    if len(document.get("recheckTriggers", [])) != 5:
+        raise RuntimeError("Round 03 demand-coordinate recheck triggers are incomplete.")
+
+    authority = document.get("authorityBoundary", {})
+    if len(authority.get("allowed", [])) != 3 or len(authority.get("blocked", [])) != 4:
+        raise RuntimeError("Round 03 demand-coordinate authority boundary is incomplete.")
+    blocked = " ".join(str(item) for item in authority.get("blocked", [])).lower()
+    for phrase in ["copying", "residual-gap proof", "enabling a hook", "activating round 03"]:
+        if phrase not in blocked:
+            raise RuntimeError(f"Round 03 demand-coordinate blocked authority missing phrase: {phrase}")
+    if len(document.get("verificationSurface", [])) != 6:
+        raise RuntimeError("Round 03 demand-coordinate verification surface is incomplete.")
+
+    expected_readiness = {
+        "sourceIdentityVerified": True,
+        "inputContractVerified": True,
+        "demandRecordExtractionComplete": False,
+        "ownerReviewRequired": True,
+        "round03ExecutionActivated": False,
+        "externalDiscoveryAuthorized": False,
+    }
+    if document.get("readiness") != expected_readiness:
+        raise RuntimeError("Round 03 demand-coordinate readiness drifted.")
+
+    round03 = next(
+        item
+        for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict) and item.get("id") == document.get("roundId")
+    )
+    path = "registry/round03-demand-coordinate-source-contract.json"
+    if path not in round03.get("evidence", []):
+        raise RuntimeError("Round 03 registry must link the demand-coordinate source contract.")
+    lifecycle_evidence = lifecycle_doc.get("currentApplication", {}).get("evidence", [])
+    if path not in lifecycle_evidence:
+        raise RuntimeError("Round 03 lifecycle must link the demand-coordinate source contract.")
+    initiatives = {
+        item.get("id"): item
+        for item in program_doc.get("currentInitiatives", [])
+        if isinstance(item, dict)
+    }
+    rebaseline = initiatives.get("initiative.round03-capability-survey-rebaseline", {})
+    if "source-pinned demand-coordinate input contract" not in rebaseline.get("resultPackage", []):
+        raise RuntimeError("Round 03 rebaseline initiative must include the demand input contract.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_doc.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    criterion = criteria.get("acceptance.demand-coordinate-contract", {})
+    if criterion.get("assessment") != "partial":
+        raise RuntimeError("Demand-coordinate acceptance must remain partial until demand records exist.")
+    expected_evidence = {
+        "evidence.round03-rebaseline",
+        "evidence.round03-demand-coordinate-source-contract",
+        "evidence.verify-script",
+    }
+    if set(criterion.get("evidenceIds", [])) != expected_evidence:
+        raise RuntimeError("Demand-coordinate acceptance evidence drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_doc.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    evidence_record = evidence.get("evidence.round03-demand-coordinate-source-contract", {})
+    if evidence_record.get("path") != path or evidence_record.get("kind") != "source-pinned-read-only-input-contract":
+        raise RuntimeError("Demand-coordinate source-contract evidence record drifted.")
+
+    expected_docs = {
+        "docs/round03-demand-coordinate-source-contract.md": [
+            "source-pinned",
+            "not copied",
+            "does not prove recurrence",
+            "no Hook is the default",
+            "Round 03 remains inactive",
+        ],
+        "docs/round03-demand-coordinate-source-contract.zh-CN.md": [
+            "按来源身份",
+            "不会复制进本仓库",
+            "不能证明问题反复发生",
+            "默认不使用 Hook",
+            "Round 03 仍未激活",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 demand-coordinate evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = (ROOT / doc_path).read_text(encoding="utf-8")
+        normalized_text = " ".join(text.split())
+        for phrase in phrases:
+            if phrase not in normalized_text:
+                raise RuntimeError(f"Round 03 demand-coordinate doc missing phrase in {doc_path}: {phrase}")
+
+
 def validate_round03_capability_survey_rebaseline(
     document: dict[str, object],
+    demand_contract: dict[str, object],
     rounds_doc: dict[str, object],
     program_doc: dict[str, object],
     lifecycle_doc: dict[str, object],
@@ -5705,6 +5960,13 @@ def validate_round03_capability_survey_rebaseline(
     for path in document.get("basis", []):
         if not isinstance(path, str) or not (ROOT / path).is_file():
             raise RuntimeError(f"Round 03 rebaseline basis is missing: {path}")
+    demand_contract_path = "registry/round03-demand-coordinate-source-contract.json"
+    if document.get("demandInputContract") != demand_contract_path:
+        raise RuntimeError("Round 03 rebaseline demand input contract link drifted.")
+    if demand_contract_path not in document.get("basis", []):
+        raise RuntimeError("Round 03 rebaseline basis must include the demand input contract.")
+    if demand_contract.get("roundId") != document.get("roundId"):
+        raise RuntimeError("Round 03 rebaseline and demand input contract round identity drifted.")
     scope = document.get("scope", {})
     if not scope.get("allowed") or not scope.get("blocked"):
         raise RuntimeError("Round 03 rebaseline scope must declare allowed and blocked work.")

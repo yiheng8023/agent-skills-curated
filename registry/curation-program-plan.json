@@ -269,7 +269,7 @@
       "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout accepted", "current capability-survey handoff and repository truth reconciled"],
       "allowedActions": ["Round 03 plan and acceptance correction", "read-only repository reconciliation", "owner decision preparation"],
       "blockedActions": ["Round 03 execution activation", "external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery", "remote push"],
-      "resultPackage": ["rebaselined Round 03 goal and non-goals", "dependency-graph execution semantics", "data and authority boundaries", "ten-part capability-survey result contract", "verification and stop rules", "owner activation decision"],
+      "resultPackage": ["rebaselined Round 03 goal and non-goals", "source-pinned demand-coordinate input contract", "dependency-graph execution semantics", "data and authority boundaries", "ten-part capability-survey result contract", "verification and stop rules", "owner activation decision"],
       "acceptanceIds": ["acceptance.round03-rebaseline", "acceptance.sequence-integrity", "acceptance.capability-survey-result-package"],
       "decisionGate": "owner-reviewed Round 03 capability-survey rebaseline before external discovery activation",
       "decisionPreparation": "registry/round03-capability-survey-rebaseline.json"

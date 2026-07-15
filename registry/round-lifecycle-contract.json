@@ -150,7 +150,8 @@
     "stageCloseout": "not_ready",
     "evidence": [
       "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
-      "registry/round03-capability-survey-rebaseline.json"
+      "registry/round03-capability-survey-rebaseline.json",
+      "registry/round03-demand-coordinate-source-contract.json"
     ],
     "deferredActions": [
       "activating Round 03 discovery before owner-reviewed rebaseline acceptance",

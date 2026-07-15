@@ -135,12 +135,14 @@
     {
       "id": "acceptance.demand-coordinate-contract",
       "statement": "Capability work binds dated demand or shortfall coordinates, evidence states, held claims, uncertainty, and a promotion firewall before gap claims.",
-      "assessment": "planned",
+      "assessment": "partial",
       "verificationIds": [
         "verification.demand-coordinate-contract"
       ],
       "evidenceIds": [
-        "evidence.round03-rebaseline"
+        "evidence.round03-rebaseline",
+        "evidence.round03-demand-coordinate-source-contract",
+        "evidence.verify-script"
       ]
     },
     {
@@ -252,7 +254,8 @@
         "evidence.completeness-audit",
         "evidence.round02-stage-closeout-review",
         "evidence.round02-stage-closeout-acceptance",
-        "evidence.round03-rebaseline"
+        "evidence.round03-rebaseline",
+        "evidence.round03-demand-coordinate-source-contract"
       ]
     },
     {
@@ -292,7 +295,8 @@
       ],
       "evidenceIds": [
         "evidence.round02-stage-closeout-acceptance",
-        "evidence.round03-rebaseline"
+        "evidence.round03-rebaseline",
+        "evidence.round03-demand-coordinate-source-contract"
       ]
     },
     {
@@ -441,7 +445,7 @@
     },
     {
       "id": "verification.demand-coordinate-contract",
-      "method": "Validate a future demand-coordinate contract and fixtures covering STM, P, SG, evidence state, uncertainty, held claims, refresh triggers, and promotion firewall.",
+      "method": "Validate the checked-in demand-coordinate source contract and future demand-record fixtures covering STM, P, SG, evidence state, uncertainty, held claims, refresh triggers, and promotion firewall.",
       "expectedResult": "No capability gap or standard claim starts from an unbound or promoted research synthesis.",
       "evidenceRequirement": "Checked-in contract, representative fixtures, source lineage, and deterministic rejection tests."
     },
@@ -618,7 +622,8 @@
         "acceptance.repository-authored-gap-fill-gate",
         "acceptance.sequence-integrity",
         "acceptance.program-control-completeness",
-        "acceptance.round02-stage-closeout"
+        "acceptance.round02-stage-closeout",
+        "acceptance.demand-coordinate-contract"
       ]
     },
     {
@@ -726,6 +731,17 @@
         "acceptance.round02-stage-closeout",
         "acceptance.sequence-integrity",
         "acceptance.round03-rebaseline"
+      ]
+    },
+    {
+      "id": "evidence.round03-demand-coordinate-source-contract",
+      "path": "registry/round03-demand-coordinate-source-contract.json",
+      "kind": "source-pinned-read-only-input-contract",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.demand-coordinate-contract",
+        "acceptance.round03-rebaseline",
+        "acceptance.sequence-integrity"
       ]
     },
     {

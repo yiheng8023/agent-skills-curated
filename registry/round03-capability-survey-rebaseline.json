@@ -14,7 +14,8 @@
     "docs/program-control-plan-completeness-audit-2026-07-15.md",
     "docs/program-order-semantics-audit-2026-07-15.md",
     "registry/round02-stage-closeout-review.json",
-    "registry/round02-stage-closeout-acceptance-event-2026-07-15.json"
+    "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+    "registry/round03-demand-coordinate-source-contract.json"
   ],
   "scope": {
     "allowed": [
@@ -41,12 +42,13 @@
   },
   "dataAndAuthorityBoundary": {
     "publicExternalData": "Read-only GitHub repository metadata, trees, licenses, README files, SKILL.md files, and only the references needed for bounded classification or representative deep review.",
-    "localInputs": "Current repository truth plus explicitly bound read-only demand-coordinate evidence; consumer repositories remain non-authoritative inputs and are not write targets.",
+    "localInputs": "Current repository truth plus registry/round03-demand-coordinate-source-contract.json, which pins explicitly bound read-only demand-coordinate evidence; consumer repositories remain non-authoritative inputs and are not write targets.",
     "executionBoundary": "No candidate code, scripts, hooks, dependencies, commands, or network-capable payloads may be executed.",
     "accountBoundary": "No new account, OAuth, credential, paid service, private repository, or broader data-domain access.",
     "writeBoundary": "Writes are limited to reviewed artifacts in agent-skills-curated; no live runtime, user configuration, CALIBRATION, ASSETS, or MERIDIAN write is authorized.",
     "releaseBoundary": "Survey evidence cannot directly admit payload, mutate the release manifest, promote a hard standard, or authorize installation."
   },
+  "demandInputContract": "registry/round03-demand-coordinate-source-contract.json",
   "executionSemantics": {
     "model": "dependency-graph-with-bounded-parallel-research",
     "corePath": [

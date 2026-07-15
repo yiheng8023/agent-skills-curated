@@ -7,6 +7,12 @@ work already completed through separately approved Round 02 follow-on gates.
 This proposal replaces that immediate execution direction with an evidence-first
 capability survey and residual-gap proof phase.
 
+The read-only STM, P, and SG inputs are now source-pinned by
+`registry/round03-demand-coordinate-source-contract.json`. That contract fixes
+source identity, research authority state, evidence vocabulary, and the
+promotion firewall without copying the external research bodies. Demand-record
+extraction remains future Round 03 work after owner activation.
+
 ## Proposed Decision Chain
 
 ```text

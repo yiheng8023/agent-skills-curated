@@ -329,6 +329,9 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round03-capability-survey-rebaseline.md`: proposed evidence-first
   capability-survey replacement for the overlapping old Round-03 plan; owner
   review is required before discovery execution.
+- `docs/round03-demand-coordinate-source-contract.md`: source-pinned STM/P/SG
+  input, evidence-state, and promotion-firewall contract; it copies no external
+  research body and authorizes no discovery.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
