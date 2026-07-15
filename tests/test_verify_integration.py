@@ -92,6 +92,8 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             "registry/round03-public-discovery-snapshot-2026-07-15.json",
             "registry/round03-representative-source-review-batch-01.json",
             "registry/round03-alternative-comparison-batch-01.json",
+            "registry/round03-evidence-protocol-batch-01.json",
+            "tests/fixtures/round03-evidence-fixtures-batch-01.json",
             "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
         ):
             self.assertIn(path, verify_script.REQUIRED_FILES)
@@ -427,6 +429,27 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         comparison = verify_script.load(path)
         comparison["comparisons"][0]["hookDecision"] = "enable-hook"
         self.assert_verify_runtime_error(path, comparison, "Hook default drifted")
+
+    def test_round03_evidence_protocol_verifies_local_fixtures_but_not_live_evidence(self) -> None:
+        protocol = verify_script.load("registry/round03-evidence-protocol-batch-01.json")
+        self.assertTrue(protocol["localEvidence"]["deterministicEvaluationPassed"])
+        self.assertEqual(protocol["localEvidence"]["fixtureCount"], 19)
+        self.assertTrue(
+            all(slot["status"].startswith("pending-") for slot in protocol["liveEvidenceSlots"])
+        )
+        self.assertIn("no Hook", protocol["hookRule"])
+
+    def test_round03_evidence_protocol_rejects_fixture_expectation_drift(self) -> None:
+        path = "tests/fixtures/round03-evidence-fixtures-batch-01.json"
+        fixtures = verify_script.load(path)
+        fixtures["fixtures"][0]["expected"] = "resume-from-repository-truth"
+        self.assert_verify_runtime_error(path, fixtures, "deterministic evidence fixture failed")
+
+    def test_round03_evidence_protocol_rejects_premature_live_claim(self) -> None:
+        path = "registry/round03-evidence-protocol-batch-01.json"
+        protocol = verify_script.load(path)
+        protocol["liveEvidenceSlots"][0]["status"] = "verified"
+        self.assert_verify_runtime_error(path, protocol, "prematurely claimed")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")

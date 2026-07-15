@@ -179,7 +179,8 @@
         "verification.alternative-and-residual-gap"
       ],
       "evidenceIds": [
-        "evidence.round03-alternative-comparison-batch-01"
+        "evidence.round03-alternative-comparison-batch-01",
+        "evidence.round03-evidence-protocol-batch-01"
       ]
     },
     {
@@ -190,7 +191,8 @@
         "verification.alternative-and-residual-gap"
       ],
       "evidenceIds": [
-        "evidence.round03-alternative-comparison-batch-01"
+        "evidence.round03-alternative-comparison-batch-01",
+        "evidence.round03-evidence-protocol-batch-01"
       ]
     },
     {
@@ -213,7 +215,8 @@
         "verification.full-chain-coverage-matrix"
       ],
       "evidenceIds": [
-        "evidence.round03-alternative-comparison-batch-01"
+        "evidence.round03-alternative-comparison-batch-01",
+        "evidence.round03-evidence-protocol-batch-01"
       ]
     },
     {
@@ -237,7 +240,8 @@
       ],
       "evidenceIds": [
         "evidence.round03-rebaseline",
-        "evidence.round03-alternative-comparison-batch-01"
+        "evidence.round03-alternative-comparison-batch-01",
+        "evidence.round03-evidence-protocol-batch-01"
       ]
     },
     {
@@ -808,6 +812,18 @@
       "id": "evidence.round03-alternative-comparison-batch-01",
       "path": "registry/round03-alternative-comparison-batch-01.json",
       "kind": "verified-non-executing-alternative-comparison",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof",
+        "acceptance.full-chain-coverage-matrix",
+        "acceptance.capability-survey-result-package"
+      ]
+    },
+    {
+      "id": "evidence.round03-evidence-protocol-batch-01",
+      "path": "registry/round03-evidence-protocol-batch-01.json",
+      "kind": "verified-local-deterministic-fixtures-live-evidence-pending",
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.alternative-comparison",

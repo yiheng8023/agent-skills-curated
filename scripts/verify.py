@@ -32,6 +32,7 @@ from contracts import (
     validate_sources_lock_document,
 )
 from simulate_routing import run_scenarios
+from evaluate_round03_evidence_fixtures import evaluate_fixture_document
 
 ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM_SOURCE_ID = "github:addyosmani/agent-skills"
@@ -97,6 +98,8 @@ REQUIRED_FILES = (
     "registry/round03-public-discovery-snapshot-2026-07-15.json",
     "registry/round03-representative-source-review-batch-01.json",
     "registry/round03-alternative-comparison-batch-01.json",
+    "registry/round03-evidence-protocol-batch-01.json",
+    "tests/fixtures/round03-evidence-fixtures-batch-01.json",
     "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -118,6 +121,7 @@ REQUIRED_FILES = (
     "policies/intake.md", "policies/portability.md", "policies/security.md",
     "policies/overlap-resolution.md", "policies/lifecycle.md",
     "scripts/discover_github_skill_sources.py",
+    "scripts/evaluate_round03_evidence_fixtures.py",
     "scripts/build_topology.py", "scripts/build_release_manifest.py",
     "scripts/verify.py", "scripts/simulate_routing.py", "release-manifest.json",
     "generated/routing-index.json", "generated/routing-simulation-report.json",
@@ -174,6 +178,8 @@ REQUIRED_FILES = (
     "docs/round03-representative-source-review-batch-01.zh-CN.md",
     "docs/round03-alternative-comparison-batch-01.md",
     "docs/round03-alternative-comparison-batch-01.zh-CN.md",
+    "docs/round03-evidence-protocol-batch-01.md",
+    "docs/round03-evidence-protocol-batch-01.zh-CN.md",
     "docs/round03-capability-survey-rebaseline-acceptance.md",
     "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
@@ -263,6 +269,8 @@ def verify() -> None:
     round03_public_discovery_snapshot_doc = load("registry/round03-public-discovery-snapshot-2026-07-15.json")
     round03_representative_source_review_batch_01_doc = load("registry/round03-representative-source-review-batch-01.json")
     round03_alternative_comparison_batch_01_doc = load("registry/round03-alternative-comparison-batch-01.json")
+    round03_evidence_protocol_batch_01_doc = load("registry/round03-evidence-protocol-batch-01.json")
+    round03_evidence_fixtures_batch_01_doc = load("tests/fixtures/round03-evidence-fixtures-batch-01.json")
     round03_capability_survey_rebaseline_acceptance_event_doc = load("registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -452,6 +460,13 @@ def verify() -> None:
         round03_demand_records_batch_01_doc,
         round03_native_runtime_baseline_doc,
         round03_representative_source_review_batch_01_doc,
+        curation_expansion_rounds_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_evidence_protocol_batch_01(
+        round03_evidence_protocol_batch_01_doc,
+        round03_evidence_fixtures_batch_01_doc,
         curation_expansion_rounds_doc,
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
@@ -6461,7 +6476,7 @@ def validate_round03_public_discovery_snapshot(
     if snapshot_path not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the public discovery snapshot.")
     application = lifecycle_doc.get("currentApplication", {})
-    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
+    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
         raise RuntimeError("Round 03 lifecycle public discovery evidence drifted.")
     evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
     evidence_record = evidence.get("evidence.round03-public-discovery-snapshot", {})
@@ -6595,7 +6610,7 @@ def validate_round03_representative_source_review_batch_01(
     if review_path not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the representative review.")
     application = lifecycle_doc.get("currentApplication", {})
-    if review_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
+    if review_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
         raise RuntimeError("Round 03 lifecycle representative review evidence drifted.")
     evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
     evidence_record = evidence.get("evidence.round03-representative-source-review-batch-01", {})
@@ -6737,11 +6752,11 @@ def validate_round03_alternative_comparison_batch_01(
         item for item in rounds_doc.get("rounds", [])
         if isinstance(item, dict) and item.get("id") == document.get("roundId")
     )
-    if artifact not in round03.get("evidence", []) or round03.get("nextGate") != "bounded-behavior-cost-and-projection-fixture-evidence-before-residual-gap":
+    if artifact not in round03.get("evidence", []) or round03.get("nextGate") != "separately-authorized-live-and-consumer-evidence-before-residual-gap":
         raise RuntimeError("Round 03 registry did not advance to the behavior-evidence gate.")
     application = lifecycle_doc.get("currentApplication", {})
     expected_next_evidence = [
-        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
+        "separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]
     if artifact not in application.get("evidence", []) or application.get("nextRequiredEvidence") != expected_next_evidence:
         raise RuntimeError("Round 03 lifecycle did not advance to the behavior-evidence gate.")
@@ -6784,6 +6799,119 @@ def validate_round03_alternative_comparison_batch_01(
         for phrase in phrases:
             if phrase not in text:
                 raise RuntimeError(f"Round 03 alternative comparison doc missing phrase in {path}: {phrase}")
+
+
+def validate_round03_evidence_protocol_batch_01(
+    document: dict[str, object],
+    fixtures: dict[str, object],
+    rounds_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected = {
+        "schema": 1,
+        "id": "round03-evidence-protocol-batch-01-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-local-deterministic-fixtures-live-evidence-pending",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "basis": "registry/round03-alternative-comparison-batch-01.json",
+        "fixtureCorpus": "tests/fixtures/round03-evidence-fixtures-batch-01.json",
+        "fixtureEvaluator": "scripts/evaluate_round03_evidence_fixtures.py",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Round 03 evidence protocol {key} drifted.")
+    if fixtures.get("schema") != 1 or fixtures.get("id") != "round03-evidence-fixtures-batch-01":
+        raise RuntimeError("Round 03 evidence fixture identity drifted.")
+    fixture_items = fixtures.get("fixtures", [])
+    if len(fixture_items) != 19 or len({item.get("id") for item in fixture_items}) != 19:
+        raise RuntimeError("Round 03 evidence fixture count or identity drifted.")
+    lane_counts = {
+        lane: sum(item.get("lane") == lane for item in fixture_items)
+        for lane in ["EL-01", "EL-02", "EL-04"]
+    }
+    if lane_counts != {"EL-01": 5, "EL-02": 6, "EL-04": 8}:
+        raise RuntimeError("Round 03 evidence fixture lane coverage drifted.")
+    results = evaluate_fixture_document(fixtures)
+    failures = [item for item in results if item["expected"] != item["actual"]]
+    if failures:
+        raise RuntimeError(f"Round 03 deterministic evidence fixture failed: {failures[0]['id']}")
+
+    local = document.get("localEvidence", {})
+    if local.get("fixtureCount") != 19 or local.get("laneCounts") != lane_counts:
+        raise RuntimeError("Round 03 local evidence counts drifted.")
+    if local.get("deterministicEvaluationPassed") is not True:
+        raise RuntimeError("Round 03 deterministic evidence status drifted.")
+    if len(local.get("proves", [])) != 3 or len(local.get("doesNotProve", [])) != 5:
+        raise RuntimeError("Round 03 local evidence claim boundary drifted.")
+    slots = {item.get("id"): item for item in document.get("liveEvidenceSlots", [])}
+    expected_slots = {
+        "live.el01-fresh-session-interruption-reentry",
+        "live.el02-root-precedence-and-routing-cost",
+        "live.el04-consumer-projection-confirmation",
+    }
+    if set(slots) != expected_slots:
+        raise RuntimeError("Round 03 live evidence slots drifted.")
+    for slot_id, slot in slots.items():
+        if not str(slot.get("status", "")).startswith("pending-"):
+            raise RuntimeError(f"Round 03 live evidence was prematurely claimed: {slot_id}")
+        if not slot.get("minimumMethod") or not slot.get("measure") or not slot.get("authorityBoundary"):
+            raise RuntimeError(f"Round 03 live evidence slot is incomplete: {slot_id}")
+    cost = document.get("costModel", {})
+    if len(cost.get("dimensions", [])) != 10 or any(
+        cost.get(key) is not True
+        for key in ["missingValuesRemainUnknown", "unknownDoesNotEqualGap", "comparisonRequiresSameTaskAndBoundaries"]
+    ):
+        raise RuntimeError("Round 03 evidence cost model drifted.")
+    decision_rule = str(document.get("decisionRule", "")).lower()
+    for phrase in ["reproducible material failure", "value delta", "exhausted viable alternatives", "deterministic fixtures alone cannot"]:
+        if phrase not in decision_rule:
+            raise RuntimeError(f"Round 03 residual-gap decision rule missing phrase: {phrase}")
+    hook_rule = str(document.get("hookRule", "")).lower()
+    for phrase in ["supported residual gap", "repeated recall", "separate enablement authority", "no hook"]:
+        if phrase not in hook_rule:
+            raise RuntimeError(f"Round 03 Hook evidence rule missing phrase: {phrase}")
+    if not document.get("nonAuthorization") or len(document.get("evidenceDocs", [])) != 2:
+        raise RuntimeError("Round 03 evidence protocol authorization or docs boundary drifted.")
+
+    artifact = "registry/round03-evidence-protocol-batch-01.json"
+    round03 = next(
+        item for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict) and item.get("id") == document.get("roundId")
+    )
+    if artifact not in round03.get("evidence", []) or round03.get("nextGate") != "separately-authorized-live-and-consumer-evidence-before-residual-gap":
+        raise RuntimeError("Round 03 registry evidence protocol gate drifted.")
+    application = lifecycle_doc.get("currentApplication", {})
+    expected_next = [
+        "separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
+    ]
+    if artifact not in application.get("evidence", []) or application.get("nextRequiredEvidence") != expected_next:
+        raise RuntimeError("Round 03 lifecycle live-evidence gate drifted.")
+    evidence_id = "evidence.round03-evidence-protocol-batch-01"
+    criteria = {
+        item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    for criterion_id in ["acceptance.alternative-comparison", "acceptance.residual-gap-proof", "acceptance.full-chain-coverage-matrix", "acceptance.capability-survey-result-package"]:
+        if evidence_id not in criteria.get(criterion_id, {}).get("evidenceIds", []):
+            raise RuntimeError(f"Round 03 evidence protocol mapping missing: {criterion_id}")
+    evidence = {
+        item.get("id"): item for item in acceptance_doc.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    if evidence.get(evidence_id, {}).get("path") != artifact or evidence.get(evidence_id, {}).get("kind") != document.get("status"):
+        raise RuntimeError("Round 03 evidence protocol record drifted.")
+    expected_docs = {
+        "docs/round03-evidence-protocol-batch-01.md": ["Nineteen fixtures", "not Agent behavior evidence", "Three live evidence slots", "current decision remains no Hook"],
+        "docs/round03-evidence-protocol-batch-01.zh-CN.md": ["19 个夹具", "不是 Agent 行为实测", "3 个实时证据槽", "当前仍是 no Hook"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 evidence protocol docs drifted.")
+    for path, phrases in expected_docs.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 evidence protocol doc missing phrase in {path}: {phrase}")
 
 
 def validate_round03_capability_survey_rebaseline(
@@ -6949,7 +7077,7 @@ def validate_round03_capability_survey_rebaseline(
     if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
         raise RuntimeError("Round 03 lifecycle must be active and not ready for closeout.")
     if application.get("nextRequiredEvidence") != [
-        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
+        "separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]:
         raise RuntimeError("Round 03 lifecycle next evidence must preserve alternative-comparison order.")
 
@@ -7125,7 +7253,7 @@ def validate_round03_capability_survey_rebaseline_acceptance_event(
     if application.get("phaseState") != expected_state["phaseState"] or event_path not in application.get("evidence", []):
         raise RuntimeError("Round 03 lifecycle activation evidence drifted.")
     if application.get("nextRequiredEvidence") != [
-        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
+        "separately authorized live EL-01 and EL-02 observations plus consumer-owned EL-04 projection evidence before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]:
         raise RuntimeError("Round 03 lifecycle post-review alternative gate drifted.")
 
