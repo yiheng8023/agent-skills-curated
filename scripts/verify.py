@@ -95,6 +95,7 @@ REQUIRED_FILES = (
     "registry/round03-demand-records-batch-01.json",
     "registry/round03-native-runtime-baseline-2026-07-15.json",
     "registry/round03-public-discovery-snapshot-2026-07-15.json",
+    "registry/round03-representative-source-review-batch-01.json",
     "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -168,6 +169,8 @@ REQUIRED_FILES = (
     "docs/round03-native-runtime-baseline-2026-07-15.zh-CN.md",
     "docs/round03-public-discovery-snapshot-2026-07-15.md",
     "docs/round03-public-discovery-snapshot-2026-07-15.zh-CN.md",
+    "docs/round03-representative-source-review-batch-01.md",
+    "docs/round03-representative-source-review-batch-01.zh-CN.md",
     "docs/round03-capability-survey-rebaseline-acceptance.md",
     "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
@@ -255,6 +258,7 @@ def verify() -> None:
     round03_demand_records_batch_01_doc = load("registry/round03-demand-records-batch-01.json")
     round03_native_runtime_baseline_doc = load("registry/round03-native-runtime-baseline-2026-07-15.json")
     round03_public_discovery_snapshot_doc = load("registry/round03-public-discovery-snapshot-2026-07-15.json")
+    round03_representative_source_review_batch_01_doc = load("registry/round03-representative-source-review-batch-01.json")
     round03_capability_survey_rebaseline_acceptance_event_doc = load("registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -428,6 +432,13 @@ def verify() -> None:
     validate_round03_public_discovery_snapshot(
         round03_public_discovery_snapshot_doc,
         round03_native_runtime_baseline_doc,
+        curation_expansion_rounds_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_representative_source_review_batch_01(
+        round03_representative_source_review_batch_01_doc,
+        round03_public_discovery_snapshot_doc,
         curation_expansion_rounds_doc,
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
@@ -6437,7 +6448,7 @@ def validate_round03_public_discovery_snapshot(
     if snapshot_path not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the public discovery snapshot.")
     application = lifecycle_doc.get("currentApplication", {})
-    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["pinned license, security, portability, overlap, and architecture review for the nine representative public sources"]:
+    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"]:
         raise RuntimeError("Round 03 lifecycle public discovery evidence drifted.")
     evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
     evidence_record = evidence.get("evidence.round03-public-discovery-snapshot", {})
@@ -6459,6 +6470,140 @@ def validate_round03_public_discovery_snapshot(
         for phrase in phrases:
             if phrase not in text:
                 raise RuntimeError(f"Round 03 public discovery doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_representative_source_review_batch_01(
+    document: dict[str, object],
+    discovery_doc: dict[str, object],
+    rounds_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-representative-source-review-batch-01-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-non-executing-static-review",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "discoverySnapshot": "registry/round03-public-discovery-snapshot-2026-07-15.json",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 representative review {key} drifted.")
+    if document.get("roundId") != discovery_doc.get("roundId"):
+        raise RuntimeError("Round 03 representative review discovery linkage drifted.")
+    expected_boundary = {
+        "sourceCommitPinned": True,
+        "publicSourceTextOnly": True,
+        "licenseMetadataAloneAccepted": False,
+        "candidateCodeExecuted": False,
+        "candidateInstalledOrConnected": False,
+        "runtimeOrHookMutated": False,
+        "crossRepositoryWritePerformed": False,
+        "approvalOrAdmissionGranted": False,
+    }
+    if document.get("reviewBoundary") != expected_boundary:
+        raise RuntimeError("Round 03 representative review boundary drifted.")
+
+    discovered_sources = {item.get("id"): item for item in discovery_doc.get("representativeSources", []) if isinstance(item, dict)}
+    reviews = {item.get("sourceId"): item for item in document.get("reviews", []) if isinstance(item, dict)}
+    if len(document.get("reviews", [])) != 9 or set(reviews) != set(discovered_sources):
+        raise RuntimeError("Round 03 representative review source set drifted.")
+    expected_license_blobs = {
+        "github:anthropics/skills": {"ffef92c48b351a3ed036556ed32dda934e8cf41a"},
+        "github:github/awesome-copilot": {"89bc5e962c9944cdb050887062afdaaf89be504a"},
+        "github:OthmanAdi/planning-with-files": {"a00edac2c06c65f72f6fa7dc75512541213aa771"},
+        "github:cskwork/handoff-skill": {"a021cf23a307b4507384a9cddbb84c06dc1b962d"},
+        "github:tankpkg/tank": {"6e1bbf0f1a97a1b717b9338a2acaadb2f881856f"},
+        "github:astra-sh/qvr": {"7662dc97b8d6fc689224e91a7df1257092beb642"},
+        "github:Narwhal-Lab/MagicSkills": {"c13f99117e366fd54b4c097b67ca34dfb1fb8ba1"},
+        "github:agent-sh/agnix": {"20353a1578f42da974a8ddd0ce6bb7501b9267d6", "99731088716bc07bc882beb13d727eaee198c2d0"},
+        "github:VoltAgent/awesome-agent-skills": {"a0d0a9bbe350d5c6f22a61ca408364e1c36c964d"},
+    }
+    for source_id, review in reviews.items():
+        if review.get("sourceClass") != discovered_sources[source_id].get("sourceClass"):
+            raise RuntimeError(f"Round 03 representative review source class drifted: {source_id}")
+        license_review = review.get("licenseReview", {})
+        blobs = {item.get("gitBlob") for item in license_review.get("evidence", []) if isinstance(item, dict)}
+        if blobs != expected_license_blobs[source_id] or not license_review.get("state") or not license_review.get("limit"):
+            raise RuntimeError(f"Round 03 representative license review drifted: {source_id}")
+        for field in ["architecture", "executableSurfaceState", "securityState", "portabilityState", "overlapState", "disposition", "nextUse"]:
+            if not review.get(field):
+                raise RuntimeError(f"Round 03 representative review field missing: {source_id}/{field}")
+
+    planning = reviews["github:OthmanAdi/planning-with-files"]
+    for phrase in ["235 executable", "Hook", "completion"]:
+        if phrase not in planning.get("architecture", ""):
+            raise RuntimeError(f"Round 03 planning-system executable review missing: {phrase}")
+    if planning.get("disposition") != "hold-as-heavy-system-reference-not-skill-admission-candidate":
+        raise RuntimeError("Round 03 planning-system disposition drifted.")
+    handoff = reviews["github:cskwork/handoff-skill"]
+    expected_identity = {
+        "pinnedBodySha256": "f77dea488eb8242b58be186b2a354a004b5571841cd61b9ad4bb4fa82f5735d2",
+        "installedComparisonSha256": "d215dd8f2a19bf85fdaf67a3cdb5077641f6b4108f229ba79579414793d7b0a3",
+        "exactDuplicate": False,
+    }
+    if handoff.get("contentIdentity") != expected_identity or handoff.get("disposition") != "candidate-with-limits-for-content-and-alternative-comparison":
+        raise RuntimeError("Round 03 handoff overlap review drifted.")
+    expected_tool_counts = {
+        "github:tankpkg/tank": "784 executable",
+        "github:astra-sh/qvr": "434 executable",
+        "github:Narwhal-Lab/MagicSkills": "42 executable",
+        "github:agent-sh/agnix": "205 executable",
+    }
+    for source_id, phrase in expected_tool_counts.items():
+        review = reviews[source_id]
+        if phrase not in review.get("architecture", "") or "non-skill" not in review.get("disposition", ""):
+            raise RuntimeError(f"Round 03 non-Skill tooling review drifted: {source_id}")
+    if reviews["github:anthropics/skills"].get("disposition") != "exclude-official-bodies-from-managed-inventory":
+        raise RuntimeError("Round 03 official body exclusion drifted.")
+    if reviews["github:VoltAgent/awesome-agent-skills"].get("disposition") != "discovery-index-only":
+        raise RuntimeError("Round 03 index-only disposition drifted.")
+
+    expected_decision = {
+        "reviewedSourceCount": 9,
+        "officialBaselineCount": 2,
+        "indexCount": 1,
+        "skillContentComparisonCount": 2,
+        "nonSkillToolingAlternativeCount": 4,
+        "approvedCandidateCount": 0,
+        "executableCandidateCount": 0,
+        "residualGapProven": False,
+        "hookNeedProven": False,
+        "nextGate": "demand-level alternative comparison across native, installed handoff, the two reviewed Skill systems, four non-Skill tooling paths, project standards, and human authority",
+    }
+    if document.get("batchDecision") != expected_decision:
+        raise RuntimeError("Round 03 representative review decision drifted.")
+    if len(document.get("recheckTriggers", [])) != 5:
+        raise RuntimeError("Round 03 representative review triggers drifted.")
+
+    review_path = "registry/round03-representative-source-review-batch-01.json"
+    round03 = next(item for item in rounds_doc.get("rounds", []) if isinstance(item, dict) and item.get("id") == document.get("roundId"))
+    if review_path not in round03.get("evidence", []):
+        raise RuntimeError("Round 03 registry must link the representative review.")
+    application = lifecycle_doc.get("currentApplication", {})
+    if review_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"]:
+        raise RuntimeError("Round 03 lifecycle representative review evidence drifted.")
+    evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
+    evidence_record = evidence.get("evidence.round03-representative-source-review-batch-01", {})
+    if evidence_record.get("path") != review_path or evidence_record.get("kind") != "verified-non-executing-static-review":
+        raise RuntimeError("Round 03 representative review acceptance evidence drifted.")
+    criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    criterion = criteria.get("acceptance.discovery-clustering-stop-rule", {})
+    if criterion.get("assessment") != "partial" or "evidence.round03-representative-source-review-batch-01" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Round 03 representative review acceptance mapping drifted.")
+
+    expected_docs = {
+        "docs/round03-representative-source-review-batch-01.md": ["nine pinned representatives", "not an exact duplicate", "235 executable", "No source is approved or executable"],
+        "docs/round03-representative-source-review-batch-01.zh-CN.md": ["9 个固定提交", "并非精确重复", "235 个可执行", "没有任何来源获批或可执行"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 representative review evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 representative review doc missing phrase in {doc_path}: {phrase}")
 
 
 def validate_round03_capability_survey_rebaseline(
@@ -6624,9 +6769,9 @@ def validate_round03_capability_survey_rebaseline(
     if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
         raise RuntimeError("Round 03 lifecycle must be active and not ready for closeout.")
     if application.get("nextRequiredEvidence") != [
-        "pinned license, security, portability, overlap, and architecture review for the nine representative public sources"
+        "demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"
     ]:
-        raise RuntimeError("Round 03 lifecycle next evidence must preserve representative review order.")
+        raise RuntimeError("Round 03 lifecycle next evidence must preserve alternative-comparison order.")
 
     criteria = {
         item.get("id"): item
@@ -6800,9 +6945,9 @@ def validate_round03_capability_survey_rebaseline_acceptance_event(
     if application.get("phaseState") != expected_state["phaseState"] or event_path not in application.get("evidence", []):
         raise RuntimeError("Round 03 lifecycle activation evidence drifted.")
     if application.get("nextRequiredEvidence") != [
-        "pinned license, security, portability, overlap, and architecture review for the nine representative public sources"
+        "demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"
     ]:
-        raise RuntimeError("Round 03 lifecycle post-discovery review gate drifted.")
+        raise RuntimeError("Round 03 lifecycle post-review alternative gate drifted.")
 
     criteria = {
         item.get("id"): item

@@ -167,6 +167,7 @@
       "evidenceIds": [
         "evidence.discovery-profile",
         "evidence.round03-public-discovery-snapshot",
+        "evidence.round03-representative-source-review-batch-01",
         "evidence.completeness-audit"
       ]
     },
@@ -782,6 +783,15 @@
       "id": "evidence.round03-public-discovery-snapshot",
       "path": "registry/round03-public-discovery-snapshot-2026-07-15.json",
       "kind": "verified-public-metadata-snapshot",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.discovery-clustering-stop-rule"
+      ]
+    },
+    {
+      "id": "evidence.round03-representative-source-review-batch-01",
+      "path": "registry/round03-representative-source-review-batch-01.json",
+      "kind": "verified-non-executing-static-review",
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.discovery-clustering-stop-rule"

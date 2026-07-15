@@ -90,6 +90,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             "registry/round03-demand-records-batch-01.json",
             "registry/round03-native-runtime-baseline-2026-07-15.json",
             "registry/round03-public-discovery-snapshot-2026-07-15.json",
+            "registry/round03-representative-source-review-batch-01.json",
             "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
         ):
             self.assertIn(path, verify_script.REQUIRED_FILES)
@@ -364,6 +365,34 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         snapshot = verify_script.load(path)
         snapshot["representativeSources"][2]["commit"] = "main"
         self.assert_verify_runtime_error(path, snapshot, "representative source drifted")
+
+    def test_round03_representative_review_separates_skills_tools_official_and_index(self) -> None:
+        review = verify_script.load("registry/round03-representative-source-review-batch-01.json")
+        decision = review["batchDecision"]
+        self.assertEqual(decision["reviewedSourceCount"], 9)
+        self.assertEqual(decision["skillContentComparisonCount"], 2)
+        self.assertEqual(decision["nonSkillToolingAlternativeCount"], 4)
+        self.assertEqual(decision["approvedCandidateCount"], 0)
+        handoff = next(item for item in review["reviews"] if item["sourceId"] == "github:cskwork/handoff-skill")
+        self.assertFalse(handoff["contentIdentity"]["exactDuplicate"])
+
+    def test_round03_representative_review_rejects_license_blob_drift(self) -> None:
+        path = "registry/round03-representative-source-review-batch-01.json"
+        review = verify_script.load(path)
+        review["reviews"][2]["licenseReview"]["evidence"][0]["gitBlob"] = "0" * 40
+        self.assert_verify_runtime_error(path, review, "license review drifted")
+
+    def test_round03_representative_review_rejects_premature_approval(self) -> None:
+        path = "registry/round03-representative-source-review-batch-01.json"
+        review = verify_script.load(path)
+        review["batchDecision"]["approvedCandidateCount"] = 1
+        self.assert_verify_runtime_error(path, review, "review decision drifted")
+
+    def test_round03_representative_review_rejects_official_body_admission(self) -> None:
+        path = "registry/round03-representative-source-review-batch-01.json"
+        review = verify_script.load(path)
+        review["reviews"][0]["disposition"] = "candidate"
+        self.assert_verify_runtime_error(path, review, "official body exclusion drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
