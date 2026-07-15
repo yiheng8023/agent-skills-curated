@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "curation-program-plan-v1",
-  "purpose": "Overall control plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from evidence-backed demand through native and external alternative comparison, residual-gap decisions, candidate governance, release, optional consumer evidence, lifecycle renewal, and standard-candidate delivery. This is not approval, release inventory, runtime installation evidence, local sync authorization, or project hard-standard admission.",
+  "purpose": "Overall control plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from evidence-backed demand through native and external alternative comparison, residual-gap decisions, candidate governance, release, optional consumer evidence, lifecycle renewal, standard-candidate delivery, and the topology-gated design of a production capability manager. This is not approval, release inventory, runtime installation evidence, local sync authorization, Manager repository creation, or project hard-standard admission.",
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
   "currentState": "closed",
@@ -28,13 +28,28 @@
       "project-owned hard standards",
       "evidence and accountable human decisions"
     ],
-    "standardCandidateBoundary": "This repository may extract reusable standard candidate packages from reviewed Skill evidence. Those packages are intended for delivery to YIYUAN-CALIBRATION for durable calibration custody; YIYUAN-ASSETS retains project hard-standard admission authority. Consumer configuration repositories are consumption, validation, and feedback surfaces, not durable research or standards custody.",
+    "standardCandidateBoundary": "This repository may extract reusable standard candidate packages from reviewed Skill evidence. YIYUAN-CALIBRATION is an independent but linked repository outside the MERIDIAN matrix and is principally a temporary reference and calibration workspace for ASSETS reshaping. YIYUAN-ASSETS is the intended final carrier of accepted standards as built-in policy or governed knowledge. Consumer configuration repositories are consumption, validation, and feedback surfaces, not the long-term carrier for this research or these standards.",
     "standardCandidateDelivery": {
-      "researchAndCandidateCustody": "YIYUAN-CALIBRATION",
+      "calibrationRepository": "YIYUAN-CALIBRATION",
+      "calibrationRepositoryRole": "independent-linked-principally-temporary-reference-and-calibration",
+      "calibrationRepositoryInMeridianMatrix": false,
       "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
       "consumerConfigurationMayBeDurableAuthority": false,
+      "finalStandardsCarrier": "YIYUAN-ASSETS",
+      "finalCarrierModes": ["built-in", "knowledge-base"],
       "projectAdmissionAuthority": "YIYUAN-ASSETS",
       "currentTransactionCrossRepositoryWritesAuthorized": false
+    },
+    "managerProductBoundary": {
+      "proposedRepositoryRole": "local-first-production-capability-manager",
+      "repositoryCreationAuthorized": false,
+      "topologyImpactReviewRequired": true,
+      "headlessCoreRequired": true,
+      "productAccountSystemAllowed": false,
+      "defaultTelemetry": "off",
+      "skillsFirstVerticalSlice": true,
+      "approvedReleaseGrowthRequiredForMvp": true,
+      "guiDecision": "pending-bounded-usability-evidence"
     },
     "futureTerminalBoundary": "Future non-Skill terminals may reuse broader upstream governance, but they are not release inventory owned by this repository."
   },
@@ -67,7 +82,8 @@
       "safeParallelism": [
         "native and runtime baselines may run in parallel by bounded host and model context",
         "candidate metadata triage may run in parallel by cluster after demand and baseline scope are bound",
-        "source-pinned representative reviews may run in parallel by independent cluster and join before alternative comparison"
+        "source-pinned representative reviews may run in parallel by independent cluster and join before alternative comparison",
+        "host-native child tasks may produce independent read-only observations that join at parent reconciliation; shared-checkout writes are blocked unless a verified isolation mechanism, branch owner, and cleanup owner are bound"
       ],
       "upstreamRadarBoundary": "Broad resource-radar discovery may run independently outside this repository; a radar signal enters curated decision work only through a bounded demand, baseline, source-trust, review, and acceptance path.",
       "closeoutJoin": "A bounded initiative must close with evidence, residual risks, deferred work, and an owner decision before the next candidate-intake initiative is activated."
@@ -188,11 +204,11 @@
         "id": "lane.standard-extraction-and-calibration-handoff",
         "executionMode": "conditional-branch",
         "dependsOn": [],
-        "purpose": "Extract repeated reusable evidence into a non-authoritative standard candidate for separately authorized YIYUAN-CALIBRATION custody and calibration.",
+        "purpose": "Extract repeated reusable evidence into a non-authoritative standard candidate for a separately authorized temporary YIYUAN-CALIBRATION reference and calibration handoff before any YIYUAN-ASSETS carrier decision.",
         "requiredInputs": ["repeated evidence", "scope and counterexamples", "versioning, migration, and authority metadata"],
         "triggerInputsAnyOf": ["demand evidence", "review evidence", "consumer feedback", "lifecycle evidence"],
-        "allowedOutputs": ["bounded standard candidate package", "CALIBRATION handoff proposal", "supersession metadata"],
-        "blockedTransitions": ["standard promotion from one case", "user configuration as durable custody", "ASSETS admission claim"],
+        "allowedOutputs": ["bounded standard candidate package", "temporary CALIBRATION reference handoff proposal", "supersession metadata", "ASSETS carrier proposal"],
+        "blockedTransitions": ["standard promotion from one case", "user configuration as long-term carrier", "CALIBRATION as MERIDIAN or final authority", "ASSETS admission claim"],
         "verificationSurface": ["lineage", "repetition threshold", "counterexamples", "calibration receipt when separately authorized"],
         "rerouteTriggers": ["counterexample", "scope drift", "calibration rejection", "newer evidence"]
       }
@@ -236,7 +252,9 @@
     {"id": "gate.admission-before-release", "prerequisite": "approved admission and verification", "blockedUntil": "release inventory", "verification": "admission, tests, manifest, and routing evidence"},
     {"id": "gate.release-before-consumer-projection", "prerequisite": "approved stable release and separate consumer authority", "blockedUntil": "optional consumer projection", "verification": "release pin, backup, restore, and write authority"},
     {"id": "gate.repeated-evidence-before-standard-extraction", "prerequisite": "repeated reusable evidence", "blockedUntil": "standard candidate extraction", "verification": "lineage, scope, counterexamples, and repetition"},
-    {"id": "gate.calibration-before-assets-admission", "prerequisite": "YIYUAN-CALIBRATION handoff and calibration", "blockedUntil": "YIYUAN-ASSETS admission claim", "verification": "separately authorized receipt and calibration decision"},
+    {"id": "gate.calibration-before-assets-admission", "prerequisite": "separately authorized intended YIYUAN-CALIBRATION reference and calibration handoff", "blockedUntil": "YIYUAN-ASSETS admission or final-carrier claim", "verification": "repository independence, principally temporary role, receipt, calibration decision, and ASSETS authority"},
+    {"id": "gate.accepted-standard-before-revalidation", "prerequisite": "versioned standard accepted by accountable carrier authority plus affected-graph query", "blockedUntil": "migration, remediation, rebaseline, or old-projection deprecation", "verification": "affected set, bounded batches, verification, new baseline, old-projection deprecation, and separate cross-repository authority"},
+    {"id": "gate.manager-topology-before-repository-creation", "prerequisite": "owner-reviewed written Manager design and accepted MERIDIAN topology-impact package", "blockedUntil": "Manager repository creation or implementation", "verification": "authority, upstream and downstream, bookmark and radar, public and private, Actions, release, acceptance, rollback, retirement, and cross-repository write edges"},
     {"id": "gate.closeout-before-next-intake", "prerequisite": "current round stage closeout", "blockedUntil": "next candidate-intake round activation", "verification": "closeout outcome, residual risks, deferred work, and next decision"}
   ],
   "currentInitiatives": [
@@ -279,7 +297,7 @@
       "id": "initiative.capability-survey-gap-proof",
       "status": "active",
       "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "Round 03 capability-survey rebaseline accepted", "capability-survey plan and acceptance contract verified"],
-      "allowedActions": ["governed demand-record extraction", "dated native, official, runtime, installed, and already-authorized baseline evidence", "bounded public read-only metadata discovery", "clustering and duplicate suppression", "source-pinned representative review without candidate execution", "alternative comparison and residual-gap adjudication", "reviewed evidence writes inside agent-skills-curated"],
+      "allowedActions": ["governed demand-record extraction", "dated native, official, runtime, installed, and already-authorized baseline evidence", "bounded public read-only metadata discovery", "clustering and duplicate suppression", "source-pinned representative review without candidate execution", "bounded host-native read-only child-task delegation with parent reconciliation", "alternative comparison and residual-gap adjudication", "reviewed evidence writes inside agent-skills-curated"],
       "blockedActions": ["candidate code execution", "installation or account connection", "Skill admission or repository-authored implementation", "Hook enablement", "release-manifest or generated-routing mutation", "runtime mutation", "cross-repository delivery", "remote push"],
       "resultPackage": [
         "dated native Agent and runtime capability baseline",
@@ -295,6 +313,16 @@
       ],
       "acceptanceIds": ["acceptance.capability-survey-result-package", "acceptance.cross-agent-claim-limits", "acceptance.residual-gap-proof"],
       "decisionGate": "reviewed survey result before adoption, adaptation, repository authoring, or standards extraction"
+    },
+    {
+      "id": "initiative.production-capability-manager-topology-design",
+      "status": "planned",
+      "prerequisites": ["owner-reviewed written Manager design", "current MERIDIAN matrix snapshot including bookmark, resource-radar, curated-repository, and consumer nodes plus the external-linked CALIBRATION and ASSETS relationship snapshot", "bounded capability-survey evidence or an explicitly isolated design-only dependency"],
+      "allowedActions": ["written-spec review", "read-only cross-repository topology inventory", "topology-impact package preparation", "repository authority and interface contract design", "implementation-plan preparation after written-spec approval"],
+      "blockedActions": ["new Manager repository creation", "Manager implementation", "cross-repository writes", "live projection mutation", "product account system", "third-party code execution", "Hook enablement", "remote push"],
+      "resultPackage": ["owner-reviewed written design", "MERIDIAN topology-impact package", "repository authority and interface contract", "production MVP acceptance contract", "real approved-Skill coverage-growth dependency", "native task orchestration boundary", "implementation handoff"],
+      "acceptanceIds": ["acceptance.manager-design-contract", "acceptance.manager-topology-impact-gate", "acceptance.manager-user-sovereignty", "acceptance.native-task-orchestration-boundary"],
+      "decisionGate": "owner separately accepts the written specification and topology-impact package before repository creation or implementation"
     }
   ],
   "strategicObjectives": [
@@ -317,6 +345,13 @@
       "authorityOwner": "agent-skills-curated-for-coverage-planning",
       "nonGoals": ["claiming universal domain completeness", "replacing accountable domain experts"],
       "acceptanceIds": ["acceptance.multi-domain-coverage"]
+    },
+    {
+      "id": "objective.evidence-backed-approved-coverage-growth",
+      "statement": "Expand the approved release against named human-AI collaboration shortfall coordinates through evidence-backed external reuse, adaptation, composition, or repository authoring after a supported residual gap; preserving breadth without real governed growth is insufficient.",
+      "authorityOwner": "agent-skills-curated",
+      "nonGoals": ["optimizing for raw Skill count", "requiring universal or perfect shortfall coverage", "making Manager repository creation a prerequisite for curated growth"],
+      "acceptanceIds": ["acceptance.approved-release-coverage-growth"]
     },
     {
       "id": "objective.evidence-backed-demand-model",
@@ -382,7 +417,8 @@
       ],
       "acceptanceIds": [
         "acceptance.layered-reliability-model",
-        "acceptance.project-standard-precedence"
+        "acceptance.project-standard-precedence",
+        "acceptance.native-task-orchestration-boundary"
       ]
     },
     {
@@ -395,8 +431,9 @@
       ],
       "acceptanceIds": [
         "acceptance.standard-candidate-contract",
-        "acceptance.calibration-custody-boundary",
-        "acceptance.external-standard-authority-boundary"
+        "acceptance.calibration-reference-boundary",
+        "acceptance.external-standard-authority-boundary",
+        "acceptance.standard-revalidation-cascade"
       ]
     },
     {
@@ -413,6 +450,25 @@
         "acceptance.sequence-integrity",
         "acceptance.round02-stage-closeout",
         "acceptance.round03-rebaseline"
+      ]
+    },
+    {
+      "id": "objective.production-capability-manager",
+      "statement": "Design a local-first production capability manager that turns governed capability supply into user-controlled discovery, comparison, profiling, projection, update, rollback, and retirement, requires and consumes evidence-backed approved-release expansion governed by agent-skills-curated, and preserves repository authorities.",
+      "authorityOwner": "future-separately-governed-manager-repository-after-meridian-topology-acceptance",
+      "nonGoals": [
+        "creating the Manager repository from this planning update",
+        "adding a product account system",
+        "duplicating curation authority or live host ownership",
+        "treating current approved inventory as sufficient MVP coverage",
+        "claiming cross-host parity from Codex-native task evidence"
+      ],
+      "acceptanceIds": [
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.approved-release-coverage-growth",
+        "acceptance.manager-user-sovereignty",
+        "acceptance.native-task-orchestration-boundary"
       ]
     }
   ],

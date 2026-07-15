@@ -84,6 +84,12 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             verify_script.REQUIRED_FILES,
         )
 
+    def test_production_capability_manager_design_is_a_required_verifier_input(self) -> None:
+        self.assertIn(
+            "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
+            verify_script.REQUIRED_FILES,
+        )
+
     def test_round03_demand_coordinate_contract_is_a_required_verifier_input(self) -> None:
         for path in (
             "registry/round03-demand-coordinate-source-contract.json",
@@ -467,26 +473,42 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         ):
             verify_script.validate_curation_program_plan(program, rounds)
 
-    def test_program_routes_standard_candidate_custody_to_calibration(self) -> None:
+    def test_program_routes_standard_candidates_through_calibration_to_assets_carriage(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         delivery = program["strategicPositioning"]["standardCandidateDelivery"]
-        self.assertEqual(delivery["researchAndCandidateCustody"], "YIYUAN-CALIBRATION")
+        self.assertEqual(delivery["calibrationRepository"], "YIYUAN-CALIBRATION")
+        self.assertEqual(
+            delivery["calibrationRepositoryRole"],
+            "independent-linked-principally-temporary-reference-and-calibration",
+        )
+        self.assertFalse(delivery["calibrationRepositoryInMeridianMatrix"])
         self.assertFalse(delivery["consumerConfigurationMayBeDurableAuthority"])
         self.assertEqual(delivery["projectAdmissionAuthority"], "YIYUAN-ASSETS")
+        self.assertEqual(delivery["finalStandardsCarrier"], "YIYUAN-ASSETS")
+        self.assertEqual(delivery["finalCarrierModes"], ["built-in", "knowledge-base"])
         objective = next(
             item
             for item in program["strategicObjectives"]
             if item["id"] == "objective.standard-candidate-extraction"
         )
-        self.assertIn("acceptance.calibration-custody-boundary", objective["acceptanceIds"])
+        self.assertIn("acceptance.calibration-reference-boundary", objective["acceptanceIds"])
 
-    def test_program_rejects_user_configuration_as_standard_custody(self) -> None:
+    def test_program_rejects_calibration_as_meridian_matrix_node(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         rounds = verify_script.load("registry/curation-expansion-rounds.json")
         program["strategicPositioning"]["standardCandidateDelivery"][
-            "researchAndCandidateCustody"
-        ] = "codex-user-config"
-        with self.assertRaisesRegex(RuntimeError, "preserve CALIBRATION custody"):
+            "calibrationRepositoryInMeridianMatrix"
+        ] = True
+        with self.assertRaisesRegex(RuntimeError, "matrix-external"):
+            verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_program_rejects_calibration_as_final_standards_carrier(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        program["strategicPositioning"]["standardCandidateDelivery"][
+            "finalStandardsCarrier"
+        ] = "YIYUAN-CALIBRATION"
+        with self.assertRaisesRegex(RuntimeError, "ASSETS admission and final carriage"):
             verify_script.validate_curation_program_plan(program, rounds)
 
     def test_program_control_includes_missing_objectives_and_stable_lanes(self) -> None:
@@ -494,10 +516,12 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         objective_ids = {item["id"] for item in program["strategicObjectives"]}
         required_objectives = {
             "objective.multi-domain-coverage",
+            "objective.evidence-backed-approved-coverage-growth",
             "objective.evidence-backed-demand-model",
             "objective.reuse-before-build-gap-proof",
             "objective.full-chain-capability-coverage",
             "objective.decision-ready-external-brain",
+            "objective.production-capability-manager",
         }
         self.assertTrue(required_objectives <= objective_ids)
         lane_ids = {
@@ -578,6 +602,100 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             }
             <= criterion_ids
         )
+
+    def test_manager_and_coverage_acceptance_contracts_are_mapped_honestly(self) -> None:
+        acceptance = verify_script.load("registry/program-acceptance-map.json")
+        criteria = {item["id"]: item for item in acceptance["acceptanceCriteria"]}
+        self.assertEqual(
+            criteria["acceptance.approved-release-coverage-growth"]["assessment"],
+            "planned",
+        )
+        self.assertEqual(criteria["acceptance.manager-design-contract"]["assessment"], "partial")
+        self.assertEqual(
+            criteria["acceptance.manager-topology-impact-gate"]["assessment"],
+            "verified",
+        )
+        self.assertEqual(
+            criteria["acceptance.native-task-orchestration-boundary"]["assessment"],
+            "partial",
+        )
+        evidence = next(
+            item
+            for item in acceptance["evidence"]
+            if item["id"] == "evidence.production-capability-manager-design"
+        )
+        self.assertEqual(
+            evidence["path"],
+            "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
+        )
+
+    def test_manager_topology_initiative_is_planned_and_does_not_replace_active_survey(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        self.assertEqual(program["currentInitiativeId"], "initiative.capability-survey-gap-proof")
+        manager = next(
+            item
+            for item in program["currentInitiatives"]
+            if item["id"] == "initiative.production-capability-manager-topology-design"
+        )
+        self.assertEqual(manager["status"], "planned")
+        self.assertNotIn("acceptance.approved-release-coverage-growth", manager["acceptanceIds"])
+        blocked = " ".join(manager["blockedActions"]).lower()
+        for phrase in ["new manager repository creation", "cross-repository writes", "remote push"]:
+            self.assertIn(phrase, blocked)
+
+    def test_manager_repository_creation_is_gated_by_meridian_topology_impact(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        gate = next(
+            item
+            for item in program["sequenceGates"]
+            if item["id"] == "gate.manager-topology-before-repository-creation"
+        )
+        text = " ".join(str(value) for value in gate.values()).lower()
+        for phrase in [
+            "owner-reviewed written manager design",
+            "meridian topology-impact package",
+            "repository creation or implementation",
+            "bookmark and radar",
+            "rollback",
+            "retirement",
+        ]:
+            self.assertIn(phrase, text)
+
+    def test_native_task_orchestration_is_parent_reconciled_and_write_isolated(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        parallel = " ".join(
+            program["programArchitecture"]["executionSemantics"]["safeParallelism"]
+        ).lower()
+        for phrase in ["child tasks", "parent reconciliation", "shared-checkout writes", "isolation"]:
+            self.assertIn(phrase, parallel)
+
+    def test_standard_revalidation_requires_accepted_standard_and_affected_graph(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        gate = next(
+            item
+            for item in program["sequenceGates"]
+            if item["id"] == "gate.accepted-standard-before-revalidation"
+        )
+        text = " ".join(str(value) for value in gate.values()).lower()
+        for phrase in ["standard accepted", "affected-graph query", "bounded batches", "new baseline"]:
+            self.assertIn(phrase, text)
+
+    def test_manager_design_semantic_contract_rejects_missing_parent_authority(self) -> None:
+        design_path = ROOT / "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md"
+        original_read_text = Path.read_text
+
+        def read_text_without_parent_authority(path: Path, *args: object, **kwargs: object) -> str:
+            content = original_read_text(path, *args, **kwargs)
+            if path == design_path:
+                return content.replace(
+                    "The parent task owns experiment design",
+                    "The coordinator handles experiment design",
+                )
+            return content
+
+        with patch.object(Path, "read_text", read_text_without_parent_authority):
+            with self.assertRaisesRegex(RuntimeError, "parent task owns experiment design"):
+                verify_script.verify()
 
     def test_program_records_owner_acceptance_and_activates_capability_survey(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")

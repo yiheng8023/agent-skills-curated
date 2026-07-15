@@ -25,19 +25,22 @@ evidenced demand and shortfall coordinates
 -> residual-gap decision
 -> reviewed Skill intake, adaptation, repository authoring, release, and lifecycle governance here
 -> optional consumer-owned installation, projection, backup, restore, and live checks
--> bounded research and standard-candidate delivery to YIYUAN-CALIBRATION
--> project-owned admission of any hard standard
+-> intended, separately authorized standard-candidate delivery to YIYUAN-CALIBRATION
+-> YIYUAN-ASSETS admission and final standards carriage
 ```
 
 This repository does not own upstream radar architecture, live Agent state,
 consumer configuration, or project hard-standard admission. Consumer
 configuration repositories are consumption, validation, and feedback surfaces;
-they are not the durable home for cross-project research or standards. After
-repeated evidence exists, this repository may produce a traceable standard
-candidate package for delivery to `YIYUAN-CALIBRATION`, which provides durable
-calibration custody. `YIYUAN-ASSETS` retains the separate decision to admit a
-candidate as a project hard standard. Any cross-repository write remains a
-separately authorized transaction.
+they are not the long-term carrier for cross-project research or standards.
+After repeated evidence exists, this repository may produce a traceable
+standard candidate package intended for separately authorized delivery to
+`YIYUAN-CALIBRATION`. CALIBRATION is independent but linked, outside the
+MERIDIAN matrix, and principally a temporary reference and calibration
+workspace for ASSETS reshaping. `YIYUAN-ASSETS` retains admission authority and
+is the intended final standards carrier through built-in policy or governed
+knowledge. Any cross-repository write remains a separately authorized
+transaction.
 
 ## Stable Program Architecture
 
@@ -58,34 +61,42 @@ round.
 
 ## Strategic Objectives
 
-The program currently has eleven required core objectives and permits reviewed
+The program currently has thirteen required core objectives and permits reviewed
 extensions without weakening reference closure:
 
 1. Operate Skills as the first terminal MVP without turning the broader funnel
    into a Skills-only system.
 2. Preserve broad general and specialist coverage beyond software engineering
    and any one human-AI shortfall chain.
-3. Bind capability work to dated demand evidence, uncertainty, held claims,
+3. Expand the approved release against named collaboration shortfalls through
+   governed reuse, adaptation, composition, or supported residual-gap
+   authoring; breadth without real growth is insufficient.
+4. Bind capability work to dated demand evidence, uncertainty, held claims,
    refresh rules, and promotion firewalls.
-4. Reuse reliable native, official, runtime, curated, external, composed, or
+5. Reuse reliable native, official, runtime, curated, external, composed, or
    non-Skill paths before authoring new capability.
-5. Model full-chain native, single, composed, non-Skill, human-authority,
+6. Model full-chain native, single, composed, non-Skill, human-authority,
    fallback, conflict, and lifecycle coverage.
-6. Produce decision-ready topology that reduces unknown-Skill enumeration,
+7. Produce decision-ready topology that reduces unknown-Skill enumeration,
    routing burden, collision, and maintenance rent without owning invocation.
-7. Govern third-party Skill bodies through provenance, license, security,
+8. Govern third-party Skill bodies through provenance, license, security,
    portability, overlap, adaptation, validation, release, and lifecycle gates.
-8. Keep releases agent-neutral while requiring evidence-backed consumer
+9. Keep releases agent-neutral while requiring evidence-backed consumer
    mappings for each Agent's instruction, Skill, precedence, projection,
    verification, backup, and restore behavior.
-9. Improve collaboration reliability through the smallest sufficient layered
+10. Improve collaboration reliability through the smallest sufficient layered
    combination of instructions, Skills, deterministic mechanisms, project
    standards, evidence, and accountable human decisions.
-10. Extract standard candidates from repeated governance evidence, target their
-   durable calibration custody in `YIYUAN-CALIBRATION`, and preserve separate
-   `YIYUAN-ASSETS` project-admission authority.
-11. Support update, conflict handling, supersession, deprecation, migration,
+11. Extract standard candidates from repeated governance evidence, target an
+   independently authorized and principally temporary reference/calibration
+   handoff through `YIYUAN-CALIBRATION`, and preserve `YIYUAN-ASSETS` admission
+   and final-carrier authority, including a graph-scoped revalidation cascade
+   after a standard is accepted.
+12. Support update, conflict handling, supersession, deprecation, migration,
    rollback, and retirement instead of accumulating Skills indefinitely.
+13. Design a separately governed, local-first production capability Manager
+   that consumes this repository's approved supply without duplicating its
+   admission authority or creating a product account system.
 
 Each objective maps to stable acceptance, verification, and evidence IDs in
 `registry/program-acceptance-map.json`. `verified` means the stated criterion
@@ -122,6 +133,13 @@ alternative-comparison gate. A third-party deep review requires an exact source
 pin plus license and provenance boundaries. Inspection never authorizes code
 execution.
 
+Host-native child tasks or Agents may provide independent observations for
+fresh-context recovery, paired tests, weak-model floor probes, and parallel
+read-only review. Their results join at a parent-owned reconciliation gate and
+are not automatic truth, acceptance, or completion evidence. Shared-checkout
+tasks are read-only by default; concurrent writes require a verified isolation
+mechanism plus explicit branch and cleanup ownership.
+
 Broad resource-radar discovery may continue independently upstream. A radar
 signal becomes decision input here only after this repository binds demand,
 baseline, source trust, review scope, and acceptance. Feedback, new evidence,
@@ -157,9 +175,9 @@ and a bounded local runtime sync transaction:
 - `registry/round02-local-runtime-sync-execution.json`
 
 Those records prove that the bounded actions occurred on their recorded dates.
-They do not prove current live parity, and they do not include a distinct Round
-02 stage-closeout reconciliation. The current state is therefore
-`needs-reconciliation`, not `complete`.
+They do not prove current live parity. A later distinct Round 02 stage-closeout
+reconciliation was accepted and closed the bounded round without upgrading the
+dated runtime evidence into current live truth.
 
 The program-control completeness initiative was accepted by the owner and
 merged locally into `main`; the bounded event is recorded in
@@ -173,9 +191,9 @@ Round 03 rebaseline has been owner-accepted and the round is active for the
 bounded read-only capability survey. Its former planned
 adaptation-and-admission contract overlaps work already completed through
 separately approved Round 02 follow-on gates. The machine-bound current
-initiative is `initiative.round03-capability-survey-rebaseline`, and its review
-package is `registry/round03-capability-survey-rebaseline.json`, and the decision
-is recorded in
+initiative is `initiative.capability-survey-gap-proof`. The accepted rebaseline
+review package is `registry/round03-capability-survey-rebaseline.json`, and its
+decision is recorded in
 `registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json`.
 Its demand inputs are pinned separately by
 `registry/round03-demand-coordinate-source-contract.json`; the source contract
@@ -185,6 +203,25 @@ The capability-survey and residual-gap initiative is active. Demand records and
 a dated native/runtime baseline must be verified before bounded public candidate
 metadata discovery begins. The survey must produce all ten declared result components before any adoption,
 adaptation, repository authoring, or standards-extraction decision.
+
+## Planned Production Manager Boundary
+
+The approved design direction is recorded in
+`docs/superpowers/specs/2026-07-15-production-capability-manager-design.md`.
+It proposes a local-first headless core, TUI-first human workflow, GUI decision
+after bounded usability evidence, no product account system, telemetry off by
+default, reversible transactions, dual ordinary and maintainer modes, and
+host-specific adapters. The product must consume real approved-release growth;
+wrapping the current inventory does not satisfy the MVP.
+
+This is a planned branch, not the active capability-survey initiative. A new
+Manager repository cannot be created and implementation cannot begin until the
+written specification is owner-reviewed and a separate MERIDIAN topology-impact
+package is accepted. That package must cover the bookmarks project, resource
+radar, this curated supply repository, consumers, Actions, release, rollback,
+retirement, public/private boundaries, and the external-linked CALIBRATION and
+ASSETS relationships. The current plan does not authorize repository creation,
+cross-repository writes, Hooks, runtime mutation, implementation, or push.
 
 ## Verification And Closeout
 

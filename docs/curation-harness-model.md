@@ -158,15 +158,18 @@ migration, and authority metadata. The intended custody flow is:
 ```text
 consumer-side research, runtime evidence, and feedback
 -> bounded standard candidate package
--> YIYUAN-CALIBRATION durable custody and calibration
--> YIYUAN-ASSETS project hard-standard admission decision
+-> separately authorized YIYUAN-CALIBRATION reference and calibration handoff
+-> YIYUAN-ASSETS admission and final standards carriage
 ```
 
-This repository does not itself admit or publish a CALIBRATION or ASSETS
-standard. Writing a handoff package into another repository is a distinct,
-separately authorized transaction. This transaction boundary must not be
-misread as permission to leave research and standards indefinitely in a user
-configuration repository.
+`YIYUAN-CALIBRATION` is independent but linked, outside the MERIDIAN matrix,
+and principally a temporary reference and calibration workspace for ASSETS
+reshaping. `YIYUAN-ASSETS` is the intended final carrier through built-in policy
+or governed knowledge. This repository does not itself admit or publish a
+CALIBRATION or ASSETS standard. Writing a handoff package into another
+repository is a distinct, separately authorized transaction. This transaction
+boundary must not be misread as permission to leave research and standards
+indefinitely in a user configuration repository.
 
 ## Delivery Standard
 

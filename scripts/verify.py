@@ -142,6 +142,7 @@ REQUIRED_FILES = (
     "sources/kepano-obsidian-skills/LICENSE",
     "docs/coverage-and-curation-expansion.md",
     "docs/curation-harness-model.md",
+    "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
     "docs/round02-source-intake-2026-07-02.md",
     "docs/round02-candidate-review-2026-07-02.md",
     "docs/round02-obsidian-adaptation-gate.md",
@@ -1347,16 +1348,40 @@ def validate_curation_program_plan(
 
     delivery = positioning.get("standardCandidateDelivery")
     expected_delivery = {
-        "researchAndCandidateCustody": "YIYUAN-CALIBRATION",
+        "calibrationRepository": "YIYUAN-CALIBRATION",
+        "calibrationRepositoryRole": "independent-linked-principally-temporary-reference-and-calibration",
+        "calibrationRepositoryInMeridianMatrix": False,
         "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
         "consumerConfigurationMayBeDurableAuthority": False,
+        "finalStandardsCarrier": "YIYUAN-ASSETS",
+        "finalCarrierModes": ["built-in", "knowledge-base"],
         "projectAdmissionAuthority": "YIYUAN-ASSETS",
         "currentTransactionCrossRepositoryWritesAuthorized": False,
     }
     if delivery != expected_delivery:
         raise RuntimeError(
-            "Curation program standard candidate delivery must preserve CALIBRATION custody, "
-            "consumer non-authority, ASSETS admission, and the current no-write boundary."
+            "Curation program standard candidate delivery must preserve CALIBRATION as an "
+            "independent, linked, principally temporary, matrix-external reference and "
+            "calibration repository; consumer non-authority; ASSETS admission and final "
+            "carriage; and the current no-write boundary."
+        )
+    manager_boundary = positioning.get("managerProductBoundary")
+    expected_manager_boundary = {
+        "proposedRepositoryRole": "local-first-production-capability-manager",
+        "repositoryCreationAuthorized": False,
+        "topologyImpactReviewRequired": True,
+        "headlessCoreRequired": True,
+        "productAccountSystemAllowed": False,
+        "defaultTelemetry": "off",
+        "skillsFirstVerticalSlice": True,
+        "approvedReleaseGrowthRequiredForMvp": True,
+        "guiDecision": "pending-bounded-usability-evidence",
+    }
+    if manager_boundary != expected_manager_boundary:
+        raise RuntimeError(
+            "Curation program Manager boundary must preserve topology gating, local-first "
+            "headless operation, no product account, telemetry off, real approved-release "
+            "growth, and the pending GUI decision."
         )
 
     architecture = document.get("programArchitecture")
@@ -1404,10 +1429,18 @@ def validate_curation_program_plan(
         if execution_semantics.get(key) != expected:
             raise RuntimeError(f"Curation program dependency graph {key} drifted.")
     safe_parallelism = execution_semantics.get("safeParallelism")
-    if not isinstance(safe_parallelism, list) or len(safe_parallelism) < 3:
+    if not isinstance(safe_parallelism, list) or len(safe_parallelism) < 4:
         raise RuntimeError("Curation program dependency graph safe parallelism is incomplete.")
     parallel_text = " ".join(str(item) for item in safe_parallelism).lower()
-    for phrase in ["host and model", "metadata triage", "join before alternative comparison"]:
+    for phrase in [
+        "host and model",
+        "metadata triage",
+        "join before alternative comparison",
+        "child tasks",
+        "parent reconciliation",
+        "shared-checkout writes",
+        "isolation mechanism",
+    ]:
         if phrase not in parallel_text:
             raise RuntimeError(f"Curation program safe parallelism missing phrase: {phrase}")
     radar_boundary = str(execution_semantics.get("upstreamRadarBoundary", "")).lower()
@@ -1491,6 +1524,18 @@ def validate_curation_program_plan(
             triggers = lane.get("triggerInputsAnyOf")
             if not isinstance(triggers, list) or len(triggers) < 4:
                 raise RuntimeError("Curation program standard extraction any-of triggers are incomplete.")
+            standard_lane_text = " ".join(
+                [
+                    str(lane.get("purpose", "")),
+                    *[str(item) for item in lane.get("allowedOutputs", [])],
+                    *[str(item) for item in lane.get("blockedTransitions", [])],
+                ]
+            ).lower()
+            for phrase in ["temporary", "assets", "final authority", "separately authorized"]:
+                if phrase not in standard_lane_text:
+                    raise RuntimeError(
+                        f"Curation program standard extraction boundary missing phrase: {phrase}"
+                    )
     if lane_ids != expected_lane_ids:
         raise RuntimeError("Curation program operating lane order drifted.")
 
@@ -1551,6 +1596,8 @@ def validate_curation_program_plan(
         "gate.release-before-consumer-projection",
         "gate.repeated-evidence-before-standard-extraction",
         "gate.calibration-before-assets-admission",
+        "gate.accepted-standard-before-revalidation",
+        "gate.manager-topology-before-repository-creation",
         "gate.closeout-before-next-intake",
     ]
     sequence_gate_ids = [
@@ -1564,6 +1611,42 @@ def validate_curation_program_plan(
         for key in ["id", "prerequisite", "blockedUntil", "verification"]:
             if not isinstance(gate.get(key), str) or not gate.get(key):
                 raise RuntimeError(f"Curation program sequence gate {key} is required.")
+    gate_by_id = {
+        gate["id"]: gate for gate in sequence_gates if isinstance(gate, dict)
+    }
+    manager_gate_text = " ".join(
+        str(gate_by_id["gate.manager-topology-before-repository-creation"].get(key, ""))
+        for key in ["prerequisite", "blockedUntil", "verification"]
+    ).lower()
+    for phrase in [
+        "owner-reviewed written manager design",
+        "meridian topology-impact package",
+        "repository creation or implementation",
+        "bookmark and radar",
+        "public and private",
+        "actions",
+        "release",
+        "acceptance",
+        "rollback",
+        "retirement",
+    ]:
+        if phrase not in manager_gate_text:
+            raise RuntimeError(f"Curation program Manager topology gate missing phrase: {phrase}")
+    revalidation_gate_text = " ".join(
+        str(gate_by_id["gate.accepted-standard-before-revalidation"].get(key, ""))
+        for key in ["prerequisite", "blockedUntil", "verification"]
+    ).lower()
+    for phrase in [
+        "standard accepted",
+        "affected-graph query",
+        "migration",
+        "bounded batches",
+        "new baseline",
+        "old-projection deprecation",
+        "cross-repository authority",
+    ]:
+        if phrase not in revalidation_gate_text:
+            raise RuntimeError(f"Curation program standard revalidation gate missing phrase: {phrase}")
 
     initiatives = document.get("currentInitiatives")
     if not isinstance(initiatives, list):
@@ -1572,8 +1655,9 @@ def validate_curation_program_plan(
     required_initiative_ids = {
         "initiative.program-control-completeness-reconciliation",
         "initiative.round02-stage-closeout-reconciliation",
-        "initiative.round03-capability-survey-rebaseline",
         "initiative.capability-survey-gap-proof",
+        "initiative.capability-survey-gap-proof",
+        "initiative.production-capability-manager-topology-design",
     }
     if not required_initiative_ids <= set(initiative_ids):
         raise RuntimeError("Curation program required initiatives are missing.")
@@ -1638,6 +1722,12 @@ def validate_curation_program_plan(
     for phrase in ["candidate code execution", "installation", "runtime mutation", "remote push"]:
         if phrase not in survey_blocked_text:
             raise RuntimeError(f"Curation capability survey missing blocked action: {phrase}")
+    survey_allowed_text = " ".join(
+        str(item) for item in capability_survey.get("allowedActions", [])
+    ).lower()
+    for phrase in ["child-task delegation", "read-only", "parent reconciliation"]:
+        if phrase not in survey_allowed_text:
+            raise RuntimeError(f"Curation capability survey missing task boundary: {phrase}")
     survey_result_text = " ".join(
         str(item) for item in capability_survey.get("resultPackage", [])
     ).lower()
@@ -1655,6 +1745,32 @@ def validate_curation_program_plan(
     ]:
         if phrase not in survey_result_text:
             raise RuntimeError(f"Curation capability survey result package missing phrase: {phrase}")
+
+    manager_initiative = next(
+        item
+        for item in initiatives
+        if isinstance(item, dict)
+        and item.get("id") == "initiative.production-capability-manager-topology-design"
+    )
+    if manager_initiative.get("status") != "planned":
+        raise RuntimeError("Curation program Manager topology initiative must remain planned.")
+    manager_blocked_text = " ".join(
+        str(item) for item in manager_initiative.get("blockedActions", [])
+    ).lower()
+    for phrase in [
+        "new manager repository creation",
+        "manager implementation",
+        "cross-repository writes",
+        "product account system",
+        "hook enablement",
+        "remote push",
+    ]:
+        if phrase not in manager_blocked_text:
+            raise RuntimeError(f"Curation program Manager initiative missing blocked action: {phrase}")
+    if "acceptance.approved-release-coverage-growth" in manager_initiative.get("acceptanceIds", []):
+        raise RuntimeError(
+            "Curation program Manager topology initiative must not be blocked on future release growth."
+        )
 
     strategic_objectives = document.get("strategicObjectives")
     if not isinstance(strategic_objectives, list) or not strategic_objectives:
@@ -1682,6 +1798,7 @@ def validate_curation_program_plan(
     required_objective_ids = {
         "objective.skills-terminal-mvp",
         "objective.multi-domain-coverage",
+        "objective.evidence-backed-approved-coverage-growth",
         "objective.evidence-backed-demand-model",
         "objective.reuse-before-build-gap-proof",
         "objective.full-chain-capability-coverage",
@@ -1691,6 +1808,7 @@ def validate_curation_program_plan(
         "objective.layered-collaboration-reliability",
         "objective.standard-candidate-extraction",
         "objective.lifecycle-metabolism",
+        "objective.production-capability-manager",
     }
     missing_objectives = required_objective_ids - set(objective_ids)
     if missing_objectives:
@@ -1873,7 +1991,7 @@ def validate_curation_program_plan(
         "registry/program-control-acceptance-event-2026-07-15.json",
         "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
         "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
-        "initiative.round03-capability-survey-rebaseline",
+        "initiative.capability-survey-gap-proof",
         "Round 03 rebaseline has been owner-accepted",
         "evidenced demand or shortfall",
         "native / official / runtime baseline",
@@ -1890,6 +2008,11 @@ def validate_curation_program_plan(
         "cross-cutting",
         "exact source pin",
         "machine-bound current initiative",
+        "thirteen required core objectives",
+        "Planned Production Manager Boundary",
+        "MERIDIAN topology-impact",
+        "parent-owned reconciliation gate",
+        "principally a temporary reference and calibration workspace",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
@@ -1918,6 +2041,8 @@ def validate_curation_program_plan(
         "cross-cutting",
         "exact source pin",
         "radar signal does not bypass",
+        "outside the MERIDIAN matrix",
+        "intended final carrier",
     ]:
         if phrase not in harness_doc:
             raise RuntimeError(f"Curation harness doc missing phrase: {phrase}")
@@ -1935,10 +2060,45 @@ def validate_curation_program_plan(
         raise RuntimeError("README.md must link program acceptance map.")
     if "registry/program-acceptance-map.json" not in readme_zh:
         raise RuntimeError("README.zh-CN.md must link program acceptance map.")
-    if "YIYUAN-CALIBRATION" not in readme or "durable research or standards custody" not in readme:
-        raise RuntimeError("README.md must preserve the calibration custody boundary.")
-    if "YIYUAN-CALIBRATION" not in readme_zh or "长期托管位置" not in readme_zh:
-        raise RuntimeError("README.zh-CN.md must preserve the calibration custody boundary.")
+    for phrase in [
+        "YIYUAN-CALIBRATION",
+        "outside the MERIDIAN matrix",
+        "principally a temporary",
+        "YIYUAN-ASSETS",
+        "intended final standards carrier",
+    ]:
+        if phrase not in readme:
+            raise RuntimeError(f"README.md must preserve the calibration reference boundary: {phrase}")
+    for phrase in [
+        "YIYUAN-CALIBRATION",
+        "MERIDIAN 矩阵之外",
+        "原则上是 ASSETS 重塑阶段的临时参考和校准仓",
+        "YIYUAN-ASSETS",
+        "标准最终内置或知识库承载的目标仓",
+    ]:
+        if phrase not in readme_zh:
+            raise RuntimeError(f"README.zh-CN.md must preserve the calibration reference boundary: {phrase}")
+    manager_design_path = "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md"
+    if manager_design_path not in readme or manager_design_path not in readme_zh:
+        raise RuntimeError("Both README projections must link the production Manager design.")
+    manager_design = " ".join(
+        (ROOT / manager_design_path).read_text(encoding="utf-8").split()
+    ).lower()
+    for phrase in [
+        "matrix and external topology",
+        "no product account system",
+        "headless core",
+        "telemetry is off by default",
+        "real coverage growth",
+        "native task and agent orchestration",
+        "parent task owns experiment design",
+        "child task result is an observation",
+        "weak-agent floor",
+        "topology-impact package before any new manager repository is created",
+        "explicit non-authorization",
+    ]:
+        if phrase not in manager_design:
+            raise RuntimeError(f"Production Manager design missing required contract phrase: {phrase}")
     for phrase in [
         "multi-domain",
         "reuse before build",

@@ -25,6 +25,12 @@
       ]
     },
     {
+      "id": "objective.evidence-backed-approved-coverage-growth",
+      "acceptanceIds": [
+        "acceptance.approved-release-coverage-growth"
+      ]
+    },
+    {
       "id": "objective.evidence-backed-demand-model",
       "acceptanceIds": [
         "acceptance.demand-coordinate-contract",
@@ -73,15 +79,17 @@
       "id": "objective.layered-collaboration-reliability",
       "acceptanceIds": [
         "acceptance.layered-reliability-model",
-        "acceptance.project-standard-precedence"
+        "acceptance.project-standard-precedence",
+        "acceptance.native-task-orchestration-boundary"
       ]
     },
     {
       "id": "objective.standard-candidate-extraction",
       "acceptanceIds": [
         "acceptance.standard-candidate-contract",
-        "acceptance.calibration-custody-boundary",
-        "acceptance.external-standard-authority-boundary"
+        "acceptance.calibration-reference-boundary",
+        "acceptance.external-standard-authority-boundary",
+        "acceptance.standard-revalidation-cascade"
       ]
     },
     {
@@ -92,6 +100,16 @@
         "acceptance.sequence-integrity",
         "acceptance.round02-stage-closeout",
         "acceptance.round03-rebaseline"
+      ]
+    },
+    {
+      "id": "objective.production-capability-manager",
+      "acceptanceIds": [
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.approved-release-coverage-growth",
+        "acceptance.manager-user-sovereignty",
+        "acceptance.native-task-orchestration-boundary"
       ]
     }
   ],
@@ -400,11 +418,11 @@
       "evidenceIds": []
     },
     {
-      "id": "acceptance.calibration-custody-boundary",
-      "statement": "Cross-project research and standard candidates do not remain solely in consumer configuration repositories; bounded packages target YIYUAN-CALIBRATION for durable calibration custody before any YIYUAN-ASSETS admission decision.",
+      "id": "acceptance.calibration-reference-boundary",
+      "statement": "Cross-project research and standard candidates do not remain solely in consumer configuration repositories; bounded packages are intended for separately authorized delivery to YIYUAN-CALIBRATION as an independent, linked, principally temporary reference and calibration workspace outside the MERIDIAN matrix, while YIYUAN-ASSETS is the intended final standards carrier.",
       "assessment": "verified",
       "verificationIds": [
-        "verification.calibration-custody-boundary"
+        "verification.calibration-reference-boundary"
       ],
       "evidenceIds": [
         "evidence.program-plan",
@@ -415,13 +433,25 @@
     },
     {
       "id": "acceptance.external-standard-authority-boundary",
-      "statement": "This repository does not itself admit or publish CALIBRATION or ASSETS standards; cross-repository delivery requires separate authority, and YIYUAN-ASSETS retains project hard-standard admission authority.",
+      "statement": "This repository does not itself admit or publish CALIBRATION or ASSETS standards; cross-repository delivery requires separate authority, and YIYUAN-ASSETS retains final standard admission and carrier authority.",
       "assessment": "verified",
       "verificationIds": [
         "verification.standard-authority-boundary"
       ],
       "evidenceIds": [
         "evidence.program-plan"
+      ]
+    },
+    {
+      "id": "acceptance.standard-revalidation-cascade",
+      "statement": "An accepted standard can settle affected historical debt and establish a new restart baseline through a graph-scoped migration and revalidation cascade without authorizing an indiscriminate big-bang rewrite.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.standard-revalidation-cascade"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.production-capability-manager-design"
       ]
     },
     {
@@ -445,6 +475,64 @@
       ],
       "evidenceIds": [
         "evidence.lifecycle-policy"
+      ]
+    },
+    {
+      "id": "acceptance.manager-design-contract",
+      "statement": "A written production Manager design binds product purpose, authority boundaries, artifact identity, lifecycle, headless core, clients, dual modes, transactions, failure recovery, host adapters, and explicit non-authorization before implementation planning.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.manager-design-contract"
+      ],
+      "evidenceIds": [
+        "evidence.production-capability-manager-design"
+      ]
+    },
+    {
+      "id": "acceptance.manager-topology-impact-gate",
+      "statement": "Manager repository creation and implementation remain blocked until an owner-reviewed written design and a separately accepted MERIDIAN topology-impact package cover authority, bookmark and radar inputs, curated supply, consumers, public and private boundaries, Actions, release, rollback, and retirement edges.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.manager-topology-impact-gate"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.production-capability-manager-design"
+      ]
+    },
+    {
+      "id": "acceptance.approved-release-coverage-growth",
+      "statement": "The curated program completes at least one new governed intake and admission round that expands the approved release and improves named priority human-AI collaboration shortfall coordinates; preserving breadth or wrapping the current inventory is insufficient, and Manager creation is not a prerequisite.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.approved-release-coverage-growth"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.production-capability-manager-design"
+      ]
+    },
+    {
+      "id": "acceptance.manager-user-sovereignty",
+      "statement": "The Manager is local-first, has no product account system, defaults telemetry off, keeps clients on one headless core, and requires previewable reversible transactions without silently taking ownership of foreign-managed state.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.manager-user-sovereignty"
+      ],
+      "evidenceIds": [
+        "evidence.production-capability-manager-design"
+      ]
+    },
+    {
+      "id": "acceptance.native-task-orchestration-boundary",
+      "statement": "Host-native child tasks or Agents may provide fresh, independent, weak-floor, and parallel read-only observations, but the parent owns experiment design and reconciliation; child output is not automatic truth, acceptance, or completion evidence, and concurrent writes require verified isolation.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.native-task-orchestration-boundary"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.production-capability-manager-design"
       ]
     }
   ],
@@ -551,13 +639,13 @@
     {
       "id": "verification.standard-candidate-contract",
       "method": "Validate a future standard candidate schema and at least one evidence-backed fixture without performing an unauthorized cross-repository write.",
-      "expectedResult": "Candidate packages preserve lineage, declare YIYUAN-CALIBRATION as their calibration custody target, and remain non-authoritative until project admission.",
-      "evidenceRequirement": "A checked-in contract, fixtures, deterministic tests, an explicit calibration handoff target, and an external authority boundary."
+      "expectedResult": "Candidate packages preserve lineage, identify any YIYUAN-CALIBRATION handoff as an independent and principally temporary reference or calibration path, identify YIYUAN-ASSETS as final admission and carrier authority, and remain non-authoritative until admission.",
+      "evidenceRequirement": "A checked-in contract, fixtures, deterministic tests, an explicit intended calibration handoff target, final-carrier metadata, and an external authority boundary."
     },
     {
-      "id": "verification.calibration-custody-boundary",
-      "method": "Inspect the machine-readable delivery fields and public projections for consumer configuration role, calibration custody target, and project admission authority.",
-      "expectedResult": "Consumer configuration repositories are evidence and feedback surfaces, YIYUAN-CALIBRATION is the durable calibration custody target, and YIYUAN-ASSETS owns project admission decisions.",
+      "id": "verification.calibration-reference-boundary",
+      "method": "Inspect the machine-readable delivery fields and public projections for consumer configuration role, CALIBRATION matrix membership and lifecycle role, and ASSETS admission and final-carrier authority.",
+      "expectedResult": "Consumer configuration repositories are evidence and feedback surfaces, YIYUAN-CALIBRATION is independent, linked, outside MERIDIAN, and principally temporary for reference and calibration, and YIYUAN-ASSETS owns final admission and carrier decisions.",
       "evidenceRequirement": "Current program plan, harness model, and English and Chinese README projections."
     },
     {
@@ -565,6 +653,42 @@
       "method": "Inspect the program authority and repository write boundaries.",
       "expectedResult": "No calibration or product standard path is owned, written, or claimed as admitted by this repository.",
       "evidenceRequirement": "Machine-readable non-goals and public boundary documentation."
+    },
+    {
+      "id": "verification.standard-revalidation-cascade",
+      "method": "Check the standard design contract for explicit historical-debt, restart-baseline, affected-graph query, bounded migration, verification, and old-projection deprecation steps.",
+      "expectedResult": "A future accepted standard changes only affected governed surfaces through a versioned revalidation cascade and does not imply cross-repository write authority or a universal rewrite.",
+      "evidenceRequirement": "Reviewed design contract now; implemented graph query, migration fixtures, verification, and owner admission evidence before operational acceptance."
+    },
+    {
+      "id": "verification.manager-design-contract",
+      "method": "Validate the written Manager design against required product, authority, identity, lifecycle, core, client, transaction, adapter, testing, and non-authorization sections.",
+      "expectedResult": "The design is internally closed enough for owner review without creating a repository or claiming implementation readiness.",
+      "evidenceRequirement": "Current written design, machine plan mapping, deterministic semantic checks, and owner written-spec review."
+    },
+    {
+      "id": "verification.manager-topology-impact-gate",
+      "method": "Validate that machine plan and design block Manager repository creation and implementation until a separately accepted MERIDIAN topology-impact package covers all declared repository and lifecycle edges.",
+      "expectedResult": "The Manager cannot become an unmodeled duplicate authority or silently change MERIDIAN, bookmark, radar, curation, consumer, CALIBRATION, or ASSETS relationships.",
+      "evidenceRequirement": "Current gate and planned initiative now; owner-accepted topology-impact package before repository creation."
+    },
+    {
+      "id": "verification.approved-release-coverage-growth",
+      "method": "Compare named priority shortfall coordinates, the prior approved release, new governed intake and admission evidence, and the resulting approved release topology.",
+      "expectedResult": "At least one genuine governed expansion improves named priority shortfall coverage without optimizing for raw Skill count or depending on Manager implementation.",
+      "evidenceRequirement": "Completed capability survey, supported dispositions, source and admission evidence, release diff, coverage matrix diff, tests, and owner approval."
+    },
+    {
+      "id": "verification.manager-user-sovereignty",
+      "method": "Check core and client contracts plus future implementation tests for local-first behavior, no product account, telemetry off, shared policy decisions, preview, ownership classification, rollback, and foreign-state protection.",
+      "expectedResult": "No client or automation path bypasses the headless core or silently installs, uploads, overwrites, expands permission, or takes ownership.",
+      "evidenceRequirement": "Written design now; later contract, client-parity, transaction, failure-injection, and disposable-home evidence."
+    },
+    {
+      "id": "verification.native-task-orchestration-boundary",
+      "method": "Run bounded fresh-task, paired, weak-floor, independent-review, read-only parallel, reconciliation, cancellation, isolation, and residue experiments per supported host.",
+      "expectedResult": "Child results remain host-bounded observations reconciled by the parent, shared-checkout writes fail closed, and isolated writes retain branch and cleanup ownership.",
+      "evidenceRequirement": "Design boundary and current Codex observation now; repeatable host-specific experiment records and negative cases before adapter maturity claims."
     },
     {
       "id": "verification.lifecycle-loop",
@@ -590,8 +714,26 @@
         "acceptance.program-control-completeness",
         "acceptance.layered-reliability-model",
         "acceptance.project-standard-precedence",
-        "acceptance.calibration-custody-boundary",
-        "acceptance.external-standard-authority-boundary"
+        "acceptance.calibration-reference-boundary",
+        "acceptance.external-standard-authority-boundary",
+        "acceptance.standard-revalidation-cascade",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.approved-release-coverage-growth",
+        "acceptance.native-task-orchestration-boundary"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-design",
+      "path": "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
+      "kind": "owner-approved-conversational-design-written-spec-review-pending",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.standard-revalidation-cascade",
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.approved-release-coverage-growth",
+        "acceptance.manager-user-sovereignty",
+        "acceptance.native-task-orchestration-boundary"
       ]
     },
     {
@@ -601,7 +743,7 @@
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.skills-terminal-positioning",
-        "acceptance.calibration-custody-boundary",
+        "acceptance.calibration-reference-boundary",
         "acceptance.decision-ready-consumer-projection",
         "acceptance.cross-agent-claim-limits",
         "acceptance.feedback-loop"
@@ -617,7 +759,7 @@
         "acceptance.official-runtime-boundary",
         "acceptance.agent-neutral-release",
         "acceptance.consumer-mapping-evidence",
-        "acceptance.calibration-custody-boundary"
+        "acceptance.calibration-reference-boundary"
       ]
     },
     {
@@ -626,7 +768,7 @@
       "kind": "public-projection-zh",
       "asOf": "2026-07-15",
       "supports": [
-        "acceptance.calibration-custody-boundary"
+        "acceptance.calibration-reference-boundary"
       ]
     },
     {

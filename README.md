@@ -72,10 +72,19 @@ standards remain higher-authority integration surfaces. This repository may
 extract traceable standard candidates from repeated governance evidence, but it
 does not admit, publish, or install project hard standards. Consumer
 configuration repositories are temporary consumption, validation, and feedback
-surfaces for this purpose, not durable research or standards custody. Bounded
-research and standard-candidate packages are intended for delivery to
-`YIYUAN-CALIBRATION`; `YIYUAN-ASSETS` separately decides project hard-standard
-admission.
+surfaces for this purpose, not the long-term carrier for research or standards.
+Bounded research and standard-candidate packages are intended for separately
+authorized delivery to `YIYUAN-CALIBRATION`. CALIBRATION is an independent but
+linked repository outside the MERIDIAN matrix and principally a temporary
+reference and calibration workspace. `YIYUAN-ASSETS` separately owns admission
+and is the intended final standards carrier through built-in policy or governed
+knowledge.
+
+The current approved release is a seed, not sufficient coverage of human-AI
+collaboration shortfalls. Real evidence-backed approved-release growth remains
+a core objective whether or not the separately planned production capability
+Manager is created. Its written design is reviewable now, but repository
+creation and implementation remain blocked by a MERIDIAN topology-impact gate.
 
 The strategic objective-to-acceptance-to-verification-to-evidence mapping is
 `registry/program-acceptance-map.json`. Partial or dated evidence remains
@@ -258,6 +267,9 @@ consumer must probe its currently visible, authorized capability inventory.
   delivery lifecycle, and current stage-closeout reconciliation state.
 - `docs/curation-harness-model.md`: continuous curation loop, first-terminal MVP,
   layered reliability, multi-Agent consumer, and standard-candidate boundaries.
+- `docs/superpowers/specs/2026-07-15-production-capability-manager-design.md`:
+  owner-approved conversational design written for review; it defines the
+  production Manager boundary without authorizing a repository or implementation.
 - `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
   and stage-closeout contract for iterative curation rounds.
 - `docs/round02-candidate-review-2026-07-02.md`: round-02 candidate-specific
