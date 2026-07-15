@@ -150,17 +150,22 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             "verified acceptance requires evidence",
         )
 
-    def test_round02_waits_for_closeout_instead_of_claiming_active_execution(self) -> None:
+    def test_round02_is_closed_only_after_owner_acceptance(self) -> None:
         rounds = verify_script.load("registry/curation-expansion-rounds.json")
         round02 = next(
             item
             for item in rounds["rounds"]
             if item["id"] == "round-02-source-intake-and-filtering"
         )
-        self.assertEqual(round02["status"], "needs-closeout")
+        self.assertEqual(round02["status"], "closed")
         self.assertEqual(round02["lifecycle"]["execute"], "closed")
         self.assertEqual(round02["lifecycle"]["acceptance"], "passed")
-        self.assertEqual(round02["lifecycle"]["stageCloseout"], "pending")
+        self.assertEqual(round02["lifecycle"]["stageCloseout"], "closed")
+        self.assertEqual(round02["closeoutOutcome"], "complete")
+        self.assertIn(
+            "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+            round02["evidence"],
+        )
 
     def test_round02_closeout_review_prepares_but_does_not_apply_owner_decision(self) -> None:
         review = verify_script.load("registry/round02-stage-closeout-review.json")
@@ -180,6 +185,47 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         review = verify_script.load(path)
         review["authorityBoundary"]["roundStateMutationApplied"] = True
         self.assert_verify_runtime_error(path, review, "authority boundary drifted")
+
+    def test_round02_closeout_acceptance_does_not_activate_round03_or_push(self) -> None:
+        event = verify_script.load(
+            "registry/round02-stage-closeout-acceptance-event-2026-07-15.json"
+        )
+        self.assertEqual(event["authoritySource"], "owner-selected-option-1")
+        self.assertTrue(event["roundStateMutationAuthorized"])
+        self.assertFalse(event["round03ActivationAuthorized"])
+        self.assertFalse(event["remotePushAuthorized"])
+        self.assertFalse(event["globalProgramCompletionClaimed"])
+
+    def test_round03_rebaseline_is_review_only_and_execution_inactive(self) -> None:
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        round03 = next(
+            item
+            for item in rounds["rounds"]
+            if item["id"] == "round-03-adaptation-and-curated-admission"
+        )
+        rebaseline = verify_script.load(
+            "registry/round03-capability-survey-rebaseline.json"
+        )
+        self.assertEqual(round03["status"], "needs-rebaseline")
+        self.assertEqual(round03["lifecycle"]["execute"], "pending")
+        self.assertEqual(rebaseline["status"], "owner_review_required")
+        self.assertFalse(rebaseline["activationGate"]["executionActivated"])
+        self.assertFalse(
+            rebaseline["activationGate"]["externalDiscoveryAuthorizedByThisRecord"]
+        )
+        carrier = rebaseline["gapFillCarrierDecision"]
+        self.assertIn("residual gap is supported", carrier["entryCondition"].lower())
+        self.assertIn(
+            "repository-authored Skill with a consumer-owned Hook",
+            carrier["options"],
+        )
+        self.assertTrue(carrier["default"].lower().startswith("no hook"))
+
+    def test_round03_rebaseline_rejects_implicit_discovery_activation(self) -> None:
+        path = "registry/round03-capability-survey-rebaseline.json"
+        rebaseline = verify_script.load(path)
+        rebaseline["activationGate"]["externalDiscoveryAuthorizedByThisRecord"] = True
+        self.assert_verify_runtime_error(path, rebaseline, "activation gate drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
@@ -309,11 +355,11 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             <= criterion_ids
         )
 
-    def test_program_records_owner_acceptance_and_advances_current_initiative(self) -> None:
+    def test_program_records_owner_acceptance_and_advances_to_round03_rebaseline(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         self.assertEqual(
             program["currentInitiativeId"],
-            "initiative.round02-stage-closeout-reconciliation",
+            "initiative.round03-capability-survey-rebaseline",
         )
         completeness = next(
             item
@@ -326,7 +372,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             if item["id"] == program["currentInitiativeId"]
         )
         self.assertEqual(completeness["status"], "accepted")
-        self.assertEqual(current["status"], "needs-reconciliation")
+        self.assertEqual(current["status"], "needs-owner-review")
         event = verify_script.load("registry/program-control-acceptance-event-2026-07-15.json")
         self.assertEqual(
             event["acceptedBaselineCommit"],

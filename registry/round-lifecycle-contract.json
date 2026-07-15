@@ -145,21 +145,21 @@
   ],
   "currentApplication": {
     "roundRegistry": "registry/curation-expansion-rounds.json",
-    "currentRound": "round-02-source-intake-and-filtering",
-    "phaseState": "stage_closeout_pending",
-    "stageCloseout": "needs_reconciliation",
+    "currentRound": "round-03-adaptation-and-curated-admission",
+    "phaseState": "plan_rebaseline_pending",
+    "stageCloseout": "not_ready",
     "evidence": [
-      "registry/round02-approved-payload-routing-proposal.json",
-      "registry/round02-local-runtime-sync-execution.json",
-      "registry/round02-stage-closeout-review.json"
+      "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+      "registry/round03-capability-survey-rebaseline.json"
     ],
     "deferredActions": [
-      "claiming Round 02 stage closeout",
+      "activating Round 03 discovery before owner-reviewed rebaseline acceptance",
+      "executing, installing, or connecting an external candidate",
       "claiming current live runtime parity",
-      "starting a new candidate intake round before closeout reconciliation"
+      "Skill admission, runtime mutation, cross-repository delivery, or global completion claims"
     ],
     "nextRequiredEvidence": [
-      "owner-reviewed Round 02 stage-closeout decision event"
+      "owner-reviewed Round 03 capability-survey rebaseline decision event"
     ]
   }
 }

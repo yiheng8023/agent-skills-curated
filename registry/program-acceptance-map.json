@@ -89,7 +89,9 @@
       "acceptanceIds": [
         "acceptance.feedback-loop",
         "acceptance.deprecation-retirement-loop",
-        "acceptance.sequence-integrity"
+        "acceptance.sequence-integrity",
+        "acceptance.round02-stage-closeout",
+        "acceptance.round03-rebaseline"
       ]
     }
   ],
@@ -137,7 +139,9 @@
       "verificationIds": [
         "verification.demand-coordinate-contract"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-rebaseline"
+      ]
     },
     {
       "id": "acceptance.native-runtime-baseline",
@@ -218,7 +222,9 @@
       "verificationIds": [
         "verification.capability-survey-result-package"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-rebaseline"
+      ]
     },
     {
       "id": "acceptance.cross-agent-claim-limits",
@@ -244,7 +250,9 @@
         "evidence.program-plan",
         "evidence.verify-script",
         "evidence.completeness-audit",
-        "evidence.round02-stage-closeout-review"
+        "evidence.round02-stage-closeout-review",
+        "evidence.round02-stage-closeout-acceptance",
+        "evidence.round03-rebaseline"
       ]
     },
     {
@@ -260,6 +268,31 @@
         "evidence.completeness-audit",
         "evidence.order-semantics-audit",
         "evidence.program-control-acceptance"
+      ]
+    },
+    {
+      "id": "acceptance.round02-stage-closeout",
+      "statement": "Round 02 closes only after requirement reconciliation, residual-risk and deferred-work disclosure, passing verification, and a separate owner decision.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.sequence-integrity"
+      ],
+      "evidenceIds": [
+        "evidence.round02-stage-closeout-review",
+        "evidence.round02-stage-closeout-acceptance",
+        "evidence.verify-script"
+      ]
+    },
+    {
+      "id": "acceptance.round03-rebaseline",
+      "statement": "Round 03 cannot activate until its capability-survey goal, demand inputs, data and authority boundaries, dependency-graph sequence, stop rule, post-gap Skill versus optional Hook carrier decision, result package, verification surface, and non-authorization limits receive owner review.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.sequence-integrity"
+      ],
+      "evidenceIds": [
+        "evidence.round02-stage-closeout-acceptance",
+        "evidence.round03-rebaseline"
       ]
     },
     {
@@ -584,7 +617,8 @@
         "acceptance.agent-neutral-release",
         "acceptance.repository-authored-gap-fill-gate",
         "acceptance.sequence-integrity",
-        "acceptance.program-control-completeness"
+        "acceptance.program-control-completeness",
+        "acceptance.round02-stage-closeout"
       ]
     },
     {
@@ -679,6 +713,30 @@
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.third-party-admission-gates",
+        "acceptance.sequence-integrity",
+        "acceptance.round02-stage-closeout"
+      ]
+    },
+    {
+      "id": "evidence.round02-stage-closeout-acceptance",
+      "path": "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+      "kind": "owner-closeout-decision",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.round02-stage-closeout",
+        "acceptance.sequence-integrity",
+        "acceptance.round03-rebaseline"
+      ]
+    },
+    {
+      "id": "evidence.round03-rebaseline",
+      "path": "registry/round03-capability-survey-rebaseline.json",
+      "kind": "round-rebaseline-decision-preparation",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.demand-coordinate-contract",
+        "acceptance.round03-rebaseline",
+        "acceptance.capability-survey-result-package",
         "acceptance.sequence-integrity"
       ]
     },

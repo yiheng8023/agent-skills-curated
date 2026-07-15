@@ -4,7 +4,7 @@
   "purpose": "Iterative expansion control for broad Skill discovery, filtering, adaptation, and curated intake. This is not approval, release inventory, or runtime installation evidence.",
   "programPlan": "registry/curation-program-plan.json",
   "lifecycleContract": "registry/round-lifecycle-contract.json",
-  "currentRound": "round-02-source-intake-and-filtering",
+  "currentRound": "round-03-adaptation-and-curated-admission",
   "rounds": [
     {
       "id": "round-01-broad-coverage-radar",
@@ -35,7 +35,7 @@
     },
     {
       "id": "round-02-source-intake-and-filtering",
-      "status": "needs-closeout",
+      "status": "closed",
       "goal": "Pin and audit small batches of direct third-party Skill sources with clear license posture and broad non-software-engineering value.",
       "candidateSourceIds": [
         "github:kepano/obsidian-skills",
@@ -62,42 +62,50 @@
         "plan": "recorded",
         "execute": "closed",
         "acceptance": "passed",
-        "stageCloseout": "pending"
+        "stageCloseout": "closed"
       },
       "evidence": [
         "registry/round02-release-admission-candidate-review.json",
         "registry/round02-approved-payload-routing-proposal.json",
         "registry/round02-local-runtime-sync-execution.json",
-        "registry/round02-stage-closeout-review.json"
+        "registry/round02-stage-closeout-review.json",
+        "registry/round02-stage-closeout-acceptance-event-2026-07-15.json"
       ],
-      "nextGate": "owner-reviewed-round-02-stage-closeout-decision"
+      "closeoutOutcome": "complete",
+      "nextGate": "round-03-capability-survey-rebaseline"
     },
     {
       "id": "round-03-adaptation-and-curated-admission",
-      "status": "planned",
-      "goal": "Adapt approved candidates into neutral, portable, non-duplicative Skill payloads or route them into existing Skills, recipes, references, or rejections.",
+      "status": "needs-rebaseline",
+      "historicalPlannedGoal": "Adapt approved candidates into neutral, portable, non-duplicative Skill payloads or route them into existing Skills, recipes, references, or rejections.",
+      "goal": "Rebaseline Round 03 as an evidence-backed capability survey and residual-gap proof phase before any later adaptation, admission, or repository-authored implementation.",
       "allowedChanges": [
-        "approved adapted Skill payloads",
-        "admissions updates",
-        "routing and conflict updates",
-        "release manifest updates after approval"
+        "Round 03 plan and acceptance correction",
+        "read-only repository and historical-consensus reconciliation",
+        "data, authority, verification, stop-rule, and result-package design"
       ],
       "blockedChanges": [
-        "source-text redistribution without license clearance",
-        "tool-specific claims without dependency boundaries",
-        "local runtime sync"
+        "Round 03 discovery execution before owner review",
+        "candidate code execution, installation, or account connection",
+        "Skill admission, release-manifest mutation, or repository-authored implementation",
+        "local runtime sync, cross-repository write, or remote push"
       ],
       "exitCriteria": [
-        "all admitted payloads pass repository verification",
-        "overlap and conflict decisions are explicit",
-        "release manifest reflects only approved curated payloads"
+        "the capability-survey goal, scope, sequence, data boundary, authority boundary, and stop rule are explicit",
+        "all ten required result-package items map to acceptance and verification surfaces",
+        "owner review decides whether bounded read-only discovery may activate"
       ],
       "lifecycle": {
-        "plan": "planned",
+        "plan": "recorded",
         "execute": "pending",
         "acceptance": "pending",
         "stageCloseout": "pending"
-      }
+      },
+      "evidence": [
+        "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+        "registry/round03-capability-survey-rebaseline.json"
+      ],
+      "nextGate": "owner-reviewed-round-03-capability-survey-rebaseline"
     }
   ],
   "consumerProjectionBoundary": {

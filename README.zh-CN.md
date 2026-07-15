@@ -44,8 +44,9 @@ agent 环境迁移、云端同步/备份、验证和恢复模式。
 
 稳定工序采用依赖图，而不是强制线性流水线：消费投影是可选分支，生命周期治理是跨阶段
 回路，标准抽取只在重复证据成立时进入条件分支。上游雷达可以广泛发现，但候选信号必须在
-本仓绑定需求、基线、精确来源固定、审查和验收后，才能影响精选决策。总控修订已经形成
-明确的 owner 接受事件；当前 initiative 是仍待收口的 Round 02，而不是从历史步骤反推。
+本仓绑定需求、基线、精确来源固定、审查和验收后，才能影响精选决策。总控修订与
+Round 02 收口都已经形成明确的 owner 接受事件。Round 02 已关闭；Round 03 仍未激活，
+当前 initiative 是它的能力调研重基线审查。
 
 可靠性采用分层保障，而不是只依赖文本：instructions 与 rules 可以路由到 Skills 和
 Recipes；脚本、schemas 与 validators 负责可机器检查的行为；消费侧控制和项目内置
@@ -235,6 +236,10 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
   使用 Junction fallback 链接；
 - `docs/round02-stage-closeout-review.zh-CN.md`：Round 02 逐项收口决策包；建议关闭
   本轮并暂停，先重基线 Round 03，但它本身不关闭轮次，也不授权远端推送；
+- `docs/round02-stage-closeout-acceptance.zh-CN.md`：所有者接受 Round 02 有边界的
+  `complete` 结论，并继续明确残余风险与不授权事项；
+- `docs/round03-capability-survey-rebaseline.zh-CN.md`：用证据优先的能力调研替换
+  已与实际成果重叠的旧 Round 03 计划；所有者审查前不激活发现执行；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、
   基线、索引和排除项治理；
 - `LICENSE`、`NOTICE` 与 `THIRD_PARTY_NOTICES.md`：仓库许可证、归属声明和第三方 Skill notice；

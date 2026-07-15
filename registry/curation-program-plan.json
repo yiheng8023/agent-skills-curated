@@ -4,8 +4,8 @@
   "purpose": "Overall control plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from evidence-backed demand through native and external alternative comparison, residual-gap decisions, candidate governance, release, optional consumer evidence, lifecycle renewal, and standard-candidate delivery. This is not approval, release inventory, runtime installation evidence, local sync authorization, or project hard-standard admission.",
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
-  "currentState": "needs-reconciliation",
-  "currentInitiativeId": "initiative.round02-stage-closeout-reconciliation",
+  "currentState": "closed",
+  "currentInitiativeId": "initiative.round03-capability-survey-rebaseline",
   "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
   "acceptanceMap": "registry/program-acceptance-map.json",
   "controlledSurfaces": [
@@ -253,30 +253,42 @@
     },
     {
       "id": "initiative.round02-stage-closeout-reconciliation",
-      "status": "needs-reconciliation",
+      "status": "accepted",
       "prerequisites": ["program-control completeness reconciliation", "Round 02 plan, execution, and acceptance evidence"],
       "allowedActions": ["requirement-by-requirement closeout audit", "residual-risk and deferred-work recording", "next-round or pause decision preparation"],
       "blockedActions": ["new candidate-intake round activation", "claiming current live runtime parity", "claiming global program completion"],
       "resultPackage": ["Round 02 requirement reconciliation", "residual risks and deferred work", "next-round or pause decision"],
       "acceptanceIds": ["acceptance.third-party-admission-gates", "acceptance.sequence-integrity"],
       "decisionGate": "owner-reviewed Round 02 stage-closeout outcome",
-      "decisionPreparation": "registry/round02-stage-closeout-review.json"
+      "decisionPreparation": "registry/round02-stage-closeout-review.json",
+      "decisionEvidence": "registry/round02-stage-closeout-acceptance-event-2026-07-15.json"
+    },
+    {
+      "id": "initiative.round03-capability-survey-rebaseline",
+      "status": "needs-owner-review",
+      "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout accepted", "current capability-survey handoff and repository truth reconciled"],
+      "allowedActions": ["Round 03 plan and acceptance correction", "read-only repository reconciliation", "owner decision preparation"],
+      "blockedActions": ["Round 03 execution activation", "external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery", "remote push"],
+      "resultPackage": ["rebaselined Round 03 goal and non-goals", "dependency-graph execution semantics", "data and authority boundaries", "ten-part capability-survey result contract", "verification and stop rules", "owner activation decision"],
+      "acceptanceIds": ["acceptance.round03-rebaseline", "acceptance.sequence-integrity", "acceptance.capability-survey-result-package"],
+      "decisionGate": "owner-reviewed Round 03 capability-survey rebaseline before external discovery activation",
+      "decisionPreparation": "registry/round03-capability-survey-rebaseline.json"
     },
     {
       "id": "initiative.capability-survey-gap-proof",
       "status": "planned",
-      "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "capability-survey plan and acceptance contract verified"],
+      "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "Round 03 capability-survey rebaseline accepted", "capability-survey plan and acceptance contract verified"],
       "allowedActions": ["plan and acceptance design", "read-only repository reconciliation"],
       "blockedActions": ["external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery"],
       "resultPackage": [
-        "native Agent and runtime capability baseline",
+        "dated native Agent and runtime capability baseline",
         "clustered and deduplicated candidate Skills inventory",
         "STM, P, and SG capability coverage matrix",
         "single-Skill and composed Skill or non-Skill Harness alternatives",
         "candidate dispositions",
         "supported and unproven residual gaps",
         "host, model, reasoning, loader, permission, workspace, and evidence limitations",
-        "intent-contract, capability-router, closure-contract, and Hook recommendations",
+        "intent-contract, capability-router, closure-contract, and conditional Skill-only, Skill-plus-Hook, non-Skill Hook, or no-Hook recommendations",
         "discovery stop rationale, recheck triggers, upstream-update implications, and next-round candidates",
         "explicit non-authorization and non-proof statement"
       ],
@@ -397,7 +409,9 @@
       "acceptanceIds": [
         "acceptance.feedback-loop",
         "acceptance.deprecation-retirement-loop",
-        "acceptance.sequence-integrity"
+        "acceptance.sequence-integrity",
+        "acceptance.round02-stage-closeout",
+        "acceptance.round03-rebaseline"
       ]
     }
   ],
@@ -696,7 +710,7 @@
     },
     {
       "id": "program-06-local-runtime-alignment-closeout",
-      "status": "needs-reconciliation",
+      "status": "closed",
       "mapsToRound": "local-runtime-stage-closeout",
       "goal": "Align local Codex, agents, and cc Switch Skill directories after approved release readiness and explicit local-write authorization.",
       "actions": [
@@ -739,7 +753,7 @@
         "registry/round02-local-runtime-sync-execution.json",
         "docs/round02-local-runtime-sync-execution.md",
         "registry/round02-stage-closeout-review.json",
-        "owner-reviewed Round 02 closeout decision is still missing"
+        "registry/round02-stage-closeout-acceptance-event-2026-07-15.json"
       ]
     }
   ],

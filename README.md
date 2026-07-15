@@ -59,9 +59,9 @@ consumer projection is an optional branch, lifecycle metabolism is
 cross-cutting, and standards extraction is conditional on repeated evidence.
 Upstream radar may discover broadly, while this repository requires bounded
 demand, baseline, an exact source pin, review, and acceptance before a signal
-can affect a curated decision. The program-control correction has an explicit
-owner acceptance event; the current initiative is the still-pending Round 02
-stage-closeout reconciliation rather than an inference from historical steps.
+can affect a curated decision. Program control and Round 02 closeout both have
+explicit owner acceptance events. Round 02 is closed; Round 03 remains inactive
+and the current initiative is its capability-survey rebaseline review.
 
 Reliability is layered rather than text-only: instructions and rules may route
 to Skills and Recipes; deterministic scripts, schemas, and validators cover
@@ -323,6 +323,12 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round02-stage-closeout-review.md`: requirement-by-requirement Round-02
   closeout decision package; recommends bounded round closure plus a pause for
   Round-03 rebaselining, but does not close the round or authorize a push.
+- `docs/round02-stage-closeout-acceptance.md`: owner acceptance of the bounded
+  Round-02 `complete` outcome, with residual risks and non-authorizations kept
+  explicit.
+- `docs/round03-capability-survey-rebaseline.md`: proposed evidence-first
+  capability-survey replacement for the overlapping old Round-03 plan; owner
+  review is required before discovery execution.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

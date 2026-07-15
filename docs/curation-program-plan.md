@@ -163,20 +163,24 @@ They do not prove current live parity, and they do not include a distinct Round
 
 The program-control completeness initiative was accepted by the owner and
 merged locally into `main`; the bounded event is recorded in
-`registry/program-control-acceptance-event-2026-07-15.json`. The machine-bound
-current initiative is now `initiative.round02-stage-closeout-reconciliation`
-with status `needs-reconciliation`. The requirement-by-requirement review is
-recorded in `registry/round02-stage-closeout-review.json` with English and
-Chinese human projections. It recommends closing Round 02 and pausing before
-Round 03 is rebaselined, but it does not mutate the round state. The next gate
-is the owner-reviewed Round 02 stage-closeout decision. No new candidate intake
-should inherit an unclosed Round 02 state.
+`registry/program-control-acceptance-event-2026-07-15.json`. The owner also
+accepted the requirement-by-requirement Round 02 review with bounded outcome
+`complete`; that decision is recorded in
+`registry/round02-stage-closeout-acceptance-event-2026-07-15.json`. Round 02 is
+closed, while its disclosed residual risks and deferred work remain active.
 
-The capability-survey and residual-gap initiative is planned. Its plan and
-acceptance design may proceed, but external discovery execution remains blocked
-until program-control reconciliation is accepted and Round 02 stage closeout is
-closed. The survey must produce all ten declared result components before any
-adoption, adaptation, repository authoring, or standards-extraction decision.
+Round 03 remains inactive and is marked `needs-rebaseline`. Its former planned
+adaptation-and-admission contract overlaps work already completed through
+separately approved Round 02 follow-on gates. The machine-bound current
+initiative is `initiative.round03-capability-survey-rebaseline`, and its review
+package is `registry/round03-capability-survey-rebaseline.json`. The next gate
+is owner review of that rebaseline before any external discovery execution.
+
+The capability-survey and residual-gap initiative remains planned behind the
+Round 03 rebaseline gate. Plan and acceptance design may proceed, but external
+discovery execution remains blocked until the rebaseline is accepted. The
+survey must produce all ten declared result components before any adoption,
+adaptation, repository authoring, or standards-extraction decision.
 
 ## Verification And Closeout
 
