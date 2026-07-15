@@ -39,6 +39,29 @@ can carry guidance, resources, scripts, and deterministic checks for internal
 and external consumers. They are not the only possible terminal and do not
 constrain upstream discovery to Skills.
 
+The repository is multi-domain. Human-AI collaboration shortfalls are one
+evidence-backed demand lane, not the repository's whole mission. Its stable
+operating rule is reuse before build: establish the demand, compare native,
+official, runtime, single-Skill, composed-Skill, and other Harness alternatives,
+then prove a residual gap before adapting or authoring anything. Discovery
+volume, popularity, or an old draft is not gap evidence.
+
+The intended external-brain outcome is decision-ready rather than inventory
+heavy. Consumers should receive a small, governed set of routes, alternatives,
+conflicts, evidence limits, and recheck signals instead of repeatedly
+enumerating unknown Skills. This reduces selection, routing, context, and
+maintenance burden so the human can concentrate on creation and decisions; it
+does not claim to raise a model ceiling or prove identical behavior across
+Agents.
+
+The stable process is a dependency graph, not a mandatory linear conveyor:
+consumer projection is an optional branch, lifecycle metabolism is
+cross-cutting, and standards extraction is conditional on repeated evidence.
+Upstream radar may discover broadly, while this repository requires bounded
+demand, baseline, an exact source pin, review, and acceptance before a signal
+can affect a curated decision. The current initiative remains pending owner
+confirmation rather than being inferred from the historical Round 02 step.
+
 Reliability is layered rather than text-only: instructions and rules may route
 to Skills and Recipes; deterministic scripts, schemas, and validators cover
 machine-checkable behavior; consumer-owned controls and project-owned hard
@@ -151,6 +174,12 @@ Three layers are deliberately noninterchangeable:
 3. A curated approved Skill with `status=approved` may enter `skills/` and the
    manifest. In schema 1, `registry/skills.json` is the approved release
    inventory.
+
+A repository-authored gap-fill is a candidate origin, not a fourth release
+layer and not a platform/runtime/vendor first-party baseline. It remains
+non-executable until a material residual gap, alternative comparison, design
+provenance and licensing, security, portability, overlap, validation, and owner
+approval have all passed the same curated-admission boundary.
 
 The configuration-owned `capability-router` is a capability decision router,
 not a skill-router. Its options include native reasoning, an official or

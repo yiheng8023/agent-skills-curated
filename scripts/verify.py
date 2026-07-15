@@ -836,6 +836,22 @@ def validate_program_acceptance_map(
     if referenced_criteria != set(criteria):
         raise RuntimeError("Every program acceptance criterion must be referenced by an objective.")
 
+    program_initiatives = program_doc.get("currentInitiatives")
+    if not isinstance(program_initiatives, list) or not program_initiatives:
+        raise RuntimeError("Curation program current initiatives are required for acceptance mapping.")
+    for initiative in program_initiatives:
+        if not isinstance(initiative, dict):
+            raise RuntimeError("Curation program initiatives must be objects for acceptance mapping.")
+        initiative_id = initiative.get("id")
+        acceptance_ids = initiative.get("acceptanceIds")
+        if not isinstance(acceptance_ids, list) or not acceptance_ids:
+            raise RuntimeError(f"Program initiative requires acceptance ids: {initiative_id}")
+        for acceptance_id in acceptance_ids:
+            if acceptance_id not in criteria:
+                raise RuntimeError(
+                    f"Program initiative {initiative_id} references unknown acceptance id: {acceptance_id}"
+                )
+
     referenced_verifications: set[str] = set()
     referenced_evidence: set[str] = set()
     for criterion_id, criterion in criteria.items():
@@ -1096,9 +1112,295 @@ def validate_curation_program_plan(
             "consumer non-authority, ASSETS admission, and the current no-write boundary."
         )
 
+    architecture = document.get("programArchitecture")
+    if not isinstance(architecture, dict):
+        raise RuntimeError("Curation program stable architecture is required.")
+    if architecture.get("model") != "stable-operating-lanes-with-bounded-initiatives-and-historical-rounds":
+        raise RuntimeError("Curation program architecture model drifted.")
+    control_layers = architecture.get("controlLayers")
+    if not isinstance(control_layers, list) or len(control_layers) < 5:
+        raise RuntimeError("Curation program architecture control layers are incomplete.")
+    operating_lanes = architecture.get("operatingLanes")
+    if not isinstance(operating_lanes, list):
+        raise RuntimeError("Curation program operating lanes are required.")
+    expected_core_path = [
+        "lane.demand-evidence",
+        "lane.native-official-runtime-baseline",
+        "lane.discovery-and-clustering",
+        "lane.representative-deep-review",
+        "lane.solution-alternative-comparison",
+        "lane.residual-gap-decision",
+        "lane.candidate-governance-and-adaptation",
+        "lane.admission-verification-and-release",
+    ]
+    expected_lane_ids = [
+        *expected_core_path,
+        "lane.consumer-evidence-and-feedback",
+        "lane.lifecycle-metabolism",
+        "lane.standard-extraction-and-calibration-handoff",
+    ]
+    execution_semantics = architecture.get("executionSemantics")
+    if not isinstance(execution_semantics, dict):
+        raise RuntimeError("Curation program dependency graph execution semantics are required.")
+    if execution_semantics.get("model") != "dependency-graph-with-optional-and-cross-cutting-lanes":
+        raise RuntimeError("Curation program dependency graph model drifted.")
+    if execution_semantics.get("displayOrderIsExecutionOrder") is not False:
+        raise RuntimeError("Curation program lane display order must not claim linear execution order.")
+    if execution_semantics.get("corePath") != expected_core_path:
+        raise RuntimeError("Curation program dependency graph core path drifted.")
+    expected_branch_semantics = {
+        "optionalBranches": ["lane.consumer-evidence-and-feedback"],
+        "crossCuttingLanes": ["lane.lifecycle-metabolism"],
+        "conditionalBranches": ["lane.standard-extraction-and-calibration-handoff"],
+    }
+    for key, expected in expected_branch_semantics.items():
+        if execution_semantics.get(key) != expected:
+            raise RuntimeError(f"Curation program dependency graph {key} drifted.")
+    safe_parallelism = execution_semantics.get("safeParallelism")
+    if not isinstance(safe_parallelism, list) or len(safe_parallelism) < 3:
+        raise RuntimeError("Curation program dependency graph safe parallelism is incomplete.")
+    parallel_text = " ".join(str(item) for item in safe_parallelism).lower()
+    for phrase in ["host and model", "metadata triage", "join before alternative comparison"]:
+        if phrase not in parallel_text:
+            raise RuntimeError(f"Curation program safe parallelism missing phrase: {phrase}")
+    radar_boundary = str(execution_semantics.get("upstreamRadarBoundary", "")).lower()
+    for phrase in ["independently", "demand", "source-trust", "acceptance"]:
+        if phrase not in radar_boundary:
+            raise RuntimeError(f"Curation program upstream radar order boundary missing phrase: {phrase}")
+    closeout_join = str(execution_semantics.get("closeoutJoin", "")).lower()
+    for phrase in ["initiative", "residual risks", "owner decision", "next candidate-intake"]:
+        if phrase not in closeout_join:
+            raise RuntimeError(f"Curation program closeout join missing phrase: {phrase}")
+
+    expected_lane_semantics = {
+        "lane.demand-evidence": ("core", []),
+        "lane.native-official-runtime-baseline": ("core", ["lane.demand-evidence"]),
+        "lane.discovery-and-clustering": ("core", ["lane.native-official-runtime-baseline"]),
+        "lane.representative-deep-review": ("core", ["lane.discovery-and-clustering"]),
+        "lane.solution-alternative-comparison": (
+            "core",
+            ["lane.native-official-runtime-baseline", "lane.representative-deep-review"],
+        ),
+        "lane.residual-gap-decision": ("core", ["lane.solution-alternative-comparison"]),
+        "lane.candidate-governance-and-adaptation": ("core", ["lane.residual-gap-decision"]),
+        "lane.admission-verification-and-release": (
+            "core",
+            ["lane.candidate-governance-and-adaptation"],
+        ),
+        "lane.consumer-evidence-and-feedback": (
+            "optional-branch",
+            ["lane.admission-verification-and-release"],
+        ),
+        "lane.lifecycle-metabolism": ("cross-cutting", []),
+        "lane.standard-extraction-and-calibration-handoff": ("conditional-branch", []),
+    }
+    lane_ids = [item.get("id") for item in operating_lanes if isinstance(item, dict)]
+    for lane in operating_lanes:
+        if not isinstance(lane, dict):
+            raise RuntimeError("Curation program operating lanes must be objects.")
+        lane_id = lane.get("id")
+        if not isinstance(lane_id, str) or not lane_id:
+            raise RuntimeError("Curation program operating lane id is required.")
+        purpose_text = str(lane.get("purpose", "")).lower()
+        if "runtime-sync" in lane_id or "local runtime sync" in purpose_text:
+            raise RuntimeError(
+                "Curation program consumer runtime sync must not be a mandatory stable lane."
+            )
+        if not isinstance(lane.get("purpose"), str) or not lane.get("purpose"):
+            raise RuntimeError(f"Curation program operating lane purpose is required: {lane_id}")
+        if lane_id not in expected_lane_semantics:
+            raise RuntimeError(f"Curation program operating lane is not governed: {lane_id}")
+        expected_mode, expected_dependencies = expected_lane_semantics[lane_id]
+        if lane.get("executionMode") != expected_mode:
+            raise RuntimeError(f"Curation program operating lane execution mode drifted: {lane_id}")
+        if lane.get("dependsOn") != expected_dependencies:
+            raise RuntimeError(f"Curation program operating lane dependencies drifted: {lane_id}")
+        for key in [
+            "requiredInputs",
+            "allowedOutputs",
+            "blockedTransitions",
+            "verificationSurface",
+            "rerouteTriggers",
+        ]:
+            if not isinstance(lane.get(key), list) or not lane.get(key):
+                raise RuntimeError(
+                    f"Curation program operating lane {key} is required: {lane_id}"
+                )
+        if lane_id == "lane.representative-deep-review":
+            review_inputs = " ".join(str(item) for item in lane.get("requiredInputs", [])).lower()
+            for phrase in ["exact source pin", "license and provenance"]:
+                if phrase not in review_inputs:
+                    raise RuntimeError(
+                        f"Curation program representative deep review requires source pin evidence: {phrase}"
+                    )
+        if lane_id == "lane.lifecycle-metabolism":
+            lifecycle_inputs = " ".join(str(item) for item in lane.get("requiredInputs", [])).lower()
+            if "release and consumer" in lifecycle_inputs:
+                raise RuntimeError("Curation program lifecycle must not require consumer evidence.")
+            triggers = lane.get("triggerInputsAnyOf")
+            if not isinstance(triggers, list) or len(triggers) < 4:
+                raise RuntimeError("Curation program lifecycle any-of triggers are incomplete.")
+        if lane_id == "lane.standard-extraction-and-calibration-handoff":
+            triggers = lane.get("triggerInputsAnyOf")
+            if not isinstance(triggers, list) or len(triggers) < 4:
+                raise RuntimeError("Curation program standard extraction any-of triggers are incomplete.")
+    if lane_ids != expected_lane_ids:
+        raise RuntimeError("Curation program operating lane order drifted.")
+
+    origin_policy = document.get("candidateOriginPolicy")
+    if not isinstance(origin_policy, dict):
+        raise RuntimeError("Curation program candidate origin policy is required.")
+    origin_classes = origin_policy.get("classes")
+    if not isinstance(origin_classes, list):
+        raise RuntimeError("Curation program candidate origin classes are required.")
+    expected_origin_ids = [
+        "platform-runtime-vendor-first-party-baseline",
+        "third-party-candidate",
+        "repository-authored-gap-fill-candidate",
+        "curated-approved-release",
+    ]
+    origin_ids = [item.get("id") for item in origin_classes if isinstance(item, dict)]
+    if origin_ids != expected_origin_ids:
+        raise RuntimeError("Curation program candidate origin classes drifted.")
+    for origin in origin_classes:
+        if not isinstance(origin, dict):
+            raise RuntimeError("Curation program candidate origin classes must be objects.")
+        origin_id = origin.get("id")
+        if not isinstance(origin.get("eligibilityGate"), str) or not origin.get("eligibilityGate"):
+            raise RuntimeError(f"Curation program candidate eligibility gate is required: {origin_id}")
+        if not isinstance(origin.get("releaseEligible"), bool):
+            raise RuntimeError(f"Curation program candidate release eligibility is required: {origin_id}")
+        if not isinstance(origin.get("requiredEvidence"), list) or not origin.get("requiredEvidence"):
+            raise RuntimeError(f"Curation program candidate evidence is required: {origin_id}")
+    repository_authored = next(
+        item
+        for item in origin_classes
+        if isinstance(item, dict)
+        and item.get("id") == "repository-authored-gap-fill-candidate"
+    )
+    repository_authored_text = " ".join(
+        [
+            str(repository_authored.get("eligibilityGate", "")),
+            *[str(item) for item in repository_authored.get("requiredEvidence", [])],
+        ]
+    ).lower()
+    for phrase in ["residual-gap-supported", "alternative comparison", "tests", "owner approval"]:
+        if phrase not in repository_authored_text:
+            raise RuntimeError(
+                f"Curation program repository-authored candidate missing residual gap gate evidence: {phrase}"
+            )
+
+    sequence_gates = document.get("sequenceGates")
+    if not isinstance(sequence_gates, list):
+        raise RuntimeError("Curation program sequence gates are required.")
+    expected_sequence_gate_ids = [
+        "gate.demand-before-gap-claim",
+        "gate.baseline-before-substitution",
+        "gate.clustering-before-deep-review",
+        "gate.source-pin-before-deep-review",
+        "gate.alternatives-before-residual-gap",
+        "gate.residual-gap-before-repository-authoring",
+        "gate.admission-before-release",
+        "gate.release-before-consumer-projection",
+        "gate.repeated-evidence-before-standard-extraction",
+        "gate.calibration-before-assets-admission",
+        "gate.closeout-before-next-intake",
+    ]
+    sequence_gate_ids = [
+        item.get("id") for item in sequence_gates if isinstance(item, dict)
+    ]
+    if sequence_gate_ids != expected_sequence_gate_ids:
+        raise RuntimeError("Curation program sequence gate order drifted.")
+    for gate in sequence_gates:
+        if not isinstance(gate, dict):
+            raise RuntimeError("Curation program sequence gates must be objects.")
+        for key in ["id", "prerequisite", "blockedUntil", "verification"]:
+            if not isinstance(gate.get(key), str) or not gate.get(key):
+                raise RuntimeError(f"Curation program sequence gate {key} is required.")
+
+    initiatives = document.get("currentInitiatives")
+    if not isinstance(initiatives, list):
+        raise RuntimeError("Curation program current initiatives are required.")
+    initiative_ids = [item.get("id") for item in initiatives if isinstance(item, dict)]
+    required_initiative_ids = {
+        "initiative.program-control-completeness-reconciliation",
+        "initiative.round02-stage-closeout-reconciliation",
+        "initiative.capability-survey-gap-proof",
+    }
+    if not required_initiative_ids <= set(initiative_ids):
+        raise RuntimeError("Curation program required initiatives are missing.")
+    if len(initiative_ids) != len(set(initiative_ids)):
+        raise RuntimeError("Curation program initiative ids must be unique.")
+    for initiative in initiatives:
+        if not isinstance(initiative, dict):
+            raise RuntimeError("Curation program initiatives must be objects.")
+        initiative_id = initiative.get("id")
+        if not isinstance(initiative.get("status"), str) or not initiative.get("status"):
+            raise RuntimeError(f"Curation program initiative status is required: {initiative_id}")
+        for key in [
+            "prerequisites",
+            "allowedActions",
+            "blockedActions",
+            "resultPackage",
+            "acceptanceIds",
+        ]:
+            if not isinstance(initiative.get(key), list) or not initiative.get(key):
+                raise RuntimeError(
+                    f"Curation program initiative {key} is required: {initiative_id}"
+                )
+        if not isinstance(initiative.get("decisionGate"), str) or not initiative.get("decisionGate"):
+            raise RuntimeError(f"Curation program initiative decision gate is required: {initiative_id}")
+    current_initiative_id = document.get("currentInitiativeId")
+    if current_initiative_id != "initiative.program-control-completeness-reconciliation":
+        raise RuntimeError("Curation program current initiative must be the completeness reconciliation.")
+    current_initiative = next(
+        item
+        for item in initiatives
+        if isinstance(item, dict) and item.get("id") == current_initiative_id
+    )
+    if current_initiative.get("status") != "needs-user-confirmation":
+        raise RuntimeError("Curation program completeness reconciliation must await user confirmation.")
+    current_blocked_text = " ".join(
+        str(item) for item in current_initiative.get("blockedActions", [])
+    ).lower()
+    for phrase in ["round 02", "external discovery", "runtime mutation", "cross-repository"]:
+        if phrase not in current_blocked_text:
+            raise RuntimeError(f"Curation program current initiative missing blocked action: {phrase}")
+    capability_survey = next(
+        item
+        for item in initiatives
+        if isinstance(item, dict)
+        and item.get("id") == "initiative.capability-survey-gap-proof"
+    )
+    if capability_survey.get("status") != "planned":
+        raise RuntimeError("Curation capability survey must remain planned before prerequisites close.")
+    survey_blocked_text = " ".join(
+        str(item) for item in capability_survey.get("blockedActions", [])
+    ).lower()
+    for phrase in ["external discovery execution", "candidate code execution", "runtime mutation"]:
+        if phrase not in survey_blocked_text:
+            raise RuntimeError(f"Curation capability survey missing blocked action: {phrase}")
+    survey_result_text = " ".join(
+        str(item) for item in capability_survey.get("resultPackage", [])
+    ).lower()
+    for phrase in [
+        "native agent",
+        "clustered and deduplicated",
+        "stm, p, and sg",
+        "single-skill and composed",
+        "candidate dispositions",
+        "residual gaps",
+        "host, model, reasoning, loader",
+        "intent-contract",
+        "discovery stop rationale",
+        "non-authorization",
+    ]:
+        if phrase not in survey_result_text:
+            raise RuntimeError(f"Curation capability survey result package missing phrase: {phrase}")
+
     strategic_objectives = document.get("strategicObjectives")
-    if not isinstance(strategic_objectives, list) or len(strategic_objectives) != 6:
-        raise RuntimeError("Curation program must define six strategic objectives.")
+    if not isinstance(strategic_objectives, list) or not strategic_objectives:
+        raise RuntimeError("Curation program strategic objectives are required.")
     objective_ids: list[str] = []
     for objective in strategic_objectives:
         if not isinstance(objective, dict):
@@ -1119,6 +1421,24 @@ def validate_curation_program_plan(
                 )
     if len(objective_ids) != len(set(objective_ids)):
         raise RuntimeError("Curation program strategic objective ids must be unique.")
+    required_objective_ids = {
+        "objective.skills-terminal-mvp",
+        "objective.multi-domain-coverage",
+        "objective.evidence-backed-demand-model",
+        "objective.reuse-before-build-gap-proof",
+        "objective.full-chain-capability-coverage",
+        "objective.decision-ready-external-brain",
+        "objective.reviewed-third-party-governance",
+        "objective.multi-agent-consumer-mapping",
+        "objective.layered-collaboration-reliability",
+        "objective.standard-candidate-extraction",
+        "objective.lifecycle-metabolism",
+    }
+    missing_objectives = required_objective_ids - set(objective_ids)
+    if missing_objectives:
+        raise RuntimeError(
+            f"Curation program required strategic objectives are missing: {sorted(missing_objectives)}"
+        )
 
     upstream_boundary = document.get("upstreamInputBoundary")
     if not isinstance(upstream_boundary, dict):
@@ -1163,16 +1483,23 @@ def validate_curation_program_plan(
         raise RuntimeError("Curation program plan harness loop is required.")
     if harness_loop.get("model") != "continuous-curation-harness":
         raise RuntimeError("Curation program plan harness model drifted.")
+    if harness_loop.get("executionSemanticsRef") != "programArchitecture.executionSemantics":
+        raise RuntimeError("Curation program harness must reference dependency graph semantics.")
+    if harness_loop.get("loopIsLinearExecutionOrder") is not False:
+        raise RuntimeError("Curation program harness loop must not claim linear execution order.")
     expected_loop = [
-        "discover",
-        "filter",
-        "review",
-        "adapt",
-        "verify",
-        "release",
-        "consume-sync",
+        "demand-evidence",
+        "native-official-runtime-baseline",
+        "discover-and-cluster",
+        "representative-deep-review",
+        "compare-alternatives",
+        "prove-residual-gap",
+        "govern-adapt-or-author-candidate",
+        "verify-admit-and-release",
+        "optional-consumer-projection",
         "feedback",
-        "rediscover-or-revise",
+        "metabolize",
+        "extract-standard-candidate-for-calibration",
     ]
     if harness_loop.get("loop") != expected_loop:
         raise RuntimeError("Curation program plan harness loop order drifted.")
@@ -1190,6 +1517,8 @@ def validate_curation_program_plan(
         if phrase not in standards:
             raise RuntimeError(f"Curation program plan commercial standard missing phrase: {phrase}")
 
+    if document.get("stepsRole") != "historical-execution-projection-not-stable-operating-architecture":
+        raise RuntimeError("Curation program historical steps role drifted.")
     expected_steps = [
         "program-01-discovery-and-coverage",
         "program-02-source-intake-and-filtering",
@@ -1283,13 +1612,23 @@ def validate_curation_program_plan(
     for phrase in [
         "first terminal MVP",
         "registry/program-acceptance-map.json",
-        "stage-closeout reconciliation",
-        "discovery and coverage",
-        "source intake and filtering",
-        "review and adaptation",
-        "curated admission and release",
-        "consumer projection readiness",
-        "local runtime alignment closeout",
+        "initiative.program-control-completeness-reconciliation",
+        "Round 02 stage-closeout reconciliation",
+        "evidenced demand or shortfall",
+        "native / official / runtime baseline",
+        "discovery, clustering, deduplication",
+        "native / single-Skill / composition / non-Skill comparison",
+        "admission, verification, and release",
+        "reuse before build",
+        "residual gap",
+        "repository-authored",
+        "capability-survey",
+        "optional consumer",
+        "dependency graph",
+        "optional branch",
+        "cross-cutting",
+        "exact source pin",
+        "machine-bound current initiative",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
@@ -1308,6 +1647,16 @@ def validate_curation_program_plan(
         "Future terminals",
         "commercial delivery artifacts",
         "no absolute completion state",
+        "reuse before build",
+        "residual gap",
+        "repository-authored",
+        "Decision-Ready External-Brain Outcome",
+        "Consumer projection is an optional branch",
+        "Dependency Graph Semantics",
+        "optional branch",
+        "cross-cutting",
+        "exact source pin",
+        "radar signal does not bypass",
     ]:
         if phrase not in harness_doc:
             raise RuntimeError(f"Curation harness doc missing phrase: {phrase}")
@@ -1329,6 +1678,34 @@ def validate_curation_program_plan(
         raise RuntimeError("README.md must preserve the calibration custody boundary.")
     if "YIYUAN-CALIBRATION" not in readme_zh or "长期托管位置" not in readme_zh:
         raise RuntimeError("README.zh-CN.md must preserve the calibration custody boundary.")
+    for phrase in [
+        "multi-domain",
+        "reuse before build",
+        "residual gap",
+        "decision-ready",
+        "repository-authored gap-fill",
+        "dependency graph",
+        "optional branch",
+        "cross-cutting",
+        "exact source pin",
+        "current initiative",
+    ]:
+        if phrase not in readme:
+            raise RuntimeError(f"README.md missing stable program concept: {phrase}")
+    for phrase in [
+        "多领域",
+        "复用优先于自制",
+        "剩余缺口",
+        "决策就绪的外脑",
+        "仓库自制",
+        "依赖图",
+        "可选分支",
+        "跨阶段",
+        "精确来源固定",
+        "当前 initiative",
+    ]:
+        if phrase not in readme_zh:
+            raise RuntimeError(f"README.zh-CN.md missing stable program concept: {phrase}")
 
 
 def validate_round_lifecycle_contract(

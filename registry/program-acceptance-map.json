@@ -19,6 +19,43 @@
       ]
     },
     {
+      "id": "objective.multi-domain-coverage",
+      "acceptanceIds": [
+        "acceptance.multi-domain-coverage"
+      ]
+    },
+    {
+      "id": "objective.evidence-backed-demand-model",
+      "acceptanceIds": [
+        "acceptance.demand-coordinate-contract",
+        "acceptance.cross-agent-claim-limits"
+      ]
+    },
+    {
+      "id": "objective.reuse-before-build-gap-proof",
+      "acceptanceIds": [
+        "acceptance.native-runtime-baseline",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof",
+        "acceptance.repository-authored-gap-fill-gate"
+      ]
+    },
+    {
+      "id": "objective.full-chain-capability-coverage",
+      "acceptanceIds": [
+        "acceptance.full-chain-coverage-matrix",
+        "acceptance.discovery-clustering-stop-rule",
+        "acceptance.program-control-completeness"
+      ]
+    },
+    {
+      "id": "objective.decision-ready-external-brain",
+      "acceptanceIds": [
+        "acceptance.decision-ready-consumer-projection",
+        "acceptance.capability-survey-result-package"
+      ]
+    },
+    {
       "id": "objective.reviewed-third-party-governance",
       "acceptanceIds": [
         "acceptance.third-party-admission-gates",
@@ -51,7 +88,8 @@
       "id": "objective.lifecycle-metabolism",
       "acceptanceIds": [
         "acceptance.feedback-loop",
-        "acceptance.deprecation-retirement-loop"
+        "acceptance.deprecation-retirement-loop",
+        "acceptance.sequence-integrity"
       ]
     }
   ],
@@ -78,6 +116,148 @@
       "evidenceIds": [
         "evidence.program-plan",
         "evidence.readme"
+      ]
+    },
+    {
+      "id": "acceptance.multi-domain-coverage",
+      "statement": "The program preserves reviewed general and specialist coverage across durable digital collaboration domains beyond software engineering and any single shortfall chain.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.multi-domain-coverage"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.domain-coverage"
+      ]
+    },
+    {
+      "id": "acceptance.demand-coordinate-contract",
+      "statement": "Capability work binds dated demand or shortfall coordinates, evidence states, held claims, uncertainty, and a promotion firewall before gap claims.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.demand-coordinate-contract"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.native-runtime-baseline",
+      "statement": "Every surveyed demand area has a dated native, official, runtime, installed, and already-authorized baseline scoped by host, model, reasoning, loader, permissions, and workspace.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.native-runtime-baseline"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.discovery-clustering-stop-rule",
+      "statement": "Bounded discovery clusters and deduplicates candidates, selects representatives, and records a marginal-yield stop rationale, remaining uncertainty, and recheck triggers.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.discovery-clustering-stop-rule"
+      ],
+      "evidenceIds": [
+        "evidence.discovery-profile",
+        "evidence.completeness-audit"
+      ]
+    },
+    {
+      "id": "acceptance.alternative-comparison",
+      "statement": "Each surveyed demand area compares native, official/runtime, single-Skill, composed Skill, non-Skill Harness, project-standard, and human-authority paths including total cost and failure propagation.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.alternative-and-residual-gap"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.residual-gap-proof",
+      "statement": "A residual gap is supported only by reproducible material evidence after viable alternatives are exhausted; similar metadata or a prior draft is insufficient.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.alternative-and-residual-gap"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.repository-authored-gap-fill-gate",
+      "statement": "A repository-authored Skill remains a non-executable candidate until residual-gap evidence, alternative comparison, design provenance, license ownership, security, portability, overlap, tests, and owner approval are present.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.repository-authored-gap-fill"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.verify-script"
+      ]
+    },
+    {
+      "id": "acceptance.full-chain-coverage-matrix",
+      "statement": "The capability survey maps STM, P, and SG demand coordinates to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit outcomes.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.full-chain-coverage-matrix"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.decision-ready-consumer-projection",
+      "statement": "Curated topology and evidence support a small decision-ready consumer view that reduces unknown-Skill enumeration, routing burden, collision, and maintenance rent without owning live invocation.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.decision-ready-projection"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.harness-model"
+      ]
+    },
+    {
+      "id": "acceptance.capability-survey-result-package",
+      "statement": "The bounded capability-survey initiative produces all ten required result components and an explicit non-authorization statement before any adoption, adaptation, repository authoring, or standard extraction decision.",
+      "assessment": "planned",
+      "verificationIds": [
+        "verification.capability-survey-result-package"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "id": "acceptance.cross-agent-claim-limits",
+      "statement": "Host, model, reasoning, loader, permission, workspace, explicit or implicit activation, and evidence limitations prevent Codex-only or metadata-only results from becoming universal cross-Agent claims.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.cross-agent-claim-limits"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.harness-model",
+        "evidence.completeness-audit"
+      ]
+    },
+    {
+      "id": "acceptance.sequence-integrity",
+      "statement": "Machine-readable prerequisites prevent gap claims, repository authoring, release, consumer projection, standard extraction, ASSETS admission claims, and next-round activation from skipping their upstream evidence gates.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.sequence-integrity"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.verify-script",
+        "evidence.completeness-audit"
+      ]
+    },
+    {
+      "id": "acceptance.program-control-completeness",
+      "statement": "The master control baseline distinguishes stable dependency-graph semantics, bounded current initiatives, historical execution, optional consumer work, cross-cutting lifecycle metabolism, and conditional standards extraction before later execution is reordered.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.sequence-integrity"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.verify-script",
+        "evidence.completeness-audit",
+        "evidence.order-semantics-audit"
       ]
     },
     {
@@ -218,6 +398,73 @@
       "evidenceRequirement": "Current checked-in program, harness, and README paths."
     },
     {
+      "id": "verification.multi-domain-coverage",
+      "method": "Validate the general and specialist coverage registry and confirm the strategic objective references it without claiming universal completeness.",
+      "expectedResult": "Durable digital collaboration domains extend beyond software engineering and one shortfall chain, with explicit risk boundaries.",
+      "evidenceRequirement": "Current machine program plus registry/collaboration-domain-coverage.json."
+    },
+    {
+      "id": "verification.demand-coordinate-contract",
+      "method": "Validate a future demand-coordinate contract and fixtures covering STM, P, SG, evidence state, uncertainty, held claims, refresh triggers, and promotion firewall.",
+      "expectedResult": "No capability gap or standard claim starts from an unbound or promoted research synthesis.",
+      "evidenceRequirement": "Checked-in contract, representative fixtures, source lineage, and deterministic rejection tests."
+    },
+    {
+      "id": "verification.native-runtime-baseline",
+      "method": "Compare reproducible native and runtime probes separately by host, model, reasoning level, loader, activation mode, permission, workspace, and date.",
+      "expectedResult": "Coverage and insufficiency claims stay bounded to tested conditions and current availability evidence.",
+      "evidenceRequirement": "Dated baseline records, probe method, raw outcomes, limitations, and refresh triggers; repository metadata alone is insufficient."
+    },
+    {
+      "id": "verification.discovery-clustering-stop-rule",
+      "method": "Inspect discovery inputs, capability clusters, duplicate suppression, representative selection, marginal-yield history, stop rationale, remaining uncertainty, and recheck triggers.",
+      "expectedResult": "The bounded survey neither browses indefinitely nor stops from an arbitrary candidate count.",
+      "evidenceRequirement": "Read-only discovery snapshots plus checked-in cluster, shortlist, saturation, and uncertainty records."
+    },
+    {
+      "id": "verification.alternative-and-residual-gap",
+      "method": "For each demand coordinate, compare native, single, composed, non-Skill, project-standard, and human paths, then reproduce the remaining material failure before supporting a gap.",
+      "expectedResult": "Repository authoring is considered only after viable alternatives, composition behavior, cost, conflicts, permissions, and counterevidence are evaluated.",
+      "evidenceRequirement": "Coverage comparison, composition ordering and failure evidence, cost boundary, reproducible residual failure, counterexamples, and review decision."
+    },
+    {
+      "id": "verification.repository-authored-gap-fill",
+      "method": "Validate the repository-authored origin gate and a future candidate fixture against residual-gap, provenance, license, security, portability, overlap, tests, and owner-approval requirements.",
+      "expectedResult": "A self-built Skill never receives weaker admission treatment than an external candidate and cannot enter an execution path from discovery alone.",
+      "evidenceRequirement": "Machine gate, deterministic mutation tests, candidate design record, validation evidence, and explicit admission approval."
+    },
+    {
+      "id": "verification.full-chain-coverage-matrix",
+      "method": "Validate a future matrix from STM, P, and SG coordinates to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit dispositions.",
+      "expectedResult": "Every row has a supported disposition, verification method, limitations, and recheck trigger without treating metadata similarity as behavioral coverage.",
+      "evidenceRequirement": "Machine-readable matrix, source-linked evidence, comparison records, conflict and composition analysis, and deterministic validation."
+    },
+    {
+      "id": "verification.decision-ready-projection",
+      "method": "Evaluate the curated projection against representative consumer decisions for enumeration reduction, routing clarity, collision handling, context burden, and maintenance rent.",
+      "expectedResult": "Consumers receive a bounded decision-ready topology without this repository claiming live invocation ownership, model-ceiling improvement, or universal Agent equality.",
+      "evidenceRequirement": "Representative decision tasks, before-and-after burden measures, routing outcomes, limitations, and consumer-owned verification."
+    },
+    {
+      "id": "verification.capability-survey-result-package",
+      "method": "Check the bounded initiative result against its ten declared components and require every component to cite evidence, limitations, and non-authorization boundaries.",
+      "expectedResult": "The survey can support a later human decision without silently authorizing adoption, adaptation, repository authoring, runtime mutation, or standard promotion.",
+      "evidenceRequirement": "One coherent result package with all ten components, closed references, validation output, residual gaps, and explicit deferred actions."
+    },
+    {
+      "id": "verification.cross-agent-claim-limits",
+      "method": "Review every behavioral claim for host, model, reasoning, loader, activation mode, permission, workspace, date, and cross-Agent evidence scope.",
+      "expectedResult": "Codex-only, explicit-load-only, weak-model proxy, static-structure, and metadata evidence remain labeled rather than generalized.",
+      "evidenceRequirement": "Claim ledger with tested conditions, evidence class, limitations, counterexamples, and recheck trigger."
+    },
+    {
+      "id": "verification.sequence-integrity",
+      "method": "Run deterministic validation of stable operating-lane order, candidate-origin gates, initiative prerequisites, and all machine sequence gates.",
+      "command": "python -B scripts/verify.py",
+      "expectedResult": "Downstream decisions fail closed when demand, baseline, clustering, alternatives, residual gap, admission, release, repetition, calibration, or closeout evidence is missing.",
+      "evidenceRequirement": "Current program authority, completeness audit, verifier, and mutation tests for forbidden skips."
+    },
+    {
       "id": "verification.repository-governance",
       "method": "Run the deterministic repository verifier and inspect the approved manifest and admission evidence.",
       "command": "python -B scripts/verify.py",
@@ -277,6 +524,12 @@
       "supports": [
         "acceptance.skills-terminal-positioning",
         "acceptance.future-terminal-boundary",
+        "acceptance.multi-domain-coverage",
+        "acceptance.repository-authored-gap-fill-gate",
+        "acceptance.decision-ready-consumer-projection",
+        "acceptance.cross-agent-claim-limits",
+        "acceptance.sequence-integrity",
+        "acceptance.program-control-completeness",
         "acceptance.layered-reliability-model",
         "acceptance.project-standard-precedence",
         "acceptance.calibration-custody-boundary",
@@ -291,6 +544,8 @@
       "supports": [
         "acceptance.skills-terminal-positioning",
         "acceptance.calibration-custody-boundary",
+        "acceptance.decision-ready-consumer-projection",
+        "acceptance.cross-agent-claim-limits",
         "acceptance.feedback-loop"
       ]
     },
@@ -323,7 +578,49 @@
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.third-party-admission-gates",
-        "acceptance.agent-neutral-release"
+        "acceptance.agent-neutral-release",
+        "acceptance.repository-authored-gap-fill-gate",
+        "acceptance.sequence-integrity",
+        "acceptance.program-control-completeness"
+      ]
+    },
+    {
+      "id": "evidence.domain-coverage",
+      "path": "registry/collaboration-domain-coverage.json",
+      "kind": "machine-coverage-planning",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.multi-domain-coverage"
+      ]
+    },
+    {
+      "id": "evidence.discovery-profile",
+      "path": "registry/github-skill-discovery-profile.json",
+      "kind": "read-only-discovery-input",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.discovery-clustering-stop-rule"
+      ]
+    },
+    {
+      "id": "evidence.completeness-audit",
+      "path": "docs/program-control-plan-completeness-audit-2026-07-15.md",
+      "kind": "program-review-evidence",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.discovery-clustering-stop-rule",
+        "acceptance.cross-agent-claim-limits",
+        "acceptance.sequence-integrity",
+        "acceptance.program-control-completeness"
+      ]
+    },
+    {
+      "id": "evidence.order-semantics-audit",
+      "path": "docs/program-order-semantics-audit-2026-07-15.md",
+      "kind": "program-order-review-evidence",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.program-control-completeness"
       ]
     },
     {

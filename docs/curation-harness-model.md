@@ -13,16 +13,34 @@ including but not limited to Skills. Their candidate signals remain advisory.
 This repository does not mutate upstream systems and does not treat upstream
 discovery as approval.
 
-The first complete vertical slice is:
+The core stable decision path is:
 
 ```text
-broader resource discovery
--> Skill candidate governance
+evidenced demand or shortfall
+-> native, official, runtime, curated, and installed baseline
+-> broader resource discovery, clustering, and representative review
+-> native / single-Skill / composition / non-Skill comparison
+-> residual-gap decision
+-> candidate governance, adaptation, or repository authoring
 -> reviewed Skill terminal release
--> consumer-owned projection
--> usage and failure feedback
--> revise, update, deprecate, retire, or extract a standard candidate
 ```
+
+## Dependency Graph Semantics
+
+That core path is a dependency graph, not a linear execution order for every
+artifact. Consumer projection is an optional branch from an approved release.
+Lifecycle metabolism is cross-cutting and may start from governed candidate,
+release, upstream, community, validation, or consumer evidence. Standard
+extraction is a conditional branch from repeated evidence and still requires a
+separately authorized `YIYUAN-CALIBRATION` handoff.
+
+Native baselines may run in parallel by bounded host context, and representative
+reviews may run in parallel by independent cluster before joining at alternative
+comparison. Third-party deep review requires an exact source pin and license or
+provenance boundary; inspecting instructions or executable surfaces is not code
+execution. Broad radar discovery may run independently upstream, but a radar
+signal does not bypass this repository's demand, baseline, source-trust, review,
+and acceptance gates.
 
 Skills are a useful first terminal because they have a low integration burden,
 work across many Agent environments, and may contain guidance, resources,
@@ -37,25 +55,57 @@ this repository.
 
 ## Harness Loop
 
-The continuous loop is:
+The continuous loop projection is:
 
 ```text
-discover
--> filter
--> review
--> adapt
--> verify
--> release
--> consumer-owned projection
--> feedback
--> rediscover, revise, supersede, deprecate, or retire
+demand evidence
+-> native / official / runtime baseline
+-> discover and cluster
+-> representative deep review
+-> compare native / single / composition / non-Skill alternatives
+-> prove or reject a residual gap
+-> govern, adapt, or author a candidate
+-> verify, admit, and release
 ```
 
-Every step can feed back into an earlier step. A consumer issue can force an
+Optional and cross-cutting lanes attach to this core path as described above;
+their display position is not a prerequisite chain. Every step can feed back
+into an earlier step. A consumer issue can force an
 adaptation change. A security or license finding can change eligibility. A
 community report can expose overlap. An upstream refresh can restart intake
 without invalidating the last known-good release. Inventory count is not the
 optimization target; maintained task coverage and reliable use are.
+
+This is a reuse before build system. Metadata similarity, a previous draft, or
+the existence of a collaboration shortfall does not prove that a new Skill is
+needed. The comparison must include ordering, shared state, conflicts, failure
+propagation, context burden, latency, permissions, privacy, and maintenance
+rent.
+
+## Candidate Origin Boundary
+
+Platform, runtime, vendor, official, built-in, plugin-owned, and ecosystem
+first-party bodies remain dated external baselines. Third-party bodies remain
+untrusted candidates until the full intake gate closes.
+
+A repository-authored gap-fill is a distinct origin inside the same
+non-executable candidate state, not an approved Skill and not a new release
+layer. It is eligible only after a material residual gap is supported and the
+native, external, composed, non-Skill, project-standard, and human-authority
+alternatives have been compared. It must then pass design provenance, license
+ownership, security, portability, overlap, tests, and owner approval before the
+ordinary curated admission gate.
+
+## Decision-Ready External-Brain Outcome
+
+The repository should help a consumer avoid enumerating and interpreting an
+unbounded list of unknown Skills. Its useful output is a small decision-ready
+topology with evidence, alternatives, conflicts, claim limits, fallbacks, and
+recheck triggers. This can reduce routing and context burden while leaving
+creation and accountable decisions to the user and the consuming Agent.
+
+That outcome does not raise a model's capability ceiling, prove universal Agent
+equality, or give this repository authority over live invocation.
 
 ## Layered Collaboration Reliability
 

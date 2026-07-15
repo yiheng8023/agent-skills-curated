@@ -15,12 +15,16 @@ and able to carry instructions, resources, scripts, and deterministic checks.
 They are not the boundary of `YIYUAN-MERIDIAN`, resource discovery, or future
 terminal types.
 
-The authority split is:
+The authority and evidence flow is:
 
 ```text
-broader resource discovery and candidate signals
--> reviewed Skill intake, adaptation, release, and lifecycle governance here
--> consumer-owned installation, projection, backup, restore, and live checks
+evidenced demand and shortfall coordinates
+-> native, official, runtime, curated, and installed capability baselines
+-> broader resource discovery and clustered candidate signals
+-> native / single / composition / non-Skill alternative comparison
+-> residual-gap decision
+-> reviewed Skill intake, adaptation, repository authoring, release, and lifecycle governance here
+-> optional consumer-owned installation, projection, backup, restore, and live checks
 -> bounded research and standard-candidate delivery to YIYUAN-CALIBRATION
 -> project-owned admission of any hard standard
 ```
@@ -35,24 +39,52 @@ calibration custody. `YIYUAN-ASSETS` retains the separate decision to admit a
 candidate as a project hard standard. Any cross-repository write remains a
 separately authorized transaction.
 
+## Stable Program Architecture
+
+The program keeps six control layers distinct:
+
+1. Strategic objectives and authority boundaries define why the system exists.
+2. Stable operating lanes define the reusable decision and evidence flow.
+3. Sequence gates prevent downstream work from skipping prerequisites.
+4. Bounded initiatives define current result packages and decision gates.
+5. Historical rounds retain what actually happened without becoming permanent
+   architecture.
+6. Consumer integration and CALIBRATION or ASSETS handoffs remain separately
+   authorized external transactions.
+
+This separation matters because Round 02 local runtime alignment is valid dated
+consumer evidence, but it is not a mandatory terminal for every future curation
+round.
+
 ## Strategic Objectives
 
-The program has six stable objectives:
+The program currently has eleven required core objectives and permits reviewed
+extensions without weakening reference closure:
 
 1. Operate Skills as the first terminal MVP without turning the broader funnel
    into a Skills-only system.
-2. Govern third-party Skill bodies through provenance, license, security,
+2. Preserve broad general and specialist coverage beyond software engineering
+   and any one human-AI shortfall chain.
+3. Bind capability work to dated demand evidence, uncertainty, held claims,
+   refresh rules, and promotion firewalls.
+4. Reuse reliable native, official, runtime, curated, external, composed, or
+   non-Skill paths before authoring new capability.
+5. Model full-chain native, single, composed, non-Skill, human-authority,
+   fallback, conflict, and lifecycle coverage.
+6. Produce decision-ready topology that reduces unknown-Skill enumeration,
+   routing burden, collision, and maintenance rent without owning invocation.
+7. Govern third-party Skill bodies through provenance, license, security,
    portability, overlap, adaptation, validation, release, and lifecycle gates.
-3. Keep releases agent-neutral while requiring evidence-backed consumer
+8. Keep releases agent-neutral while requiring evidence-backed consumer
    mappings for each Agent's instruction, Skill, precedence, projection,
    verification, backup, and restore behavior.
-4. Improve collaboration reliability through the smallest sufficient layered
+9. Improve collaboration reliability through the smallest sufficient layered
    combination of instructions, Skills, deterministic mechanisms, project
    standards, evidence, and accountable human decisions.
-5. Extract standard candidates from repeated governance evidence, target their
+10. Extract standard candidates from repeated governance evidence, target their
    durable calibration custody in `YIYUAN-CALIBRATION`, and preserve separate
    `YIYUAN-ASSETS` project-admission authority.
-6. Support update, conflict handling, supersession, deprecation, migration,
+11. Support update, conflict handling, supersession, deprecation, migration,
    rollback, and retirement instead of accumulating Skills indefinitely.
 
 Each objective maps to stable acceptance, verification, and evidence IDs in
@@ -60,39 +92,61 @@ Each objective maps to stable acceptance, verification, and evidence IDs in
 has checked-in evidence; it does not upgrade a partial implementation or dated
 runtime observation into current live truth.
 
-## Delivery Lifecycle
+## Stable Operating Order
 
-The reviewed Skill delivery lifecycle remains:
+The reusable core path is reuse before build:
 
 ```text
-discovery and coverage
--> source intake and filtering
--> review and adaptation
--> curated admission and release
--> consumer projection readiness
--> local runtime alignment closeout
+evidenced demand or shortfall
+-> native / official / runtime baseline
+-> discovery, clustering, deduplication, and representative shortlist
+-> representative deep review
+-> native / single-Skill / composition / non-Skill comparison
+-> residual-gap decision
+-> adopt, adapt, merge, compose, reference, reject, hold, adapter-only, or repository-author
+-> admission, verification, and release
 ```
 
-These stages are gates, not a one-way conveyor. Feedback, an upstream update,
-a security or license change, a consumer failure, or project-standard conflict
-can return released content to an earlier gate.
+This display is a dependency graph projection, not a one-way conveyor. The
+eight lines above are the core path. Consumer projection is an optional branch
+from an approved release. Lifecycle metabolism is cross-cutting: governed
+candidate, release, upstream, community, validation, or consumer evidence can
+trigger it without requiring a consumer installation. Standard extraction is
+a conditional branch from repeated evidence and is not the universal terminal
+of every Skill round.
 
-Discovery and coverage is accepted only when broad domains, read-only discovery,
-and non-approval candidate records validate. Source intake is accepted only
-when every source is pinned and has license, provenance, detected Skill,
-coverage, review-focus, and blocked-action evidence. Review and adaptation is
-accepted only when dispositions, safety, portability, overlap, and license
-boundaries are explicit. Curated admission and release is accepted only when
-approved payload, registries, topology, routing, scenarios, generated
-projections, and the release manifest validate together.
+Native and runtime baselines may run in parallel by bounded host context;
+candidate metadata triage may run in parallel by cluster; and independent,
+source-pinned representative reviews may run in parallel before joining at the
+alternative-comparison gate. A third-party deep review requires an exact source
+pin plus license and provenance boundaries. Inspection never authorizes code
+execution.
 
-Consumer projection readiness and local alignment are consumer-owned actions.
+Broad resource-radar discovery may continue independently upstream. A radar
+signal becomes decision input here only after this repository binds demand,
+baseline, source trust, review scope, and acceptance. Feedback, new evidence,
+an upstream update, a security or license change, a consumer failure, or a
+project-standard conflict can return work to the affected upstream lane.
+
+No repository-authored gap-fill Skill can begin from discovery or from an old
+draft alone. It first requires a supported residual gap after alternative
+comparison, then design provenance, license ownership, security, portability,
+overlap, tests, and owner approval. This is a candidate-origin rule inside the
+same non-executable candidate state; it does not create a shortcut around
+curated admission.
+
+Consumer projection readiness and local alignment are optional consumer-owned
+actions, not mandatory stable program lanes.
 They require a pinned release, read-only inventory, owned-path classification,
 backup, rollback, explicit local-write authority, and fresh post-action evidence.
 This repository may retain dated evidence without claiming it owns or currently
 controls the consumer environment.
 
-## Current Position
+## Historical Execution Projection And Current Initiatives
+
+The six existing `program-01` through `program-06` records are retained as the
+historical execution projection for Rounds 01 and 02. They do not define the
+complete stable architecture above.
 
 Round 02 is not active source-intake execution anymore. The repository contains
 evidence for candidate review, admission decisions, approved payload and routing,
@@ -107,10 +161,21 @@ They do not prove current live parity, and they do not include a distinct Round
 02 stage-closeout reconciliation. The current state is therefore
 `needs-reconciliation`, not `complete`.
 
-The next gate is a requirement-by-requirement stage-closeout reconciliation
+The machine-bound current initiative is
+`initiative.program-control-completeness-reconciliation`, with status
+`needs-user-confirmation`. Its technical correction and verification evidence
+exist, but owner acceptance and Git closeout do not.
+After that is accepted, the next execution gate remains a
+requirement-by-requirement Round 02 stage-closeout reconciliation
 that records covered scope, verification evidence, residual risks, deferred
 work, current authority boundaries, and the explicit next-round or pause
 decision. No new candidate intake should inherit an unclosed Round 02 state.
+
+The capability-survey and residual-gap initiative is planned. Its plan and
+acceptance design may proceed, but external discovery execution remains blocked
+until program-control reconciliation is accepted and Round 02 stage closeout is
+closed. The survey must produce all ten declared result components before any
+adoption, adaptation, repository authoring, or standards-extraction decision.
 
 ## Verification And Closeout
 

@@ -20,6 +20,17 @@ Keep the intake state separate from release state:
   the manifest. `registry/skills.json` is the schema-1 approved release
   inventory, not a candidate backlog.
 
+Repository-authored gap-fill work is an origin inside the same non-executable
+candidate state; it is not a fourth release layer, not an approved Skill, and
+not the official/runtime/vendor first-party baseline class. It is eligible for
+design only after a material residual gap is supported by evidence and native,
+official/runtime, existing curated, external, composed, non-Skill,
+project-standard, and human-authority alternatives have been compared. Before
+admission it must record design provenance, license ownership, security,
+portability, overlap, tests, maintenance and exit cost, and owner approval. A
+self-built Skill must not receive weaker review merely because its author is
+inside the project.
+
 Official Skills, capability packages, workflow templates, and similar public
 capability bundles from Agent, runtime, platform, or tool ecosystems may be
 inspected as official external capability baselines for coverage comparison,

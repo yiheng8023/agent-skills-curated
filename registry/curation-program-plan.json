@@ -1,10 +1,11 @@
 {
   "schema": 1,
   "id": "curation-program-plan-v1",
-  "purpose": "Overall execution plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from candidate intake through release, consumer-owned projection evidence, feedback, and lifecycle renewal. This is not approval, release inventory, runtime installation evidence, local sync authorization, or project hard-standard admission.",
+  "purpose": "Overall control plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from evidence-backed demand through native and external alternative comparison, residual-gap decisions, candidate governance, release, optional consumer evidence, lifecycle renewal, and standard-candidate delivery. This is not approval, release inventory, runtime installation evidence, local sync authorization, or project hard-standard admission.",
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
   "currentState": "needs-reconciliation",
+  "currentInitiativeId": "initiative.program-control-completeness-reconciliation",
   "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
   "acceptanceMap": "registry/program-acceptance-map.json",
   "controlledSurfaces": [
@@ -37,6 +38,250 @@
     },
     "futureTerminalBoundary": "Future non-Skill terminals may reuse broader upstream governance, but they are not release inventory owned by this repository."
   },
+  "programArchitecture": {
+    "model": "stable-operating-lanes-with-bounded-initiatives-and-historical-rounds",
+    "controlLayers": [
+      "strategic objectives and authority boundaries",
+      "stable operating lanes and sequence gates",
+      "bounded initiatives and result packages",
+      "historical execution rounds and evidence",
+      "optional consumer-owned integration transactions",
+      "external calibration and project-admission handoffs"
+    ],
+    "executionSemantics": {
+      "model": "dependency-graph-with-optional-and-cross-cutting-lanes",
+      "displayOrderIsExecutionOrder": false,
+      "corePath": [
+        "lane.demand-evidence",
+        "lane.native-official-runtime-baseline",
+        "lane.discovery-and-clustering",
+        "lane.representative-deep-review",
+        "lane.solution-alternative-comparison",
+        "lane.residual-gap-decision",
+        "lane.candidate-governance-and-adaptation",
+        "lane.admission-verification-and-release"
+      ],
+      "optionalBranches": ["lane.consumer-evidence-and-feedback"],
+      "crossCuttingLanes": ["lane.lifecycle-metabolism"],
+      "conditionalBranches": ["lane.standard-extraction-and-calibration-handoff"],
+      "safeParallelism": [
+        "native and runtime baselines may run in parallel by bounded host and model context",
+        "candidate metadata triage may run in parallel by cluster after demand and baseline scope are bound",
+        "source-pinned representative reviews may run in parallel by independent cluster and join before alternative comparison"
+      ],
+      "upstreamRadarBoundary": "Broad resource-radar discovery may run independently outside this repository; a radar signal enters curated decision work only through a bounded demand, baseline, source-trust, review, and acceptance path.",
+      "closeoutJoin": "A bounded initiative must close with evidence, residual risks, deferred work, and an owner decision before the next candidate-intake initiative is activated."
+    },
+    "operatingLanes": [
+      {
+        "id": "lane.demand-evidence",
+        "executionMode": "core",
+        "dependsOn": [],
+        "purpose": "Bind evidenced user, collaboration, domain, safety, lifecycle, or coverage demand before asserting a capability gap.",
+        "requiredInputs": ["dated demand evidence", "scope and affected subjects", "claim limits and uncertainty"],
+        "allowedOutputs": ["demand coordinates", "held claims", "research refresh triggers"],
+        "blockedTransitions": ["capability-gap claim without evidence", "standard promotion from research synthesis"],
+        "verificationSurface": ["source lineage", "evidence state", "promotion firewall"],
+        "rerouteTriggers": ["new evidence", "contradictory evidence", "stale demand coordinates"]
+      },
+      {
+        "id": "lane.native-official-runtime-baseline",
+        "executionMode": "core",
+        "dependsOn": ["lane.demand-evidence"],
+        "purpose": "Measure current native, official, runtime, installed, and already-authorized coverage before external substitution decisions.",
+        "requiredInputs": ["bound demand coordinates", "dated host and model context", "loader, permission, and workspace conditions"],
+        "allowedOutputs": ["native coverage baseline", "official or runtime overlap evidence", "baseline uncertainty"],
+        "blockedTransitions": ["treating visible inventory as ecosystem completeness", "claiming cross-Agent coverage from one host"],
+        "verificationSurface": ["host, model, date, reasoning level, loader, permissions, and workspace"],
+        "rerouteTriggers": ["host update", "model change", "loader change", "capability health change"]
+      },
+      {
+        "id": "lane.discovery-and-clustering",
+        "executionMode": "core",
+        "dependsOn": ["lane.native-official-runtime-baseline"],
+        "purpose": "Discover broad candidate metadata, cluster capability families, suppress duplicates, and stop when marginal discovery no longer changes decisions materially.",
+        "requiredInputs": ["uncovered or uncertain demand coordinates", "approved read-only discovery scope", "candidate record contract"],
+        "allowedOutputs": ["clustered candidate inventory", "representative shortlist", "discovery stop rationale"],
+        "blockedTransitions": ["candidate approval from popularity", "bulk ingestion", "candidate execution"],
+        "verificationSurface": ["source identity", "cluster rationale", "marginal-yield stop evidence", "remaining uncertainty"],
+        "rerouteTriggers": ["new source family", "coverage-changing candidate", "upstream rename or removal"]
+      },
+      {
+        "id": "lane.representative-deep-review",
+        "executionMode": "core",
+        "dependsOn": ["lane.discovery-and-clustering"],
+        "purpose": "Inspect the minimum representative candidates needed to understand behavior, dependencies, authority, risk, portability, and maintenance cost.",
+        "requiredInputs": ["clustered shortlist", "exact source pin or immutable dated official evidence", "license and provenance boundary", "review questions"],
+        "allowedOutputs": ["deep-review evidence", "candidate limitations", "review disposition"],
+        "blockedTransitions": ["executing untrusted candidate code", "copying license-unclear content", "inferring behavior from descriptions"],
+        "verificationSurface": ["instructions and executable surfaces", "license and provenance", "negative boundaries", "maintenance and exit cost"],
+        "rerouteTriggers": ["hidden dependency", "license conflict", "unsafe command surface", "insufficient evidence"]
+      },
+      {
+        "id": "lane.solution-alternative-comparison",
+        "executionMode": "core",
+        "dependsOn": ["lane.native-official-runtime-baseline", "lane.representative-deep-review"],
+        "purpose": "Compare native, official/runtime, single-Skill, composed Skill, non-Skill Harness, project-standard, and human-authority paths.",
+        "requiredInputs": ["deep-review evidence", "native and runtime baseline", "bound demand and verification target"],
+        "allowedOutputs": ["ordered alternatives", "composition analysis", "cost and risk comparison"],
+        "blockedTransitions": ["assuming a Skill is required", "ignoring ordering or shared-state failure", "ignoring context and maintenance rent"],
+        "verificationSurface": ["coverage benefit", "context and latency cost", "permission and privacy", "conflicts and failure propagation"],
+        "rerouteTriggers": ["equivalent native path", "composition conflict", "cost exceeds benefit", "verification failure"]
+      },
+      {
+        "id": "lane.residual-gap-decision",
+        "executionMode": "core",
+        "dependsOn": ["lane.solution-alternative-comparison"],
+        "purpose": "Decide whether a material residual gap is supported, unproven, or already covered before adaptation or repository-authored work.",
+        "requiredInputs": ["alternative comparison", "behavioral or structural evidence", "importance and recurrence evidence"],
+        "allowedOutputs": ["native-covered", "candidate-covered", "composition-covered", "non-Skill-covered", "residual-gap-supported", "residual-gap-unproven"],
+        "blockedTransitions": ["repository-authored design from an unproven gap", "coverage claim from metadata similarity"],
+        "verificationSurface": ["residual failure mechanism", "reproducibility", "importance", "counterexamples"],
+        "rerouteTriggers": ["new alternative", "failed reproduction", "changed demand", "stronger counterevidence"]
+      },
+      {
+        "id": "lane.candidate-governance-and-adaptation",
+        "executionMode": "core",
+        "dependsOn": ["lane.residual-gap-decision"],
+        "purpose": "Route supported needs to adopt, adapt, merge, compose, reference, reject, hold, adapter-only, or repository-author decisions.",
+        "requiredInputs": ["residual-gap or coverage decision", "candidate-origin policy", "authority and license boundary"],
+        "allowedOutputs": ["candidate disposition", "bounded adaptation", "repository-authored design candidate"],
+        "blockedTransitions": ["candidate execution before approval", "duplicate global router", "weakened safety or provenance"],
+        "verificationSurface": ["origin-specific gate", "overlap and conflicts", "security and portability", "validation design"],
+        "rerouteTriggers": ["overlap discovered", "authority changes", "design cannot be verified", "maintenance cost changes"]
+      },
+      {
+        "id": "lane.admission-verification-and-release",
+        "executionMode": "core",
+        "dependsOn": ["lane.candidate-governance-and-adaptation"],
+        "purpose": "Admit and release only approved, source-attributed, verified, agent-neutral payload and topology.",
+        "requiredInputs": ["completed candidate governance", "approval evidence", "tests and release decision"],
+        "allowedOutputs": ["curated approved release", "manifest and topology projections", "rollback evidence"],
+        "blockedTransitions": ["candidate in execution path", "manifest drift", "unapproved redistribution"],
+        "verificationSurface": ["repository verifier", "release manifest", "routing scenarios", "rollback boundary"],
+        "rerouteTriggers": ["test failure", "approval withdrawal", "security or license change", "projection drift"]
+      },
+      {
+        "id": "lane.consumer-evidence-and-feedback",
+        "executionMode": "optional-branch",
+        "dependsOn": ["lane.admission-verification-and-release"],
+        "purpose": "Accept optional, separately authorized consumer projection and usage evidence without making live integration a repository-owned release requirement.",
+        "requiredInputs": ["approved release", "consumer-owned plan", "separate write authority when mutation is requested"],
+        "allowedOutputs": ["dated consumer mapping", "usage and failure feedback", "restore and rollback evidence"],
+        "blockedTransitions": ["claiming current live parity from dated evidence", "implicit runtime mutation", "consumer configuration ownership"],
+        "verificationSurface": ["consumer, host, date, loader, permissions, backup, restore, and observed behavior"],
+        "rerouteTriggers": ["consumer failure", "host divergence", "restore failure", "permission change"]
+      },
+      {
+        "id": "lane.lifecycle-metabolism",
+        "executionMode": "cross-cutting",
+        "dependsOn": [],
+        "purpose": "Re-evaluate upstream updates, conflicts, safety, usage, license, replacement, deprecation, migration, rollback, and retirement.",
+        "requiredInputs": ["at least one governed candidate, release, upstream, consumer, community, or validation signal"],
+        "triggerInputsAnyOf": ["governed candidate evidence", "release evidence", "upstream refresh", "consumer feedback", "community or validation feedback"],
+        "allowedOutputs": ["refresh decision", "supersession", "deprecation", "migration", "rollback", "retirement"],
+        "blockedTransitions": ["automatic upstream replacement", "inventory growth as success", "silent breaking change"],
+        "verificationSurface": ["diff evidence", "impact analysis", "migration and rollback", "recheck trigger"],
+        "rerouteTriggers": ["upstream update", "security finding", "usage failure", "better replacement"]
+      },
+      {
+        "id": "lane.standard-extraction-and-calibration-handoff",
+        "executionMode": "conditional-branch",
+        "dependsOn": [],
+        "purpose": "Extract repeated reusable evidence into a non-authoritative standard candidate for separately authorized YIYUAN-CALIBRATION custody and calibration.",
+        "requiredInputs": ["repeated evidence", "scope and counterexamples", "versioning, migration, and authority metadata"],
+        "triggerInputsAnyOf": ["demand evidence", "review evidence", "consumer feedback", "lifecycle evidence"],
+        "allowedOutputs": ["bounded standard candidate package", "CALIBRATION handoff proposal", "supersession metadata"],
+        "blockedTransitions": ["standard promotion from one case", "user configuration as durable custody", "ASSETS admission claim"],
+        "verificationSurface": ["lineage", "repetition threshold", "counterexamples", "calibration receipt when separately authorized"],
+        "rerouteTriggers": ["counterexample", "scope drift", "calibration rejection", "newer evidence"]
+      }
+    ]
+  },
+  "candidateOriginPolicy": {
+    "classes": [
+      {
+        "id": "platform-runtime-vendor-first-party-baseline",
+        "eligibilityGate": "dated-overlap-evidence-only",
+        "releaseEligible": false,
+        "requiredEvidence": ["owner identity", "dated revision or runtime snapshot", "capability overlap and claim limits"]
+      },
+      {
+        "id": "third-party-candidate",
+        "eligibilityGate": "source-pinned-and-full-review",
+        "releaseEligible": false,
+        "requiredEvidence": ["license and provenance", "security and portability", "overlap, adaptation, and validation"]
+      },
+      {
+        "id": "repository-authored-gap-fill-candidate",
+        "eligibilityGate": "residual-gap-supported",
+        "releaseEligible": false,
+        "requiredEvidence": ["alternative comparison", "repeated or important residual-gap evidence", "design provenance and license ownership", "security, portability, overlap, and tests", "owner approval before admission"]
+      },
+      {
+        "id": "curated-approved-release",
+        "eligibilityGate": "admission-approved-and-verified",
+        "releaseEligible": true,
+        "requiredEvidence": ["approved admission", "source attribution or repository authorship", "passing repository verification", "release and rollback evidence"]
+      }
+    ]
+  },
+  "sequenceGates": [
+    {"id": "gate.demand-before-gap-claim", "prerequisite": "evidence-backed demand", "blockedUntil": "capability-gap claim", "verification": "demand coordinates and claim limits"},
+    {"id": "gate.baseline-before-substitution", "prerequisite": "native, official, and runtime baseline", "blockedUntil": "external substitution decision", "verification": "dated host and capability evidence"},
+    {"id": "gate.clustering-before-deep-review", "prerequisite": "candidate clustering and deduplication", "blockedUntil": "representative deep review", "verification": "cluster and shortlist rationale"},
+    {"id": "gate.source-pin-before-deep-review", "prerequisite": "exact source pin and license or provenance boundary", "blockedUntil": "third-party instructions or executable-surface deep review", "verification": "immutable revision, source identity, license, provenance, and non-execution boundary"},
+    {"id": "gate.alternatives-before-residual-gap", "prerequisite": "native, single, composition, and non-Skill comparison", "blockedUntil": "residual-gap-supported decision", "verification": "coverage, cost, conflict, and failure comparison"},
+    {"id": "gate.residual-gap-before-repository-authoring", "prerequisite": "residual-gap-supported", "blockedUntil": "repository-authored design", "verification": "reproducible material gap and counterexamples"},
+    {"id": "gate.admission-before-release", "prerequisite": "approved admission and verification", "blockedUntil": "release inventory", "verification": "admission, tests, manifest, and routing evidence"},
+    {"id": "gate.release-before-consumer-projection", "prerequisite": "approved stable release and separate consumer authority", "blockedUntil": "optional consumer projection", "verification": "release pin, backup, restore, and write authority"},
+    {"id": "gate.repeated-evidence-before-standard-extraction", "prerequisite": "repeated reusable evidence", "blockedUntil": "standard candidate extraction", "verification": "lineage, scope, counterexamples, and repetition"},
+    {"id": "gate.calibration-before-assets-admission", "prerequisite": "YIYUAN-CALIBRATION handoff and calibration", "blockedUntil": "YIYUAN-ASSETS admission claim", "verification": "separately authorized receipt and calibration decision"},
+    {"id": "gate.closeout-before-next-intake", "prerequisite": "current round stage closeout", "blockedUntil": "next candidate-intake round activation", "verification": "closeout outcome, residual risks, deferred work, and next decision"}
+  ],
+  "currentInitiatives": [
+    {
+      "id": "initiative.program-control-completeness-reconciliation",
+      "status": "needs-user-confirmation",
+      "prerequisites": ["bound mission and capability-survey handoff", "current repository truth", "completeness and order-semantics audits"],
+      "allowedActions": ["owner review", "bounded in-repository correction", "deterministic verification", "Git closeout only after separate authorization"],
+      "blockedActions": ["Round 02 stage closeout activation", "external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery", "claiming accepted program control"],
+      "resultPackage": ["program completeness audit", "order-semantics audit", "corrected machine program authority", "corrected acceptance map and human projections", "passing deterministic verification", "owner decision and Git posture"],
+      "acceptanceIds": ["acceptance.program-control-completeness", "acceptance.sequence-integrity"],
+      "decisionGate": "owner accepts the corrected program control baseline and separately authorizes any Git closeout"
+    },
+    {
+      "id": "initiative.round02-stage-closeout-reconciliation",
+      "status": "needs-reconciliation",
+      "prerequisites": ["program-control completeness reconciliation", "Round 02 plan, execution, and acceptance evidence"],
+      "allowedActions": ["requirement-by-requirement closeout audit", "residual-risk and deferred-work recording", "next-round or pause decision preparation"],
+      "blockedActions": ["new candidate-intake round activation", "claiming current live runtime parity", "claiming global program completion"],
+      "resultPackage": ["Round 02 requirement reconciliation", "residual risks and deferred work", "next-round or pause decision"],
+      "acceptanceIds": ["acceptance.third-party-admission-gates", "acceptance.sequence-integrity"],
+      "decisionGate": "owner-reviewed Round 02 stage-closeout outcome"
+    },
+    {
+      "id": "initiative.capability-survey-gap-proof",
+      "status": "planned",
+      "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "capability-survey plan and acceptance contract verified"],
+      "allowedActions": ["plan and acceptance design", "read-only repository reconciliation"],
+      "blockedActions": ["external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery"],
+      "resultPackage": [
+        "native Agent and runtime capability baseline",
+        "clustered and deduplicated candidate Skills inventory",
+        "STM, P, and SG capability coverage matrix",
+        "single-Skill and composed Skill or non-Skill Harness alternatives",
+        "candidate dispositions",
+        "supported and unproven residual gaps",
+        "host, model, reasoning, loader, permission, workspace, and evidence limitations",
+        "intent-contract, capability-router, closure-contract, and Hook recommendations",
+        "discovery stop rationale, recheck triggers, upstream-update implications, and next-round candidates",
+        "explicit non-authorization and non-proof statement"
+      ],
+      "acceptanceIds": ["acceptance.capability-survey-result-package", "acceptance.cross-agent-claim-limits", "acceptance.residual-gap-proof"],
+      "decisionGate": "reviewed survey result before adoption, adaptation, repository authoring, or standards extraction"
+    }
+  ],
   "strategicObjectives": [
     {
       "id": "objective.skills-terminal-mvp",
@@ -50,6 +295,41 @@
         "acceptance.skills-terminal-positioning",
         "acceptance.future-terminal-boundary"
       ]
+    },
+    {
+      "id": "objective.multi-domain-coverage",
+      "statement": "Maintain broad general and specialist Skill coverage across durable digital collaboration domains instead of reducing the repository to software engineering or one shortfall chain.",
+      "authorityOwner": "agent-skills-curated-for-coverage-planning",
+      "nonGoals": ["claiming universal domain completeness", "replacing accountable domain experts"],
+      "acceptanceIds": ["acceptance.multi-domain-coverage"]
+    },
+    {
+      "id": "objective.evidence-backed-demand-model",
+      "statement": "Bind capability work to dated demand, shortfall, risk, lifecycle, or coverage evidence with explicit uncertainty and promotion firewalls.",
+      "authorityOwner": "shared-by-research-input-and-curated-evidence-boundaries",
+      "nonGoals": ["promoting research synthesis directly into a standard", "treating historical inventory counts as completion targets"],
+      "acceptanceIds": ["acceptance.demand-coordinate-contract", "acceptance.cross-agent-claim-limits"]
+    },
+    {
+      "id": "objective.reuse-before-build-gap-proof",
+      "statement": "Prefer reliable native, official, runtime, curated, external, composed, or non-Skill paths and permit repository-authored work only for a supported residual gap.",
+      "authorityOwner": "agent-skills-curated-for-capability-disposition",
+      "nonGoals": ["assuming every shortfall needs a Skill", "authoring from metadata similarity or project inertia"],
+      "acceptanceIds": ["acceptance.native-runtime-baseline", "acceptance.alternative-comparison", "acceptance.residual-gap-proof", "acceptance.repository-authored-gap-fill-gate"]
+    },
+    {
+      "id": "objective.full-chain-capability-coverage",
+      "statement": "Model single, composed, native, non-Skill, human-authority, fallback, conflict, and lifecycle paths across the full collaboration chain.",
+      "authorityOwner": "agent-skills-curated-for-abstract-topology-and-composition",
+      "nonGoals": ["requiring a Skill for every capability", "claiming behavioral coverage from names or descriptions"],
+      "acceptanceIds": ["acceptance.full-chain-coverage-matrix", "acceptance.discovery-clustering-stop-rule", "acceptance.program-control-completeness"]
+    },
+    {
+      "id": "objective.decision-ready-external-brain",
+      "statement": "Produce decision-ready curated topology and evidence that reduce unknown-Skill enumeration, routing burden, collision, and maintenance rent while leaving creation and accountable decisions to users and consumers.",
+      "authorityOwner": "shared-by-curated-projection-and-consumer-routing-layer",
+      "nonGoals": ["raising the model capability ceiling", "claiming universal Agent equality", "owning live consumer invocation"],
+      "acceptanceIds": ["acceptance.decision-ready-consumer-projection", "acceptance.capability-survey-result-package"]
     },
     {
       "id": "objective.reviewed-third-party-governance",
@@ -114,7 +394,8 @@
       ],
       "acceptanceIds": [
         "acceptance.feedback-loop",
-        "acceptance.deprecation-retirement-loop"
+        "acceptance.deprecation-retirement-loop",
+        "acceptance.sequence-integrity"
       ]
     }
   ],
@@ -148,16 +429,21 @@
   },
   "harnessLoop": {
     "model": "continuous-curation-harness",
+    "executionSemanticsRef": "programArchitecture.executionSemantics",
+    "loopIsLinearExecutionOrder": false,
     "loop": [
-      "discover",
-      "filter",
-      "review",
-      "adapt",
-      "verify",
-      "release",
-      "consume-sync",
+      "demand-evidence",
+      "native-official-runtime-baseline",
+      "discover-and-cluster",
+      "representative-deep-review",
+      "compare-alternatives",
+      "prove-residual-gap",
+      "govern-adapt-or-author-candidate",
+      "verify-admit-and-release",
+      "optional-consumer-projection",
       "feedback",
-      "rediscover-or-revise"
+      "metabolize",
+      "extract-standard-candidate-for-calibration"
     ],
     "feedbackInputs": [
       "repository validation failures",
@@ -177,6 +463,7 @@
     ],
     "completionModel": "no-absolute-completion-only-versioned-stage-closeout"
   },
+  "stepsRole": "historical-execution-projection-not-stable-operating-architecture",
   "steps": [
     {
       "id": "program-01-discovery-and-coverage",

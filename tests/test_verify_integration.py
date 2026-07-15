@@ -200,6 +200,170 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "preserve CALIBRATION custody"):
             verify_script.validate_curation_program_plan(program, rounds)
 
+    def test_program_control_includes_missing_objectives_and_stable_lanes(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        objective_ids = {item["id"] for item in program["strategicObjectives"]}
+        required_objectives = {
+            "objective.multi-domain-coverage",
+            "objective.evidence-backed-demand-model",
+            "objective.reuse-before-build-gap-proof",
+            "objective.full-chain-capability-coverage",
+            "objective.decision-ready-external-brain",
+        }
+        self.assertTrue(required_objectives <= objective_ids)
+        lane_ids = {
+            item["id"] for item in program["programArchitecture"]["operatingLanes"]
+        }
+        self.assertTrue(
+            {
+                "lane.demand-evidence",
+                "lane.native-official-runtime-baseline",
+                "lane.solution-alternative-comparison",
+                "lane.residual-gap-decision",
+                "lane.standard-extraction-and-calibration-handoff",
+            }
+            <= lane_ids
+        )
+
+    def test_program_objective_set_is_extensible(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        acceptance = verify_script.load("registry/program-acceptance-map.json")
+        future_objective = {
+            "id": "objective.future-reviewed-extension",
+            "statement": "Preserve reviewed extension points without weakening current authority.",
+            "authorityOwner": "agent-skills-curated",
+            "nonGoals": ["bypassing governed program review"],
+            "acceptanceIds": ["acceptance.future-terminal-boundary"],
+        }
+        program["strategicObjectives"].append(future_objective)
+        acceptance["objectives"].append(
+            {
+                "id": future_objective["id"],
+                "acceptanceIds": future_objective["acceptanceIds"],
+            }
+        )
+        verify_script.validate_curation_program_plan(program, rounds)
+        verify_script.validate_program_acceptance_map(acceptance, program)
+
+    def test_program_rejects_runtime_sync_as_mandatory_stable_lane(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        program["programArchitecture"]["operatingLanes"].append(
+            {
+                "id": "lane.mandatory-local-runtime-sync",
+                "purpose": "Require every release to mutate a local consumer runtime.",
+                "requiredInputs": ["curated release"],
+                "allowedOutputs": ["local runtime mutation"],
+                "blockedTransitions": ["none"],
+                "verificationSurface": ["local path changed"],
+                "rerouteTriggers": ["local runtime unavailable"],
+            }
+        )
+        with self.assertRaisesRegex(RuntimeError, "consumer runtime sync"):
+            verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_program_rejects_gap_fill_without_residual_gap_gate(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        origin = next(
+            item
+            for item in program["candidateOriginPolicy"]["classes"]
+            if item["id"] == "repository-authored-gap-fill-candidate"
+        )
+        origin["eligibilityGate"] = "discovery-only"
+        with self.assertRaisesRegex(RuntimeError, "residual gap"):
+            verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_capability_survey_acceptance_contract_is_complete(self) -> None:
+        acceptance = verify_script.load("registry/program-acceptance-map.json")
+        criterion_ids = {item["id"] for item in acceptance["acceptanceCriteria"]}
+        self.assertTrue(
+            {
+                "acceptance.native-runtime-baseline",
+                "acceptance.discovery-clustering-stop-rule",
+                "acceptance.alternative-comparison",
+                "acceptance.residual-gap-proof",
+                "acceptance.capability-survey-result-package",
+                "acceptance.cross-agent-claim-limits",
+            }
+            <= criterion_ids
+        )
+
+    def test_program_binds_the_actual_current_control_initiative(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        self.assertEqual(
+            program["currentInitiativeId"],
+            "initiative.program-control-completeness-reconciliation",
+        )
+        current = next(
+            item
+            for item in program["currentInitiatives"]
+            if item["id"] == program["currentInitiativeId"]
+        )
+        self.assertEqual(current["status"], "needs-user-confirmation")
+
+    def test_program_declares_dependency_graph_order_semantics(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        semantics = program["programArchitecture"]["executionSemantics"]
+        self.assertEqual(
+            semantics["model"],
+            "dependency-graph-with-optional-and-cross-cutting-lanes",
+        )
+        self.assertEqual(
+            semantics["corePath"],
+            [
+                "lane.demand-evidence",
+                "lane.native-official-runtime-baseline",
+                "lane.discovery-and-clustering",
+                "lane.representative-deep-review",
+                "lane.solution-alternative-comparison",
+                "lane.residual-gap-decision",
+                "lane.candidate-governance-and-adaptation",
+                "lane.admission-verification-and-release",
+            ],
+        )
+        self.assertEqual(
+            semantics["optionalBranches"],
+            ["lane.consumer-evidence-and-feedback"],
+        )
+        self.assertEqual(
+            semantics["crossCuttingLanes"],
+            ["lane.lifecycle-metabolism"],
+        )
+        self.assertEqual(
+            semantics["conditionalBranches"],
+            ["lane.standard-extraction-and-calibration-handoff"],
+        )
+
+    def test_program_rejects_lifecycle_that_requires_consumer_evidence(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        lifecycle = next(
+            item
+            for item in program["programArchitecture"]["operatingLanes"]
+            if item["id"] == "lane.lifecycle-metabolism"
+        )
+        lifecycle["requiredInputs"] = ["release and consumer evidence"]
+        with self.assertRaisesRegex(RuntimeError, "lifecycle.*consumer"):
+            verify_script.validate_curation_program_plan(program, rounds)
+
+    def test_program_requires_source_pin_before_representative_deep_review(self) -> None:
+        program = verify_script.load("registry/curation-program-plan.json")
+        rounds = verify_script.load("registry/curation-expansion-rounds.json")
+        review = next(
+            item
+            for item in program["programArchitecture"]["operatingLanes"]
+            if item["id"] == "lane.representative-deep-review"
+        )
+        review["requiredInputs"] = [
+            "clustered shortlist",
+            "dated metadata",
+            "review questions",
+        ]
+        with self.assertRaisesRegex(RuntimeError, "source pin"):
+            verify_script.validate_curation_program_plan(program, rounds)
+
     def test_rejects_skill_unknown_field_before_semantic_access(self) -> None:
         document = verify_script.load("registry/skills.json")
         document["skills"][0]["statuz"] = "approved"
