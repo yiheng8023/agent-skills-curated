@@ -5,7 +5,7 @@
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
   "currentState": "needs-reconciliation",
-  "currentInitiativeId": "initiative.program-control-completeness-reconciliation",
+  "currentInitiativeId": "initiative.round02-stage-closeout-reconciliation",
   "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
   "acceptanceMap": "registry/program-acceptance-map.json",
   "controlledSurfaces": [
@@ -242,13 +242,14 @@
   "currentInitiatives": [
     {
       "id": "initiative.program-control-completeness-reconciliation",
-      "status": "needs-user-confirmation",
+      "status": "accepted",
       "prerequisites": ["bound mission and capability-survey handoff", "current repository truth", "completeness and order-semantics audits"],
       "allowedActions": ["owner review", "bounded in-repository correction", "deterministic verification", "Git closeout only after separate authorization"],
       "blockedActions": ["Round 02 stage closeout activation", "external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery", "claiming accepted program control"],
       "resultPackage": ["program completeness audit", "order-semantics audit", "corrected machine program authority", "corrected acceptance map and human projections", "passing deterministic verification", "owner decision and Git posture"],
       "acceptanceIds": ["acceptance.program-control-completeness", "acceptance.sequence-integrity"],
-      "decisionGate": "owner accepts the corrected program control baseline and separately authorizes any Git closeout"
+      "decisionGate": "owner accepts the corrected program control baseline and separately authorizes any Git closeout",
+      "decisionEvidence": "registry/program-control-acceptance-event-2026-07-15.json"
     },
     {
       "id": "initiative.round02-stage-closeout-reconciliation",

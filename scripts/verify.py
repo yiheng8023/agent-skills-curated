@@ -62,6 +62,7 @@ REQUIRED_FILES = (
     "registry/curation-expansion-rounds.json",
     "registry/curation-program-plan.json",
     "registry/program-acceptance-map.json",
+    "registry/program-control-acceptance-event-2026-07-15.json",
     "registry/round-lifecycle-contract.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
@@ -194,6 +195,7 @@ def verify() -> None:
     curation_expansion_rounds_doc = load("registry/curation-expansion-rounds.json")
     curation_program_plan_doc = load("registry/curation-program-plan.json")
     program_acceptance_map_doc = load("registry/program-acceptance-map.json")
+    program_control_acceptance_event_doc = load("registry/program-control-acceptance-event-2026-07-15.json")
     round_lifecycle_contract_doc = load("registry/round-lifecycle-contract.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
@@ -248,6 +250,11 @@ def verify() -> None:
     validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
     validate_curation_program_plan(curation_program_plan_doc, curation_expansion_rounds_doc)
     validate_program_acceptance_map(program_acceptance_map_doc, curation_program_plan_doc)
+    validate_program_control_acceptance_event(
+        program_control_acceptance_event_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
     validate_round_lifecycle_contract(round_lifecycle_contract_doc, curation_expansion_rounds_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
@@ -937,6 +944,89 @@ def validate_program_acceptance_map(
                 )
 
 
+def validate_program_control_acceptance_event(
+    document: dict[str, object],
+    program_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    """Validate the owner decision that closed program-control reconciliation."""
+    if document.get("schema") != 1:
+        raise RuntimeError("Program control acceptance event schema must be 1.")
+    if document.get("id") != "program-control-acceptance-event-2026-07-15":
+        raise RuntimeError("Program control acceptance event id drifted.")
+    if document.get("date") != "2026-07-15":
+        raise RuntimeError("Program control acceptance event date drifted.")
+    if document.get("decision") != "accepted-and-merged-locally":
+        raise RuntimeError("Program control acceptance event decision drifted.")
+    if document.get("authoritySource") != "owner-selected-local-merge-option-1":
+        raise RuntimeError("Program control acceptance event authority source drifted.")
+    accepted_commit = document.get("acceptedBaselineCommit")
+    if accepted_commit != "7513da41e9c2950de1a6132ce9c9d65fb11a8098":
+        raise RuntimeError("Program control acceptance event baseline commit drifted.")
+    if not isinstance(accepted_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", accepted_commit):
+        raise RuntimeError("Program control acceptance event requires a full commit hash.")
+    if document.get("mergedInto") != "main" or document.get("localMergeObserved") is not True:
+        raise RuntimeError("Program control acceptance event must record the observed local main merge.")
+    if document.get("remotePushAuthorized") is not False:
+        raise RuntimeError("Program control acceptance event must not authorize remote push.")
+    if document.get("nextInitiativeId") != "initiative.round02-stage-closeout-reconciliation":
+        raise RuntimeError("Program control acceptance event next initiative drifted.")
+    accepted_scope = " ".join(str(item) for item in document.get("acceptedScope", [])).lower()
+    for phrase in ["completeness", "dependency-graph", "acceptance", "english and chinese"]:
+        if phrase not in accepted_scope:
+            raise RuntimeError(f"Program control acceptance event scope missing phrase: {phrase}")
+    excluded = " ".join(str(item) for item in document.get("doesNotAuthorize", [])).lower()
+    for phrase in [
+        "remote push",
+        "external discovery",
+        "candidate code execution",
+        "runtime mutation",
+        "cross-repository",
+        "round 02 stage closeout",
+    ]:
+        if phrase not in excluded:
+            raise RuntimeError(f"Program control acceptance event exclusion missing phrase: {phrase}")
+
+    if program_doc.get("currentInitiativeId") != document.get("nextInitiativeId"):
+        raise RuntimeError("Program control acceptance event must advance the current initiative.")
+    initiatives = program_doc.get("currentInitiatives", [])
+    completeness = next(
+        (
+            item
+            for item in initiatives
+            if isinstance(item, dict)
+            and item.get("id") == "initiative.program-control-completeness-reconciliation"
+        ),
+        None,
+    )
+    round02 = next(
+        (
+            item
+            for item in initiatives
+            if isinstance(item, dict)
+            and item.get("id") == "initiative.round02-stage-closeout-reconciliation"
+        ),
+        None,
+    )
+    if not completeness or completeness.get("status") != "accepted":
+        raise RuntimeError("Program control completeness initiative must be accepted.")
+    if completeness.get("decisionEvidence") != "registry/program-control-acceptance-event-2026-07-15.json":
+        raise RuntimeError("Program control completeness initiative decision evidence drifted.")
+    if not round02 or round02.get("status") != "needs-reconciliation":
+        raise RuntimeError("Round 02 reconciliation must become the current pending initiative.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_doc.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    criterion = criteria.get("acceptance.program-control-completeness")
+    if not criterion or criterion.get("assessment") != "verified":
+        raise RuntimeError("Program control completeness acceptance must be verified after owner decision.")
+    if "evidence.program-control-acceptance" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Program control completeness acceptance event evidence is missing.")
+
+
 def validate_curation_expansion_rounds(
     document: dict[str, object],
     coverage_doc: dict[str, object],
@@ -1351,19 +1441,19 @@ def validate_curation_program_plan(
         if not isinstance(initiative.get("decisionGate"), str) or not initiative.get("decisionGate"):
             raise RuntimeError(f"Curation program initiative decision gate is required: {initiative_id}")
     current_initiative_id = document.get("currentInitiativeId")
-    if current_initiative_id != "initiative.program-control-completeness-reconciliation":
-        raise RuntimeError("Curation program current initiative must be the completeness reconciliation.")
+    if current_initiative_id != "initiative.round02-stage-closeout-reconciliation":
+        raise RuntimeError("Curation program current initiative must be the Round 02 reconciliation.")
     current_initiative = next(
         item
         for item in initiatives
         if isinstance(item, dict) and item.get("id") == current_initiative_id
     )
-    if current_initiative.get("status") != "needs-user-confirmation":
-        raise RuntimeError("Curation program completeness reconciliation must await user confirmation.")
+    if current_initiative.get("status") != "needs-reconciliation":
+        raise RuntimeError("Curation program Round 02 reconciliation must remain pending.")
     current_blocked_text = " ".join(
         str(item) for item in current_initiative.get("blockedActions", [])
     ).lower()
-    for phrase in ["round 02", "external discovery", "runtime mutation", "cross-repository"]:
+    for phrase in ["new candidate-intake", "current live runtime", "global program completion"]:
         if phrase not in current_blocked_text:
             raise RuntimeError(f"Curation program current initiative missing blocked action: {phrase}")
     capability_survey = next(
@@ -1612,7 +1702,8 @@ def validate_curation_program_plan(
     for phrase in [
         "first terminal MVP",
         "registry/program-acceptance-map.json",
-        "initiative.program-control-completeness-reconciliation",
+        "registry/program-control-acceptance-event-2026-07-15.json",
+        "initiative.round02-stage-closeout-reconciliation",
         "Round 02 stage-closeout reconciliation",
         "evidenced demand or shortfall",
         "native / official / runtime baseline",

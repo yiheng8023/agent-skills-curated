@@ -249,7 +249,7 @@
     {
       "id": "acceptance.program-control-completeness",
       "statement": "The master control baseline distinguishes stable dependency-graph semantics, bounded current initiatives, historical execution, optional consumer work, cross-cutting lifecycle metabolism, and conditional standards extraction before later execution is reordered.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.sequence-integrity"
       ],
@@ -257,7 +257,8 @@
         "evidence.program-plan",
         "evidence.verify-script",
         "evidence.completeness-audit",
-        "evidence.order-semantics-audit"
+        "evidence.order-semantics-audit",
+        "evidence.program-control-acceptance"
       ]
     },
     {
@@ -618,6 +619,15 @@
       "id": "evidence.order-semantics-audit",
       "path": "docs/program-order-semantics-audit-2026-07-15.md",
       "kind": "program-order-review-evidence",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.program-control-completeness"
+      ]
+    },
+    {
+      "id": "evidence.program-control-acceptance",
+      "path": "registry/program-control-acceptance-event-2026-07-15.json",
+      "kind": "owner-acceptance-event",
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.program-control-completeness"

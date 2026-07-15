@@ -59,8 +59,9 @@ consumer projection is an optional branch, lifecycle metabolism is
 cross-cutting, and standards extraction is conditional on repeated evidence.
 Upstream radar may discover broadly, while this repository requires bounded
 demand, baseline, an exact source pin, review, and acceptance before a signal
-can affect a curated decision. The current initiative remains pending owner
-confirmation rather than being inferred from the historical Round 02 step.
+can affect a curated decision. The program-control correction has an explicit
+owner acceptance event; the current initiative is the still-pending Round 02
+stage-closeout reconciliation rather than an inference from historical steps.
 
 Reliability is layered rather than text-only: instructions and rules may route
 to Skills and Recipes; deterministic scripts, schemas, and validators cover

@@ -290,18 +290,37 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             <= criterion_ids
         )
 
-    def test_program_binds_the_actual_current_control_initiative(self) -> None:
+    def test_program_records_owner_acceptance_and_advances_current_initiative(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         self.assertEqual(
             program["currentInitiativeId"],
-            "initiative.program-control-completeness-reconciliation",
+            "initiative.round02-stage-closeout-reconciliation",
+        )
+        completeness = next(
+            item
+            for item in program["currentInitiatives"]
+            if item["id"] == "initiative.program-control-completeness-reconciliation"
         )
         current = next(
             item
             for item in program["currentInitiatives"]
             if item["id"] == program["currentInitiativeId"]
         )
-        self.assertEqual(current["status"], "needs-user-confirmation")
+        self.assertEqual(completeness["status"], "accepted")
+        self.assertEqual(current["status"], "needs-reconciliation")
+        event = verify_script.load("registry/program-control-acceptance-event-2026-07-15.json")
+        self.assertEqual(
+            event["acceptedBaselineCommit"],
+            "7513da41e9c2950de1a6132ce9c9d65fb11a8098",
+        )
+        self.assertEqual(event["decision"], "accepted-and-merged-locally")
+        self.assertFalse(event["remotePushAuthorized"])
+
+    def test_program_control_acceptance_event_does_not_authorize_remote_push(self) -> None:
+        path = "registry/program-control-acceptance-event-2026-07-15.json"
+        event = verify_script.load(path)
+        event["remotePushAuthorized"] = True
+        self.assert_verify_runtime_error(path, event, "must not authorize remote push")
 
     def test_program_declares_dependency_graph_order_semantics(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")

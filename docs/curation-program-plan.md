@@ -161,11 +161,11 @@ They do not prove current live parity, and they do not include a distinct Round
 02 stage-closeout reconciliation. The current state is therefore
 `needs-reconciliation`, not `complete`.
 
-The machine-bound current initiative is
-`initiative.program-control-completeness-reconciliation`, with status
-`needs-user-confirmation`. Its technical correction and verification evidence
-exist, but owner acceptance and Git closeout do not.
-After that is accepted, the next execution gate remains a
+The program-control completeness initiative was accepted by the owner and
+merged locally into `main`; the bounded event is recorded in
+`registry/program-control-acceptance-event-2026-07-15.json`. The machine-bound
+current initiative is now `initiative.round02-stage-closeout-reconciliation`
+with status `needs-reconciliation`. The next execution gate is a
 requirement-by-requirement Round 02 stage-closeout reconciliation
 that records covered scope, verification evidence, residual risks, deferred
 work, current authority boundaries, and the explicit next-round or pause
