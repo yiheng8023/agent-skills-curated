@@ -147,15 +147,23 @@
   "readiness": {
     "sourceIdentityVerified": true,
     "inputContractVerified": true,
+    "firstGovernedDemandBatchVerified": true,
     "demandRecordExtractionComplete": false,
+    "datedNativeRuntimeBaselineVerified": true,
     "ownerReviewRequired": false,
     "round03ExecutionActivated": true,
     "externalDiscoveryAuthorized": true
   },
+  "demandRecordBatches": [
+    "registry/round03-demand-records-batch-01.json"
+  ],
+  "nativeRuntimeBaselines": [
+    "registry/round03-native-runtime-baseline-2026-07-15.json"
+  ],
   "activationEvidence": "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
   "evidenceDocs": [
     "docs/round03-demand-coordinate-source-contract.md",
     "docs/round03-demand-coordinate-source-contract.zh-CN.md"
   ],
-  "nextGate": "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery"
+  "nextGate": "bounded public metadata discovery for the baseline-eligible demand records"
 }

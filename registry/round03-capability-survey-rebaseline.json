@@ -148,5 +148,5 @@
     "docs/round03-capability-survey-rebaseline.md",
     "docs/round03-capability-survey-rebaseline.zh-CN.md"
   ],
-  "nextGate": "verified demand records and native/runtime baseline before public candidate metadata discovery"
+  "nextGate": "bounded public metadata discovery for EL-01, EL-02, and EL-04"
 }

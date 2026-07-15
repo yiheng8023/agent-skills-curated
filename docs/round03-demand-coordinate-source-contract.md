@@ -32,9 +32,11 @@ runtime control, or repository mutation. Hook consideration remains downstream
 of supported residual-gap evidence and host-specific suitability; no Hook is
 the default.
 
-The source contract is verified, but demand-record extraction is not complete.
+The source contract and first governed demand-record batch are verified, but
+demand-record extraction is not complete.
 The owner activation event has activated Round 03 for the bounded read-only
 survey. This source contract does not itself authorize source-body
 redistribution, candidate execution, Skill admission, runtime mutation,
-cross-repository writes, standards promotion, or remote push. Demand records
-and a dated native/runtime baseline still precede public candidate discovery.
+cross-repository writes, standards promotion, or remote push. The first demand
+batch and dated local metadata baseline now precede bounded public discovery;
+they do not prove behavioral coverage or a residual gap.

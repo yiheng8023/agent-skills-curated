@@ -87,6 +87,9 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
     def test_round03_demand_coordinate_contract_is_a_required_verifier_input(self) -> None:
         for path in (
             "registry/round03-demand-coordinate-source-contract.json",
+            "registry/round03-demand-records-batch-01.json",
+            "registry/round03-native-runtime-baseline-2026-07-15.json",
+            "registry/round03-public-discovery-snapshot-2026-07-15.json",
             "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
         ):
             self.assertIn(path, verify_script.REQUIRED_FILES)
@@ -255,6 +258,8 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             {"STM": 26, "P": 24, "SG": 12},
         )
         self.assertTrue(contract["readiness"]["sourceIdentityVerified"])
+        self.assertTrue(contract["readiness"]["firstGovernedDemandBatchVerified"])
+        self.assertTrue(contract["readiness"]["datedNativeRuntimeBaselineVerified"])
         self.assertFalse(contract["readiness"]["demandRecordExtractionComplete"])
         self.assertTrue(contract["readiness"]["externalDiscoveryAuthorized"])
         self.assertTrue(
@@ -272,6 +277,93 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         contract = verify_script.load(path)
         contract["readiness"]["externalDiscoveryAuthorized"] = False
         self.assert_verify_runtime_error(path, contract, "readiness drifted")
+
+    def test_round03_first_demand_batch_preserves_partial_non_discovery_state(self) -> None:
+        batch = verify_script.load("registry/round03-demand-records-batch-01.json")
+        self.assertEqual(batch["status"], "verified-read-only-demand-batch")
+        self.assertEqual(
+            [record["sourceLaneId"] for record in batch["records"]],
+            ["EL-01", "EL-02", "EL-03", "EL-04"],
+        )
+        self.assertFalse(batch["scope"]["demandExtractionComplete"])
+        self.assertTrue(batch["batchDecision"]["publicCandidateDiscoveryMayStart"])
+        self.assertEqual(
+            [record["sourceLaneId"] for record in batch["records"] if record["candidateDiscoveryEligible"]],
+            ["EL-01", "EL-02", "EL-04"],
+        )
+
+    def test_round03_first_demand_batch_rejects_premature_gap_or_discovery_claim(self) -> None:
+        path = "registry/round03-demand-records-batch-01.json"
+        batch = verify_script.load(path)
+        batch["records"][0]["residualGapState"] = "supported"
+        batch["records"][0]["candidateDiscoveryEligible"] = True
+        self.assert_verify_runtime_error(path, batch, "demand record gate drifted")
+
+    def test_round03_first_demand_batch_rejects_coordinate_mapping_drift(self) -> None:
+        path = "registry/round03-demand-records-batch-01.json"
+        batch = verify_script.load(path)
+        batch["records"][1]["coordinateIds"]["SG"] = ["SG-01"]
+        self.assert_verify_runtime_error(path, batch, "SG mapping drifted")
+
+    def test_round03_first_demand_batch_rejects_evidence_vocabulary_drift(self) -> None:
+        path = "registry/round03-demand-records-batch-01.json"
+        batch = verify_script.load(path)
+        batch["records"][1]["evidenceState"]["applicability"] = ["project hypothesis"]
+        self.assert_verify_runtime_error(path, batch, "evidence vocabulary drifted")
+
+    def test_round03_native_runtime_baseline_is_host_bounded_and_non_executing(self) -> None:
+        baseline = verify_script.load("registry/round03-native-runtime-baseline-2026-07-15.json")
+        self.assertFalse(baseline["scope"]["crossHostClaim"])
+        self.assertEqual(baseline["observations"]["skillNameSurface"]["skillFileCount"], 422)
+        self.assertFalse(baseline["observations"]["hookMetadata"]["filePresenceProvesActivation"])
+        self.assertFalse(baseline["baselineDecision"]["candidateExecutionAuthorized"])
+        self.assertFalse(baseline["baselineDecision"]["residualGapProven"])
+
+    def test_round03_native_runtime_baseline_rejects_hook_activation_overclaim(self) -> None:
+        path = "registry/round03-native-runtime-baseline-2026-07-15.json"
+        baseline = verify_script.load(path)
+        baseline["observations"]["hookMetadata"]["filePresenceProvesActivation"] = True
+        self.assert_verify_runtime_error(path, baseline, "Hook metadata boundary drifted")
+
+    def test_round03_native_runtime_baseline_rejects_human_authority_skill_routing(self) -> None:
+        path = "registry/round03-native-runtime-baseline-2026-07-15.json"
+        baseline = verify_script.load(path)
+        baseline["demandBaselines"][2]["publicMetadataDiscoveryEligible"] = True
+        baseline["demandBaselines"][2]["externalMetadataQuestion"] = "Find a Skill to replace domain authority."
+        self.assert_verify_runtime_error(path, baseline, "demand baseline incomplete")
+
+    def test_round03_public_discovery_is_public_pinned_and_non_approving(self) -> None:
+        snapshot = verify_script.load("registry/round03-public-discovery-snapshot-2026-07-15.json")
+        self.assertEqual(snapshot["dataBoundary"]["githubVisibility"], "public-only")
+        self.assertTrue(
+            all(
+                "is:public" in query["query"]
+                for query_round in snapshot["queryRounds"]
+                for query in query_round["queries"]
+            )
+        )
+        self.assertEqual(len(snapshot["representativeSources"]), 9)
+        self.assertTrue(all(len(source["commit"]) == 40 for source in snapshot["representativeSources"]))
+        self.assertFalse(snapshot["snapshotDecision"]["thirdPartyCandidateApproved"])
+        self.assertFalse(snapshot["snapshotDecision"]["residualGapProven"])
+
+    def test_round03_public_discovery_rejects_private_query_drift(self) -> None:
+        path = "registry/round03-public-discovery-snapshot-2026-07-15.json"
+        snapshot = verify_script.load(path)
+        snapshot["queryRounds"][0]["queries"][0]["query"] = "agent skills"
+        self.assert_verify_runtime_error(path, snapshot, "query evidence drifted")
+
+    def test_round03_public_discovery_rejects_premature_candidate_approval(self) -> None:
+        path = "registry/round03-public-discovery-snapshot-2026-07-15.json"
+        snapshot = verify_script.load(path)
+        snapshot["snapshotDecision"]["thirdPartyCandidateApproved"] = True
+        self.assert_verify_runtime_error(path, snapshot, "non-approval decision drifted")
+
+    def test_round03_public_discovery_rejects_unpinned_representative(self) -> None:
+        path = "registry/round03-public-discovery-snapshot-2026-07-15.json"
+        snapshot = verify_script.load(path)
+        snapshot["representativeSources"][2]["commit"] = "main"
+        self.assert_verify_runtime_error(path, snapshot, "representative source drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")

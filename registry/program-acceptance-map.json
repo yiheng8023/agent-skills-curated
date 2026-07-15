@@ -142,17 +142,20 @@
       "evidenceIds": [
         "evidence.round03-rebaseline",
         "evidence.round03-demand-coordinate-source-contract",
+        "evidence.round03-demand-records-batch-01",
         "evidence.verify-script"
       ]
     },
     {
       "id": "acceptance.native-runtime-baseline",
       "statement": "Every surveyed demand area has a dated native, official, runtime, installed, and already-authorized baseline scoped by host, model, reasoning, loader, permissions, and workspace.",
-      "assessment": "planned",
+      "assessment": "partial",
       "verificationIds": [
         "verification.native-runtime-baseline"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-native-runtime-baseline"
+      ]
     },
     {
       "id": "acceptance.discovery-clustering-stop-rule",
@@ -163,6 +166,7 @@
       ],
       "evidenceIds": [
         "evidence.discovery-profile",
+        "evidence.round03-public-discovery-snapshot",
         "evidence.completeness-audit"
       ]
     },
@@ -754,6 +758,33 @@
         "acceptance.demand-coordinate-contract",
         "acceptance.round03-rebaseline",
         "acceptance.sequence-integrity"
+      ]
+    },
+    {
+      "id": "evidence.round03-demand-records-batch-01",
+      "path": "registry/round03-demand-records-batch-01.json",
+      "kind": "verified-read-only-demand-batch",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.demand-coordinate-contract"
+      ]
+    },
+    {
+      "id": "evidence.round03-native-runtime-baseline",
+      "path": "registry/round03-native-runtime-baseline-2026-07-15.json",
+      "kind": "verified-dated-local-metadata-baseline",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.native-runtime-baseline"
+      ]
+    },
+    {
+      "id": "evidence.round03-public-discovery-snapshot",
+      "path": "registry/round03-public-discovery-snapshot-2026-07-15.json",
+      "kind": "verified-public-metadata-snapshot",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.discovery-clustering-stop-rule"
       ]
     },
     {

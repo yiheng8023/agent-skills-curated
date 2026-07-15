@@ -92,6 +92,9 @@ REQUIRED_FILES = (
     "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
     "registry/round03-capability-survey-rebaseline.json",
     "registry/round03-demand-coordinate-source-contract.json",
+    "registry/round03-demand-records-batch-01.json",
+    "registry/round03-native-runtime-baseline-2026-07-15.json",
+    "registry/round03-public-discovery-snapshot-2026-07-15.json",
     "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -159,6 +162,12 @@ REQUIRED_FILES = (
     "docs/round03-capability-survey-rebaseline.zh-CN.md",
     "docs/round03-demand-coordinate-source-contract.md",
     "docs/round03-demand-coordinate-source-contract.zh-CN.md",
+    "docs/round03-demand-records-batch-01.md",
+    "docs/round03-demand-records-batch-01.zh-CN.md",
+    "docs/round03-native-runtime-baseline-2026-07-15.md",
+    "docs/round03-native-runtime-baseline-2026-07-15.zh-CN.md",
+    "docs/round03-public-discovery-snapshot-2026-07-15.md",
+    "docs/round03-public-discovery-snapshot-2026-07-15.zh-CN.md",
     "docs/round03-capability-survey-rebaseline-acceptance.md",
     "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
@@ -243,6 +252,9 @@ def verify() -> None:
     round02_stage_closeout_acceptance_event_doc = load("registry/round02-stage-closeout-acceptance-event-2026-07-15.json")
     round03_capability_survey_rebaseline_doc = load("registry/round03-capability-survey-rebaseline.json")
     round03_demand_coordinate_source_contract_doc = load("registry/round03-demand-coordinate-source-contract.json")
+    round03_demand_records_batch_01_doc = load("registry/round03-demand-records-batch-01.json")
+    round03_native_runtime_baseline_doc = load("registry/round03-native-runtime-baseline-2026-07-15.json")
+    round03_public_discovery_snapshot_doc = load("registry/round03-public-discovery-snapshot-2026-07-15.json")
     round03_capability_survey_rebaseline_acceptance_event_doc = load("registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -397,6 +409,26 @@ def verify() -> None:
         round03_demand_coordinate_source_contract_doc,
         curation_expansion_rounds_doc,
         curation_program_plan_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_demand_records_batch_01(
+        round03_demand_records_batch_01_doc,
+        round03_demand_coordinate_source_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_native_runtime_baseline(
+        round03_native_runtime_baseline_doc,
+        round03_demand_records_batch_01_doc,
+        round03_demand_coordinate_source_contract_doc,
+        curation_expansion_rounds_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_public_discovery_snapshot(
+        round03_public_discovery_snapshot_doc,
+        round03_native_runtime_baseline_doc,
+        curation_expansion_rounds_doc,
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
     )
@@ -5735,7 +5767,7 @@ def validate_round03_demand_coordinate_source_contract(
         "date": "2026-07-15",
         "status": "verified-input-contract",
         "roundId": "round-03-adaptation-and-curated-admission",
-        "nextGate": "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery",
+        "nextGate": "bounded public metadata discovery for the baseline-eligible demand records",
     }
     for key, expected in expected_scalars.items():
         if document.get(key) != expected:
@@ -5886,7 +5918,9 @@ def validate_round03_demand_coordinate_source_contract(
     expected_readiness = {
         "sourceIdentityVerified": True,
         "inputContractVerified": True,
+        "firstGovernedDemandBatchVerified": True,
         "demandRecordExtractionComplete": False,
+        "datedNativeRuntimeBaselineVerified": True,
         "ownerReviewRequired": False,
         "round03ExecutionActivated": True,
         "externalDiscoveryAuthorized": True,
@@ -5896,6 +5930,10 @@ def validate_round03_demand_coordinate_source_contract(
     acceptance_event_path = "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
     if document.get("activationEvidence") != acceptance_event_path:
         raise RuntimeError("Round 03 demand-coordinate activation evidence drifted.")
+    if document.get("demandRecordBatches") != ["registry/round03-demand-records-batch-01.json"]:
+        raise RuntimeError("Round 03 demand-coordinate batch linkage drifted.")
+    if document.get("nativeRuntimeBaselines") != ["registry/round03-native-runtime-baseline-2026-07-15.json"]:
+        raise RuntimeError("Round 03 native/runtime baseline linkage drifted.")
 
     round03 = next(
         item
@@ -5928,6 +5966,7 @@ def validate_round03_demand_coordinate_source_contract(
     expected_evidence = {
         "evidence.round03-rebaseline",
         "evidence.round03-demand-coordinate-source-contract",
+        "evidence.round03-demand-records-batch-01",
         "evidence.verify-script",
     }
     if set(criterion.get("evidenceIds", [])) != expected_evidence:
@@ -5948,6 +5987,7 @@ def validate_round03_demand_coordinate_source_contract(
             "does not prove recurrence",
             "no Hook is the default",
             "activated Round 03",
+            "first governed demand-record batch",
         ],
         "docs/round03-demand-coordinate-source-contract.zh-CN.md": [
             "按来源身份",
@@ -5955,6 +5995,7 @@ def validate_round03_demand_coordinate_source_contract(
             "不能证明问题反复发生",
             "默认不使用 Hook",
             "激活 Round 03",
+            "第一批受治理需求记录",
         ],
     }
     if set(document.get("evidenceDocs", [])) != set(expected_docs):
@@ -5965,6 +6006,459 @@ def validate_round03_demand_coordinate_source_contract(
         for phrase in phrases:
             if phrase not in normalized_text:
                 raise RuntimeError(f"Round 03 demand-coordinate doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_demand_records_batch_01(
+    document: dict[str, object],
+    source_contract: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-demand-records-batch-01-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-read-only-demand-batch",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "sourceContract": "registry/round03-demand-coordinate-source-contract.json",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 demand-record batch {key} drifted.")
+    if document.get("roundId") != source_contract.get("roundId"):
+        raise RuntimeError("Round 03 demand-record batch round linkage drifted.")
+    if "registry/round03-demand-records-batch-01.json" not in source_contract.get("demandRecordBatches", []):
+        raise RuntimeError("Round 03 demand-record source linkage drifted.")
+
+    scope = document.get("scope", {})
+    expected_scope = {
+        "recordCount": 4,
+        "coordinateSelectionMode": "source-selected-discriminating-lanes-not-exhaustive-coordinate-enumeration",
+        "sourceLaneIds": ["EL-01", "EL-02", "EL-03", "EL-04"],
+        "sourceIds": [
+            "demand-source.evidence-ledger",
+            "demand-source.two-layer-taxonomy",
+            "demand-source.problem-owner-gap-matrix",
+        ],
+        "researchBodyCopied": False,
+        "demandExtractionComplete": False,
+        "nativeRuntimeBaselineRequiredBeforeDiscovery": True,
+    }
+    if scope != expected_scope:
+        raise RuntimeError("Round 03 demand-record batch scope drifted.")
+
+    expected_records = {
+        "EL-01": ("round03-demand.el-01-transition-continuity", {"SG-02", "SG-07"}),
+        "EL-02": ("round03-demand.el-02-routing-portability-cost", {"SG-04", "SG-09", "SG-12"}),
+        "EL-03": ("round03-demand.el-03-evidence-human-review", {"SG-06", "SG-08"}),
+        "EL-04": ("round03-demand.el-04-projection-governance", {"SG-11"}),
+    }
+    records = {
+        item.get("sourceLaneId"): item
+        for item in document.get("records", [])
+        if isinstance(item, dict)
+    }
+    if len(document.get("records", [])) != 4 or set(records) != set(expected_records):
+        raise RuntimeError("Round 03 demand-record lane set drifted.")
+    all_claims: set[str] = set()
+    for lane_id, (record_id, expected_sg) in expected_records.items():
+        record = records[lane_id]
+        if record.get("id") != record_id or not record.get("title") or not record.get("demand"):
+            raise RuntimeError(f"Round 03 demand record identity drifted: {lane_id}")
+        coordinates = record.get("coordinateIds", {})
+        if set(coordinates) != {"SG", "P", "STM"} or set(coordinates.get("SG", [])) != expected_sg:
+            raise RuntimeError(f"Round 03 demand record SG mapping drifted: {lane_id}")
+        for family, pattern in [("SG", r"SG-(0[1-9]|1[0-2])"), ("P", r"P([1-9]|1[0-9]|2[0-4])"), ("STM", r"STM-(0[1-9]|1[0-9]|2[0-6])")]:
+            values = coordinates.get(family, [])
+            if not values or len(values) != len(set(values)) or any(re.fullmatch(pattern, value) is None for value in values):
+                raise RuntimeError(f"Round 03 demand record coordinate mapping invalid: {lane_id}/{family}")
+        claim_ids = record.get("evidenceClaimIds", [])
+        if not claim_ids or any(re.fullmatch(r"CLM-(00[1-9]|0[1-4][0-9]|05[0-2])", value) is None for value in claim_ids):
+            raise RuntimeError(f"Round 03 demand record evidence claims invalid: {lane_id}")
+        all_claims.update(claim_ids)
+        evidence_state = record.get("evidenceState", {})
+        if set(evidence_state) != {"verificationStates", "adoptionStates", "applicability"} or any(
+            not evidence_state.get(key) for key in evidence_state
+        ):
+            raise RuntimeError(f"Round 03 demand record evidence state incomplete: {lane_id}")
+        vocabulary = source_contract.get("evidenceVocabulary", {})
+        expected_vocabularies = {
+            "verificationStates": set(vocabulary.get("verificationState", [])),
+            "adoptionStates": set(vocabulary.get("adoptionState", [])),
+            "applicability": set(vocabulary.get("applicability", [])),
+        }
+        for field, allowed_values in expected_vocabularies.items():
+            if not set(evidence_state.get(field, [])).issubset(allowed_values):
+                raise RuntimeError(f"Round 03 demand record evidence vocabulary drifted: {lane_id}/{field}")
+        for field in ["uncertainty", "heldClaims", "affectedSubjects", "recheckTriggers"]:
+            if len(record.get(field, [])) < 2:
+                raise RuntimeError(f"Round 03 demand record {field} incomplete: {lane_id}")
+        expected_route = (
+            ("baseline-recorded-human-authority-route", False)
+            if lane_id == "EL-03"
+            else ("baseline-recorded-discovery-question-bound", True)
+        )
+        if (
+            record.get("surveyState") != expected_route[0]
+            or record.get("residualGapState") != "not-assessed"
+            or record.get("candidateDiscoveryEligible") is not expected_route[1]
+        ):
+            raise RuntimeError(f"Round 03 demand record gate drifted: {lane_id}")
+    for required_claim in ["CLM-003", "CLM-044", "CLM-051", "CLM-001", "CLM-009", "CLM-005", "CLM-039"]:
+        if required_claim not in all_claims:
+            raise RuntimeError(f"Round 03 demand-record evidence coverage missing: {required_claim}")
+
+    expected_decision = {
+        "demandCoordinatesBound": True,
+        "coordinateCorpusExhaustivelyEnumerated": False,
+        "nativeRuntimeBaselineComplete": True,
+        "publicCandidateDiscoveryMayStart": True,
+        "candidateExecutionAuthorized": False,
+        "skillOrHookCreationAuthorized": False,
+        "standardPromotionAuthorized": False,
+        "nextGate": "bounded public metadata discovery for EL-01, EL-02, and EL-04; EL-03 remains on the human/domain-authority path",
+    }
+    if document.get("batchDecision") != expected_decision:
+        raise RuntimeError("Round 03 demand-record batch decision drifted.")
+    if len(document.get("verificationSurface", [])) != 5:
+        raise RuntimeError("Round 03 demand-record verification surface drifted.")
+
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_doc.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    evidence_record = evidence.get("evidence.round03-demand-records-batch-01", {})
+    if (
+        evidence_record.get("path") != "registry/round03-demand-records-batch-01.json"
+        or evidence_record.get("kind") != "verified-read-only-demand-batch"
+        or evidence_record.get("supports") != ["acceptance.demand-coordinate-contract"]
+    ):
+        raise RuntimeError("Round 03 demand-record acceptance evidence drifted.")
+
+    expected_docs = {
+        "docs/round03-demand-records-batch-01.md": [
+            "four discriminating evidence lanes",
+            "not complete",
+            "Bounded public metadata discovery is eligible only",
+            "does not authorize candidate execution",
+        ],
+        "docs/round03-demand-records-batch-01.zh-CN.md": [
+            "4 条“可区分根因的证据通道”",
+            "尚未完成",
+            "只有 `EL-01`、`EL-02`、`EL-04` 具备",
+            "不授权执行候选",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 demand-record evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 demand-record doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_native_runtime_baseline(
+    document: dict[str, object],
+    demand_batch: dict[str, object],
+    source_contract: dict[str, object],
+    rounds_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-native-runtime-baseline-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-dated-local-metadata-baseline",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "demandBatch": "registry/round03-demand-records-batch-01.json",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 native/runtime baseline {key} drifted.")
+    if document.get("roundId") != demand_batch.get("roundId") or document.get("roundId") != source_contract.get("roundId"):
+        raise RuntimeError("Round 03 native/runtime baseline round linkage drifted.")
+    if document.get("demandBatch") not in source_contract.get("demandRecordBatches", []):
+        raise RuntimeError("Round 03 native/runtime baseline demand linkage drifted.")
+
+    scope = document.get("scope", {})
+    expected_scope = {
+        "host": "OpenAI Codex desktop on Windows",
+        "cliVersionObserved": "codex-cli 0.144.4",
+        "desktopPackagePathVersionObserved": "26.707.9981.0",
+        "modelIdentity": "runtime-declared GPT-5 family; exact model build not exposed to this repository baseline",
+        "reasoningLevel": "not observable from the local metadata probes",
+        "loader": "current Codex session exposes Skill metadata and loads selected Skill bodies; this artifact does not claim deterministic implicit activation",
+        "permissions": "workspace write limited to the bound repository and temporary workspace; local capability inspection was read-only",
+        "workspace": "C:/Projects/agent-skills-curated",
+        "accountBoundary": "no account connection, OAuth, credential read, private remote, or external write",
+        "crossHostClaim": False,
+    }
+    if scope != expected_scope:
+        raise RuntimeError("Round 03 native/runtime baseline scope drifted.")
+
+    observations = document.get("observations", {})
+    expected_roots = {
+        "C:/Users/15521/.codex/skills": 8,
+        "C:/Users/15521/.agents/skills": 30,
+        "C:/Users/15521/.cc-switch/skills": 73,
+        "C:/Users/15521/.codex/plugins/cache": 311,
+    }
+    roots = {item.get("path"): item.get("skillFileCount") for item in observations.get("skillRoots", [])}
+    if roots != expected_roots:
+        raise RuntimeError("Round 03 native/runtime Skill-root snapshot drifted.")
+    name_surface = observations.get("skillNameSurface", {})
+    if (
+        name_surface.get("skillFileCount") != 422
+        or name_surface.get("uniqueDirectoryNameCount") != 326
+        or name_surface.get("duplicateDirectoryNameGroupCount") != 87
+        or name_surface.get("maximumObservedCopiesForOneDirectoryName") != 3
+        or "does not prove" not in str(name_surface.get("interpretation", ""))
+    ):
+        raise RuntimeError("Round 03 native/runtime Skill-name surface drifted.")
+    expected_contracts = {
+        "intent-contract": (29139, "1d67e4b84856bcd0828d89b82803a7275d95d8e586fd8efcd127f89e82845753"),
+        "capability-router": (22018, "eb9f7d253d12682a3e8b9f87faf5bad4284a2d268b25c30cc5ad9f6dd36eb8fe"),
+        "closure-contract": (12187, "59edfc131c45b7aa1ef85a1737317a0cc97adcfb0ddceb7ee81e9c744b13bbb3"),
+    }
+    pairs = {item.get("id"): item for item in observations.get("contractSkillPairs", [])}
+    if set(pairs) != set(expected_contracts):
+        raise RuntimeError("Round 03 native/runtime contract-Skill pair set drifted.")
+    for skill_id, (size, digest) in expected_contracts.items():
+        pair = pairs[skill_id]
+        if pair.get("bytesEach") != size or pair.get("sha256Each") != digest or pair.get("identicalAtObservation") is not True or len(pair.get("paths", [])) != 2:
+            raise RuntimeError(f"Round 03 native/runtime contract-Skill identity drifted: {skill_id}")
+    hook = observations.get("hookMetadata", {})
+    if (
+        hook.get("candidatePolicyId") != "capability-ecosystem-recall"
+        or hook.get("declaredMode") != "auto"
+        or hook.get("filePresenceProvesActivation") is not False
+        or hook.get("effectiveActivationObserved") != "not-checked"
+        or hook.get("behaviorProbeRun") is not False
+    ):
+        raise RuntimeError("Round 03 native/runtime Hook metadata boundary drifted.")
+    posture = observations.get("repositoryPosture", {})
+    if posture.get("branch") != "main" or posture.get("head") != "603ac684ecdac70efc1467bdffb95676ebfeee3a" or posture.get("dirtyAtObservation") is not False or posture.get("remotePushAuthorized") is not False:
+        raise RuntimeError("Round 03 native/runtime repository posture drifted.")
+
+    demand_records = {item.get("id"): item for item in demand_batch.get("records", [])}
+    baselines = {item.get("demandRecordId"): item for item in document.get("demandBaselines", [])}
+    if len(document.get("demandBaselines", [])) != 4 or set(baselines) != set(demand_records):
+        raise RuntimeError("Round 03 native/runtime demand coverage drifted.")
+    eligible = {
+        "round03-demand.el-01-transition-continuity",
+        "round03-demand.el-02-routing-portability-cost",
+        "round03-demand.el-04-projection-governance",
+    }
+    for demand_id, baseline in baselines.items():
+        expected_eligible = demand_id in eligible
+        if (
+            not baseline.get("currentPaths")
+            or not baseline.get("observedSupport")
+            or not baseline.get("insufficiency")
+            or not baseline.get("gapClass")
+            or baseline.get("publicMetadataDiscoveryEligible") is not expected_eligible
+            or baseline.get("residualGapState") != "not-assessed"
+        ):
+            raise RuntimeError(f"Round 03 native/runtime demand baseline incomplete: {demand_id}")
+        if expected_eligible != bool(baseline.get("externalMetadataQuestion")):
+            raise RuntimeError(f"Round 03 native/runtime discovery question drifted: {demand_id}")
+        if demand_records[demand_id].get("candidateDiscoveryEligible") is not expected_eligible:
+            raise RuntimeError(f"Round 03 native/runtime demand eligibility mismatch: {demand_id}")
+
+    expected_decision = {
+        "baselineRecordedForEveryDemandRecord": True,
+        "currentCapabilityInsufficiencyBoundForEligibleDiscovery": True,
+        "eligibleDemandRecordIds": sorted(eligible),
+        "excludedDemandRecordIds": ["round03-demand.el-03-evidence-human-review"],
+        "boundedPublicMetadataDiscoveryMayStart": True,
+        "behavioralCoverageProven": False,
+        "residualGapProven": False,
+        "candidateExecutionAuthorized": False,
+        "hookEnablementAuthorized": False,
+        "standardPromotionAuthorized": False,
+        "nextGate": "bounded public metadata discovery, clustering, and source-pinned non-executing representative review for the three eligible demand records",
+    }
+    decision = document.get("baselineDecision", {})
+    if {**decision, "eligibleDemandRecordIds": sorted(decision.get("eligibleDemandRecordIds", []))} != expected_decision:
+        raise RuntimeError("Round 03 native/runtime baseline decision drifted.")
+    if len(document.get("limitations", [])) != 5 or len(document.get("recheckTriggers", [])) != 5:
+        raise RuntimeError("Round 03 native/runtime limitations or recheck triggers drifted.")
+
+    baseline_path = "registry/round03-native-runtime-baseline-2026-07-15.json"
+    round03 = next(item for item in rounds_doc.get("rounds", []) if isinstance(item, dict) and item.get("id") == document.get("roundId"))
+    if baseline_path not in round03.get("evidence", []) or demand_batch.get("id") is None:
+        raise RuntimeError("Round 03 registry must link the native/runtime baseline.")
+    if baseline_path not in lifecycle_doc.get("currentApplication", {}).get("evidence", []):
+        raise RuntimeError("Round 03 lifecycle must link the native/runtime baseline.")
+    evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
+    evidence_record = evidence.get("evidence.round03-native-runtime-baseline", {})
+    if evidence_record.get("path") != baseline_path or evidence_record.get("kind") != "verified-dated-local-metadata-baseline":
+        raise RuntimeError("Round 03 native/runtime acceptance evidence drifted.")
+    criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    criterion = criteria.get("acceptance.native-runtime-baseline", {})
+    if criterion.get("assessment") != "partial" or criterion.get("evidenceIds") != ["evidence.round03-native-runtime-baseline"]:
+        raise RuntimeError("Round 03 native/runtime acceptance mapping drifted.")
+
+    expected_docs = {
+        "docs/round03-native-runtime-baseline-2026-07-15.md": ["422", "87 duplicate-name groups", "file presence does not prove activation", "EL-03", "neither behavioral coverage nor a residual gap"],
+        "docs/round03-native-runtime-baseline-2026-07-15.zh-CN.md": ["422", "87 组重名", "文件存在不能证明已激活", "EL-03", "既不证明行为覆盖，也不证明残余缺口"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 native/runtime evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 native/runtime doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_public_discovery_snapshot(
+    document: dict[str, object],
+    baseline_doc: dict[str, object],
+    rounds_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-public-discovery-snapshot-2026-07-15",
+        "observedAt": "2026-07-15T06:10:09.8213981Z",
+        "status": "verified-public-metadata-snapshot",
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "baseline": "registry/round03-native-runtime-baseline-2026-07-15.json",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 public discovery snapshot {key} drifted.")
+    if document.get("roundId") != baseline_doc.get("roundId"):
+        raise RuntimeError("Round 03 public discovery baseline linkage drifted.")
+    expected_boundary = {
+        "githubVisibility": "public-only",
+        "queriesRequire": "is:public",
+        "privateRepositoryMetadataAllowed": False,
+        "credentialsOrAccountDataRecorded": False,
+        "sourceBodiesVendored": False,
+        "candidateCodeExecuted": False,
+        "candidateInstalledOrConnected": False,
+        "externalWritePerformed": False,
+    }
+    if document.get("dataBoundary") != expected_boundary:
+        raise RuntimeError("Round 03 public discovery data boundary drifted.")
+
+    expected_queries = {
+        "broad-public-agent-skills": ("agent skills is:public", 86559),
+        "el01-state-handoff": ("agent skills handoff state continuation is:public", 1),
+        "el02-manager-registry": ("agent skills manager registry is:public", 26),
+        "el04-provenance-lifecycle": ("agent skills provenance lifecycle registry is:public", 0),
+        "skill-md-public": ("AI agent skills SKILL.md is:public", 549),
+        "awesome-public": ("awesome agent skills is:public", 636),
+        "el04-lockfile": ("agent skill lockfile is:public", 19),
+        "el04-supply-chain": ("agent skill supply chain is:public", 110),
+        "el04-sync-governance": ("agent skill sync governance is:public", 11),
+    }
+    queries = {}
+    for query_round in document.get("queryRounds", []):
+        for query in query_round.get("queries", []):
+            queries[query.get("id")] = query
+    if set(queries) != set(expected_queries):
+        raise RuntimeError("Round 03 public discovery query set drifted.")
+    for query_id, (query_text, total_count) in expected_queries.items():
+        query = queries[query_id]
+        if query.get("query") != query_text or query.get("totalCount") != total_count or not query.get("assessment"):
+            raise RuntimeError(f"Round 03 public discovery query evidence drifted: {query_id}")
+        if "is:public" not in query_text:
+            raise RuntimeError(f"Round 03 public discovery query lost public-only boundary: {query_id}")
+    if "not absence evidence" not in queries["el04-provenance-lifecycle"].get("assessment", ""):
+        raise RuntimeError("Round 03 public discovery must reject zero-hit absence inference.")
+
+    expected_clusters = {
+        "cluster.official-external-baselines",
+        "cluster.state-continuity-and-handoff",
+        "cluster.package-management-reproducibility-and-projection",
+        "cluster.validation-security-and-policy",
+        "cluster.index-and-radar",
+    }
+    clusters = {item.get("id"): item for item in document.get("clusters", []) if isinstance(item, dict)}
+    if set(clusters) != expected_clusters:
+        raise RuntimeError("Round 03 public discovery cluster set drifted.")
+    for cluster_id, cluster in clusters.items():
+        if not cluster.get("demandRecordIds") or not cluster.get("role") or not cluster.get("representativeSourceIds") or not cluster.get("boundary"):
+            raise RuntimeError(f"Round 03 public discovery cluster incomplete: {cluster_id}")
+
+    expected_sources = {
+        "github:anthropics/skills": ("9d2f1ae187231d8199c64b5b762e1bdf2244733d", "NOASSERTION", 18, "official-external-baseline"),
+        "github:github/awesome-copilot": ("2c2461a7fa383f664bb75546f03a2c6087f3819d", "MIT", 389, "official-external-baseline"),
+        "github:OthmanAdi/planning-with-files": ("f90780c92f0506d21c5f6c4865ce95517a8b1964", "MIT", 17, "third-party-state-and-continuity-system"),
+        "github:cskwork/handoff-skill": ("7bf202579770b6b0dc94cbeba12fa36f0b2a3929", "MIT", 1, "third-party-handoff-skill"),
+        "github:tankpkg/tank": ("bd0df404e39086194e5e34126daa052d59a5a043", "MIT", 6, "external-skill-package-manager-and-security-baseline"),
+        "github:astra-sh/qvr": ("71783910729031afe6ad1d640728b1534ee4c198", "MIT", 30, "external-lockfile-first-skill-package-manager"),
+        "github:Narwhal-Lab/MagicSkills": ("00f3e8640445b0d91682a670b8ba7cc4465151cb", "MIT", 1, "external-shared-skill-pool-and-projection-tooling"),
+        "github:agent-sh/agnix": ("1a9edf65a9804893429c7444f3f4f69e7a0cdf28", "Apache-2.0", 41, "external-agent-configuration-validator"),
+        "github:VoltAgent/awesome-agent-skills": ("c97eda5e3406670f3285c6bf9eb7639a7ecc03cc", "MIT", 0, "public-skill-index"),
+    }
+    sources = {item.get("id"): item for item in document.get("representativeSources", []) if isinstance(item, dict)}
+    if len(document.get("representativeSources", [])) != 9 or set(sources) != set(expected_sources):
+        raise RuntimeError("Round 03 public discovery representative source set drifted.")
+    for source_id, (commit, license_id, skill_count, source_class) in expected_sources.items():
+        source = sources[source_id]
+        if (
+            source.get("commit") != commit
+            or source.get("licenseMetadata") != license_id
+            or source.get("skillMdCount") != skill_count
+            or source.get("sourceClass") != source_class
+            or source.get("treeTruncated") is not False
+            or source.get("archived") is not False
+            or not source.get("initialDisposition")
+            or not source.get("reviewSignals")
+            or not source.get("reviewRisks")
+        ):
+            raise RuntimeError(f"Round 03 public discovery representative source drifted: {source_id}")
+        if not re.fullmatch(r"[0-9a-f]{40}", source.get("commit", "")):
+            raise RuntimeError(f"Round 03 public discovery source is not commit-pinned: {source_id}")
+    if "no-body-admission" not in sources["github:anthropics/skills"].get("initialDisposition", ""):
+        raise RuntimeError("Round 03 official baseline body boundary drifted.")
+    if sources["github:VoltAgent/awesome-agent-skills"].get("initialDisposition") != "discovery-index-child-sources-only":
+        raise RuntimeError("Round 03 index disposition drifted.")
+
+    saturation = document.get("saturation", {})
+    if saturation.get("queryExpansionStopped") is not True or saturation.get("marginalYield") != "low-for-new-cluster-discovery, still-material-for-child-source-enumeration":
+        raise RuntimeError("Round 03 public discovery saturation state drifted.")
+    if len(saturation.get("remainingUncertainty", [])) != 5 or len(saturation.get("recheckTriggers", [])) != 5:
+        raise RuntimeError("Round 03 public discovery saturation evidence is incomplete.")
+    decision = document.get("snapshotDecision", {})
+    expected_false = ["officialBodiesAdmitted", "thirdPartyCandidateApproved", "candidateExecutionAuthorized", "installationAuthorized", "hookEnablementAuthorized", "residualGapProven", "standardPromotionAuthorized"]
+    if any(decision.get(key) is not False for key in expected_false) or decision.get("nextGate") != "pinned license, security, portability, overlap, and architecture review for the representative sources before alternative comparison":
+        raise RuntimeError("Round 03 public discovery non-approval decision drifted.")
+
+    snapshot_path = "registry/round03-public-discovery-snapshot-2026-07-15.json"
+    round03 = next(item for item in rounds_doc.get("rounds", []) if isinstance(item, dict) and item.get("id") == document.get("roundId"))
+    if snapshot_path not in round03.get("evidence", []):
+        raise RuntimeError("Round 03 registry must link the public discovery snapshot.")
+    application = lifecycle_doc.get("currentApplication", {})
+    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["pinned license, security, portability, overlap, and architecture review for the nine representative public sources"]:
+        raise RuntimeError("Round 03 lifecycle public discovery evidence drifted.")
+    evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
+    evidence_record = evidence.get("evidence.round03-public-discovery-snapshot", {})
+    if evidence_record.get("path") != snapshot_path or evidence_record.get("kind") != "verified-public-metadata-snapshot":
+        raise RuntimeError("Round 03 public discovery acceptance evidence drifted.")
+    criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    criterion = criteria.get("acceptance.discovery-clustering-stop-rule", {})
+    if criterion.get("assessment") != "partial" or "evidence.round03-public-discovery-snapshot" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Round 03 public discovery acceptance mapping drifted.")
+
+    expected_docs = {
+        "docs/round03-public-discovery-snapshot-2026-07-15.md": ["public-only", "five clusters", "zero results", "Nine representative public sources", "No residual gap or Hook need is proven"],
+        "docs/round03-public-discovery-snapshot-2026-07-15.zh-CN.md": ["仅公共", "5 个簇", "返回 0 条", "9 个公共代表源", "残余缺口和 Hook 必要性也都没有成立"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 public discovery evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 public discovery doc missing phrase in {doc_path}: {phrase}")
 
 
 def validate_round03_capability_survey_rebaseline(
@@ -5982,7 +6476,7 @@ def validate_round03_capability_survey_rebaseline(
         "status": "accepted",
         "roundId": "round-03-adaptation-and-curated-admission",
         "initiativeId": "initiative.round03-capability-survey-rebaseline",
-        "nextGate": "verified demand records and native/runtime baseline before public candidate metadata discovery",
+        "nextGate": "bounded public metadata discovery for EL-01, EL-02, and EL-04",
     }
     for key, expected in expected_scalars.items():
         if document.get(key) != expected:
@@ -6130,9 +6624,9 @@ def validate_round03_capability_survey_rebaseline(
     if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
         raise RuntimeError("Round 03 lifecycle must be active and not ready for closeout.")
     if application.get("nextRequiredEvidence") != [
-        "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery"
+        "pinned license, security, portability, overlap, and architecture review for the nine representative public sources"
     ]:
-        raise RuntimeError("Round 03 lifecycle next evidence must preserve demand-before-discovery order.")
+        raise RuntimeError("Round 03 lifecycle next evidence must preserve representative review order.")
 
     criteria = {
         item.get("id"): item
@@ -6305,8 +6799,10 @@ def validate_round03_capability_survey_rebaseline_acceptance_event(
     application = lifecycle_doc.get("currentApplication", {})
     if application.get("phaseState") != expected_state["phaseState"] or event_path not in application.get("evidence", []):
         raise RuntimeError("Round 03 lifecycle activation evidence drifted.")
-    if application.get("nextRequiredEvidence") != [expected_state["nextRequiredEvidence"]]:
-        raise RuntimeError("Round 03 lifecycle demand-before-discovery gate drifted.")
+    if application.get("nextRequiredEvidence") != [
+        "pinned license, security, portability, overlap, and architecture review for the nine representative public sources"
+    ]:
+        raise RuntimeError("Round 03 lifecycle post-discovery review gate drifted.")
 
     criteria = {
         item.get("id"): item

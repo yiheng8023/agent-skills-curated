@@ -107,9 +107,12 @@
         "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
         "registry/round03-capability-survey-rebaseline.json",
         "registry/round03-demand-coordinate-source-contract.json",
+        "registry/round03-demand-records-batch-01.json",
+        "registry/round03-native-runtime-baseline-2026-07-15.json",
+        "registry/round03-public-discovery-snapshot-2026-07-15.json",
         "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
       ],
-      "nextGate": "verified-demand-records-and-native-runtime-baseline"
+      "nextGate": "source-pinned-representative-license-security-portability-overlap-and-architecture-review"
     }
   ],
   "consumerProjectionBoundary": {
