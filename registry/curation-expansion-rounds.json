@@ -76,18 +76,19 @@
     },
     {
       "id": "round-03-adaptation-and-curated-admission",
-      "status": "needs-rebaseline",
+      "status": "active",
       "historicalPlannedGoal": "Adapt approved candidates into neutral, portable, non-duplicative Skill payloads or route them into existing Skills, recipes, references, or rejections.",
       "goal": "Rebaseline Round 03 as an evidence-backed capability survey and residual-gap proof phase before any later adaptation, admission, or repository-authored implementation.",
       "allowedChanges": [
-        "Round 03 plan and acceptance correction",
-        "read-only repository and historical-consensus reconciliation",
-        "data, authority, verification, stop-rule, and result-package design"
+        "governed STM, P, and SG demand-record extraction",
+        "dated native, official, runtime, installed, and already-authorized baseline evidence",
+        "bounded public read-only metadata discovery, clustering, and duplicate suppression",
+        "source-pinned representative review without candidate execution",
+        "alternative comparison, residual-gap adjudication, and reviewed current-repository evidence"
       ],
       "blockedChanges": [
-        "Round 03 discovery execution before owner review",
         "candidate code execution, installation, or account connection",
-        "Skill admission, release-manifest mutation, or repository-authored implementation",
+        "Skill admission, release-manifest or generated-routing mutation, repository-authored implementation, or Hook enablement",
         "local runtime sync, cross-repository write, or remote push"
       ],
       "exitCriteria": [
@@ -97,17 +98,18 @@
         "owner review decides whether bounded read-only discovery may activate"
       ],
       "lifecycle": {
-        "plan": "recorded",
-        "execute": "pending",
+        "plan": "accepted",
+        "execute": "active",
         "acceptance": "pending",
         "stageCloseout": "pending"
       },
       "evidence": [
         "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
         "registry/round03-capability-survey-rebaseline.json",
-        "registry/round03-demand-coordinate-source-contract.json"
+        "registry/round03-demand-coordinate-source-contract.json",
+        "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
       ],
-      "nextGate": "owner-reviewed-round-03-capability-survey-rebaseline"
+      "nextGate": "verified-demand-records-and-native-runtime-baseline"
     }
   ],
   "consumerProjectionBoundary": {

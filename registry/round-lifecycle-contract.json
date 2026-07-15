@@ -146,21 +146,21 @@
   "currentApplication": {
     "roundRegistry": "registry/curation-expansion-rounds.json",
     "currentRound": "round-03-adaptation-and-curated-admission",
-    "phaseState": "plan_rebaseline_pending",
+    "phaseState": "execute_active",
     "stageCloseout": "not_ready",
     "evidence": [
       "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
       "registry/round03-capability-survey-rebaseline.json",
-      "registry/round03-demand-coordinate-source-contract.json"
+      "registry/round03-demand-coordinate-source-contract.json",
+      "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
     ],
     "deferredActions": [
-      "activating Round 03 discovery before owner-reviewed rebaseline acceptance",
       "executing, installing, or connecting an external candidate",
       "claiming current live runtime parity",
       "Skill admission, runtime mutation, cross-repository delivery, or global completion claims"
     ],
     "nextRequiredEvidence": [
-      "owner-reviewed Round 03 capability-survey rebaseline decision event"
+      "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery"
     ]
   }
 }

@@ -1,8 +1,10 @@
-# Round 03 Capability-Survey Rebaseline — Owner Review Required
+# Round 03 Capability-Survey Rebaseline — Accepted
 
 Date: 2026-07-15
 
-Round 03 remains inactive. Its former adaptation-and-admission plan overlaps
+The owner accepted this rebaseline through
+`registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json`.
+Round 03 is active for the bounded read-only capability survey. Its former adaptation-and-admission plan overlaps
 work already completed through separately approved Round 02 follow-on gates.
 This proposal replaces that immediate execution direction with an evidence-first
 capability survey and residual-gap proof phase.
@@ -60,4 +62,5 @@ recommendations for the three experimental collaboration Skills and Hooks;
 discovery stopping and refresh evidence; and an explicit non-authorization
 statement.
 
-Owner review is required before this plan can activate Round 03 discovery.
+Owner review is satisfied. Demand records and a dated native/runtime baseline
+must be verified before public candidate metadata discovery begins.

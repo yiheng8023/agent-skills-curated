@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "round03-capability-survey-rebaseline-2026-07-15",
   "date": "2026-07-15",
-  "status": "owner_review_required",
+  "status": "accepted",
   "roundId": "round-03-adaptation-and-curated-admission",
   "initiativeId": "initiative.round03-capability-survey-rebaseline",
   "trigger": "Round 02 closeout accepted with a finding that the old Round 03 contract overlaps already completed adaptation and admission work.",
@@ -135,17 +135,18 @@
     "no blocked side effect appears in the Git diff or external state"
   ],
   "activationGate": {
-    "ownerReviewRequired": true,
-    "executionActivated": false,
+    "ownerReviewRequired": false,
+    "executionActivated": true,
     "externalDiscoveryAuthorizedByThisRecord": false,
     "candidateExecutionAuthorized": false,
     "runtimeMutationAuthorized": false,
     "crossRepositoryWriteAuthorized": false,
     "remotePushAuthorized": false
   },
+  "acceptanceEvent": "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
   "evidenceDocs": [
     "docs/round03-capability-survey-rebaseline.md",
     "docs/round03-capability-survey-rebaseline.zh-CN.md"
   ],
-  "nextGate": "owner-reviewed Round 03 capability-survey rebaseline"
+  "nextGate": "verified demand records and native/runtime baseline before public candidate metadata discovery"
 }

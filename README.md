@@ -60,8 +60,10 @@ cross-cutting, and standards extraction is conditional on repeated evidence.
 Upstream radar may discover broadly, while this repository requires bounded
 demand, baseline, an exact source pin, review, and acceptance before a signal
 can affect a curated decision. Program control and Round 02 closeout both have
-explicit owner acceptance events. Round 02 is closed; Round 03 remains inactive
-and the current initiative is its capability-survey rebaseline review.
+explicit owner acceptance events. Round 02 is closed; the Round 03
+capability-survey rebaseline is accepted and the bounded read-only survey is
+active behind its demand-and-baseline sequence gate. The current initiative is
+the capability survey and residual-gap proof phase.
 
 Reliability is layered rather than text-only: instructions and rules may route
 to Skills and Recipes; deterministic scripts, schemas, and validators cover
@@ -327,11 +329,13 @@ consumer must probe its currently visible, authorized capability inventory.
   Round-02 `complete` outcome, with residual risks and non-authorizations kept
   explicit.
 - `docs/round03-capability-survey-rebaseline.md`: proposed evidence-first
-  capability-survey replacement for the overlapping old Round-03 plan; owner
-  review is required before discovery execution.
+  capability-survey replacement for the overlapping old Round-03 plan; now
+  accepted for bounded read-only execution.
+- `docs/round03-capability-survey-rebaseline-acceptance.md`: owner activation
+  event projection and its explicit research/non-authorization boundary.
 - `docs/round03-demand-coordinate-source-contract.md`: source-pinned STM/P/SG
   input, evidence-state, and promotion-firewall contract; it copies no external
-  research body and authorizes no discovery.
+  research body and does not itself authorize discovery.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,

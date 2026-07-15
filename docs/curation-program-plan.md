@@ -169,20 +169,21 @@ accepted the requirement-by-requirement Round 02 review with bounded outcome
 `registry/round02-stage-closeout-acceptance-event-2026-07-15.json`. Round 02 is
 closed, while its disclosed residual risks and deferred work remain active.
 
-Round 03 remains inactive and is marked `needs-rebaseline`. Its former planned
+Round 03 rebaseline has been owner-accepted and the round is active for the
+bounded read-only capability survey. Its former planned
 adaptation-and-admission contract overlaps work already completed through
 separately approved Round 02 follow-on gates. The machine-bound current
 initiative is `initiative.round03-capability-survey-rebaseline`, and its review
-package is `registry/round03-capability-survey-rebaseline.json`. The next gate
-is owner review of that rebaseline before any external discovery execution.
+package is `registry/round03-capability-survey-rebaseline.json`, and the decision
+is recorded in
+`registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json`.
 Its demand inputs are pinned separately by
 `registry/round03-demand-coordinate-source-contract.json`; the source contract
 does not activate discovery or promote the consumer research into a standard.
 
-The capability-survey and residual-gap initiative remains planned behind the
-Round 03 rebaseline gate. Plan and acceptance design may proceed, but external
-discovery execution remains blocked until the rebaseline is accepted. The
-survey must produce all ten declared result components before any adoption,
+The capability-survey and residual-gap initiative is active. Demand records and
+a dated native/runtime baseline must be verified before bounded public candidate
+metadata discovery begins. The survey must produce all ten declared result components before any adoption,
 adaptation, repository authoring, or standards-extraction decision.
 
 ## Verification And Closeout

@@ -5,7 +5,7 @@
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
   "currentState": "closed",
-  "currentInitiativeId": "initiative.round03-capability-survey-rebaseline",
+  "currentInitiativeId": "initiative.capability-survey-gap-proof",
   "stageCloseoutTarget": "program-06-local-runtime-alignment-closeout",
   "acceptanceMap": "registry/program-acceptance-map.json",
   "controlledSurfaces": [
@@ -265,21 +265,22 @@
     },
     {
       "id": "initiative.round03-capability-survey-rebaseline",
-      "status": "needs-owner-review",
+      "status": "accepted",
       "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout accepted", "current capability-survey handoff and repository truth reconciled"],
       "allowedActions": ["Round 03 plan and acceptance correction", "read-only repository reconciliation", "owner decision preparation"],
       "blockedActions": ["Round 03 execution activation", "external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery", "remote push"],
       "resultPackage": ["rebaselined Round 03 goal and non-goals", "source-pinned demand-coordinate input contract", "dependency-graph execution semantics", "data and authority boundaries", "ten-part capability-survey result contract", "verification and stop rules", "owner activation decision"],
       "acceptanceIds": ["acceptance.round03-rebaseline", "acceptance.sequence-integrity", "acceptance.capability-survey-result-package"],
       "decisionGate": "owner-reviewed Round 03 capability-survey rebaseline before external discovery activation",
-      "decisionPreparation": "registry/round03-capability-survey-rebaseline.json"
+      "decisionPreparation": "registry/round03-capability-survey-rebaseline.json",
+      "decisionEvidence": "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
     },
     {
       "id": "initiative.capability-survey-gap-proof",
-      "status": "planned",
+      "status": "active",
       "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "Round 03 capability-survey rebaseline accepted", "capability-survey plan and acceptance contract verified"],
-      "allowedActions": ["plan and acceptance design", "read-only repository reconciliation"],
-      "blockedActions": ["external discovery execution", "candidate code execution", "Skill admission or repository-authored implementation", "runtime mutation", "cross-repository delivery"],
+      "allowedActions": ["governed demand-record extraction", "dated native, official, runtime, installed, and already-authorized baseline evidence", "bounded public read-only metadata discovery", "clustering and duplicate suppression", "source-pinned representative review without candidate execution", "alternative comparison and residual-gap adjudication", "reviewed evidence writes inside agent-skills-curated"],
+      "blockedActions": ["candidate code execution", "installation or account connection", "Skill admission or repository-authored implementation", "Hook enablement", "release-manifest or generated-routing mutation", "runtime mutation", "cross-repository delivery", "remote push"],
       "resultPackage": [
         "dated native Agent and runtime capability baseline",
         "clustered and deduplicated candidate Skills inventory",

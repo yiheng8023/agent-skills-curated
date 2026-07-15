@@ -92,6 +92,7 @@ REQUIRED_FILES = (
     "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
     "registry/round03-capability-survey-rebaseline.json",
     "registry/round03-demand-coordinate-source-contract.json",
+    "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
     "registry/mvp-transition-gates.json",
@@ -158,6 +159,8 @@ REQUIRED_FILES = (
     "docs/round03-capability-survey-rebaseline.zh-CN.md",
     "docs/round03-demand-coordinate-source-contract.md",
     "docs/round03-demand-coordinate-source-contract.zh-CN.md",
+    "docs/round03-capability-survey-rebaseline-acceptance.md",
+    "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
     "docs/mvp-candidate-review-2026-06-27.md",
     "docs/mvp02-adaptation-transition-gate.md",
@@ -240,6 +243,7 @@ def verify() -> None:
     round02_stage_closeout_acceptance_event_doc = load("registry/round02-stage-closeout-acceptance-event-2026-07-15.json")
     round03_capability_survey_rebaseline_doc = load("registry/round03-capability-survey-rebaseline.json")
     round03_demand_coordinate_source_contract_doc = load("registry/round03-demand-coordinate-source-contract.json")
+    round03_capability_survey_rebaseline_acceptance_event_doc = load("registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
     scenarios_doc = load("registry/scenarios.json")
@@ -397,6 +401,15 @@ def verify() -> None:
         program_acceptance_map_doc,
     )
     validate_round03_capability_survey_rebaseline(
+        round03_capability_survey_rebaseline_doc,
+        round03_demand_coordinate_source_contract_doc,
+        curation_expansion_rounds_doc,
+        curation_program_plan_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_capability_survey_rebaseline_acceptance_event(
+        round03_capability_survey_rebaseline_acceptance_event_doc,
         round03_capability_survey_rebaseline_doc,
         round03_demand_coordinate_source_contract_doc,
         curation_expansion_rounds_doc,
@@ -1121,7 +1134,7 @@ def validate_curation_expansion_rounds(
             raise RuntimeError(f"Curation expansion round lifecycle is required: {round_id}")
         if set(lifecycle) != {"plan", "execute", "acceptance", "stageCloseout"}:
             raise RuntimeError(f"Curation expansion round lifecycle keys drifted: {round_id}")
-        allowed_lifecycle_values = {"planned", "recorded", "pending", "active", "passed", "closed"}
+        allowed_lifecycle_values = {"planned", "recorded", "accepted", "pending", "active", "passed", "closed"}
         if not set(lifecycle.values()).issubset(allowed_lifecycle_values):
             raise RuntimeError(f"Curation expansion round lifecycle value invalid: {round_id}")
         if item.get("status") == "closed":
@@ -1134,8 +1147,8 @@ def validate_curation_expansion_rounds(
             if lifecycle != expected:
                 raise RuntimeError(f"Closed curation round lifecycle mismatch: {round_id}")
         elif item.get("status") == "active":
-            if lifecycle.get("plan") != "recorded" or lifecycle.get("execute") != "active":
-                raise RuntimeError(f"Active curation round must have recorded plan and active execution: {round_id}")
+            if lifecycle.get("plan") not in {"recorded", "accepted"} or lifecycle.get("execute") != "active":
+                raise RuntimeError(f"Active curation round must have a recorded or accepted plan and active execution: {round_id}")
             if lifecycle.get("stageCloseout") != "pending":
                 raise RuntimeError(f"Active curation round must not be stage-closed: {round_id}")
         elif item.get("status") == "needs-closeout":
@@ -1515,33 +1528,43 @@ def validate_curation_program_plan(
         if not isinstance(initiative.get("decisionGate"), str) or not initiative.get("decisionGate"):
             raise RuntimeError(f"Curation program initiative decision gate is required: {initiative_id}")
     current_initiative_id = document.get("currentInitiativeId")
-    if current_initiative_id != "initiative.round03-capability-survey-rebaseline":
-        raise RuntimeError("Curation program current initiative must be the Round 03 rebaseline.")
+    if current_initiative_id != "initiative.capability-survey-gap-proof":
+        raise RuntimeError("Curation program current initiative must be the active capability survey.")
     current_initiative = next(
         item
         for item in initiatives
         if isinstance(item, dict) and item.get("id") == current_initiative_id
     )
-    if current_initiative.get("status") != "needs-owner-review":
-        raise RuntimeError("Curation program Round 03 rebaseline must remain owner-review pending.")
+    if current_initiative.get("status") != "active":
+        raise RuntimeError("Curation program capability survey must be active after owner acceptance.")
     current_blocked_text = " ".join(
         str(item) for item in current_initiative.get("blockedActions", [])
     ).lower()
-    for phrase in ["round 03 execution", "external discovery execution", "candidate code execution", "runtime mutation", "remote push"]:
+    for phrase in ["candidate code execution", "installation", "hook enablement", "runtime mutation", "cross-repository", "remote push"]:
         if phrase not in current_blocked_text:
             raise RuntimeError(f"Curation program current initiative missing blocked action: {phrase}")
+    rebaseline = next(
+        item
+        for item in initiatives
+        if isinstance(item, dict)
+        and item.get("id") == "initiative.round03-capability-survey-rebaseline"
+    )
+    if rebaseline.get("status") != "accepted":
+        raise RuntimeError("Curation program Round 03 rebaseline must record owner acceptance.")
+    if rebaseline.get("decisionEvidence") != "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json":
+        raise RuntimeError("Curation program Round 03 rebaseline decision evidence drifted.")
     capability_survey = next(
         item
         for item in initiatives
         if isinstance(item, dict)
         and item.get("id") == "initiative.capability-survey-gap-proof"
     )
-    if capability_survey.get("status") != "planned":
-        raise RuntimeError("Curation capability survey must remain planned before prerequisites close.")
+    if capability_survey.get("status") != "active":
+        raise RuntimeError("Curation capability survey must be active after prerequisites close.")
     survey_blocked_text = " ".join(
         str(item) for item in capability_survey.get("blockedActions", [])
     ).lower()
-    for phrase in ["external discovery execution", "candidate code execution", "runtime mutation"]:
+    for phrase in ["candidate code execution", "installation", "runtime mutation", "remote push"]:
         if phrase not in survey_blocked_text:
             raise RuntimeError(f"Curation capability survey missing blocked action: {phrase}")
     survey_result_text = " ".join(
@@ -1778,8 +1801,9 @@ def validate_curation_program_plan(
         "registry/program-acceptance-map.json",
         "registry/program-control-acceptance-event-2026-07-15.json",
         "registry/round02-stage-closeout-acceptance-event-2026-07-15.json",
+        "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
         "initiative.round03-capability-survey-rebaseline",
-        "Round 03 remains inactive",
+        "Round 03 rebaseline has been owner-accepted",
         "evidenced demand or shortfall",
         "native / official / runtime baseline",
         "discovery, clustering, deduplication",
@@ -5637,8 +5661,8 @@ def validate_round02_stage_closeout_acceptance_event(
         raise RuntimeError("Round 02 closeout outcome must be complete.")
     if "registry/round02-stage-closeout-acceptance-event-2026-07-15.json" not in round02.get("evidence", []):
         raise RuntimeError("Round 02 must link its closeout acceptance event.")
-    if round03.get("status") != "needs-rebaseline" or round03.get("lifecycle", {}).get("execute") != "pending":
-        raise RuntimeError("Round 03 must remain inactive and rebaseline-pending.")
+    if round03.get("status") != "active" or round03.get("lifecycle", {}).get("execute") != "active":
+        raise RuntimeError("Round 03 must reflect its later, separately authorized activation.")
 
     initiatives = {
         item.get("id"): item
@@ -5650,14 +5674,17 @@ def validate_round02_stage_closeout_acceptance_event(
         raise RuntimeError("Round 02 initiative must be accepted after the owner decision.")
     if round02_initiative.get("decisionEvidence") != "registry/round02-stage-closeout-acceptance-event-2026-07-15.json":
         raise RuntimeError("Round 02 initiative decision evidence drifted.")
-    if program_doc.get("currentInitiativeId") != document.get("nextInitiativeId"):
-        raise RuntimeError("Round 02 acceptance must advance to the declared rebaseline initiative.")
+    rebaseline_initiative = initiatives.get(document.get("nextInitiativeId"), {})
+    if rebaseline_initiative.get("status") != "accepted":
+        raise RuntimeError("The Round 02 next initiative must retain its later owner acceptance.")
+    if program_doc.get("currentInitiativeId") != "initiative.capability-survey-gap-proof":
+        raise RuntimeError("Program current initiative must reflect the later Round 03 activation.")
 
     application = lifecycle_doc.get("currentApplication", {})
     if application.get("currentRound") != "round-03-adaptation-and-curated-admission":
         raise RuntimeError("Lifecycle application must advance to Round 03 rebaseline.")
-    if application.get("phaseState") != "plan_rebaseline_pending" or application.get("stageCloseout") != "not_ready":
-        raise RuntimeError("Lifecycle application must keep Round 03 execution inactive.")
+    if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
+        raise RuntimeError("Lifecycle application must reflect the later bounded Round 03 activation.")
 
     criteria = {
         item.get("id"): item
@@ -5708,7 +5735,7 @@ def validate_round03_demand_coordinate_source_contract(
         "date": "2026-07-15",
         "status": "verified-input-contract",
         "roundId": "round-03-adaptation-and-curated-admission",
-        "nextGate": "owner-reviewed Round 03 capability-survey rebaseline",
+        "nextGate": "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery",
     }
     for key, expected in expected_scalars.items():
         if document.get(key) != expected:
@@ -5860,12 +5887,15 @@ def validate_round03_demand_coordinate_source_contract(
         "sourceIdentityVerified": True,
         "inputContractVerified": True,
         "demandRecordExtractionComplete": False,
-        "ownerReviewRequired": True,
-        "round03ExecutionActivated": False,
-        "externalDiscoveryAuthorized": False,
+        "ownerReviewRequired": False,
+        "round03ExecutionActivated": True,
+        "externalDiscoveryAuthorized": True,
     }
     if document.get("readiness") != expected_readiness:
         raise RuntimeError("Round 03 demand-coordinate readiness drifted.")
+    acceptance_event_path = "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
+    if document.get("activationEvidence") != acceptance_event_path:
+        raise RuntimeError("Round 03 demand-coordinate activation evidence drifted.")
 
     round03 = next(
         item
@@ -5917,14 +5947,14 @@ def validate_round03_demand_coordinate_source_contract(
             "not copied",
             "does not prove recurrence",
             "no Hook is the default",
-            "Round 03 remains inactive",
+            "activated Round 03",
         ],
         "docs/round03-demand-coordinate-source-contract.zh-CN.md": [
             "按来源身份",
             "不会复制进本仓库",
             "不能证明问题反复发生",
             "默认不使用 Hook",
-            "Round 03 仍未激活",
+            "激活 Round 03",
         ],
     }
     if set(document.get("evidenceDocs", [])) != set(expected_docs):
@@ -5949,10 +5979,10 @@ def validate_round03_capability_survey_rebaseline(
         "schema": 1,
         "id": "round03-capability-survey-rebaseline-2026-07-15",
         "date": "2026-07-15",
-        "status": "owner_review_required",
+        "status": "accepted",
         "roundId": "round-03-adaptation-and-curated-admission",
         "initiativeId": "initiative.round03-capability-survey-rebaseline",
-        "nextGate": "owner-reviewed Round 03 capability-survey rebaseline",
+        "nextGate": "verified demand records and native/runtime baseline before public candidate metadata discovery",
     }
     for key, expected in expected_scalars.items():
         if document.get(key) != expected:
@@ -6064,8 +6094,8 @@ def validate_round03_capability_survey_rebaseline(
     if len(document.get("verificationSurface", [])) != 6:
         raise RuntimeError("Round 03 rebaseline verification surface is incomplete.")
     expected_activation = {
-        "ownerReviewRequired": True,
-        "executionActivated": False,
+        "ownerReviewRequired": False,
+        "executionActivated": True,
         "externalDiscoveryAuthorizedByThisRecord": False,
         "candidateExecutionAuthorized": False,
         "runtimeMutationAuthorized": False,
@@ -6074,30 +6104,35 @@ def validate_round03_capability_survey_rebaseline(
     }
     if document.get("activationGate") != expected_activation:
         raise RuntimeError("Round 03 rebaseline activation gate drifted.")
+    acceptance_event_path = "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
+    if document.get("acceptanceEvent") != acceptance_event_path:
+        raise RuntimeError("Round 03 rebaseline acceptance event link drifted.")
 
     round03 = next(
         item
         for item in rounds_doc.get("rounds", [])
         if isinstance(item, dict) and item.get("id") == document.get("roundId")
     )
-    if round03.get("status") != "needs-rebaseline" or round03.get("lifecycle", {}).get("execute") != "pending":
-        raise RuntimeError("Round 03 registry must remain inactive and rebaseline-pending.")
+    if round03.get("status") != "active" or round03.get("lifecycle", {}).get("execute") != "active":
+        raise RuntimeError("Round 03 registry must be active after owner acceptance.")
     if "registry/round03-capability-survey-rebaseline.json" not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the rebaseline review.")
     initiative = initiatives.get("initiative.round03-capability-survey-rebaseline", {})
-    if program_doc.get("currentInitiativeId") != document.get("initiativeId"):
-        raise RuntimeError("Round 03 rebaseline must be the current initiative.")
-    if initiative.get("status") != "needs-owner-review":
-        raise RuntimeError("Round 03 rebaseline initiative must remain owner-review pending.")
+    if program_doc.get("currentInitiativeId") != "initiative.capability-survey-gap-proof":
+        raise RuntimeError("The capability survey must be current after rebaseline acceptance.")
+    if initiative.get("status") != "accepted":
+        raise RuntimeError("Round 03 rebaseline initiative must record acceptance.")
     if initiative.get("decisionPreparation") != "registry/round03-capability-survey-rebaseline.json":
         raise RuntimeError("Round 03 rebaseline initiative must link its decision preparation.")
+    if initiative.get("decisionEvidence") != acceptance_event_path:
+        raise RuntimeError("Round 03 rebaseline initiative must link its acceptance event.")
     application = lifecycle_doc.get("currentApplication", {})
-    if application.get("phaseState") != "plan_rebaseline_pending" or application.get("stageCloseout") != "not_ready":
-        raise RuntimeError("Round 03 lifecycle must remain plan-rebaseline pending.")
+    if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
+        raise RuntimeError("Round 03 lifecycle must be active and not ready for closeout.")
     if application.get("nextRequiredEvidence") != [
-        "owner-reviewed Round 03 capability-survey rebaseline decision event"
+        "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery"
     ]:
-        raise RuntimeError("Round 03 lifecycle next evidence must be the owner decision event.")
+        raise RuntimeError("Round 03 lifecycle next evidence must preserve demand-before-discovery order.")
 
     criteria = {
         item.get("id"): item
@@ -6105,29 +6140,29 @@ def validate_round03_capability_survey_rebaseline(
         if isinstance(item, dict)
     }
     criterion = criteria.get("acceptance.round03-rebaseline", {})
-    if criterion.get("assessment") != "planned":
-        raise RuntimeError("Round 03 rebaseline acceptance must remain pending owner review.")
-    if "evidence.round03-rebaseline" not in criterion.get("evidenceIds", []):
+    if criterion.get("assessment") != "verified":
+        raise RuntimeError("Round 03 rebaseline acceptance must be verified after owner review.")
+    if not {"evidence.round03-rebaseline", "evidence.round03-rebaseline-acceptance"} <= set(criterion.get("evidenceIds", [])):
         raise RuntimeError("Round 03 rebaseline acceptance evidence is missing.")
 
     expected_docs = {
         "docs/round03-capability-survey-rebaseline.md": [
-            "Owner Review Required",
-            "Round 03 remains inactive",
+            "Accepted",
+            "Round 03 is active",
             "residual-gap proof",
             "No candidate code",
             "Hook is considered only after",
             "never an authority",
-            "Owner review is required",
+            "Owner review is satisfied",
         ],
         "docs/round03-capability-survey-rebaseline.zh-CN.md": [
-            "等待所有者审查",
-            "Round 03 仍未激活",
+            "已接受",
+            "Round 03 现已",
             "残余缺口证明",
             "不执行候选代码",
             "Hook 只在重要残余缺口已经成立后",
             "不是权威源",
-            "不得激活 Round 03",
+            "所有者审查已经满足",
         ],
     }
     if set(document.get("evidenceDocs", [])) != set(expected_docs):
@@ -6137,6 +6172,182 @@ def validate_round03_capability_survey_rebaseline(
         for phrase in phrases:
             if phrase not in text:
                 raise RuntimeError(f"Round 03 rebaseline doc missing phrase in {path}: {phrase}")
+
+
+def validate_round03_capability_survey_rebaseline_acceptance_event(
+    document: dict[str, object],
+    rebaseline_doc: dict[str, object],
+    demand_contract: dict[str, object],
+    rounds_doc: dict[str, object],
+    program_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-capability-survey-rebaseline-acceptance-event-2026-07-15",
+        "date": "2026-07-15",
+        "status": "recorded",
+        "decision": "accepted-and-activate-bounded-read-only-capability-survey",
+        "authoritySource": "owner-selected-option-1",
+        "ownerDecision": "1",
+        "acceptedRebaseline": "registry/round03-capability-survey-rebaseline.json",
+        "acceptedDemandInputContract": "registry/round03-demand-coordinate-source-contract.json",
+        "acceptedCommit": "43cde9488182a76af8edc3a54d442e9020c4d901",
+        "nextGate": "verified demand records and native/runtime baseline before public candidate metadata discovery",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 rebaseline acceptance event {key} drifted.")
+
+    expected_authorization = {
+        "round03ActivationAuthorized": True,
+        "demandRecordExtractionAuthorized": True,
+        "nativeOfficialRuntimeBaselineAuthorized": True,
+        "publicReadOnlyMetadataDiscoveryAuthorized": True,
+        "sourcePinnedRepresentativeReviewAuthorized": True,
+        "currentRepositoryEvidenceWritesAuthorized": True,
+        "candidateExecutionAuthorized": False,
+        "installationOrAccountConnectionAuthorized": False,
+        "runtimeMutationAuthorized": False,
+        "crossRepositoryWriteAuthorized": False,
+        "skillAdmissionOrReleaseMutationAuthorized": False,
+        "standardPromotionAuthorized": False,
+        "remotePushAuthorized": False,
+        "globalProgramCompletionClaimed": False,
+    }
+    if document.get("authorization") != expected_authorization:
+        raise RuntimeError("Round 03 rebaseline acceptance authorization drifted.")
+    if len(document.get("authorizedData", [])) != 4:
+        raise RuntimeError("Round 03 accepted data boundary is incomplete.")
+    sequence = document.get("authorizedSequence", [])
+    if len(sequence) != 7:
+        raise RuntimeError("Round 03 accepted sequence is incomplete.")
+    sequence_text = " ".join(str(item) for item in sequence).lower()
+    ordered_phrases = [
+        "demand records",
+        "native, official, runtime",
+        "public candidate metadata",
+        "cluster",
+        "pin sources",
+        "compare native",
+        "residual gaps",
+    ]
+    positions = [sequence_text.find(phrase) for phrase in ordered_phrases]
+    if any(position < 0 for position in positions) or positions != sorted(positions):
+        raise RuntimeError("Round 03 accepted sequence order drifted.")
+    blocked = " ".join(str(item) for item in document.get("blockedActions", [])).lower()
+    for phrase in [
+        "bulk clone",
+        "executing candidate code",
+        "oauth",
+        "live runtime",
+        "another repository",
+        "enabling a hook",
+        "remote push",
+    ]:
+        if phrase not in blocked:
+            raise RuntimeError(f"Round 03 acceptance blocked action missing phrase: {phrase}")
+
+    expected_state = {
+        "roundId": "round-03-adaptation-and-curated-admission",
+        "roundStatus": "active",
+        "phaseState": "execute_active",
+        "currentInitiativeId": "initiative.capability-survey-gap-proof",
+        "nextRequiredEvidence": "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery",
+    }
+    if document.get("effectiveState") != expected_state:
+        raise RuntimeError("Round 03 acceptance effective state drifted.")
+    if len(document.get("verification", [])) != 5 or len(document.get("residualLimits", [])) != 4:
+        raise RuntimeError("Round 03 acceptance verification or residual limits are incomplete.")
+
+    event_path = "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
+    if rebaseline_doc.get("status") != "accepted" or rebaseline_doc.get("acceptanceEvent") != event_path:
+        raise RuntimeError("Round 03 accepted rebaseline state drifted.")
+    if demand_contract.get("activationEvidence") != event_path:
+        raise RuntimeError("Round 03 accepted demand-contract state drifted.")
+    readiness = demand_contract.get("readiness", {})
+    if (
+        readiness.get("round03ExecutionActivated") is not True
+        or readiness.get("externalDiscoveryAuthorized") is not True
+        or readiness.get("demandRecordExtractionComplete") is not False
+    ):
+        raise RuntimeError("Round 03 demand-contract readiness must preserve the active pre-discovery gate.")
+
+    round03 = next(
+        item
+        for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict) and item.get("id") == expected_state["roundId"]
+    )
+    if round03.get("status") != "active" or event_path not in round03.get("evidence", []):
+        raise RuntimeError("Round 03 registry must link the owner activation event.")
+    if round03.get("lifecycle") != {
+        "plan": "accepted",
+        "execute": "active",
+        "acceptance": "pending",
+        "stageCloseout": "pending",
+    }:
+        raise RuntimeError("Round 03 active lifecycle drifted.")
+
+    initiatives = {
+        item.get("id"): item
+        for item in program_doc.get("currentInitiatives", [])
+        if isinstance(item, dict)
+    }
+    if program_doc.get("currentInitiativeId") != expected_state["currentInitiativeId"]:
+        raise RuntimeError("Round 03 acceptance program initiative drifted.")
+    if initiatives.get("initiative.capability-survey-gap-proof", {}).get("status") != "active":
+        raise RuntimeError("Round 03 capability survey must be active.")
+    rebaseline = initiatives.get("initiative.round03-capability-survey-rebaseline", {})
+    if rebaseline.get("status") != "accepted" or rebaseline.get("decisionEvidence") != event_path:
+        raise RuntimeError("Round 03 rebaseline initiative acceptance drifted.")
+
+    application = lifecycle_doc.get("currentApplication", {})
+    if application.get("phaseState") != expected_state["phaseState"] or event_path not in application.get("evidence", []):
+        raise RuntimeError("Round 03 lifecycle activation evidence drifted.")
+    if application.get("nextRequiredEvidence") != [expected_state["nextRequiredEvidence"]]:
+        raise RuntimeError("Round 03 lifecycle demand-before-discovery gate drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_doc.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    criterion = criteria.get("acceptance.round03-rebaseline", {})
+    if criterion.get("assessment") != "verified" or "evidence.round03-rebaseline-acceptance" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Round 03 rebaseline owner acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_doc.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    evidence_record = evidence.get("evidence.round03-rebaseline-acceptance", {})
+    if evidence_record.get("path") != event_path or evidence_record.get("kind") != "owner-activation-decision":
+        raise RuntimeError("Round 03 rebaseline acceptance evidence record drifted.")
+
+    expected_docs = {
+        "docs/round03-capability-survey-rebaseline-acceptance.md": [
+            "owner selected option 1",
+            "Round 03 is active",
+            "does not authorize bulk cloning",
+            "default remains no Hook",
+            "before public candidate metadata discovery",
+        ],
+        "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md": [
+            "所有者选择了选项 1",
+            "现已针对有边界的只读能力调研激活",
+            "不授权批量克隆",
+            "默认不使用",
+            "公开候选元数据发现开始之前",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 rebaseline acceptance docs drifted.")
+    for path, phrases in expected_docs.items():
+        text = " ".join((ROOT / path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 rebaseline acceptance doc missing phrase in {path}: {phrase}")
 
 
 def validate_mvp06_radar_feedback_projection(

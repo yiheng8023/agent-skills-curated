@@ -148,13 +148,14 @@
     "sourceIdentityVerified": true,
     "inputContractVerified": true,
     "demandRecordExtractionComplete": false,
-    "ownerReviewRequired": true,
-    "round03ExecutionActivated": false,
-    "externalDiscoveryAuthorized": false
+    "ownerReviewRequired": false,
+    "round03ExecutionActivated": true,
+    "externalDiscoveryAuthorized": true
   },
+  "activationEvidence": "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
   "evidenceDocs": [
     "docs/round03-demand-coordinate-source-contract.md",
     "docs/round03-demand-coordinate-source-contract.zh-CN.md"
   ],
-  "nextGate": "owner-reviewed Round 03 capability-survey rebaseline"
+  "nextGate": "governed Round 03 demand records and dated native/runtime baseline before public candidate metadata discovery"
 }

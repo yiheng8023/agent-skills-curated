@@ -45,8 +45,9 @@ agent 环境迁移、云端同步/备份、验证和恢复模式。
 稳定工序采用依赖图，而不是强制线性流水线：消费投影是可选分支，生命周期治理是跨阶段
 回路，标准抽取只在重复证据成立时进入条件分支。上游雷达可以广泛发现，但候选信号必须在
 本仓绑定需求、基线、精确来源固定、审查和验收后，才能影响精选决策。总控修订与
-Round 02 收口都已经形成明确的 owner 接受事件。Round 02 已关闭；Round 03 仍未激活，
-当前 initiative 是它的能力调研重基线审查。
+Round 02 收口都已经形成明确的 owner 接受事件。Round 02 已关闭；Round 03 能力调研
+重基线已经接受，有边界的只读调研已在需求与基线工序关口之后激活。当前 initiative
+是能力调研与残余缺口证明阶段。
 
 可靠性采用分层保障，而不是只依赖文本：instructions 与 rules 可以路由到 Skills 和
 Recipes；脚本、schemas 与 validators 负责可机器检查的行为；消费侧控制和项目内置
@@ -239,7 +240,9 @@ Schema 2 的运行时覆盖通过结构契约保持产品中立：`runtime-resol
 - `docs/round02-stage-closeout-acceptance.zh-CN.md`：所有者接受 Round 02 有边界的
   `complete` 结论，并继续明确残余风险与不授权事项；
 - `docs/round03-capability-survey-rebaseline.zh-CN.md`：用证据优先的能力调研替换
-  已与实际成果重叠的旧 Round 03 计划；所有者审查前不激活发现执行；
+  已与实际成果重叠的旧 Round 03 计划；现已接受并进入有边界的只读执行；
+- `docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md`：所有者激活事件投影及其
+  明确的调研授权和不授权边界；
 - `docs/round03-demand-coordinate-source-contract.zh-CN.md`：锁定 STM/P/SG 只读输入、
   证据状态和晋升防火墙；不复制外部研究正文，也不授权发现执行；
 - `docs/starred-capability-source-discovery.md`：用户 star 发现面的初筛，用于后续候选来源、

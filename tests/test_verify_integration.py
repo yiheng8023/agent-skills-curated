@@ -85,10 +85,11 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         )
 
     def test_round03_demand_coordinate_contract_is_a_required_verifier_input(self) -> None:
-        self.assertIn(
+        for path in (
             "registry/round03-demand-coordinate-source-contract.json",
-            verify_script.REQUIRED_FILES,
-        )
+            "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
+        ):
+            self.assertIn(path, verify_script.REQUIRED_FILES)
 
     def test_current_verifier_accepts_the_checked_in_schema2_capability_registry(self) -> None:
         document = verify_script.load("registry/capabilities.json")
@@ -202,7 +203,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         self.assertFalse(event["remotePushAuthorized"])
         self.assertFalse(event["globalProgramCompletionClaimed"])
 
-    def test_round03_rebaseline_is_review_only_and_execution_inactive(self) -> None:
+    def test_round03_rebaseline_acceptance_activates_only_bounded_research(self) -> None:
         rounds = verify_script.load("registry/curation-expansion-rounds.json")
         round03 = next(
             item
@@ -212,10 +213,10 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         rebaseline = verify_script.load(
             "registry/round03-capability-survey-rebaseline.json"
         )
-        self.assertEqual(round03["status"], "needs-rebaseline")
-        self.assertEqual(round03["lifecycle"]["execute"], "pending")
-        self.assertEqual(rebaseline["status"], "owner_review_required")
-        self.assertFalse(rebaseline["activationGate"]["executionActivated"])
+        self.assertEqual(round03["status"], "active")
+        self.assertEqual(round03["lifecycle"]["execute"], "active")
+        self.assertEqual(rebaseline["status"], "accepted")
+        self.assertTrue(rebaseline["activationGate"]["executionActivated"])
         self.assertFalse(
             rebaseline["activationGate"]["externalDiscoveryAuthorizedByThisRecord"]
         )
@@ -226,6 +227,17 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             carrier["options"],
         )
         self.assertTrue(carrier["default"].lower().startswith("no hook"))
+
+        event = verify_script.load(
+            "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
+        )
+        authorization = event["authorization"]
+        self.assertTrue(authorization["publicReadOnlyMetadataDiscoveryAuthorized"])
+        self.assertTrue(authorization["currentRepositoryEvidenceWritesAuthorized"])
+        self.assertFalse(authorization["candidateExecutionAuthorized"])
+        self.assertFalse(authorization["runtimeMutationAuthorized"])
+        self.assertFalse(authorization["crossRepositoryWriteAuthorized"])
+        self.assertFalse(authorization["remotePushAuthorized"])
 
     def test_round03_rebaseline_rejects_implicit_discovery_activation(self) -> None:
         path = "registry/round03-capability-survey-rebaseline.json"
@@ -244,7 +256,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         )
         self.assertTrue(contract["readiness"]["sourceIdentityVerified"])
         self.assertFalse(contract["readiness"]["demandRecordExtractionComplete"])
-        self.assertFalse(contract["readiness"]["externalDiscoveryAuthorized"])
+        self.assertTrue(contract["readiness"]["externalDiscoveryAuthorized"])
         self.assertTrue(
             all(not item["bodyRedistributionAuthorized"] for item in contract["sources"])
         )
@@ -255,10 +267,10 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         contract["sources"][0]["sha256"] = "0" * 64
         self.assert_verify_runtime_error(path, contract, "source identity drifted")
 
-    def test_round03_demand_contract_rejects_premature_discovery_authority(self) -> None:
+    def test_round03_demand_contract_rejects_discovery_authority_drift(self) -> None:
         path = "registry/round03-demand-coordinate-source-contract.json"
         contract = verify_script.load(path)
-        contract["readiness"]["externalDiscoveryAuthorized"] = True
+        contract["readiness"]["externalDiscoveryAuthorized"] = False
         self.assert_verify_runtime_error(path, contract, "readiness drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
@@ -389,11 +401,11 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             <= criterion_ids
         )
 
-    def test_program_records_owner_acceptance_and_advances_to_round03_rebaseline(self) -> None:
+    def test_program_records_owner_acceptance_and_activates_capability_survey(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
         self.assertEqual(
             program["currentInitiativeId"],
-            "initiative.round03-capability-survey-rebaseline",
+            "initiative.capability-survey-gap-proof",
         )
         completeness = next(
             item
@@ -406,7 +418,13 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             if item["id"] == program["currentInitiativeId"]
         )
         self.assertEqual(completeness["status"], "accepted")
-        self.assertEqual(current["status"], "needs-owner-review")
+        self.assertEqual(current["status"], "active")
+        rebaseline = next(
+            item
+            for item in program["currentInitiatives"]
+            if item["id"] == "initiative.round03-capability-survey-rebaseline"
+        )
+        self.assertEqual(rebaseline["status"], "accepted")
         event = verify_script.load("registry/program-control-acceptance-event-2026-07-15.json")
         self.assertEqual(
             event["acceptedBaselineCommit"],

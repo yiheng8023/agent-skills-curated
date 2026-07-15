@@ -33,7 +33,8 @@ of supported residual-gap evidence and host-specific suitability; no Hook is
 the default.
 
 The source contract is verified, but demand-record extraction is not complete.
-Round 03 remains inactive and still requires owner review before bounded
-read-only public discovery. This record authorizes no source-body
-redistribution, external discovery, candidate execution, Skill admission,
-runtime mutation, cross-repository write, standards promotion, or remote push.
+The owner activation event has activated Round 03 for the bounded read-only
+survey. This source contract does not itself authorize source-body
+redistribution, candidate execution, Skill admission, runtime mutation,
+cross-repository writes, standards promotion, or remote push. Demand records
+and a dated native/runtime baseline still precede public candidate discovery.

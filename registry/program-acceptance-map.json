@@ -255,7 +255,8 @@
         "evidence.round02-stage-closeout-review",
         "evidence.round02-stage-closeout-acceptance",
         "evidence.round03-rebaseline",
-        "evidence.round03-demand-coordinate-source-contract"
+        "evidence.round03-demand-coordinate-source-contract",
+        "evidence.round03-rebaseline-acceptance"
       ]
     },
     {
@@ -289,14 +290,15 @@
     {
       "id": "acceptance.round03-rebaseline",
       "statement": "Round 03 cannot activate until its capability-survey goal, demand inputs, data and authority boundaries, dependency-graph sequence, stop rule, post-gap Skill versus optional Hook carrier decision, result package, verification surface, and non-authorization limits receive owner review.",
-      "assessment": "planned",
+      "assessment": "verified",
       "verificationIds": [
         "verification.sequence-integrity"
       ],
       "evidenceIds": [
         "evidence.round02-stage-closeout-acceptance",
         "evidence.round03-rebaseline",
-        "evidence.round03-demand-coordinate-source-contract"
+        "evidence.round03-demand-coordinate-source-contract",
+        "evidence.round03-rebaseline-acceptance"
       ]
     },
     {
@@ -731,6 +733,16 @@
         "acceptance.round02-stage-closeout",
         "acceptance.sequence-integrity",
         "acceptance.round03-rebaseline"
+      ]
+    },
+    {
+      "id": "evidence.round03-rebaseline-acceptance",
+      "path": "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
+      "kind": "owner-activation-decision",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.round03-rebaseline",
+        "acceptance.sequence-integrity"
       ]
     },
     {
