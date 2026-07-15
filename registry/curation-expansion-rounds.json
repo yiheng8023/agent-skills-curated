@@ -111,9 +111,10 @@
         "registry/round03-native-runtime-baseline-2026-07-15.json",
         "registry/round03-public-discovery-snapshot-2026-07-15.json",
         "registry/round03-representative-source-review-batch-01.json",
+        "registry/round03-alternative-comparison-batch-01.json",
         "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
       ],
-      "nextGate": "demand-level-alternative-comparison-before-residual-gap"
+      "nextGate": "bounded-behavior-cost-and-projection-fixture-evidence-before-residual-gap"
     }
   ],
   "consumerProjectionBoundary": {

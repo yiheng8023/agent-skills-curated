@@ -156,6 +156,7 @@
       "registry/round03-native-runtime-baseline-2026-07-15.json",
       "registry/round03-public-discovery-snapshot-2026-07-15.json",
       "registry/round03-representative-source-review-batch-01.json",
+      "registry/round03-alternative-comparison-batch-01.json",
       "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json"
     ],
     "deferredActions": [
@@ -164,7 +165,7 @@
       "Skill admission, runtime mutation, cross-repository delivery, or global completion claims"
     ],
     "nextRequiredEvidence": [
-      "demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"
+      "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]
   }
 }

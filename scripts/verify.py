@@ -96,6 +96,7 @@ REQUIRED_FILES = (
     "registry/round03-native-runtime-baseline-2026-07-15.json",
     "registry/round03-public-discovery-snapshot-2026-07-15.json",
     "registry/round03-representative-source-review-batch-01.json",
+    "registry/round03-alternative-comparison-batch-01.json",
     "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -171,6 +172,8 @@ REQUIRED_FILES = (
     "docs/round03-public-discovery-snapshot-2026-07-15.zh-CN.md",
     "docs/round03-representative-source-review-batch-01.md",
     "docs/round03-representative-source-review-batch-01.zh-CN.md",
+    "docs/round03-alternative-comparison-batch-01.md",
+    "docs/round03-alternative-comparison-batch-01.zh-CN.md",
     "docs/round03-capability-survey-rebaseline-acceptance.md",
     "docs/round03-capability-survey-rebaseline-acceptance.zh-CN.md",
     "docs/mvp-candidate-batch-2026-06-27.md",
@@ -259,6 +262,7 @@ def verify() -> None:
     round03_native_runtime_baseline_doc = load("registry/round03-native-runtime-baseline-2026-07-15.json")
     round03_public_discovery_snapshot_doc = load("registry/round03-public-discovery-snapshot-2026-07-15.json")
     round03_representative_source_review_batch_01_doc = load("registry/round03-representative-source-review-batch-01.json")
+    round03_alternative_comparison_batch_01_doc = load("registry/round03-alternative-comparison-batch-01.json")
     round03_capability_survey_rebaseline_acceptance_event_doc = load("registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json")
     admissions_doc = load("registry/admissions.json")
     routing_doc = load("registry/routing.json")
@@ -439,6 +443,15 @@ def verify() -> None:
     validate_round03_representative_source_review_batch_01(
         round03_representative_source_review_batch_01_doc,
         round03_public_discovery_snapshot_doc,
+        curation_expansion_rounds_doc,
+        round_lifecycle_contract_doc,
+        program_acceptance_map_doc,
+    )
+    validate_round03_alternative_comparison_batch_01(
+        round03_alternative_comparison_batch_01_doc,
+        round03_demand_records_batch_01_doc,
+        round03_native_runtime_baseline_doc,
+        round03_representative_source_review_batch_01_doc,
         curation_expansion_rounds_doc,
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
@@ -6448,7 +6461,7 @@ def validate_round03_public_discovery_snapshot(
     if snapshot_path not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the public discovery snapshot.")
     application = lifecycle_doc.get("currentApplication", {})
-    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"]:
+    if snapshot_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
         raise RuntimeError("Round 03 lifecycle public discovery evidence drifted.")
     evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
     evidence_record = evidence.get("evidence.round03-public-discovery-snapshot", {})
@@ -6582,7 +6595,7 @@ def validate_round03_representative_source_review_batch_01(
     if review_path not in round03.get("evidence", []):
         raise RuntimeError("Round 03 registry must link the representative review.")
     application = lifecycle_doc.get("currentApplication", {})
-    if review_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"]:
+    if review_path not in application.get("evidence", []) or application.get("nextRequiredEvidence") != ["bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"]:
         raise RuntimeError("Round 03 lifecycle representative review evidence drifted.")
     evidence = {item.get("id"): item for item in acceptance_doc.get("evidence", []) if isinstance(item, dict)}
     evidence_record = evidence.get("evidence.round03-representative-source-review-batch-01", {})
@@ -6604,6 +6617,173 @@ def validate_round03_representative_source_review_batch_01(
         for phrase in phrases:
             if phrase not in text:
                 raise RuntimeError(f"Round 03 representative review doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_alternative_comparison_batch_01(
+    document: dict[str, object],
+    demand_batch: dict[str, object],
+    native_baseline: dict[str, object],
+    representative_review: dict[str, object],
+    rounds_doc: dict[str, object],
+    lifecycle_doc: dict[str, object],
+    acceptance_doc: dict[str, object],
+) -> None:
+    expected_scalars = {
+        "schema": 1,
+        "id": "round03-alternative-comparison-batch-01-2026-07-15",
+        "date": "2026-07-15",
+        "status": "verified-non-executing-alternative-comparison",
+        "roundId": "round-03-adaptation-and-curated-admission",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Round 03 alternative comparison {key} drifted.")
+
+    expected_inputs = {
+        "registry/round03-demand-records-batch-01.json",
+        "registry/round03-native-runtime-baseline-2026-07-15.json",
+        "registry/round03-public-discovery-snapshot-2026-07-15.json",
+        "registry/round03-representative-source-review-batch-01.json",
+    }
+    if set(document.get("inputs", [])) != expected_inputs:
+        raise RuntimeError("Round 03 alternative comparison inputs drifted.")
+    boundary = document.get("comparisonBoundary", {})
+    if boundary.get("demandRecordCount") != 4 or boundary.get("alternativeClassesPerDemand") != 9:
+        raise RuntimeError("Round 03 alternative comparison boundary counts drifted.")
+    prohibited_true = [
+        "candidateCodeExecuted",
+        "candidateBodyAdmitted",
+        "runtimeOrHookMutated",
+        "crossRepositoryWritePerformed",
+        "standardPromoted",
+        "remotePushAuthorized",
+    ]
+    if any(boundary.get(key) is not False for key in prohibited_true):
+        raise RuntimeError("Round 03 alternative comparison crossed a prohibited boundary.")
+
+    expected_classes = {
+        "native",
+        "official-or-runtime",
+        "single-skill",
+        "composed-skill-or-recipe",
+        "reviewed-external-skill",
+        "non-skill-harness-or-tool",
+        "project-hard-standard",
+        "human-or-domain-authority",
+        "conditional-hook",
+    }
+    if set(document.get("alternativeClasses", [])) != expected_classes:
+        raise RuntimeError("Round 03 alternative classes drifted.")
+    demands = {
+        item.get("id"): item
+        for item in demand_batch.get("records", [])
+        if isinstance(item, dict)
+    }
+    comparisons = {
+        item.get("demandRecordId"): item
+        for item in document.get("comparisons", [])
+        if isinstance(item, dict)
+    }
+    if set(comparisons) != set(demands) or len(comparisons) != 4:
+        raise RuntimeError("Round 03 alternative comparison demand coverage drifted.")
+    for demand_id, comparison in comparisons.items():
+        if comparison.get("coordinateIds") != demands[demand_id].get("coordinateIds"):
+            raise RuntimeError(f"Round 03 alternative comparison coordinates drifted: {demand_id}")
+        alternatives = comparison.get("alternatives", [])
+        if len(alternatives) != 9 or {item.get("class") for item in alternatives} != expected_classes:
+            raise RuntimeError(f"Round 03 alternative class coverage drifted: {demand_id}")
+        for alternative in alternatives:
+            for field in ["path", "support", "totalCost", "failurePropagation", "disposition"]:
+                if not alternative.get(field):
+                    raise RuntimeError(f"Round 03 alternative field missing for {demand_id}: {field}")
+        if not comparison.get("comparisonOutcome") or not comparison.get("carrierDecision") or not comparison.get("hookDecision"):
+            raise RuntimeError(f"Round 03 comparison decision incomplete: {demand_id}")
+        residual = comparison.get("residualGap", {})
+        if residual.get("state") not in {"unproven", "not-an-external-skill-gap"}:
+            raise RuntimeError(f"Round 03 residual-gap state overclaims evidence: {demand_id}")
+        if not residual.get("reason") or not residual.get("nextEvidence"):
+            raise RuntimeError(f"Round 03 residual-gap evidence requirement missing: {demand_id}")
+        hook = next(item for item in alternatives if item.get("class") == "conditional-hook")
+        if hook.get("disposition") != "no-hook" or "no-hook" not in str(comparison.get("hookDecision")):
+            raise RuntimeError(f"Round 03 Hook default drifted: {demand_id}")
+
+    if native_baseline.get("baselineDecision", {}).get("residualGapProven") is not False:
+        raise RuntimeError("Round 03 alternative comparison requires a non-overclaiming native baseline.")
+    prior_decision = representative_review.get("batchDecision", {})
+    if prior_decision.get("residualGapProven") is not False or prior_decision.get("hookNeedProven") is not False:
+        raise RuntimeError("Round 03 alternative comparison prior review boundary drifted.")
+    decision = document.get("batchDecision", {})
+    expected_decision = {
+        "alternativeComparisonCompleteForSelectedDemandBatch": True,
+        "supportedResidualGapCount": 0,
+        "unprovenResidualGapCount": 3,
+        "nonExternalSkillGapCount": 1,
+        "candidateSelectedForAdmissionAdaptationOrExecution": False,
+        "repositoryAuthoredSkillEligible": False,
+        "hookEligible": False,
+    }
+    for key, expected in expected_decision.items():
+        if decision.get(key) != expected:
+            raise RuntimeError(f"Round 03 alternative batch decision drifted: {key}")
+    next_gate = str(decision.get("nextGate", "")).lower()
+    for phrase in ["behavior-and-cost", "projection-fixture", "before any residual-gap", "hook decision"]:
+        if phrase not in next_gate:
+            raise RuntimeError(f"Round 03 alternative next gate missing phrase: {phrase}")
+    if len(document.get("claimLimits", [])) != 4 or len(document.get("recheckTriggers", [])) != 4:
+        raise RuntimeError("Round 03 alternative claim limits or recheck triggers drifted.")
+
+    artifact = "registry/round03-alternative-comparison-batch-01.json"
+    round03 = next(
+        item for item in rounds_doc.get("rounds", [])
+        if isinstance(item, dict) and item.get("id") == document.get("roundId")
+    )
+    if artifact not in round03.get("evidence", []) or round03.get("nextGate") != "bounded-behavior-cost-and-projection-fixture-evidence-before-residual-gap":
+        raise RuntimeError("Round 03 registry did not advance to the behavior-evidence gate.")
+    application = lifecycle_doc.get("currentApplication", {})
+    expected_next_evidence = [
+        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
+    ]
+    if artifact not in application.get("evidence", []) or application.get("nextRequiredEvidence") != expected_next_evidence:
+        raise RuntimeError("Round 03 lifecycle did not advance to the behavior-evidence gate.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_doc.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.round03-alternative-comparison-batch-01"
+    if criteria.get("acceptance.alternative-comparison", {}).get("assessment") != "verified":
+        raise RuntimeError("Round 03 alternative-comparison acceptance must be verified.")
+    if evidence_id not in criteria.get("acceptance.alternative-comparison", {}).get("evidenceIds", []):
+        raise RuntimeError("Round 03 alternative-comparison evidence mapping is missing.")
+    if criteria.get("acceptance.residual-gap-proof", {}).get("assessment") != "partial":
+        raise RuntimeError("Round 03 residual-gap proof must remain partial without behavior evidence.")
+    if evidence_id not in criteria.get("acceptance.residual-gap-proof", {}).get("evidenceIds", []):
+        raise RuntimeError("Round 03 residual-gap evidence mapping is missing.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_doc.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    record = evidence.get(evidence_id, {})
+    if record.get("path") != artifact or record.get("kind") != document.get("status"):
+        raise RuntimeError("Round 03 alternative evidence record drifted.")
+
+    expected_docs = {
+        "docs/round03-alternative-comparison-batch-01.md": [
+            "nine paths", "0 supported residual gaps", "3 unproven residual gaps", "default remains no Hook",
+        ],
+        "docs/round03-alternative-comparison-batch-01.zh-CN.md": [
+            "9 类路径", "0 个已证明残余缺口", "3 个未证明残余缺口", "默认仍然是 no Hook",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 alternative comparison evidence docs drifted.")
+    for path, phrases in expected_docs.items():
+        text = (ROOT / path).read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 alternative comparison doc missing phrase in {path}: {phrase}")
 
 
 def validate_round03_capability_survey_rebaseline(
@@ -6769,7 +6949,7 @@ def validate_round03_capability_survey_rebaseline(
     if application.get("phaseState") != "execute_active" or application.get("stageCloseout") != "not_ready":
         raise RuntimeError("Round 03 lifecycle must be active and not ready for closeout.")
     if application.get("nextRequiredEvidence") != [
-        "demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"
+        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]:
         raise RuntimeError("Round 03 lifecycle next evidence must preserve alternative-comparison order.")
 
@@ -6945,7 +7125,7 @@ def validate_round03_capability_survey_rebaseline_acceptance_event(
     if application.get("phaseState") != expected_state["phaseState"] or event_path not in application.get("evidence", []):
         raise RuntimeError("Round 03 lifecycle activation evidence drifted.")
     if application.get("nextRequiredEvidence") != [
-        "demand-level alternative comparison before any residual-gap, repository-authoring, or Hook decision"
+        "bounded behavior and cost evidence for EL-01 and EL-02 plus projection-fixture evidence for EL-04 before any supported residual-gap, repository-authoring, adaptation, or Hook decision"
     ]:
         raise RuntimeError("Round 03 lifecycle post-review alternative gate drifted.")
 

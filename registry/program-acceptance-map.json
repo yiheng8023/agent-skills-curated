@@ -174,20 +174,24 @@
     {
       "id": "acceptance.alternative-comparison",
       "statement": "Each surveyed demand area compares native, official/runtime, single-Skill, composed Skill, non-Skill Harness, project-standard, and human-authority paths including total cost and failure propagation.",
-      "assessment": "planned",
+      "assessment": "verified",
       "verificationIds": [
         "verification.alternative-and-residual-gap"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-alternative-comparison-batch-01"
+      ]
     },
     {
       "id": "acceptance.residual-gap-proof",
       "statement": "A residual gap is supported only by reproducible material evidence after viable alternatives are exhausted; similar metadata or a prior draft is insufficient.",
-      "assessment": "planned",
+      "assessment": "partial",
       "verificationIds": [
         "verification.alternative-and-residual-gap"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-alternative-comparison-batch-01"
+      ]
     },
     {
       "id": "acceptance.repository-authored-gap-fill-gate",
@@ -204,11 +208,13 @@
     {
       "id": "acceptance.full-chain-coverage-matrix",
       "statement": "The capability survey maps STM, P, and SG demand coordinates to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit outcomes.",
-      "assessment": "planned",
+      "assessment": "partial",
       "verificationIds": [
         "verification.full-chain-coverage-matrix"
       ],
-      "evidenceIds": []
+      "evidenceIds": [
+        "evidence.round03-alternative-comparison-batch-01"
+      ]
     },
     {
       "id": "acceptance.decision-ready-consumer-projection",
@@ -230,7 +236,8 @@
         "verification.capability-survey-result-package"
       ],
       "evidenceIds": [
-        "evidence.round03-rebaseline"
+        "evidence.round03-rebaseline",
+        "evidence.round03-alternative-comparison-batch-01"
       ]
     },
     {
@@ -795,6 +802,18 @@
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.discovery-clustering-stop-rule"
+      ]
+    },
+    {
+      "id": "evidence.round03-alternative-comparison-batch-01",
+      "path": "registry/round03-alternative-comparison-batch-01.json",
+      "kind": "verified-non-executing-alternative-comparison",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof",
+        "acceptance.full-chain-coverage-matrix",
+        "acceptance.capability-survey-result-package"
       ]
     },
     {

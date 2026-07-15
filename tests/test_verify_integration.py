@@ -91,6 +91,7 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
             "registry/round03-native-runtime-baseline-2026-07-15.json",
             "registry/round03-public-discovery-snapshot-2026-07-15.json",
             "registry/round03-representative-source-review-batch-01.json",
+            "registry/round03-alternative-comparison-batch-01.json",
             "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
         ):
             self.assertIn(path, verify_script.REQUIRED_FILES)
@@ -393,6 +394,39 @@ class StructuralValidationIntegrationTests(unittest.TestCase):
         review = verify_script.load(path)
         review["reviews"][0]["disposition"] = "candidate"
         self.assert_verify_runtime_error(path, review, "official body exclusion drifted")
+
+    def test_round03_alternative_comparison_covers_all_paths_without_proving_a_gap(self) -> None:
+        comparison = verify_script.load(
+            "registry/round03-alternative-comparison-batch-01.json"
+        )
+        self.assertEqual(len(comparison["comparisons"]), 4)
+        self.assertTrue(
+            all(len(item["alternatives"]) == 9 for item in comparison["comparisons"])
+        )
+        decision = comparison["batchDecision"]
+        self.assertEqual(decision["supportedResidualGapCount"], 0)
+        self.assertEqual(decision["unprovenResidualGapCount"], 3)
+        self.assertEqual(decision["nonExternalSkillGapCount"], 1)
+        self.assertFalse(decision["repositoryAuthoredSkillEligible"])
+        self.assertFalse(decision["hookEligible"])
+
+    def test_round03_alternative_comparison_rejects_premature_gap_claim(self) -> None:
+        path = "registry/round03-alternative-comparison-batch-01.json"
+        comparison = verify_script.load(path)
+        comparison["batchDecision"]["supportedResidualGapCount"] = 1
+        self.assert_verify_runtime_error(path, comparison, "batch decision drifted")
+
+    def test_round03_alternative_comparison_rejects_hook_eligibility(self) -> None:
+        path = "registry/round03-alternative-comparison-batch-01.json"
+        comparison = verify_script.load(path)
+        comparison["batchDecision"]["hookEligible"] = True
+        self.assert_verify_runtime_error(path, comparison, "batch decision drifted")
+
+    def test_round03_alternative_comparison_rejects_lane_hook_drift(self) -> None:
+        path = "registry/round03-alternative-comparison-batch-01.json"
+        comparison = verify_script.load(path)
+        comparison["comparisons"][0]["hookDecision"] = "enable-hook"
+        self.assert_verify_runtime_error(path, comparison, "Hook default drifted")
 
     def test_program_step_status_validation_is_not_snapshot_hardcoded(self) -> None:
         program = verify_script.load("registry/curation-program-plan.json")
