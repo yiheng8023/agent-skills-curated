@@ -8,40 +8,61 @@
   },
   "defaults": {
     "perQueryLimit": 25,
-    "maxTreeInspections": 60,
+    "maxTreeInspections": 20,
+    "minimumTreeInspectionsPerQuery": 2,
     "minimumPriorityStars": 1000,
     "activeWithinDays": 180
   },
   "queries": [
     {
       "id": "agent-skills",
-      "query": "agent skills",
+      "query": "agent skills is:public",
       "intent": "Find broad Agent Skills repositories, official baselines, indexes, and mature third-party sources."
     },
     {
       "id": "claude-skills",
-      "query": "claude skills",
-      "intent": "Find Claude Skills sources and Claude-oriented indexes that may contain portable Skill bodies."
+      "query": "claude skills collection is:public",
+      "intent": "Find Claude-oriented multi-Skill suites and indexes that may contain portable Skill bodies."
     },
     {
       "id": "codex-skills",
-      "query": "codex skills",
+      "query": "codex skills is:public",
       "intent": "Find Codex-oriented Skill sources and manager/catalog tooling."
     },
     {
       "id": "skill-md",
-      "query": "AI agent skills SKILL.md",
+      "query": "AI agent skills SKILL.md is:public",
       "intent": "Find repositories that explicitly mention the SKILL.md convention."
     },
     {
       "id": "cross-agent-skills",
-      "query": "cross platform agent skills codex claude cursor",
+      "query": "cross platform agent skills codex claude cursor is:public",
       "intent": "Find cross-agent Skill sources with explicit portability claims."
     },
     {
       "id": "awesome-agent-skills",
-      "query": "awesome agent skills",
+      "query": "awesome agent skills is:public",
       "intent": "Find indexes and aggregate lists for child-source discovery."
+    },
+    {
+      "id": "agent-skill-suites",
+      "query": "agent skills suite collection is:public",
+      "intent": "Find cohesive multi-Skill sources whose components need independent quality, overlap, and redundancy selection."
+    },
+    {
+      "id": "agent-skill-hooks",
+      "query": "agent skills hooks is:public",
+      "intent": "Find sources that combine Skills with Hooks so Skill and Hook disposition can be separated."
+    },
+    {
+      "id": "adaptive-agent-workflows",
+      "query": "adaptive agent workflow skills is:public",
+      "intent": "Find contextual or dynamically adaptive workflow controls for comparison without assuming they should be adopted."
+    },
+    {
+      "id": "human-ai-collaboration",
+      "query": "human AI collaboration agent skills is:public",
+      "intent": "Find sources explicitly aimed at human-AI collaboration quality, review, continuity, and control shortfalls."
     }
   ],
   "classificationRules": {
@@ -84,6 +105,10 @@
   "candidatePolicy": {
     "starsAreWeakSignal": true,
     "quantityIsNotApproval": true,
+    "publicOnlyQueriesRequired": true,
+    "sourceSuiteIsNotAtomic": true,
+    "skillAdmissionDoesNotAdmitHooks": true,
+    "upstreamBodiesRemainExactDuringPreflight": true,
     "missingLicenseDisposition": "reference-only-until-license-cleared",
     "officialSourceDisposition": "official-external-baseline",
     "indexDisposition": "discovery-index",

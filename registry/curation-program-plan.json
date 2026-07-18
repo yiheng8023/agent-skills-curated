@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "curation-program-plan-v1",
-  "purpose": "Overall control plan for the reviewed Skills terminal MVP inside a broader resource-governance funnel, from evidence-backed demand through native and external alternative comparison, residual-gap decisions, candidate governance, release, optional consumer evidence, lifecycle renewal, standard-candidate delivery, and the topology-gated design of a production capability manager. This is not approval, release inventory, runtime installation evidence, local sync authorization, Manager repository creation, or project hard-standard admission.",
+  "purpose": "Overall control plan for the Agent-neutral reviewed Skills terminal MVP and portable collaboration-chain contracts inside a broader resource-governance flow, from evidence-backed demand through native and external alternative comparison, source-preserving candidate intake, safety, quality and redundancy review, shortfall mapping, residual-gap decisions, release, optional consumer evidence, lifecycle renewal, and standard-candidate delivery. CC Switch supplies operational Skill management. Consumer configuration repositories supply only host-specific installation, runtime, Hook, verification, and rollback adapters. This is not approval, release inventory, runtime installation evidence, local sync authorization, external Skill execution, or project hard-standard admission.",
   "status": "active",
   "currentStep": "program-06-local-runtime-alignment-closeout",
   "currentState": "closed",
@@ -13,12 +13,13 @@
     "approved release manifest",
     "generated routing projections",
     "reviewed third-party Skill bodies and provenance",
+    "portable cross-Agent chain contracts and consumer adapter requirements",
     "program acceptance mapping",
     "dated consumer integration evidence"
   ],
   "strategicPositioning": {
     "systemRole": "first-terminal-mvp-for-reviewed-skills",
-    "broaderFunnel": "YIYUAN-MERIDIAN and upstream resource-governance systems may feed many terminal projections; this repository governs only the reviewed Skills terminal.",
+    "broaderFunnel": "Independent public discovery and bounded read-only research inputs may feed many terminal decisions; this repository governs reviewed Skill intake, disposition, implementation, testing, acceptance, and release for its own bounded product scope.",
     "internalAndExternalAudience": true,
     "authorityOrder": [
       "consumer or project instructions and rules",
@@ -28,28 +29,114 @@
       "project-owned hard standards",
       "evidence and accountable human decisions"
     ],
-    "standardCandidateBoundary": "This repository may extract reusable standard candidate packages from reviewed Skill evidence. YIYUAN-CALIBRATION is an independent but linked repository outside the MERIDIAN matrix and is principally a temporary reference and calibration workspace for ASSETS reshaping. YIYUAN-ASSETS is the intended final carrier of accepted standards as built-in policy or governed knowledge. Consumer configuration repositories are consumption, validation, and feedback surfaces, not the long-term carrier for this research or these standards.",
+    "standardCandidateBoundary": "This repository may consume the YIYUAN-CALIBRATION human-AI collaboration-shortfalls corpus as read-only candidate, evidence, and research input. Standard candidate work is deferred until stable repeated value is demonstrated across independent sources, Agents or hosts, task classes, and real feedback cycles, with net benefit over context, control, and maintenance cost and a separate authority decision. CALIBRATION is not curated Skill admission or operational management authority. This repository retains demand mapping, candidate review, disposition, testing, acceptance, and residual-gap authoring authority for its scope; project admission remains with the applicable project authority.",
     "standardCandidateDelivery": {
       "calibrationRepository": "YIYUAN-CALIBRATION",
-      "calibrationRepositoryRole": "independent-linked-principally-temporary-reference-and-calibration",
+      "calibrationRepositoryRole": "read-only-candidate-evidence-and-research-input",
       "calibrationRepositoryInMeridianMatrix": false,
       "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
       "consumerConfigurationMayBeDurableAuthority": false,
-      "finalStandardsCarrier": "YIYUAN-ASSETS",
+      "finalStandardsCarrier": "applicable-project-authority",
       "finalCarrierModes": ["built-in", "knowledge-base"],
-      "projectAdmissionAuthority": "YIYUAN-ASSETS",
+      "projectAdmissionAuthority": "applicable-project-authority",
       "currentTransactionCrossRepositoryWritesAuthorized": false
     },
+    "portableAuthorityBoundary": {
+      "authorityRepository": "agent-skills-curated",
+      "scope": "agent-neutral-cross-agent-skills-portable-chain-hook-policy-and-host-profile-contracts",
+      "wholeRepositoryConsolidationIntoSingleAgentConsumerAllowed": false,
+      "codexUserConfigRole": "codex-specific-installation-runtime-hook-verification-and-rollback-adapter",
+      "consumerConfigurationMayReplacePortableAuthority": false,
+      "instructionCarrierVersions": {
+        "portableRepository": "product-neutral collaboration invariants dynamic checkpoint contracts Hook modes verification rollback and safe degradation",
+        "privateCodexUserConfig": "owner-specific Codex paths proactive topology and context preferences real Hook wiring verification and rollback",
+        "publicConsumerConfig": "no manually maintained full authority copy; sanitized generated non-authoritative projection only when separately justified"
+      },
+      "consumerAdaptersMustMap": ["instruction carrier and precedence", "Skill source distribution and runtime discovery", "Hook path event off-auto-on mode authority failure behavior verification and rollback"]
+    },
+    "adaptiveCurationBoundary": {
+      "decisionEvidence": "registry/adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18.json",
+      "strictAdmissionFreeConsumption": true,
+      "curationIsNotMirroring": true,
+      "sourceSuiteReviewLevels": ["source", "suite", "component", "capability"],
+      "suiteAtomicityMustBeAssessed": true,
+      "selectionManifestRequired": true,
+      "skillAdmissionDoesNotApproveHook": true,
+      "sourceUpdateDoesNotAutoAdmit": true,
+      "userCustomizationAllowed": true,
+      "modifiedDerivativeInheritsCuratedVerification": false,
+      "mandatoryManagerRequired": false,
+      "harnessModes": ["open", "assist", "guarded"],
+      "nativeNoSkillNoHookNoAdditionalStructureAreValid": true,
+      "automaticInterventionOutsideHardBoundaries": "advisory",
+      "newConstraintRequires": ["observed or reproducible failure", "net-benefit evidence", "reversibility", "review trigger"],
+      "obsoleteConstraintDisposition": "relax-or-retire",
+      "selfAuthoredSkillAndHookPolicy": "dynamically-adaptive-after-reproducible-residual-gap",
+      "dynamicRuntimeControlGapEvidence": "registry/dynamic-runtime-control-gap-review-2026-07-18.json",
+      "dynamicRuntimeControlCurrentRoute": "native-startup-enable-disable-and-tool-filtering-before-Skill-or-Hook-authoring",
+      "dynamicRuntimeHotSwitchState": "unproven",
+      "contextTelemetryState": "unproven",
+      "adaptationInputs": ["task intent and phase", "risk impact and reversibility", "permission privacy and side-effect facts", "Agent and host capability profile", "user-selected posture", "outcome friction and failure feedback"],
+      "runtimeOutcomes": ["native-or-no-skill", "open", "advisory-assist", "structured-assist", "guarded", "human-confirmation", "safe-fallback"],
+      "hookModes": ["off", "auto", "on"],
+      "hiddenSelfModificationAllowed": false,
+      "silentPermissionExpansionAllowed": false,
+      "feedbackMayAutoPublishChanges": false,
+      "hostSpecificAdaptationRequiresProfileAndSafeDegradation": true,
+      "standardizationState": "deferred-until-chain-maturity",
+      "currentGovernanceArtifactRole": "correctable-working-hypotheses-and-observation-protocols",
+      "standardizationEligibilityRequires": [
+        "stable repeated value across independent sources",
+        "cross-Agent or cross-host behavior evidence",
+        "multiple task classes and real feedback cycles",
+        "net benefit over context control and maintenance cost",
+        "counterevidence simpler-native-path and retirement review",
+        "separate authority and adoption decision"
+      ]
+    },
     "managerProductBoundary": {
-      "proposedRepositoryRole": "local-first-production-capability-manager",
-      "repositoryCreationAuthorized": false,
-      "topologyImpactReviewRequired": true,
-      "headlessCoreRequired": true,
-      "productAccountSystemAllowed": false,
-      "defaultTelemetry": "off",
-      "skillsFirstVerticalSlice": true,
-      "approvedReleaseGrowthRequiredForMvp": true,
-      "guiDecision": "pending-bounded-usability-evidence"
+      "status": "superseded-by-cc-switch-reuse",
+      "activeImplementationAuthorized": false,
+      "operationalSkillManager": "CC Switch",
+      "operationalStrategy": "reuse-existing-source-install-update-distribution-backup-and-restore",
+      "sourcePayloadPolicy": "upstream-exact-no-content-rewrite",
+      "candidatePoolActivation": "non-active-until-reviewed-and-separately-authorized",
+      "wholeRepositoryConsolidationIntoCodexUserConfigAllowed": false,
+      "supersedingDecisionEvidence": "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json",
+      "retirementReconciliationEvidence": "registry/custom-manager-retirement-reconciliation-2026-07-18.json",
+      "liveSourceOwnershipEvidence": "registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json",
+      "legacySkillMigrationReviewEvidence": "registry/legacy-curated-skill-source-migration-review-2026-07-18.json",
+      "disposableSourceManagementPreviewEvidence": "registry/cc-switch-disposable-source-management-preview-2026-07-18.json",
+      "disposableSourceManagementPreviewState": "verified-contract-with-upstream-windows-test-isolation-defect",
+      "disposableSourceUpdateRecoveryEvidence": "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json",
+      "disposableSourceUpdateRecoveryState": "verified-success-and-manual-recovery-automatic-rollback-gap-confirmed",
+      "ccSwitchUpdaterTransactionState": "non-atomic-do-not-use-as-first-canary-rollback-proof",
+      "firstRealCanaryPreviewEvidence": "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json",
+      "firstRealCanaryPreviewState": "decision-ready-read-only-preview-live-change-not-authorized",
+      "firstRealCanaryCandidate": "handoff",
+      "firstRealCanaryExecutionAuthorized": true,
+      "firstRealCanaryExecutionEvidence": "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+      "firstRealCanaryExecutionState": "verified-local-live-source-backed-and-owner-authorized-webdav-sync-fresh-session-invocation-open",
+      "ccSwitchSourcePinPersistence": "branch-only-external-reviewed-revision-required",
+      "ccSwitchExternalSyncState": "owner-authorized-local-sync-observed-cc-switch-running-cross-device-equality-open",
+      "ccSwitchObservedUnreviewedUpdateSignals": 20,
+      "ccSwitchObservedUpdateSignalSource": "larksuite/cli",
+      "liveSourcePreservingProjectionState": "partial-one-of-43-active-cc-switch-targets-source-backed",
+      "localManagerExperimentState": "deleted-2026-07-17-after-full-verification",
+      "portableGovernanceAuthority": "agent-skills-curated",
+      "consumerRuntimeAuthority": "consumer-and-accountable-user",
+      "historicalDesignEvidenceRetained": true,
+      "historicalAcceptedRepositorySlug": "agent-capability-manager",
+      "historicalSelectedImplementationStack": "rust-headless-core-cli-ratatui-next-tauri-later",
+      "reactivationRequires": "supported-residual-operational-management-gap-failed-viable-alternatives-and-separate-owner-decision",
+      "currentProductRequirements": ["user-sovereignty", "foreign-managed-capability-coexistence", "broad-capability-ecosystem-boundary", "discovery-reuse-before-authoring", "optional-host-specific-hook-modes", "residual-gap-only-repository-authoring", "source-backed-selected-skills-or-explicit-self-authored-provenance", "authority-classified-multi-root-consistency", "security-quality-superiority-overlap-redundancy-name-collision-gates", "shortfall-and-software-lifecycle-residual-gap-mapping", "three-skill-agents-hook-layout-revalidation", "one-way-consumer-repository-projection-contract"],
+      "directoryConsistencyModel": "one-authoritative-ssot-governed-projections-and-foreign-roots-inventoried-without-flattening",
+      "repositoryCouplingModel": "agent-skills-curated-portable-authority-to-consumer-config-pinned-one-way-projection-preferred",
+      "selfAuthoredChainReevaluation": "intent-contract-capability-router-closure-contract-agents-and-hooks-may-be-retained-replaced-relocated-composed-or-retired-only-after-residual-gap-evidence",
+      "hookModes": ["off", "auto", "on"],
+      "hookAuthorityClass": "optional-host-specific-chain-layer-without-permission-or-admission-authority",
+      "currentCodexAdvisoryHook": "usable-bounded-existing-chain-slice",
+      "hookExpansionRequiresIndependentContract": true
     },
     "futureTerminalBoundary": "Future non-Skill terminals may reuse broader upstream governance, but they are not release inventory owned by this repository."
   },
@@ -85,7 +172,7 @@
         "source-pinned representative reviews may run in parallel by independent cluster and join before alternative comparison",
         "host-native child tasks may produce independent read-only observations that join at parent reconciliation; shared-checkout writes are blocked unless a verified isolation mechanism, branch owner, and cleanup owner are bound"
       ],
-      "upstreamRadarBoundary": "Broad resource-radar discovery may run independently outside this repository; a radar signal enters curated decision work only through a bounded demand, baseline, source-trust, review, and acceptance path.",
+      "discoveryInputBoundary": "Bounded read-only discovery inputs may propose candidates. This repository owns disposition, implementation, acceptance, and release; discovery sources cannot approve candidates, write curated state, or obtain product authority.",
       "closeoutJoin": "A bounded initiative must close with evidence, residual risks, deferred work, and an owner decision before the next candidate-intake initiative is activated."
     },
     "operatingLanes": [
@@ -204,12 +291,12 @@
         "id": "lane.standard-extraction-and-calibration-handoff",
         "executionMode": "conditional-branch",
         "dependsOn": [],
-        "purpose": "Extract repeated reusable evidence into a non-authoritative standard candidate for a separately authorized temporary YIYUAN-CALIBRATION reference and calibration handoff before any YIYUAN-ASSETS carrier decision.",
-        "requiredInputs": ["repeated evidence", "scope and counterexamples", "versioning, migration, and authority metadata"],
-        "triggerInputsAnyOf": ["demand evidence", "review evidence", "consumer feedback", "lifecycle evidence"],
-        "allowedOutputs": ["bounded standard candidate package", "temporary CALIBRATION reference handoff proposal", "supersession metadata", "ASSETS carrier proposal"],
-        "blockedTransitions": ["standard promotion from one case", "user configuration as long-term carrier", "CALIBRATION as MERIDIAN or final authority", "ASSETS admission claim"],
-        "verificationSurface": ["lineage", "repetition threshold", "counterexamples", "calibration receipt when separately authorized"],
+        "purpose": "Keep CALIBRATION research read-only and defer standard-candidate extraction until chain maturity and separate authority are demonstrated, without promoting CALIBRATION into product or admission authority.",
+        "requiredInputs": ["stable repeated value across independent sources", "cross-Agent or cross-host evidence", "multiple task classes and real feedback cycles", "net benefit over context control and maintenance cost", "scope and counterexamples", "versioning migration and separate authority metadata"],
+        "triggerInputsAllOf": ["chain-maturity evidence", "separate authority decision"],
+        "allowedOutputs": ["bounded standard candidate package", "read-only CALIBRATION source reference", "supersession metadata", "project carrier proposal"],
+        "blockedTransitions": ["standard extraction before chain maturity", "standard promotion from one case", "user configuration as long-term carrier", "CALIBRATION as Skills, Manager, or final project authority", "project admission claim"],
+        "verificationSurface": ["lineage", "cross-source cross-host cross-task repetition", "real feedback and net benefit", "counterexamples", "separate authority decision", "calibration receipt when separately authorized"],
         "rerouteTriggers": ["counterexample", "scope drift", "calibration rejection", "newer evidence"]
       }
     ]
@@ -254,7 +341,9 @@
     {"id": "gate.repeated-evidence-before-standard-extraction", "prerequisite": "repeated reusable evidence", "blockedUntil": "standard candidate extraction", "verification": "lineage, scope, counterexamples, and repetition"},
     {"id": "gate.calibration-before-assets-admission", "prerequisite": "separately authorized intended YIYUAN-CALIBRATION reference and calibration handoff", "blockedUntil": "YIYUAN-ASSETS admission or final-carrier claim", "verification": "repository independence, principally temporary role, receipt, calibration decision, and ASSETS authority"},
     {"id": "gate.accepted-standard-before-revalidation", "prerequisite": "versioned standard accepted by accountable carrier authority plus affected-graph query", "blockedUntil": "migration, remediation, rebaseline, or old-projection deprecation", "verification": "affected set, bounded batches, verification, new baseline, old-projection deprecation, and separate cross-repository authority"},
-    {"id": "gate.manager-topology-before-repository-creation", "prerequisite": "owner-reviewed written Manager design and accepted MERIDIAN topology-impact package", "blockedUntil": "Manager repository creation or implementation", "verification": "authority, upstream and downstream, bookmark and radar, public and private, Actions, release, acceptance, rollback, retirement, and cross-repository write edges"},
+    {"id": "gate.source-preflight-before-download-or-install", "prerequisite": "bound task or shortfall plus metadata license provenance and executable-surface preflight", "blockedUntil": "candidate download into a non-active pool", "verification": "source identity, immutable revision, license, provenance, executable surfaces, non-active destination, and explicit non-execution boundary"},
+    {"id": "gate.manager-topology-before-repository-creation", "status": "historical-satisfied", "prerequisite": "owner-reviewed written Manager design and accepted historical MERIDIAN topology-impact package", "blockedUntil": "the completed local Manager repository-creation decision", "verification": "historical authority, upstream and downstream, bookmark and radar, public and private, Actions, release, acceptance, rollback, retirement, and cross-repository write edges"},
+    {"id": "gate.manager-post-matrix-reintake-before-adapter-work", "status": "historical-satisfied", "prerequisite": "dated repository truth and current authority contract", "blockedUntil": "the completed disposable adapter preview", "verification": "dated repository authority snapshot, CALIBRATION read-only input, historical curated and Manager authority, explicit adapter slice scope, and real Agent and Hook write prohibition"},
     {"id": "gate.closeout-before-next-intake", "prerequisite": "current round stage closeout", "blockedUntil": "next candidate-intake round activation", "verification": "closeout outcome, residual risks, deferred work, and next decision"}
   ],
   "currentInitiatives": [
@@ -297,7 +386,7 @@
       "id": "initiative.capability-survey-gap-proof",
       "status": "active",
       "prerequisites": ["program-control completeness reconciliation accepted", "Round 02 stage closeout closed", "Round 03 capability-survey rebaseline accepted", "capability-survey plan and acceptance contract verified"],
-      "allowedActions": ["governed demand-record extraction", "dated native, official, runtime, installed, and already-authorized baseline evidence", "bounded public read-only metadata discovery", "clustering and duplicate suppression", "source-pinned representative review without candidate execution", "bounded host-native read-only child-task delegation with parent reconciliation", "alternative comparison and residual-gap adjudication", "reviewed evidence writes inside agent-skills-curated"],
+      "allowedActions": ["governed demand-record extraction", "dated native, official, runtime, installed, and already-authorized baseline evidence", "bounded public read-only metadata discovery", "user-provided public curated lists as supplemental non-exclusive discovery signals", "clustering and duplicate suppression", "metadata license provenance and executable-surface preflight", "exact upstream candidate download into a non-active repository-controlled pool after preflight", "source-pinned representative review without candidate execution", "source suite atomicity component selection and independent Hook disposition review", "selection manifest evidence with inclusion exclusion overlap conflict update and rollback rationale", "security quality superiority overlap and redundancy review", "bounded host-native read-only child-task delegation with parent reconciliation", "open assist guarded alternative comparison with native no-Skill no-Hook and no-additional-structure outcomes", "alternative comparison, shortfall mapping, and residual-gap adjudication", "reviewed evidence writes inside agent-skills-curated"],
       "blockedActions": ["candidate code execution", "installation or account connection", "Skill admission or repository-authored implementation", "Hook enablement", "release-manifest or generated-routing mutation", "runtime mutation", "cross-repository delivery", "remote push"],
       "resultPackage": [
         "dated native Agent and runtime capability baseline",
@@ -311,18 +400,54 @@
         "discovery stop rationale, recheck triggers, upstream-update implications, and next-round candidates",
         "explicit non-authorization and non-proof statement"
       ],
-      "acceptanceIds": ["acceptance.capability-survey-result-package", "acceptance.cross-agent-claim-limits", "acceptance.residual-gap-proof"],
-      "decisionGate": "reviewed survey result before adoption, adaptation, repository authoring, or standards extraction"
+      "acceptanceIds": ["acceptance.capability-survey-result-package", "acceptance.complete-coordinate-envelope-reconciliation", "acceptance.cross-agent-claim-limits", "acceptance.residual-gap-proof", "acceptance.cc-switch-source-preserving-skill-pool", "acceptance.strict-admission-free-consumption", "acceptance.source-suite-selective-admission", "acceptance.public-source-balanced-preflight", "acceptance.public-source-static-review", "acceptance.public-source-next-gate-triage", "acceptance.loopy-disposable-agent-trial-disposition", "acceptance.intent-binding-demand-lane", "acceptance.authority-boundary-demand-lane", "acceptance.premise-challenge-demand-lane", "acceptance.cognitive-offload-monitoring-demand-lane", "acceptance.adaptive-harness-proportionality", "acceptance.self-authored-dynamic-adaptation", "acceptance.dynamic-runtime-control-gap-research"],
+      "decisionGate": "reviewed survey result before adoption, adaptation, or repository authoring; hard-standard extraction remains deferred until stable cross-source cross-host cross-task feedback evidence and a separate authority decision",
+      "currentResultEvidence": "registry/round03-capability-survey-result-package-2026-07-18.json",
+      "currentReconciliationEvidence": "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json",
+      "currentFollowupEvidence": "registry/loopy-disposable-agent-trial-result-2026-07-18.json",
+      "currentAssessment": {
+        "tenComponentPackageAssembled": true,
+        "selectedDemandBatchDecisionReady": true,
+        "wholeCoordinateCorpusDecisionReady": true,
+        "wholeDemandModelClosureClaimed": false,
+        "surveyClosureClaimed": false,
+        "selectedBatchCoordinateCount": 62,
+        "notSelectedUnassessedCoordinateCount": 0,
+        "supportedResidualGapCount": 0,
+        "completedAuthorizedCandidateTrialCount": 1,
+        "loopyTrialDisposition": "reference-only-not-admitted",
+        "candidateApprovedCount": 0,
+        "candidateExecutionAuthorized": false,
+        "operatingMode": "evidence-triggered-monitoring-and-recheck",
+        "nextDecision": "keep demand-model, longitudinal, production, and cross-host evidence limits open; resume bounded discovery or comparison only when a new demand, repeated failure, source drift, host change, cost change, or authority change can alter a disposition"
+      }
     },
     {
       "id": "initiative.production-capability-manager-topology-design",
-      "status": "planned",
-      "prerequisites": ["owner-reviewed written Manager design", "current MERIDIAN matrix snapshot including bookmark, resource-radar, curated-repository, and consumer nodes plus the external-linked CALIBRATION and ASSETS relationship snapshot", "bounded capability-survey evidence or an explicitly isolated design-only dependency"],
-      "allowedActions": ["written-spec review", "read-only cross-repository topology inventory", "topology-impact package preparation", "repository authority and interface contract design", "implementation-plan preparation after written-spec approval"],
-      "blockedActions": ["new Manager repository creation", "Manager implementation", "cross-repository writes", "live projection mutation", "product account system", "third-party code execution", "Hook enablement", "remote push"],
-      "resultPackage": ["owner-reviewed written design", "MERIDIAN topology-impact package", "repository authority and interface contract", "production MVP acceptance contract", "real approved-Skill coverage-growth dependency", "native task orchestration boundary", "implementation handoff"],
-      "acceptanceIds": ["acceptance.manager-design-contract", "acceptance.manager-topology-impact-gate", "acceptance.manager-user-sovereignty", "acceptance.native-task-orchestration-boundary"],
-      "decisionGate": "owner separately accepts the written specification and topology-impact package before repository creation or implementation"
+      "status": "superseded",
+      "designDecisionEvidence": "registry/production-capability-manager-design-acceptance-event-2026-07-15.json",
+      "topologyImpactPackage": "registry/production-capability-manager-topology-impact-package-2026-07-15.json",
+      "topologyDecisionState": "owner-accepted",
+      "topologyDecisionEvidence": "registry/production-capability-manager-topology-acceptance-event-2026-07-15.json",
+      "externalEcosystemAndStackReview": "registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json",
+      "repositorySlugDecisionEvidence": "registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json",
+      "acceptedRepositorySlug": "agent-capability-manager",
+      "stackAndFoundationAuthorizationEvidence": "registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json",
+      "foundationImplementationEvidence": "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json",
+      "postMatrixReintakeEvidence": "registry/production-capability-manager-post-matrix-reintake-2026-07-17.json",
+      "codexReadonlyAdapterSlicePlan": "registry/agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17.json",
+      "codexReadonlyAdapterImplementationEvidence": "registry/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.json",
+      "selectedImplementationStack": "rust-headless-core-cli-ratatui-next-tauri-later",
+      "supersededBy": "initiative.capability-survey-gap-proof",
+      "supersedingDecisionEvidence": "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json",
+      "retirementReconciliationEvidence": "registry/custom-manager-retirement-reconciliation-2026-07-18.json",
+      "localExperimentState": "deleted-2026-07-17-after-full-verification",
+      "prerequisites": ["historical evidence preservation", "exact local repository deletion inventory", "full governance rebaseline verification before deletion"],
+      "allowedActions": ["preserve historical design and implementation evidence", "read-only verification that the retired local experiment remains absent"],
+      "blockedActions": ["further Manager implementation", "real Agent adapter or configuration writes", "existing-repository integration writes", "live projection mutation", "third-party Skill execution", "Hook enablement or mutation", "TUI or GUI implementation", "commit", "remote repository creation", "remote push"],
+      "resultPackage": ["owner-reviewed written design", "historical MERIDIAN topology-impact package", "verified post-matrix authority re-intake", "repository authority and interface contract", "production MVP acceptance contract", "narrow collaboration-control chain and broad capability-ecosystem scope contract", "broad-discovery selective-review and reuse-before-authoring contract", "multi-Agent foreign-managed Skill coexistence and opt-in takeover contract", "current usable Hook plus off-auto-on mode, independent policy-family expansion, and authority contract", "real approved-Skill coverage-growth dependency", "native task orchestration boundary", "verified disposable-root foundation implementation evidence", "Codex read-only adapter contract and disposable Agent Home preview evidence", "implementation handoff"],
+      "acceptanceIds": ["acceptance.manager-design-contract", "acceptance.manager-topology-impact-gate", "acceptance.manager-foundation-transaction-closure", "acceptance.manager-codex-readonly-adapter-preview", "acceptance.custom-manager-retirement-reconciliation"],
+      "decisionGate": "custom Manager work is superseded by CC Switch reuse; the uncommitted no-remote local experiment was deleted after full governance verification, historical evidence remains preserved, and no further implementation is authorized"
     }
   ],
   "strategicObjectives": [
@@ -331,7 +456,7 @@
       "statement": "Operate reviewed Skills as the first low-burden terminal MVP without collapsing the broader resource funnel into a Skills-only system.",
       "authorityOwner": "agent-skills-curated",
       "nonGoals": [
-        "owning YIYUAN-MERIDIAN or resource-radar architecture",
+        "owning discovery-source architecture or operations",
         "releasing every future terminal type"
       ],
       "acceptanceIds": [
@@ -347,11 +472,11 @@
       "acceptanceIds": ["acceptance.multi-domain-coverage"]
     },
     {
-      "id": "objective.evidence-backed-approved-coverage-growth",
-      "statement": "Expand the approved release against named human-AI collaboration shortfall coordinates through evidence-backed external reuse, adaptation, composition, or repository authoring after a supported residual gap; preserving breadth without real governed growth is insufficient.",
+      "id": "objective.evidence-backed-release-evolution",
+      "statement": "Evolve the approved release through evidence-backed retention, external reuse, replacement, supersession, composition, admission, deprecation, or retirement against named human-AI collaboration demands; unchanged is valid when no option proves positive net value.",
       "authorityOwner": "agent-skills-curated",
-      "nonGoals": ["optimizing for raw Skill count", "requiring universal or perfect shortfall coverage", "making Manager repository creation a prerequisite for curated growth"],
-      "acceptanceIds": ["acceptance.approved-release-coverage-growth"]
+      "nonGoals": ["optimizing for raw Skill count or requiring release growth", "requiring universal or perfect shortfall coverage", "making Manager repository creation a prerequisite for release evolution"],
+      "acceptanceIds": ["acceptance.evidence-backed-release-evolution"]
     },
     {
       "id": "objective.evidence-backed-demand-model",
@@ -365,14 +490,14 @@
       "statement": "Prefer reliable native, official, runtime, curated, external, composed, or non-Skill paths and permit repository-authored work only for a supported residual gap.",
       "authorityOwner": "agent-skills-curated-for-capability-disposition",
       "nonGoals": ["assuming every shortfall needs a Skill", "authoring from metadata similarity or project inertia"],
-      "acceptanceIds": ["acceptance.native-runtime-baseline", "acceptance.alternative-comparison", "acceptance.residual-gap-proof", "acceptance.repository-authored-gap-fill-gate"]
+      "acceptanceIds": ["acceptance.native-runtime-baseline", "acceptance.alternative-comparison", "acceptance.residual-gap-proof", "acceptance.repository-authored-gap-fill-gate", "acceptance.loopy-disposable-agent-trial-disposition", "acceptance.intent-binding-demand-lane", "acceptance.authority-boundary-demand-lane", "acceptance.premise-challenge-demand-lane", "acceptance.cognitive-offload-monitoring-demand-lane", "acceptance.complete-coordinate-envelope-reconciliation"]
     },
     {
       "id": "objective.full-chain-capability-coverage",
       "statement": "Model single, composed, native, non-Skill, human-authority, fallback, conflict, and lifecycle paths across the full collaboration chain.",
       "authorityOwner": "agent-skills-curated-for-abstract-topology-and-composition",
       "nonGoals": ["requiring a Skill for every capability", "claiming behavioral coverage from names or descriptions"],
-      "acceptanceIds": ["acceptance.full-chain-coverage-matrix", "acceptance.discovery-clustering-stop-rule", "acceptance.program-control-completeness"]
+      "acceptanceIds": ["acceptance.full-chain-coverage-matrix", "acceptance.discovery-clustering-stop-rule", "acceptance.public-source-balanced-preflight", "acceptance.public-source-static-review", "acceptance.public-source-next-gate-triage", "acceptance.program-control-completeness"]
     },
     {
       "id": "objective.decision-ready-external-brain",
@@ -391,7 +516,9 @@
       ],
       "acceptanceIds": [
         "acceptance.third-party-admission-gates",
-        "acceptance.official-runtime-boundary"
+        "acceptance.official-runtime-boundary",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission"
       ]
     },
     {
@@ -418,7 +545,9 @@
       "acceptanceIds": [
         "acceptance.layered-reliability-model",
         "acceptance.project-standard-precedence",
-        "acceptance.native-task-orchestration-boundary"
+        "acceptance.native-task-orchestration-boundary",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation"
       ]
     },
     {
@@ -453,51 +582,82 @@
       ]
     },
     {
-      "id": "objective.production-capability-manager",
-      "statement": "Design a local-first production capability manager that turns governed capability supply into user-controlled discovery, comparison, profiling, projection, update, rollback, and retirement, requires and consumes evidence-backed approved-release expansion governed by agent-skills-curated, and preserves repository authorities.",
-      "authorityOwner": "future-separately-governed-manager-repository-after-meridian-topology-acceptance",
+      "id": "objective.source-preserving-cross-agent-capability-governance",
+      "statement": "Reuse CC Switch for operational Skill source, installation, update, supported-Agent distribution, backup, and restore; preserve third-party Skill bodies unchanged by default; govern safety, quality, superiority, overlap, redundancy, provenance, and human-AI collaboration shortfall coverage here; and author repository Skills only for reproducible residual gaps while retaining the custom Manager work as historical evidence.",
+      "authorityOwner": "agent-skills-curated-for-governance-and-cc-switch-for-operational-management",
       "nonGoals": [
-        "creating the Manager repository from this planning update",
-        "adding a product account system",
-        "duplicating curation authority or live host ownership",
-        "treating current approved inventory as sufficient MVP coverage",
-        "claiming cross-host parity from Codex-native task evidence"
+        "continuing custom Manager implementation without a proven residual management gap",
+        "rewriting third-party Skill bodies by default",
+        "installing or activating candidates before review and separate authority",
+        "treating one shared directory as universal Agent loader proof or product architecture",
+        "treating current approved inventory as sufficient shortfall coverage",
+        "privileging the three current repository-authored Skills over better external evidence",
+        "claiming cross-Agent parity without per-Agent instruction Skill and Hook path verification"
+      ],
+      "acceptanceIds": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission",
+        "acceptance.evidence-backed-release-evolution",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation",
+        "acceptance.dynamic-runtime-control-gap-research",
+        "acceptance.native-task-orchestration-boundary"
+      ]
+    },
+    {
+      "id": "objective.custom-manager-retirement-evidence-preservation",
+      "statement": "Keep superseded custom Manager decisions and bounded experiments traceable as historical evidence while removing them from current product identity, implementation authority, and future-work pressure.",
+      "authorityOwner": "agent-skills-curated-for-historical-evidence-and-retirement-boundary",
+      "nonGoals": [
+        "deleting or rewriting accepted historical evidence",
+        "reactivating custom Manager work from historical momentum",
+        "claiming authority over CC Switch or live consumer runtimes"
       ],
       "acceptanceIds": [
         "acceptance.manager-design-contract",
         "acceptance.manager-topology-impact-gate",
-        "acceptance.approved-release-coverage-growth",
-        "acceptance.manager-user-sovereignty",
-        "acceptance.native-task-orchestration-boundary"
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.manager-codex-readonly-adapter-preview",
+        "acceptance.custom-manager-retirement-reconciliation"
       ]
     }
   ],
   "upstreamInputBoundary": {
-    "role": "downstream-consumer-of-broader-resource-governance-inputs",
+    "role": "independent-curation-authority-consuming-bounded-read-only-inputs",
     "knownUpstreamEntrypoints": [
       {
-        "id": "github:yiheng8023/YIYUAN-MERIDIAN",
-        "url": "https://github.com/yiheng8023/YIYUAN-MERIDIAN",
-        "status": "external-upstream-entrypoint",
-        "currentHandling": "recorded-boundary-only"
+        "id": "github:yiheng8023/YIYUAN-CALIBRATION",
+        "url": "https://github.com/yiheng8023/YIYUAN-CALIBRATION",
+        "status": "read-only-research-input",
+        "currentHandling": "pinned-corpus-input-only",
+        "repositoryHead": "e060a08f05361cb4cc9a67be050236cdbbde1de5",
+        "path": "common/human-ai-collaboration-shortfalls/",
+        "sourceSha256": "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727"
       }
     ],
     "notOwnedHere": [
-      "upstream resource-radar architecture",
-      "upstream bookmark or research repositories",
+      "discovery-source operation and scheduling",
+      "source repositories and private research custody",
       "general non-Skill resource governance",
-      "YIYUAN-MERIDIAN release decisions"
+      "CALIBRATION research custody"
     ],
     "allowedHere": [
-      "consume stable upstream Skill candidates after they are explicitly provided or discovered through approved intake",
-      "record upstream provenance as candidate evidence",
+      "consume pinned CALIBRATION research and stable external Skill candidates through approved intake",
+      "record research and upstream provenance as candidate evidence",
       "route Skill candidates through this repository's curation and release gates"
     ],
     "blockedHere": [
-      "treating upstream discovery as approval",
-      "mutating YIYUAN-MERIDIAN from this repository plan",
-      "collapsing this repository into the global upstream hub",
-      "claiming upstream completeness from this repository verification"
+      "treating any discovery input as approval",
+      "granting a discovery source control over curated disposition, implementation, acceptance, or release",
+      "mutating YIYUAN-CALIBRATION from this repository plan",
+      "promoting CALIBRATION into Skills or Manager product authority",
+      "claiming ecosystem completeness from this repository verification"
     ]
   },
   "harnessLoop": {
@@ -516,7 +676,7 @@
       "optional-consumer-projection",
       "feedback",
       "metabolize",
-      "extract-standard-candidate-for-calibration"
+      "consider-standardization-only-after-chain-maturity-and-separate-authority"
     ],
     "feedbackInputs": [
       "repository validation failures",

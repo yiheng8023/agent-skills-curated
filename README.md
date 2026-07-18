@@ -10,11 +10,14 @@ governance evidence, capability topology, and deterministic release manifests.
 This repository governs reusable Skill assets from intake through an approved,
 auditable release. It is an agent-neutral producer for downstream consumer
 configuration lanes. Codex and Claude are the currently characterized consumer
-examples because they are the maintainer's active environments; they are not
-the boundary of the model. Public readers should start from the public-safe
+examples, but their evidence states differ: Codex has current pinned static
+consumer-repository evidence with live-state gaps, while Claude remains a
+conceptual chain example here.
+Neither is a current supported mapping yet, and neither defines the boundary of
+the model. Public readers should start from the public-safe
 templates `codex-user-config-template` and `claude-user-config-template`,
 which demonstrate a broader pattern for agent-environment migration, cloud
-sync/backup, verification, and restore.
+sync/backup, verification, and restore without proving current consumer state.
 
 ## What This Repository Provides
 
@@ -33,8 +36,8 @@ retained only as non-runtime historical evidence.
 
 ## Strategic Positioning
 
-Reviewed Skills are the first terminal MVP in the broader `YIYUAN-MERIDIAN`
-resource-governance funnel. They are a low-burden, cross-Agent entry point that
+Reviewed Skills are the first terminal MVP in an independent, bounded
+resource-governance flow. They are a low-burden, cross-Agent entry point that
 can carry guidance, resources, scripts, and deterministic checks for internal
 and external consumers. They are not the only possible terminal and do not
 constrain upstream discovery to Skills.
@@ -57,9 +60,10 @@ Agents.
 The stable process is a dependency graph, not a mandatory linear conveyor:
 consumer projection is an optional branch, lifecycle metabolism is
 cross-cutting, and standards extraction is conditional on repeated evidence.
-Upstream radar may discover broadly, while this repository requires bounded
-demand, baseline, an exact source pin, review, and acceptance before a signal
-can affect a curated decision. Program control and Round 02 closeout both have
+Public discovery, community submissions, dated research corpora, and other
+read-only source signals may be broad. This repository requires bounded demand,
+a baseline, an exact source pin, review, and acceptance before any signal can
+affect a curated decision. Program control and Round 02 closeout both have
 explicit owner acceptance events. Round 02 is closed; the Round 03
 capability-survey rebaseline is accepted and the bounded read-only survey is
 active behind its demand-and-baseline sequence gate. The current initiative is
@@ -68,23 +72,142 @@ the capability survey and residual-gap proof phase.
 Reliability is layered rather than text-only: instructions and rules may route
 to Skills and Recipes; deterministic scripts, schemas, and validators cover
 machine-checkable behavior; consumer-owned controls and project-owned hard
-standards remain higher-authority integration surfaces. This repository may
-extract traceable standard candidates from repeated governance evidence, but it
-does not admit, publish, or install project hard standards. Consumer
+standards remain higher-authority integration surfaces. Current modes, fields,
+and review checks are working hypotheses and observation protocols, not hard
+standards. Standard-candidate work is deferred until value repeats across
+independent sources, Agents or hosts, task classes, and real feedback cycles,
+with net benefit and separate authority. This repository does not admit,
+publish, or install project hard standards. Consumer
 configuration repositories are temporary consumption, validation, and feedback
 surfaces for this purpose, not the long-term carrier for research or standards.
-Bounded research and standard-candidate packages are intended for separately
-authorized delivery to `YIYUAN-CALIBRATION`. CALIBRATION is an independent but
-linked repository outside the MERIDIAN matrix and principally a temporary
-reference and calibration workspace. `YIYUAN-ASSETS` separately owns admission
-and is the intended final standards carrier through built-in policy or governed
-knowledge.
+The pinned human-AI collaboration-shortfalls corpus in
+`YIYUAN-CALIBRATION` is read-only candidate, evidence, and research input.
+CALIBRATION is not Skill or Manager product authority. Standard admission and
+final carriage remain with the applicable project authority.
 
 The current approved release is a seed, not sufficient coverage of human-AI
-collaboration shortfalls. Real evidence-backed approved-release growth remains
-a core objective whether or not the separately planned production capability
-Manager is created. Its written design is reviewable now, but repository
-creation and implementation remain blocked by a MERIDIAN topology-impact gate.
+collaboration shortfalls. The current strategy uses CC Switch for operational
+source, install, update, distribution, backup, and restore management. This is
+the target operating model, not a claim that the existing pool has already
+been migrated: a 2026-07-18 read-only audit found 43 active CC Switch targets,
+42 local database rows, zero source-backed rows, and one missing row. The 19
+legacy curated targets still exactly match this repository's adapted release.
+The source-preserving pool acceptance is therefore partial pending per-Skill
+migration review and separately authorized migration evidence. This repository
+keeps external payloads unchanged by default and owns safety,
+quality, superiority, overlap, redundancy, provenance, and shortfall-coverage
+decisions. Repository authoring begins only after a reproducible residual gap.
+The first read-only migration review now gives 16 provisional upstream-exact
+replacement candidates and three provisional retirement or supersession
+candidates; it authorizes no live change.
+A disposable CC Switch 3.17.0 source-management preview has now verified source
+registration, source enablement, cross-source directory collision, selective
+projection, backup, restore, and migration-snapshot contracts without changing
+the real Skill trees. The stock Windows test boundary nevertheless bypasses
+`CC_SWITCH_TEST_HOME` in five Skill-service paths; the full 7/7 result required
+a diagnostic-only correction in `C:/tmp`. Acceptance therefore remains partial,
+and no real source-backed migration or network update is claimed.
+A later loopback update fixture verified v1 installation, v2 detection,
+pre-update backup, replacement, and manual v1 recovery, while proving that
+CC Switch's updater is not atomic. Its first run also exposed a second Windows
+test-home precedence defect and briefly created exact test-only records and a
+fixture payload in the live CC Switch store. Two identity-checked cleanup
+transactions, each preceded by a consistent database copy, removed two test
+Skill rows, one test source row, the payload, and its backups. Final checks
+returned the live database to 248 Skill rows and five repository rows; the
+corrected second run created no new live fixture residue. The first real canary is therefore gated on a
+one-Skill preview, external before-state snapshots, readable backup, and an
+explicit recovery rehearsal rather than automatic update.
+The read-only canary decision package now selects `handoff`: it has the smallest
+reviewed semantic delta, no executable surface, exact local/target hashes, and a
+previewed uninstall-install rollback path. Execution was unauthorized at that
+preview stage.
+CC Switch persists only the moving `main` branch rather than the reviewed commit,
+so the external revision pin must be rechecked immediately before any mutation.
+The authorized local canary subsequently succeeded through CC Switch's own
+source, backup, install, projection, and update-check paths. A first hash attempt
+failed closed on Windows-checkout versus GitHub-archive line endings and restored
+the local state; the accepted archive-byte result is source-backed and reports
+no `handoff` update. Twenty unrelated `larksuite/cli` update signals were
+observed and deliberately left untouched for gated review. The owner later
+authorized normal WebDAV synchronization; CC Switch is running, reports a
+successful local sync, and the source-backed `handoff` state remains intact.
+Cross-device content equality and fresh-session invocation remain open.
+The release has no growth quota: retention, composition, replacement,
+supersession, deprecation, or retirement are as valid as addition when the
+evidence supports them.
+The earlier custom Manager work is preserved as historical experiment evidence
+and is no longer an active product roadmap. The current machine objective is
+source-preserving cross-Agent capability governance, with a separate retirement
+record preventing historical work from becoming silent reactivation authority.
+
+The dated 2026-07-18 public discovery projection records 188 unique public
+source IDs and 20 balanced, source-pinned structure preflights. A separate
+user-provided public star list adds five sources not present in that projection
+without limiting discovery to the list. The five-source non-executing static
+review is now complete. Its Loopy follow-up has also closed: all 18
+deterministic contract fixtures passed, then an explicitly authorized,
+exact-pinned disposable Agent trial completed 12/12 correct runs across native,
+current-chain, and Loopy arms. Loopy added no false-positive loop selection, but
+showed no material benefit over both baselines at proportionate context cost.
+Its full body is therefore retained as reference-only and is not admitted; no
+source or component is approved by this evidence.
+
+The five sources newly contributed by the user list were also preflighted: one
+stays a discovery index, two reuse older component-level reviews, one stays a
+license-incomplete overlapping reference, and one is external Skill tooling
+rather than an admission candidate. Exact extraction from the pinned index
+found 20 direct-install coordinates, 16 new relative to the broad capture. Of
+those 16, 14 currently resolve and two are stale; no possible successor is
+substituted automatically. The PM Skills current-revision delta changes only
+five lines across two Skill bodies, so the prior suite decomposition remains
+usable while host-command changes stay separately held.
+
+The ten-part Round 03 result package is now assembled for the selected demand
+batch. Its 62-row STM/P/SG envelope now maps all 62 coordinates through eight
+source-supported demand lanes; none remain unassessed, while whole demand-model
+and longitudinal-evidence closure are still not claimed.
+The added `STM-11`/`P1`/`P2`/`SG-01` intent-binding lane is currently covered
+by proportional native, current-chain, curated, recipe, runtime, fallback, and
+human-authority paths, so it triggers neither external discovery nor authoring.
+The added `STM-20`/`P9`/`SG-05` authority lane separates advisory guidance,
+host runtime enforcement, and accountable authority; its current paths likewise
+support no residual Skill or Hook gap.
+The added `STM-07`/`P4`/`SG-03` premise lane keeps challenge proportional,
+document grilling opt-in, and open or divergent work on a native fast path.
+The final `STM-09`/`P17`/`P20`/`SG-10` lane separates immediate assistance,
+longitudinal cognition, live monitoring, maintainer learning, and anti-accretion.
+The package is
+therefore partial, not survey closure: it supports no residual gap, candidate
+admission, repository-authored Skill or Hook, or hard-standard extraction. The
+Loopy behavior gate has now been executed and resolved reference-only. The next
+gate is to reconcile the complete selected coordinate envelope while keeping
+demand-model, longitudinal, production, and cross-host evidence limits open;
+closed lanes are rechecked only after their recorded triggers.
+
+This repository applies **strict admission and free consumption**. Unchanged
+upstream content does not imply whole-suite admission: multi-Skill sources are
+reviewed at source, suite, component, and capability levels, and Hooks require
+separate approval. Users remain free to add, remove, combine, fork, or modify
+Skills; changed derivatives simply do not inherit the original curated digest
+or verification automatically. The Harness stays proportional through open,
+assist, and guarded postures, with native reasoning, no Skill, no Hook, and no
+additional structure all remaining valid outcomes.
+Any future residual-gap repository-authored Skill or Hook must adapt
+transparently to task, risk, permission, host capability, user posture, and
+feedback without hidden self-modification, permission expansion, or automatic
+publication.
+
+Dynamic MCP and collaboration-topology control is now a dated research gap,
+not an implementation commitment. Codex already exposes startup-time standalone
+and plugin MCP enablement plus tool allow/deny filters, so those native controls
+must be evaluated before authoring. Mid-session hot switching, unloading an
+already-running MCP server, and exact context/compaction telemetry remain
+unproven. The portable instruction and checkpoint contract stays here; the
+owner-specific Codex realization belongs in the private consumer configuration.
+A public consumer configuration should not maintain a third handwritten copy;
+any later public form should be a sanitized generated non-authoritative
+projection.
 
 The strategic objective-to-acceptance-to-verification-to-evidence mapping is
 `registry/program-acceptance-map.json`. Partial or dated evidence remains
@@ -98,9 +221,9 @@ memory, Plugins, Apps, MCP account state, installation permissions, or live
 environment state. It does not install, does not write to
 private consumer configuration repositories such as `codex-user-config` or
 `claude-user-config`, and does not write to a live Agent environment.
-Cross-repository delivery to `YIYUAN-CALIBRATION` is therefore a separate,
-explicitly authorized transaction rather than an implicit side effect of this
-repository's verification or release workflow.
+Any cross-repository write, including a possible CALIBRATION handoff, is a
+separate explicitly authorized transaction rather than an implicit side effect
+of this repository's verification or release workflow.
 
 Official, runtime-owned, or built-in Skill bodies remain environment-owned.
 This curated repository governs third-party Skill bodies and an abstract,
@@ -145,9 +268,9 @@ agent-skills-curated
 
 The public templates do not contain the maintainer's private configuration,
 memory, account assumptions, preferences, or local machine state. They are the
-public way to understand the consumer-side pattern. The private Codex and
-Claude configuration repositories are real downstream consumers, but ordinary
-public users should not need access to them.
+public way to understand the consumer-side pattern. A private configuration
+repository is not assumed to be a current downstream or supported consumer
+without a dated consumer-owned mapping and verification record.
 
 The consumer-side pattern is generic even when a concrete implementation is
 agent-specific. Future agents or toolchains can add their own public template
@@ -167,11 +290,16 @@ public template such as `codex-user-config-template` or
 `claude-user-config-template`, with placeholders and user-owned setup guidance,
 not a copy of the private repository.
 
-The broader public-facing repository family is mapped through
-`YIYUAN-MERIDIAN`. That hub can map this repository, `resource-radar`,
-configuration templates, bookmark taxonomy repositories, and future terminal
-lanes, but it does not own Skill release decisions, manifests, or runtime
-installation.
+Discovery sources, configuration repositories, public templates, this curated
+repository, and CC Switch each retain a bounded role. This repository owns
+curated Skill intake and release decisions; CC Switch provides operational
+Skill management for supported Agents; consumer environments own their
+instruction, Skill, Hook, and live-loader behavior.
+
+Shared Skills and their portable instruction/Skill/Hook/verification chain are
+Agent-neutral authority here. They must not be consolidated wholesale into a
+single-Agent consumer such as `codex-user-config`; that repository owns only
+the Codex-specific installation, runtime, Hook deployment, and rollback adapter.
 
 ## Capability Layers And Routing
 
@@ -208,13 +336,14 @@ capability classes, and before final verification. The routing projection
 supplies deterministic policy input for those checkpoints; it does not require
 per-step routing and does not prove live capability availability.
 
-The `capability-router` is the Codex consumer's decision mechanism, not a
-universal prerequisite. The invocation chain is consumer-agent-specific: for
-example, Claude Code loads its instruction file every session and surfaces
-Skills and MCP tools to the model directly, with no capability-router step.
-Codex and Claude are the first characterized consumer lanes, not the complete
-set of possible consumers. Other agents' chains must be mapped as evidence
-before this repository describes their install, routing, or restore behavior.
+The `capability-router` is a characterized Codex consumer mechanism, not a
+universal prerequisite or proof of current live loading. Consumer invocation
+chains are Agent-specific. Claude Code is retained here only as a conceptual
+direct-surfacing example until a dated official-source review, consumer-owned
+inventory, precedence map, behavior probes, and backup/restore evidence exist.
+Codex has historical partial evidence, not a complete current mapping. Other
+agents' chains must likewise be mapped before this repository describes their
+install, routing, or restore behavior.
 This repository names mechanisms structurally and stays agent-neutral, open,
 and compatible — it must not hard-code any single agent's chain.
 
@@ -268,8 +397,51 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/curation-harness-model.md`: continuous curation loop, first-terminal MVP,
   layered reliability, multi-Agent consumer, and standard-candidate boundaries.
 - `docs/superpowers/specs/2026-07-15-production-capability-manager-design.md`:
-  owner-approved conversational design written for review; it defines the
-  production Manager boundary without authorizing a repository or implementation.
+  superseded historical custom-Manager design and bounded experiment lineage.
+- `docs/cc-switch-source-preserving-skill-pool-strategy-2026-07-17.md`:
+  current owner-accepted strategy that reuses CC Switch, preserves upstream
+  Skill bodies, and reserves repository authoring for proven residual gaps.
+- `docs/cc-switch-live-source-ownership-reconciliation-2026-07-18.md`:
+  read-only live projection evidence showing operational CC Switch reuse but
+  zero source-backed rows across 43 active targets, with migration still open.
+- `docs/cc-switch-disposable-source-management-preview-2026-07-18.md`:
+  disposable source, collision, backup, and restore contract evidence plus the
+  stock Windows test-isolation limitation.
+- `docs/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.md`:
+  loopback source update, non-atomic failure, manual recovery, isolation
+  incident, exact cleanup, and revised real-canary gate.
+- `docs/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.md`:
+  the selected one-Skill canary, exact before/target hashes, moving-branch pin
+  limit, bounded ownership transition, acceptance checks, and rollback preview.
+- `docs/cc-switch-handoff-real-canary-execution-2026-07-18.md`:
+  the authorized local source-backed migration, fail-closed archive-byte hash
+  correction, whole-database post-state audit, no-delta update check, and
+  external-sync boundary.
+- `docs/dynamic-runtime-control-gap-review-2026-07-18.md`:
+  native MCP startup controls, unproven hot-switch/context telemetry, and the
+  portable/private/public instruction-carrier boundary.
+- `docs/legacy-curated-skill-source-migration-review-2026-07-18.md`:
+  per-Skill read-only review of the 19 legacy derivatives, with 16 provisional
+  upstream-exact replacement candidates and three retirement candidates.
+- `docs/custom-manager-retirement-reconciliation-2026-07-18.md`: current
+  product-neutral governance identity, historical Manager evidence retention,
+  and the explicit reactivation gate.
+- `docs/evidence-backed-release-evolution-reconciliation-2026-07-18.md`: no
+  Skill-count KPI, valid retain/add/replace/compose/retire outcomes, and the
+  current retain-and-monitor decision.
+- `docs/layered-reliability-projection-reconciliation-2026-07-18.md`: verified
+  smallest-sufficient layer roles and project-standard precedence at
+  governance-projection scope, with runtime and standardization limits open.
+- `docs/decision-ready-consumer-projection-evaluation-2026-07-18.md`:
+  repository-fixture routing and structural-burden evidence, while dated
+  consumer-owned verification remains explicitly open.
+- `docs/github-repository-configuration-evidence-2026-07-18.md`: dated GitHub
+  metadata, community-file publication boundary, sponsorship surface, enabled
+  security settings, and zero-result CodeQL analyses for the recorded remote
+  `main` revision without extending that claim to local unpublished work.
+- `docs/adaptive-harness-source-suite-and-user-sovereignty-2026-07-18.md`:
+  current strict-admission/free-consumption, selective source-suite review, and
+  proportional open/assist/guarded Harness contract.
 - `docs/round-lifecycle-contract.md`: reusable plan, execution, acceptance,
   and stage-closeout contract for iterative curation rounds.
 - `docs/round02-candidate-review-2026-07-02.md`: round-02 candidate-specific
@@ -348,8 +520,71 @@ consumer must probe its currently visible, authorized capability inventory.
 - `docs/round03-demand-coordinate-source-contract.md`: source-pinned STM/P/SG
   input, evidence-state, and promotion-firewall contract; it copies no external
   research body and does not itself authorize discovery.
+- `docs/demand-coordinate-contract-reconciliation-2026-07-18.md`: reconciles
+  eight source-supported demand records and all 62 bounded coordinate rows,
+  verifies the bounded contract, and keeps demand-model exhaustiveness open.
+- `docs/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.md`:
+  keeps the baseline acceptance partial by separating the four-record dated
+  single-host metadata baseline from four later review-only demand lanes.
+- `docs/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.md`: verifies
+  the rejection firewall while keeping the positive residual-gap proof path
+  partial and non-vacuous because no supported residual gap currently exists.
 - `docs/starred-capability-source-discovery.md`: user-starred discovery surface
   triage for future candidate sources, baselines, indexes, and exclusions.
+- `docs/public-skill-source-static-review-batch-2026-07-18.md`: first
+  source-pinned, non-executing five-source static review and component
+  dispositions.
+- `docs/loopy-demand-level-alternative-comparison-2026-07-18.md`: native,
+  current-chain, and exact Loopy-body comparison with a fixture-only next gate.
+- `docs/user-starred-new-source-preflight-2026-07-18.md`: current metadata,
+  historical-evidence reuse, drift, license, and next-gate triage for the five
+  sources newly contributed by the user's public list.
+- `docs/user-starred-index-stale-source-resolution-2026-07-18.md`: read-only
+  resolution of two stale direct-install coordinates without silent successor
+  substitution.
+- `docs/user-starred-index-child-source-classification-2026-07-18.md`: clusters
+  all 14 available pinned child sources, records zero demand-linked selections,
+  and verifies the bounded-round marginal-yield stop rule without claiming
+  ecosystem completeness.
+- `docs/lifecycle-metabolism-reconciliation-2026-07-18.md`: verifies the
+  repository-governed feedback return path from observed consumer evidence,
+  plus a deterministic approved-Skill deprecation, migration, rollback, and
+  retirement contract; observed live-consumer maturity remains open.
+- `docs/cross-agent-claim-limit-reconciliation-2026-07-18.md`: records nine
+  evidence classes with host, model, reasoning, loader, activation, permission,
+  workspace, date, counterexample, and recheck limits; it verifies the claim
+  firewall without claiming cross-Agent behavior or parity.
+- `docs/consumer-mapping-evidence-gap-reconciliation-2026-07-18.md`: separates
+  current-static-partial Codex evidence and conceptual-only Claude evidence
+  from a current supported live mapping; its read-only shared-root snapshot
+  records 73 Skills, 19 drifted old transaction claims, 27 lock-declared Lark
+  Skills, and 27 foreign or unknown directories without claiming ownership or
+  mutation authority.
+- `docs/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.md`:
+  verifies foreign-by-default ownership, explicit previewable reversible
+  transitions, and no account or telemetry assumption while leaving
+  multi-Agent operational coexistence evidence partial.
+- `docs/pm-skills-current-revision-delta-review-2026-07-18.md`: exact one-commit
+  PM Skills delta review separating five Skill-body changed lines from larger
+  host-command changes.
+- `docs/loopy-contract-fixture-protocol-2026-07-18.md`: 18 deterministic paired
+  contract fixtures and the historical pre-authorization trial boundary.
+- `docs/loopy-disposable-agent-trial-result-2026-07-18.md`: authorized 12-run
+  native/current-chain/Loopy behavior comparison and reference-only decision.
+- `docs/round03-intent-binding-demand-review-2026-07-18.md`: source-bound
+  `STM-11`/`P1`/`P2`/`SG-01` comparison and current-path-sufficient decision.
+- `docs/round03-authority-boundary-demand-review-2026-07-18.md`: source-bound
+  `STM-20`/`P9`/`SG-05` layered authority comparison and no-residual-gap decision.
+- `docs/round03-premise-challenge-demand-review-2026-07-18.md`: source-bound
+  `STM-07`/`P4`/`SG-03` balanced challenge and open-divergence decision.
+- `docs/round03-cognitive-offload-monitoring-demand-review-2026-07-18.md`:
+  source-bound final coordinate lane with longitudinal and production limits.
+- `docs/round03-capability-survey-result-package-2026-07-18.md`: the ten-part
+  result package, decision-ready 62-row bounded coordinate envelope, open
+  demand-model evidence, and explicit non-authorization.
+- `docs/round03-complete-coordinate-envelope-reconciliation-2026-07-18.md`:
+  deterministic 62/62 state reconciliation, four open-gap classes, and the
+  evidence-triggered monitoring and recheck decision.
 - `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`: repository license,
   attribution, and third-party Skill notices.
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`: public
@@ -400,9 +635,10 @@ index, external capability metadata, reference-only evidence, or rejection.
 It must not enter `skills/`, the manifest, generated routing projections, or a
 live execution path until the normal intake process closes.
 
-`resource-radar` may suggest third-party Skill or capability sources. Those
-suggestions remain advisory until this repository completes intake, review,
-adaptation, validation, topology update, and release-manifest update.
+Historical discovery records may remain source evidence, but no discovery
+source has a privileged admission path. Every candidate remains advisory until
+this repository completes intake, review, adaptation, validation, topology
+update, and release-manifest update.
 
 ## Safety Boundaries
 
@@ -425,3 +661,20 @@ policy in [`docs/license-policy.md`](docs/license-policy.md). GitHub Free is
 sufficient for the current path; GitHub Team or Pro is only a future option if
 private Actions minutes, organization governance, or team review needs require
 it.
+
+## Sponsor
+
+If this project is useful to you and you would like to support continued
+maintenance, source review, documentation, testing, and community work,
+voluntary sponsorships are appreciated. Sponsorship is optional and does not
+purchase support priority, admission, release decisions, governance exceptions,
+feature commitments, or technical influence.
+
+| WeChat Pay (CNY) | Alipay (CNY) |
+| --- | --- |
+| ![WeChat Pay QR code](https://raw.githubusercontent.com/yiheng8023/home-edge-bootstrap-public/main/docs/assets/sponsoring/wechat-pay.png) | ![Alipay QR code](https://raw.githubusercontent.com/yiheng8023/home-edge-bootstrap-public/main/docs/assets/sponsoring/alipay.png) |
+
+For cross-border or other supported currencies, use the
+[PayPal payment link](https://www.paypal.com/ncp/payment/LNTF8KXGJXMZY). Verify
+the displayed recipient before confirming a payment. See
+[Sponsoring](SPONSORING.md) for the complete boundary.

@@ -25,9 +25,9 @@
       ]
     },
     {
-      "id": "objective.evidence-backed-approved-coverage-growth",
+      "id": "objective.evidence-backed-release-evolution",
       "acceptanceIds": [
-        "acceptance.approved-release-coverage-growth"
+        "acceptance.evidence-backed-release-evolution"
       ]
     },
     {
@@ -43,7 +43,13 @@
         "acceptance.native-runtime-baseline",
         "acceptance.alternative-comparison",
         "acceptance.residual-gap-proof",
-        "acceptance.repository-authored-gap-fill-gate"
+        "acceptance.repository-authored-gap-fill-gate",
+        "acceptance.loopy-disposable-agent-trial-disposition",
+        "acceptance.intent-binding-demand-lane",
+        "acceptance.authority-boundary-demand-lane",
+        "acceptance.premise-challenge-demand-lane",
+        "acceptance.cognitive-offload-monitoring-demand-lane",
+        "acceptance.complete-coordinate-envelope-reconciliation"
       ]
     },
     {
@@ -51,7 +57,10 @@
       "acceptanceIds": [
         "acceptance.full-chain-coverage-matrix",
         "acceptance.discovery-clustering-stop-rule",
-        "acceptance.program-control-completeness"
+      "acceptance.public-source-balanced-preflight",
+      "acceptance.public-source-static-review",
+      "acceptance.public-source-next-gate-triage",
+      "acceptance.program-control-completeness"
       ]
     },
     {
@@ -65,7 +74,9 @@
       "id": "objective.reviewed-third-party-governance",
       "acceptanceIds": [
         "acceptance.third-party-admission-gates",
-        "acceptance.official-runtime-boundary"
+        "acceptance.official-runtime-boundary",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission"
       ]
     },
     {
@@ -80,7 +91,9 @@
       "acceptanceIds": [
         "acceptance.layered-reliability-model",
         "acceptance.project-standard-precedence",
-        "acceptance.native-task-orchestration-boundary"
+        "acceptance.native-task-orchestration-boundary",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation"
       ]
     },
     {
@@ -103,13 +116,31 @@
       ]
     },
     {
-      "id": "objective.production-capability-manager",
+      "id": "objective.source-preserving-cross-agent-capability-governance",
+      "acceptanceIds": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission",
+        "acceptance.evidence-backed-release-evolution",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation",
+        "acceptance.dynamic-runtime-control-gap-research",
+        "acceptance.native-task-orchestration-boundary"
+      ]
+    },
+    {
+      "id": "objective.custom-manager-retirement-evidence-preservation",
       "acceptanceIds": [
         "acceptance.manager-design-contract",
         "acceptance.manager-topology-impact-gate",
-        "acceptance.approved-release-coverage-growth",
-        "acceptance.manager-user-sovereignty",
-        "acceptance.native-task-orchestration-boundary"
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.manager-codex-readonly-adapter-preview",
+        "acceptance.custom-manager-retirement-reconciliation"
       ]
     }
   ],
@@ -153,7 +184,7 @@
     {
       "id": "acceptance.demand-coordinate-contract",
       "statement": "Capability work binds dated demand or shortfall coordinates, evidence states, held claims, uncertainty, and a promotion firewall before gap claims.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.demand-coordinate-contract"
       ],
@@ -161,6 +192,7 @@
         "evidence.round03-rebaseline",
         "evidence.round03-demand-coordinate-source-contract",
         "evidence.round03-demand-records-batch-01",
+        "evidence.demand-coordinate-contract-reconciliation-2026-07-18",
         "evidence.verify-script"
       ]
     },
@@ -172,13 +204,14 @@
         "verification.native-runtime-baseline"
       ],
       "evidenceIds": [
-        "evidence.round03-native-runtime-baseline"
+        "evidence.round03-native-runtime-baseline",
+        "evidence.native-runtime-baseline-evidence-gap-reconciliation-2026-07-18"
       ]
     },
     {
       "id": "acceptance.discovery-clustering-stop-rule",
       "statement": "Bounded discovery clusters and deduplicates candidates, selects representatives, and records a marginal-yield stop rationale, remaining uncertainty, and recheck triggers.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.discovery-clustering-stop-rule"
       ],
@@ -186,6 +219,9 @@
         "evidence.discovery-profile",
         "evidence.round03-public-discovery-snapshot",
         "evidence.round03-representative-source-review-batch-01",
+        "evidence.public-skill-source-discovery-preflight-2026-07-18",
+        "evidence.user-starred-skill-source-list-intake-2026-07-18",
+        "evidence.user-starred-index-child-source-classification-2026-07-18",
         "evidence.completeness-audit"
       ]
     },
@@ -198,7 +234,12 @@
       ],
       "evidenceIds": [
         "evidence.round03-alternative-comparison-batch-01",
-        "evidence.round03-evidence-protocol-batch-01"
+        "evidence.round03-evidence-protocol-batch-01",
+        "evidence.loopy-disposable-agent-trial-result-2026-07-18",
+        "evidence.round03-intent-binding-demand-review-2026-07-18",
+        "evidence.round03-authority-boundary-demand-review-2026-07-18",
+        "evidence.round03-premise-challenge-demand-review-2026-07-18",
+        "evidence.round03-cognitive-offload-monitoring-demand-review-2026-07-18"
       ]
     },
     {
@@ -210,12 +251,18 @@
       ],
       "evidenceIds": [
         "evidence.round03-alternative-comparison-batch-01",
-        "evidence.round03-evidence-protocol-batch-01"
+        "evidence.round03-evidence-protocol-batch-01",
+        "evidence.loopy-disposable-agent-trial-result-2026-07-18",
+        "evidence.round03-intent-binding-demand-review-2026-07-18",
+        "evidence.round03-authority-boundary-demand-review-2026-07-18",
+        "evidence.round03-premise-challenge-demand-review-2026-07-18",
+        "evidence.round03-cognitive-offload-monitoring-demand-review-2026-07-18",
+        "evidence.residual-gap-proof-evidence-gap-reconciliation-2026-07-18"
       ]
     },
     {
       "id": "acceptance.repository-authored-gap-fill-gate",
-      "statement": "A repository-authored Skill remains a non-executable candidate until residual-gap evidence, alternative comparison, design provenance, license ownership, security, portability, overlap, tests, and owner approval are present.",
+      "statement": "A repository-authored Skill or Hook remains a non-executable candidate until a human-AI collaboration or software-lifecycle residual gap is reproduced after native, official, runtime, and reviewed source-pool alternatives; alternative comparison, design provenance, license ownership, security, portability, overlap, tests, and owner approval are required, and the current three Skills, AGENTS carriers, and Hooks are not exempt from replacement, relocation, composition, or retirement review.",
       "assessment": "planned",
       "verificationIds": [
         "verification.repository-authored-gap-fill"
@@ -227,14 +274,16 @@
     },
     {
       "id": "acceptance.full-chain-coverage-matrix",
-      "statement": "The capability survey maps STM, P, and SG demand coordinates to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit outcomes.",
-      "assessment": "partial",
+      "statement": "The bounded capability survey maps all 62 STM, P, and SG coordinates through source-supported demand lanes to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit outcomes without claiming an exhaustive demand model.",
+      "assessment": "verified",
       "verificationIds": [
         "verification.full-chain-coverage-matrix"
       ],
       "evidenceIds": [
         "evidence.round03-alternative-comparison-batch-01",
-        "evidence.round03-evidence-protocol-batch-01"
+        "evidence.round03-evidence-protocol-batch-01",
+        "evidence.round03-capability-survey-result-package",
+        "evidence.round03-complete-coordinate-envelope-reconciliation"
       ]
     },
     {
@@ -246,32 +295,47 @@
       ],
       "evidenceIds": [
         "evidence.program-plan",
-        "evidence.harness-model"
+        "evidence.harness-model",
+        "evidence.decision-ready-consumer-projection-evaluation"
       ]
     },
     {
       "id": "acceptance.capability-survey-result-package",
       "statement": "The bounded capability-survey initiative produces all ten required result components and an explicit non-authorization statement before any adoption, adaptation, repository authoring, or standard extraction decision.",
-      "assessment": "planned",
+      "assessment": "verified",
       "verificationIds": [
         "verification.capability-survey-result-package"
       ],
       "evidenceIds": [
         "evidence.round03-rebaseline",
         "evidence.round03-alternative-comparison-batch-01",
-        "evidence.round03-evidence-protocol-batch-01"
+        "evidence.round03-evidence-protocol-batch-01",
+        "evidence.round03-capability-survey-result-package"
+      ]
+    },
+    {
+      "id": "acceptance.complete-coordinate-envelope-reconciliation",
+      "statement": "All 62 coordinates in the bounded STM/P/SG envelope have source-supported demand bindings, dispositions, verification methods, limitations, and recheck triggers, while demand-model, ecosystem, longitudinal, production, and cross-host closure remain explicitly unclaimed.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.complete-coordinate-envelope-reconciliation"
+      ],
+      "evidenceIds": [
+        "evidence.round03-capability-survey-result-package",
+        "evidence.round03-complete-coordinate-envelope-reconciliation"
       ]
     },
     {
       "id": "acceptance.cross-agent-claim-limits",
       "statement": "Host, model, reasoning, loader, permission, workspace, explicit or implicit activation, and evidence limitations prevent Codex-only or metadata-only results from becoming universal cross-Agent claims.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.cross-agent-claim-limits"
       ],
       "evidenceIds": [
         "evidence.program-plan",
         "evidence.harness-model",
+        "evidence.cross-agent-claim-limit-reconciliation-2026-07-18",
         "evidence.completeness-audit"
       ]
     },
@@ -376,36 +440,46 @@
     },
     {
       "id": "acceptance.consumer-mapping-evidence",
-      "statement": "Every supported consumer Agent has dated evidence for instruction discovery, Skill locations and ownership, precedence, projection, verification, backup, and restore behavior.",
+      "statement": "Every supported consumer Agent has dated evidence for instruction discovery, every observed Skill root and authority class, ownership, precedence, source-update identity, projection, verification, backup, and restore behavior; official/runtime/plugin caches and project-local or user-added roots remain foreign-scoped rather than being flattened into the CC Switch SSOT.",
       "assessment": "partial",
       "verificationIds": [
         "verification.consumer-mapping-inventory"
       ],
       "evidenceIds": [
         "evidence.readme",
-        "evidence.round02-local-sync"
+        "evidence.round02-local-sync",
+        "evidence.consumer-mapping-evidence-gap-reconciliation-2026-07-18",
+        "evidence.cc-switch-live-source-ownership-reconciliation-2026-07-18",
+        "evidence.cc-switch-disposable-source-management-preview-2026-07-18",
+        "evidence.cc-switch-disposable-source-update-and-recovery-review-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-readonly-preview-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-execution-2026-07-18"
       ]
     },
     {
       "id": "acceptance.layered-reliability-model",
       "statement": "The program defines a smallest-sufficient layered path from instructions through Skills, deterministic mechanisms, project standards, evidence, and human authority.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.layered-reliability-projection"
       ],
       "evidenceIds": [
-        "evidence.program-plan"
+        "evidence.program-plan",
+        "evidence.harness-model",
+        "evidence.layered-reliability-projection-reconciliation"
       ]
     },
     {
       "id": "acceptance.project-standard-precedence",
       "statement": "Conflicting generic Skill guidance defers to an admitted project-owned hard standard, while standard admission remains outside this repository.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.layered-reliability-projection"
       ],
       "evidenceIds": [
-        "evidence.program-plan"
+        "evidence.program-plan",
+        "evidence.harness-model",
+        "evidence.layered-reliability-projection-reconciliation"
       ]
     },
     {
@@ -457,70 +531,289 @@
     {
       "id": "acceptance.feedback-loop",
       "statement": "Consumer, community, security, license, upstream-refresh, and validation feedback can return released content to review and revision.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.lifecycle-loop"
       ],
       "evidenceIds": [
         "evidence.harness-model",
-        "evidence.lifecycle-policy"
+        "evidence.lifecycle-policy",
+        "evidence.lifecycle-metabolism-reconciliation-2026-07-18"
       ]
     },
     {
       "id": "acceptance.deprecation-retirement-loop",
       "statement": "The lifecycle supports update, supersession, deprecation, migration, rollback, and retirement without optimizing for inventory growth.",
-      "assessment": "partial",
+      "assessment": "verified",
       "verificationIds": [
         "verification.lifecycle-loop"
       ],
       "evidenceIds": [
-        "evidence.lifecycle-policy"
+        "evidence.lifecycle-policy",
+        "evidence.lifecycle-metabolism-reconciliation-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.strict-admission-free-consumption",
+      "statement": "The repository strictly governs its own approval and evidence claims without mandating a Manager, Hook, installation route, or user-environment takeover; users may add, remove, combine, fork, or modify Skills, while changed derivatives do not automatically inherit the original curated digest or verification.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.adaptive-harness-source-suite-and-user-sovereignty"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.adaptive-harness-source-suite-and-user-sovereignty",
+        "evidence.public-skill-source-discovery-preflight-2026-07-18",
+        "evidence.public-skill-source-static-review-batch-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.source-suite-selective-admission",
+      "statement": "Multi-Skill sources are reviewed at source, suite, component, and capability levels; suite atomicity precedes selective admission; unchanged component selection, Hook-independent approval, explicit inclusion and exclusion rationale, and update-triggered re-review prevent whole-suite mirroring and automatic trust.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.adaptive-harness-source-suite-and-user-sovereignty"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.adaptive-harness-source-suite-and-user-sovereignty",
+        "evidence.public-skill-source-discovery-preflight-2026-07-18",
+        "evidence.public-skill-source-static-review-batch-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.adaptive-harness-proportionality",
+      "statement": "The Harness preserves open native reasoning for exploratory low-risk work, offers advisory assistance for complex reversible work, and reserves mandatory authority, evidence, verification, and rollback gates for high-impact boundaries; no Skill, no Hook, and no additional structure remain valid outcomes, and obsolete constraints are relaxed or retired.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.adaptive-harness-source-suite-and-user-sovereignty"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.adaptive-harness-source-suite-and-user-sovereignty",
+        "evidence.public-skill-source-static-review-batch-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.self-authored-dynamic-adaptation",
+      "statement": "Any future repository-authored Skill or Hook follows a proven residual gap and dynamically selects a reviewed posture from task, risk, permission, host-capability, user-preference, and feedback facts; it remains observable, safely degradable, and user-overridable outside hard floors, while silent self-modification, permission expansion, and automatic publication remain prohibited.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.adaptive-harness-source-suite-and-user-sovereignty"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.adaptive-harness-source-suite-and-user-sovereignty",
+        "evidence.dynamic-runtime-control-gap-review-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.dynamic-runtime-control-gap-research",
+      "statement": "Dynamic MCP load control and proactive branch, worktree, handoff, and context-efficiency behavior are treated as runtime evidence questions before repository authoring: native startup enablement and tool filtering are preferred first; Skill decision logic, Hook observation, and runtime actuation remain separate; the portable instruction contract stays here, the owner-specific Codex implementation belongs in the private consumer configuration, and any public version is a sanitized generated non-authoritative projection rather than a third handwritten authority.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.dynamic-runtime-control-gap-research"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.dynamic-runtime-control-gap-review-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.cc-switch-source-preserving-skill-pool",
+      "statement": "CC Switch supplies the operational SSOT plus Skill source, installation, update, supported-Agent distribution, backup, and restore management; every selected third-party Skill must remain source-backed and update-checkable, while all observed native, plugin-cache, project-local, user-added, and consumer projection roots are classified by authority, collision, and precedence instead of forcibly merged. This repository remains the Agent-neutral cross-Agent authority for shared Skills and portable instruction/Skill/Hook/verification contracts, preserves third-party payloads unchanged by default, and governs source preflight, safety, quality, superiority, overlap, redundancy, naming collision, human-AI and software-lifecycle shortfall mapping, and residual-gap-only authoring. Single-Agent consumer configurations provide host adapters through a preferably pinned one-way projection and cannot absorb the portable authority; the custom Manager initiative remains superseded with historical evidence retained.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.cc-switch-source-preserving-skill-pool"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.cc-switch-source-preserving-skill-pool-strategy",
+        "evidence.cc-switch-live-source-ownership-reconciliation-2026-07-18",
+        "evidence.legacy-curated-skill-source-migration-review-2026-07-18",
+        "evidence.cc-switch-disposable-source-management-preview-2026-07-18",
+        "evidence.cc-switch-disposable-source-update-and-recovery-review-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-readonly-preview-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-execution-2026-07-18"
       ]
     },
     {
       "id": "acceptance.manager-design-contract",
-      "statement": "A written production Manager design binds product purpose, authority boundaries, artifact identity, lifecycle, headless core, clients, dual modes, transactions, failure recovery, host adapters, and explicit non-authorization before implementation planning.",
-      "assessment": "partial",
+      "statement": "The historical written production Manager design bound product purpose, authority boundaries, the narrow collaboration-control chain, the broad capability ecosystem, artifact identity, lifecycle, headless core, clients, dual modes, foreign-managed Skill coexistence, discovery, Hook modes, transactions, recovery, and host adapters before the product direction was superseded.",
+      "assessment": "verified",
+      "currentApplicability": "historical-only",
       "verificationIds": [
         "verification.manager-design-contract"
       ],
       "evidenceIds": [
-        "evidence.production-capability-manager-design"
+        "evidence.production-capability-manager-design",
+        "evidence.production-capability-manager-design-acceptance",
+        "evidence.agent-capability-manager-stack-and-foundation-authorization",
+        "evidence.agent-capability-manager-foundation-slice-plan"
       ]
     },
     {
       "id": "acceptance.manager-topology-impact-gate",
-      "statement": "Manager repository creation and implementation remain blocked until an owner-reviewed written design and a separately accepted MERIDIAN topology-impact package cover authority, bookmark and radar inputs, curated supply, consumers, public and private boundaries, Actions, release, rollback, and retirement edges.",
+      "statement": "Historical Manager repository-creation gate evidence is preserved. Current adapter work accepts CALIBRATION only as read-only research input, keeps curated and Manager product authority within their repositories, and requires a dated authority snapshot plus an explicitly bounded adapter slice.",
       "assessment": "verified",
+      "currentApplicability": "historical-only",
       "verificationIds": [
         "verification.manager-topology-impact-gate"
       ],
       "evidenceIds": [
         "evidence.program-plan",
-        "evidence.production-capability-manager-design"
+        "evidence.production-capability-manager-design",
+        "evidence.production-capability-manager-design-acceptance",
+        "evidence.production-capability-manager-topology-impact",
+        "evidence.production-capability-manager-topology-acceptance",
+        "evidence.production-capability-manager-post-matrix-reintake",
+        "evidence.production-capability-manager-external-ecosystem-and-stack-review",
+        "evidence.production-capability-manager-repository-slug-acceptance",
+        "evidence.agent-capability-manager-stack-and-foundation-authorization"
       ]
     },
     {
-      "id": "acceptance.approved-release-coverage-growth",
-      "statement": "The curated program completes at least one new governed intake and admission round that expands the approved release and improves named priority human-AI collaboration shortfall coordinates; preserving breadth or wrapping the current inventory is insufficient, and Manager creation is not a prerequisite.",
-      "assessment": "planned",
+      "id": "acceptance.manager-foundation-transaction-closure",
+      "statement": "The authorized local Rust foundation proves an ownership-aware disposable-root plan, lock, backup, apply, verify, rollback, and recovery loop through one headless core without writing real Agent configuration.",
+      "assessment": "verified",
+      "currentApplicability": "historical-only",
       "verificationIds": [
-        "verification.approved-release-coverage-growth"
+        "verification.manager-foundation-transaction-closure"
+      ],
+      "evidenceIds": [
+        "evidence.agent-capability-manager-stack-and-foundation-authorization",
+        "evidence.agent-capability-manager-foundation-slice-plan",
+        "evidence.agent-capability-manager-foundation-slice-implementation"
+      ]
+    },
+    {
+      "id": "acceptance.manager-codex-readonly-adapter-preview",
+      "statement": "A Codex-specific adapter inventories only a marked disposable Agent Home, classifies observed artifacts and foreign ownership deterministically, and previews create, manager-owned update, no-change, or blocked-foreign decisions without mutating targets or creating durable transactions.",
+      "assessment": "verified",
+      "currentApplicability": "historical-only",
+      "verificationIds": [
+        "verification.manager-codex-readonly-adapter-preview"
+      ],
+      "evidenceIds": [
+        "evidence.production-capability-manager-post-matrix-reintake",
+        "evidence.agent-capability-manager-foundation-slice-implementation",
+        "evidence.agent-capability-manager-codex-readonly-adapter-slice-plan",
+        "evidence.agent-capability-manager-codex-readonly-adapter-implementation"
+      ]
+    },
+    {
+      "id": "acceptance.custom-manager-retirement-reconciliation",
+      "statement": "The superseded custom Manager remains traceable as historical evidence while current strategic identity, acceptance, and verification surfaces use positive product-neutral capability-governance language and require a new supported operational-management gap plus separate authority before reactivation.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.custom-manager-retirement-reconciliation"
       ],
       "evidenceIds": [
         "evidence.program-plan",
-        "evidence.production-capability-manager-design"
+        "evidence.cc-switch-source-preserving-skill-pool-strategy",
+        "evidence.custom-manager-retirement-reconciliation"
       ]
     },
     {
-      "id": "acceptance.manager-user-sovereignty",
-      "statement": "The Manager is local-first, has no product account system, defaults telemetry off, keeps clients on one headless core, and requires previewable reversible transactions without silently taking ownership of foreign-managed state.",
-      "assessment": "partial",
+      "id": "acceptance.evidence-backed-release-evolution",
+      "statement": "The curated release may retain, add, replace, supersede, compose, deprecate, or retire capability payload only from governed demand, comparative quality, safety, provenance, lifecycle cost, and net-value evidence; unchanged is valid and no Skill-count growth is required.",
+      "assessment": "verified",
       "verificationIds": [
-        "verification.manager-user-sovereignty"
+        "verification.evidence-backed-release-evolution"
       ],
       "evidenceIds": [
-        "evidence.production-capability-manager-design"
+        "evidence.program-plan",
+        "evidence.production-capability-manager-design",
+        "evidence.round03-capability-survey-result-package",
+        "evidence.round03-complete-coordinate-envelope-reconciliation",
+        "evidence.lifecycle-policy",
+        "evidence.evidence-backed-release-evolution-reconciliation"
+      ]
+    },
+    {
+      "id": "acceptance.user-sovereign-capability-governance",
+      "statement": "Capability governance preserves user control, assumes no repository-owned product account or telemetry, keeps operational changes consumer-owned, previewable, and reversible, and never silently takes ownership of foreign-managed state.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.user-sovereign-capability-governance"
+      ],
+      "evidenceIds": [
+        "evidence.cc-switch-source-preserving-skill-pool-strategy",
+        "evidence.custom-manager-retirement-reconciliation",
+        "evidence.production-capability-manager-design",
+        "evidence.agent-capability-manager-stack-and-foundation-authorization",
+        "evidence.agent-capability-manager-foundation-slice-plan",
+        "evidence.agent-capability-manager-foundation-slice-implementation",
+        "evidence.agent-capability-manager-codex-readonly-adapter-implementation",
+        "evidence.user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.foreign-managed-capability-coexistence",
+      "statement": "Governance distinguishes each Agent, ecosystem, physical Skill root, source identity, projection, and repository carrier; user-installed, Agent-installed, project-local, runtime-owned, plugin-cached, and ecosystem-managed capabilities remain foreign-owned by default, and every adoption, renaming, deduplication, directory move, source relink, or retirement requires explicit previewable reversible authority.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.foreign-managed-capability-coexistence"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.cc-switch-source-preserving-skill-pool-strategy",
+        "evidence.custom-manager-retirement-reconciliation",
+        "evidence.production-capability-manager-design",
+        "evidence.agent-capability-manager-codex-readonly-adapter-implementation",
+        "evidence.user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18",
+        "evidence.cc-switch-live-source-ownership-reconciliation-2026-07-18",
+        "evidence.cc-switch-disposable-source-management-preview-2026-07-18",
+        "evidence.cc-switch-disposable-source-update-and-recovery-review-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-readonly-preview-2026-07-18",
+        "evidence.cc-switch-handoff-real-canary-execution-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.broad-capability-ecosystem-boundary",
+      "statement": "The program distinguishes the narrow native capability, instructions or Rules, Skills or Recipes, Hooks, and verification chain from the broad ecosystem of native tools, MCP servers, Plugins, Apps or Connectors, external accounts and data, CLIs, scripts, APIs, services, project mechanisms, tests, CI, hard standards, and accountable human authority; Skills-first does not become Skills-only.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.broad-capability-ecosystem-boundary"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.custom-manager-retirement-reconciliation",
+        "evidence.production-capability-manager-design",
+        "evidence.production-capability-manager-external-ecosystem-and-stack-review"
+      ]
+    },
+    {
+      "id": "acceptance.discovery-reuse-before-authoring",
+      "statement": "The curated program can cast a broad public metadata net, narrow progressively through clustering and review, compare external and composed alternatives fairly against current repository-authored Skills, and authorize new repository authoring only for a supported residual gap.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.discovery-reuse-before-authoring"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.cc-switch-source-preserving-skill-pool-strategy",
+        "evidence.custom-manager-retirement-reconciliation",
+        "evidence.production-capability-manager-design",
+        "evidence.production-capability-manager-external-ecosystem-and-stack-review",
+        "evidence.round03-public-discovery-snapshot",
+        "evidence.round03-alternative-comparison-batch-01",
+        "evidence.public-skill-source-discovery-preflight-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.optional-hook-mode-chain",
+      "statement": "The current bounded Codex advisory Hook is directly usable and incrementally improvable; Hooks remain an optional host-specific chain layer with explicit off, auto, and on modes, independently governed future policy families, no permission, admission, installation, or completion authority, and separation between invocation, host consumption, and downstream behavior evidence.",
+      "assessment": "partial",
+      "verificationIds": [
+        "verification.optional-hook-mode-chain"
+      ],
+      "evidenceIds": [
+        "evidence.program-plan",
+        "evidence.custom-manager-retirement-reconciliation",
+        "evidence.production-capability-manager-design",
+        "evidence.round03-native-runtime-baseline",
+        "evidence.dynamic-runtime-control-gap-review-2026-07-18"
       ]
     },
     {
@@ -534,6 +827,88 @@
         "evidence.program-plan",
         "evidence.production-capability-manager-design"
       ]
+    },
+    {
+      "id": "acceptance.public-source-balanced-preflight",
+      "statement": "Current public discovery uses explicit public-only queries, preserves a deduplicated source projection, balances expensive structure inspection across query intents, accepts user-provided public curated lists only as supplemental non-exclusive signals, pins reviewed representatives, separates source suites, Skill components, Agent Hooks, executable surfaces, indexes, tooling, and query noise, and remains non-approving and non-standardizing.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.public-source-balanced-preflight"
+      ],
+      "evidenceIds": [
+        "evidence.public-skill-source-discovery-preflight-2026-07-18",
+        "evidence.user-starred-skill-source-list-intake-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.public-source-static-review",
+      "statement": "The first five source-pinned public representatives have non-executing static license, provenance, structure, executable-surface, Hook-separation, security, portability, overlap, redundancy, and component-level dispositions without upgrading a candidate, suite, tool, or working hypothesis into approval or a hard standard.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.public-source-static-review"
+      ],
+      "evidenceIds": [
+        "evidence.public-skill-source-static-review-batch-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.public-source-next-gate-triage",
+      "statement": "Demand-level comparison isolates Loopy's possible marginal value without claiming superiority or admission, while the five user-list-only sources are pinned, classified, deduplicated against existing evidence, checked for revision and license drift, and routed to discovery-only, delta-review, reference-only, or external-tooling outcomes without download, execution, installation, or Manager revival.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.public-source-next-gate-triage"
+      ],
+      "evidenceIds": [
+        "evidence.loopy-demand-level-alternative-comparison-2026-07-18",
+        "evidence.user-starred-new-source-preflight-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.loopy-disposable-agent-trial-disposition",
+      "statement": "The separately authorized exact-pinned Loopy body is compared in fresh disposable Agent tasks against native and current-chain baselines with a hard environment preflight, repeated paired scenarios, independent correctness gates, terminal-receipt and authority checks, cost measures, and a negative loop-selection control; raw sessions remain local, the one-time authorization is consumed, and a body that is not materially better than both baselines remains reference-only and unadmitted.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.loopy-disposable-agent-trial-disposition"
+      ],
+      "evidenceIds": [
+        "evidence.loopy-disposable-agent-trial-result-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.intent-binding-demand-lane",
+      "statement": "The source-supported STM-11/P1/P2/SG-01 lane binds incomplete or tacit requirements, intent ambiguity, and compound-unit coverage to proportional native, current-contract, approved curated, recipe, runtime-equivalent, safe-fallback, and human-authority alternatives; current deterministic evidence supports no residual Skill gap, no mandatory external discovery, and no universal intake standard.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.intent-binding-demand-lane"
+      ],
+      "evidenceIds": [
+        "evidence.round03-intent-binding-demand-review-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.authority-boundary-demand-lane",
+      "statement": "The source-supported STM-20/P9/SG-05 lane separates advisory guidance, runtime enforcement, and accountable authority; current native, contract-chain, approved narrow guardrail, runtime, rollback, closure, and human-authority paths cover the bounded demand without claiming a residual Skill or Hook gap, universal approval standard, or runtime permission authority.",
+      "assessment": "verified",
+      "verificationIds": [
+        "verification.authority-boundary-demand-lane"
+      ],
+      "evidenceIds": [
+        "evidence.round03-authority-boundary-demand-review-2026-07-18"
+      ]
+    },
+    {
+      "id": "acceptance.premise-challenge-demand-lane",
+      "statement": "The source-supported STM-07/P4/SG-03 lane balances premise challenge against algorithm aversion, paternalism, false positives, and friction; native, evidence-tool, narrow opt-in document challenge, recipe, domain-review, accountable-human, and open-divergent paths cover the bounded demand without a residual Skill gap or universal challenge algorithm.",
+      "assessment": "verified",
+      "verificationIds": ["verification.premise-challenge-demand-lane"],
+      "evidenceIds": ["evidence.round03-premise-challenge-demand-review-2026-07-18"]
+    },
+    {
+      "id": "acceptance.cognitive-offload-monitoring-demand-lane",
+      "statement": "The source-supported STM-09/P17/P20/SG-10 lane separates immediate assistance, longitudinal cognition, production monitoring, failure learning, maintainer lifecycle, accountable human learning design, and anti-accretion; current capability classes cover the bounded demand with zero residual Skill gaps while longitudinal and live production evidence remain open.",
+      "assessment": "verified",
+      "verificationIds": ["verification.cognitive-offload-monitoring-demand-lane"],
+      "evidenceIds": ["evidence.round03-cognitive-offload-monitoring-demand-review-2026-07-18"]
     }
   ],
   "verifications": [
@@ -551,9 +926,9 @@
     },
     {
       "id": "verification.demand-coordinate-contract",
-      "method": "Validate the checked-in demand-coordinate source contract and future demand-record fixtures covering STM, P, SG, evidence state, uncertainty, held claims, refresh triggers, and promotion firewall.",
-      "expectedResult": "No capability gap or standard claim starts from an unbound or promoted research synthesis.",
-      "evidenceRequirement": "Checked-in contract, representative fixtures, source lineage, and deterministic rejection tests."
+      "method": "Validate the checked-in demand-coordinate source contract, all eight current demand records, and the 62-row bounded coordinate envelope for STM, P, SG, source evidence, evidence state, uncertainty, held claims, affected subjects, refresh triggers, and the promotion firewall.",
+      "expectedResult": "The bounded contract is complete without converting coordinate coverage into demand-model, survey, ecosystem, residual-gap, Skill, Hook, or standard closure.",
+      "evidenceRequirement": "Checked-in contract, eight source-supported demand records, 62-row coordinate matrix, explicit open-model boundary, and deterministic rejection tests."
     },
     {
       "id": "verification.native-runtime-baseline",
@@ -581,9 +956,9 @@
     },
     {
       "id": "verification.full-chain-coverage-matrix",
-      "method": "Validate a future matrix from STM, P, and SG coordinates to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit dispositions.",
-      "expectedResult": "Every row has a supported disposition, verification method, limitations, and recheck trigger without treating metadata similarity as behavioral coverage.",
-      "evidenceRequirement": "Machine-readable matrix, source-linked evidence, comparison records, conflict and composition analysis, and deterministic validation."
+      "method": "Validate the current 62-row bounded matrix from STM, P, and SG coordinates through source-supported demand lanes to native, official/runtime, single, composed, non-Skill, human-authority, residual-gap, and evidence-limit dispositions.",
+      "expectedResult": "Every bounded row has a supported disposition, verification method, limitations, and recheck trigger without treating metadata similarity as behavioral coverage or the coordinate envelope as an exhaustive demand model.",
+      "evidenceRequirement": "Machine-readable matrix, source-linked evidence, comparison records, conflict and composition analysis, coordinate-envelope reconciliation, and deterministic validation."
     },
     {
       "id": "verification.decision-ready-projection",
@@ -596,6 +971,12 @@
       "method": "Check the bounded initiative result against its ten declared components and require every component to cite evidence, limitations, and non-authorization boundaries.",
       "expectedResult": "The survey can support a later human decision without silently authorizing adoption, adaptation, repository authoring, runtime mutation, or standard promotion.",
       "evidenceRequirement": "One coherent result package with all ten components, closed references, validation output, residual gaps, and explicit deferred actions."
+    },
+    {
+      "id": "verification.complete-coordinate-envelope-reconciliation",
+      "method": "Recompute the 62-row matrix from the eight demand records; verify family and evidence-lane counts, per-row demand bindings and dispositions, four distinct open-gap classes, pinned CALIBRATION provenance, evidence-triggered recheck mode, and non-authorization boundaries.",
+      "expectedResult": "The bounded coordinate corpus is decision-ready without converting zero supported residual Skill gaps into whole-demand-model, ecosystem, runtime, longitudinal, cross-host, or standards closure.",
+      "evidenceRequirement": "Deterministic result-package matrix, checked-in reconciliation record, bilingual projections, mutation tests, and passing repository verification."
     },
     {
       "id": "verification.cross-agent-claim-limits",
@@ -661,34 +1042,142 @@
       "evidenceRequirement": "Reviewed design contract now; implemented graph query, migration fixtures, verification, and owner admission evidence before operational acceptance."
     },
     {
+      "id": "verification.adaptive-harness-source-suite-and-user-sovereignty",
+      "method": "Validate the owner decision, strict-admission/free-consumption split, user customization and derivative-evidence boundary, four-level source-suite selection, suite atomicity, selection-manifest fields, independent Hook admission, update re-review, open/assist/guarded modes, native/no-Skill/no-Hook/no-structure outcomes, proportional hard boundaries, constraint net-benefit evidence, reversibility and retirement, plus dynamically adaptive self-authored Skill/Hook inputs, outcomes, Hook modes, observability, safe degradation, user override, and no-hidden-self-modification boundaries.",
+      "expectedResult": "The repository adds value through evidence-backed selection rather than mirroring, preserves user freedom without overstating verification, selectively admits unchanged components, applies only the smallest justified Harness intervention, and requires future self-authored Skills and Hooks to adapt transparently without silently rewriting themselves, expanding permission, or auto-publishing changes.",
+      "evidenceRequirement": "Owner acceptance event, human projection, machine program boundary, objective and acceptance mapping, negative mutation tests, and full repository verification."
+    },
+    {
+      "id": "verification.dynamic-runtime-control-gap-research",
+      "method": "Validate a dated local Codex MCP inventory, CLI management surface, current OpenAI source fields for standalone and plugin MCP enablement and tool filtering, the absence of proven hot-switch and context-telemetry contracts, the observation-decision-actuation-verification-rollback separation, and the portable/private/public instruction-carrier boundary.",
+      "expectedResult": "Native startup controls are used before repository authoring; aggregated runtime control, mid-session process lifecycle, and context telemetry remain partial or planned until proven; no Skill or Hook is authorized merely from a user-observed slowdown; and no third handwritten public authority copy is created.",
+      "evidenceRequirement": "Dated local CLI observation, pinned OpenAI source snapshot, machine gap review, human projection, machine program boundary, no-mutation evidence, and full repository verification."
+    },
+    {
+      "id": "verification.cc-switch-source-preserving-skill-pool",
+      "method": "Validate the owner decision, Agent-neutral cross-Agent authority, prohibition on whole-repository consolidation into a single-Agent consumer, consumer-adapter boundary, source-preserving workflow, preflight-before-download boundary, non-active candidate pool, CC Switch operational role, current shared-root source classification, per-Agent instruction/Skill/Hook path mapping requirement, disposable source registration enablement collision backup restore update and failure-recovery contracts, updater transaction limits, residual-gap-only authoring rule, and custom Manager retirement inventory.",
+      "expectedResult": "Operational management is reused from CC Switch, shared Skills and portable chain contracts remain authoritative here, consumer configurations remain host-specific adapters, third-party Skill bodies remain unchanged by default, live source-backed coverage is measured rather than inferred, disposable contracts distinguish stock upstream test isolation from diagnostic correction, updater success from automatic rollback, and temporary fixture incidents from verified cleanup, no download implies execution or installation, shortfall mapping precedes repository authoring, and historical Manager evidence remains traceable without continued implementation.",
+      "evidenceRequirement": "Owner acceptance event, official CC Switch documentation and exact-tag source baseline, exact local Manager deletion inventory, read-only live CC Switch and shared-root source mapping, per-Skill migration dispositions, disposable registration and loopback update results, injected failure and manual recovery evidence, exact incident cleanup with a consistent database backup, human program projection, machine plan, deterministic semantic checks, and full repository verification before verified status."
+    },
+    {
       "id": "verification.manager-design-contract",
-      "method": "Validate the written Manager design against required product, authority, identity, lifecycle, core, client, transaction, adapter, testing, and non-authorization sections.",
-      "expectedResult": "The design is internally closed enough for owner review without creating a repository or claiming implementation readiness.",
-      "evidenceRequirement": "Current written design, machine plan mapping, deterministic semantic checks, and owner written-spec review."
+      "method": "Validate the superseded written Manager design as historical product, authority, identity, lifecycle, core, client, transaction, adapter, testing, and non-authorization evidence.",
+      "expectedResult": "The dated design remains internally traceable and explicitly states that no additional Manager implementation is authorized.",
+      "evidenceRequirement": "Historical written design, original acceptance, bounded implementation evidence, superseding strategy decision, and deterministic semantic checks."
     },
     {
       "id": "verification.manager-topology-impact-gate",
-      "method": "Validate that machine plan and design block Manager repository creation and implementation until a separately accepted MERIDIAN topology-impact package covers all declared repository and lifecycle edges.",
-      "expectedResult": "The Manager cannot become an unmodeled duplicate authority or silently change MERIDIAN, bookmark, radar, curation, consumer, CALIBRATION, or ASSETS relationships.",
-      "evidenceRequirement": "Current gate and planned initiative now; owner-accepted topology-impact package before repository creation."
+      "method": "Preserve the accepted 2026-07-15 topology package as historical gate evidence and validate the current post-matrix re-intake against live repository truth and the active implementation boundary.",
+      "expectedResult": "CALIBRATION remains read-only research input, curated and Manager repositories retain their product authority, and adapter work stays within the authority recorded by the dated current snapshot.",
+      "evidenceRequirement": "Historical topology evidence, dated live repository snapshot, corpus commit and digest, retirement evidence, post-matrix re-intake, and current slice authority."
     },
     {
-      "id": "verification.approved-release-coverage-growth",
-      "method": "Compare named priority shortfall coordinates, the prior approved release, new governed intake and admission evidence, and the resulting approved release topology.",
-      "expectedResult": "At least one genuine governed expansion improves named priority shortfall coverage without optimizing for raw Skill count or depending on Manager implementation.",
-      "evidenceRequirement": "Completed capability survey, supported dispositions, source and admission evidence, release diff, coverage matrix diff, tests, and owner approval."
+      "id": "verification.manager-foundation-transaction-closure",
+      "method": "Run formatting, locked all-target tests, Clippy with warnings denied, dependency license and source policy, RustSec audit, Windows failure fixtures, and the same test and lint suite on the declared minimum Rust version.",
+      "expectedResult": "The disposable-root core preserves foreign content, detects drift and tampering, serializes every write path, recovers interrupted apply and rollback states idempotently, and keeps CLI decisions on the same core without touching a real Agent home.",
+      "evidenceRequirement": "Dated local repository posture, Cargo.lock digest, command results, requirement-to-test map, tool versions, explicit CI execution limit, and negative authority observations."
     },
     {
-      "id": "verification.manager-user-sovereignty",
-      "method": "Check core and client contracts plus future implementation tests for local-first behavior, no product account, telemetry off, shared policy decisions, preview, ownership classification, rollback, and foreign-state protection.",
-      "expectedResult": "No client or automation path bypasses the headless core or silently installs, uploads, overwrites, expands permission, or takes ownership.",
-      "evidenceRequirement": "Written design now; later contract, client-parity, transaction, failure-injection, and disposable-home evidence."
+      "id": "verification.manager-codex-readonly-adapter-preview",
+      "method": "Run test-first core and CLI contract tests against marked disposable Codex and shared-Agent fixture roots, including deterministic inventory, ownership classification, preview decisions, no target or state mutation, escape rejection, and direct-core/CLI parity.",
+      "expectedResult": "The adapter produces stable read-only observations and previews, blocks foreign takeover, never touches a real Agent home or Hook, and leaves the full foundation regression green.",
+      "evidenceRequirement": "Failing-test observations, disposable-home fixtures, locked test and lint output, governance verification, and explicit real-home and Hook non-observation."
+    },
+    {
+      "id": "verification.custom-manager-retirement-reconciliation",
+      "method": "Validate the positive current objective, product-neutral acceptance and verification IDs, superseded initiative boundary, retained historical artifact identities, reactivation gate, bilingual projections, and explicit non-actions.",
+      "expectedResult": "Current governance no longer presents custom Manager production as a live objective or future-work queue, while accepted historical evidence remains traceable and non-authorizing.",
+      "evidenceRequirement": "Machine-readable retirement reconciliation, current program and acceptance maps, bilingual human projections, deterministic mutation tests, and repository verification."
+    },
+    {
+      "id": "verification.evidence-backed-release-evolution",
+      "method": "Compare named demands, the current approved release, native and external alternatives, supported residual gaps, candidate quality and lifecycle evidence, and every proposed retain, add, replace, supersede, compose, deprecate, or retire outcome.",
+      "expectedResult": "The release changes only for positive governed net value; a zero-gap or no-superiority result retains the release without creating a count-growth obligation.",
+      "evidenceRequirement": "Capability survey, coordinate reconciliation, source and lifecycle evidence, release-evolution reconciliation, deterministic no-growth-pressure tests, and separate admission evidence for any future mutation."
+    },
+    {
+      "id": "verification.user-sovereign-capability-governance",
+      "method": "Check repository and consumer-boundary contracts for no repository-owned account or telemetry assumption, source preservation, explicit authority, preview, ownership classification, rollback, and foreign-state protection.",
+      "expectedResult": "No governance or automation path silently installs, uploads, overwrites, expands permission, or takes ownership of consumer or foreign-managed state.",
+      "evidenceRequirement": "Current governance and retirement records plus future consumer-owned transaction, failure-injection, and disposable-home evidence for stronger operational claims."
+    },
+    {
+      "id": "verification.foreign-managed-capability-coexistence",
+      "method": "Test consumer-owned per-host inventory, ownership classification, foreign-owned defaults, collision reporting, explicit opt-in conversion, out-of-band edit detection, backup, rollback, and non-interference with foreign-managed sentinels.",
+      "expectedResult": "Discovery never implies takeover; unknown or foreign ownership blocks mutation, and authorized conversion remains reversible without requiring one physical Skill copy across hosts.",
+      "evidenceRequirement": "Written design now; later adapter contracts, disposable-home multi-Agent fixtures, ownership-conflict cases, transaction journals, and rollback evidence."
+    },
+    {
+      "id": "verification.broad-capability-ecosystem-boundary",
+      "method": "Validate that program authority and topology distinguish narrow collaboration-control carriers from broad capability providers and authorities, and preserve ownership, availability, health, permission, data, cost, relationship, lifecycle, projection, verification, and rollback boundaries.",
+      "expectedResult": "The program can reason about native capabilities, instructions and Rules, Skills and Recipes, Hooks, MCP, Plugins, Apps and Connectors, external services, deterministic project mechanisms, and human authority without treating all nodes as Skills or claiming ownership from visibility.",
+      "evidenceRequirement": "Current written and machine-readable scope, retirement reconciliation, ecosystem review, and deterministic boundary tests."
+    },
+    {
+      "id": "verification.discovery-reuse-before-authoring",
+      "method": "Compare broad metadata coverage, clustering and stop rationale, source-pinned shortlist depth, external maintenance and quality evidence, compositions, non-Skill alternatives, the three current repository-authored Skills, and any residual-gap claim.",
+      "expectedResult": "Mature external work can be adopted, adapted, composed, or used to supersede local Skills; repository authoring begins only when the remaining material gap is supported rather than assumed.",
+      "evidenceRequirement": "Current Round 03 discovery, complete coordinate-envelope comparison, source, license, security, portability, behavioral, and non-authoring decision evidence; future admission or migration still requires separate authority."
+    },
+    {
+      "id": "verification.optional-hook-mode-chain",
+      "method": "Verify the current bounded Codex advisory slice remains usable; verify adapter-specific off, auto, and on semantics, mode transitions, unsupported and unhealthy behavior, privacy, non-authority, invocation versus consumption evidence, and install, migration, disable, restart, residue, and rollback paths; for added policy families, also verify isolation, ordering, shared state, failure propagation, cost, independent disablement, and independent authority.",
+      "expectedResult": "The lightweight current Hook can operate within its declared boundary; off is silent, auto acts only on bounded policy matches, on acts on every eligible configured event, future policies remain independently governed, and no mode or policy silently expands permission, enables itself, or upgrades adapter output into downstream proof.",
+      "evidenceRequirement": "Written design, owner confirmation, current Hook policy and current-turn injection evidence now; fresh reviewed changes and full regressions for each enhancement, plus disposable-home and separately authorized live-transition evidence for stronger install, migration, receipt, or rollback claims."
     },
     {
       "id": "verification.native-task-orchestration-boundary",
       "method": "Run bounded fresh-task, paired, weak-floor, independent-review, read-only parallel, reconciliation, cancellation, isolation, and residue experiments per supported host.",
       "expectedResult": "Child results remain host-bounded observations reconciled by the parent, shared-checkout writes fail closed, and isolated writes retain branch and cleanup ownership.",
       "evidenceRequirement": "Design boundary and current Codex observation now; repeatable host-specific experiment records and negative cases before adapter maturity claims."
+    },
+    {
+      "id": "verification.public-source-balanced-preflight",
+      "method": "Verify every discovery query is explicitly public-only; source IDs are unique; the user-curated public list stays supplemental and non-exclusive; balanced preflight records have immutable revisions and non-negative structure counts; Skill and Hook surfaces remain separate; shortfall mappings remain hypotheses; all runtime, admission, self-authoring, and standardization decisions remain false.",
+      "expectedResult": "The checked-in projections prove a reproducible broad public discovery plus a deduplicated user-curated discovery lane without upgrading metadata, stars, or list membership into quality, coverage, admission, execution, or a hard standard.",
+      "evidenceRequirement": "The 2026-07-18 broad discovery and user-list machine projections, bilingual human projections, discovery profile and script, plus deterministic mutation tests."
+    },
+    {
+      "id": "verification.public-source-static-review",
+      "method": "Validate the five reviews against the balanced preflight source IDs and exact revisions; bind license files and representative Git blobs; assert zero execution, installation, Hook enablement, admission, release, self-authoring, or hard-standard eligibility; verify Loopy alias deduplication and independent Hook and tooling dispositions.",
+      "expectedResult": "Only the Loopy body remains a candidate-with-limits for demand-level comparison; the other four sources remain held or split, and no source or component is approved.",
+      "evidenceRequirement": "The 2026-07-18 machine static-review batch, bilingual projections, fixed public commits, and deterministic mutation tests."
+    },
+    {
+      "id": "verification.public-source-next-gate-triage",
+      "method": "Validate the exact Loopy body and demand coordinates against native, current-chain, and exact-body alternatives; assert no superiority, residual gap, admission, save, catalog, or publication claim; then validate all five user-list-only revisions, tree counts, license states, prior-review drift, dispositions, and zero download, execution, installation, Hook, consumer, or custom-Manager mutation.",
+      "expectedResult": "Loopy advances only to fixture-only paired behavior comparison; the five supplemental sources narrow to one discovery index, two historical-review delta candidates, one overlapping license-incomplete reference, and one external tooling baseline, with no source or Skill approved.",
+      "evidenceRequirement": "The 2026-07-18 Loopy demand comparison and user-starred new-source preflight machine records, bilingual projections, exact public revisions, existing Round 02 reviews, and deterministic mutation tests."
+    },
+    {
+      "id": "verification.loopy-disposable-agent-trial-disposition",
+      "method": "Validate the fixed candidate and Run-reference blobs, explicit one-time authorization, hard environment preflight, 3 arms by 2 scenarios by 2 repetitions, independent gates, receipt completeness, terminal honesty, authority preservation, forbidden-action and unexpected-file checks, false-positive loop count, raw-evidence hash, compact aggregates, and the predeclared material-benefit-over-both-baselines rule.",
+      "expectedResult": "All formal cells remain valid and boundary-preserving, but correctness parity plus mixed latency and higher Loopy input-token cost yields reference-only-not-admitted rather than superiority, residual-gap, admission, vendoring, installation, or continued execution authority.",
+      "evidenceRequirement": "The checked-in compact machine result, bilingual projections, exact source pin and raw-result hash, deterministic evaluator, and negative mutation tests; raw Agent sessions stay local and disposable."
+    },
+    {
+      "id": "verification.intent-binding-demand-lane",
+      "method": "Validate the exact CALIBRATION revision and artifact digests, the STM-11/P1/P2/SG-01 many-to-many binding, the seven alternative classes, approved curated owners and recipe references, four requirements-clarification decision classes, 105/105 routing evidence, held claims, recheck triggers, and all non-authorization decisions.",
+      "expectedResult": "The demand is selected and covered by proportional current paths without inferring a residual Skill gap, starting mandatory external discovery, extracting a hard standard, or authoring another Skill or Hook.",
+      "evidenceRequirement": "The checked-in machine review, bilingual projections, pinned CALIBRATION custody metadata, current approved registries, deterministic routing report, and mutation tests."
+    },
+    {
+      "id": "verification.authority-boundary-demand-lane",
+      "method": "Validate the exact CALIBRATION revision and artifact digests, the STM-20/P9/SG-05 binding, the advisory/runtime/accountable layer invariant, eight alternatives, approved narrow Git guardrail, ten human-authority and nine direct authority-boundary scenarios, 105/105 routing evidence, held claims, recheck triggers, and all non-authorization decisions.",
+      "expectedResult": "The demand is selected and covered by layered current paths without treating a Skill or Hook as runtime permission, replacing accountable authority, starting mandatory external discovery, extracting a universal approval standard, or authoring a new control.",
+      "evidenceRequirement": "The checked-in machine review, bilingual projections, pinned CALIBRATION custody metadata, approved registry and admission evidence, deterministic routing report, and mutation tests."
+    },
+    {
+      "id": "verification.premise-challenge-demand-lane",
+      "method": "Validate the exact CALIBRATION pins, STM-07/P4/SG-03 binding, seven alternatives, narrow approved grill-with-docs evidence, twelve native and three document-grounded scenarios, 105/105 routing report, proportional and open-divergent invariants, held claims, and non-authorizations.",
+      "expectedResult": "The lane remains native-first and proportionate, document grilling stays opt-in, and neither deference nor override becomes automatic; no residual Skill gap, mandatory discovery, Hook, fourth core Skill, or hard standard is inferred.",
+      "evidenceRequirement": "Checked-in machine review, bilingual projections, pinned source custody, approved registry and admission evidence, deterministic routing report, and mutation tests."
+    },
+    {
+      "id": "verification.cognitive-offload-monitoring-demand-lane",
+      "method": "Validate source pins, STM-09/P17/P20/SG-10 binding, eight alternatives, approved handoff and observability evidence, observability/handoff/retrospective scenarios, 105/105 routing, longitudinal and production claim limits, anti-accretion, and non-authorizations.",
+      "expectedResult": "All coordinate IDs are selected without converting open longitudinal or production evidence into a residual Skill gap, permanent control, Hook, metric, or premature hard standard.",
+      "evidenceRequirement": "Checked-in machine review, bilingual projections, pinned custody, approved registry and admission evidence, routing report, lifecycle policy, and mutation tests."
     },
     {
       "id": "verification.lifecycle-loop",
@@ -702,7 +1191,7 @@
       "id": "evidence.program-plan",
       "path": "registry/curation-program-plan.json",
       "kind": "machine-authority",
-      "asOf": "2026-07-15",
+      "asOf": "2026-07-18",
       "supports": [
         "acceptance.skills-terminal-positioning",
         "acceptance.future-terminal-boundary",
@@ -717,36 +1206,298 @@
         "acceptance.calibration-reference-boundary",
         "acceptance.external-standard-authority-boundary",
         "acceptance.standard-revalidation-cascade",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation",
+        "acceptance.dynamic-runtime-control-gap-research",
+        "acceptance.cc-switch-source-preserving-skill-pool",
         "acceptance.manager-topology-impact-gate",
-        "acceptance.approved-release-coverage-growth",
+        "acceptance.evidence-backed-release-evolution",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain",
+        "acceptance.custom-manager-retirement-reconciliation",
         "acceptance.native-task-orchestration-boundary"
+      ]
+    },
+    {
+      "id": "evidence.adaptive-harness-source-suite-and-user-sovereignty",
+      "path": "registry/adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18.json",
+      "kind": "owner-accepted-current-adaptive-harness-selective-curation-and-user-sovereignty-decision",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission",
+        "acceptance.adaptive-harness-proportionality",
+        "acceptance.self-authored-dynamic-adaptation"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-source-preserving-skill-pool-strategy",
+      "path": "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json",
+      "kind": "owner-accepted-current-operational-reuse-and-custom-manager-retirement-decision",
+      "asOf": "2026-07-17",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.custom-manager-retirement-reconciliation"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-live-source-ownership-reconciliation-2026-07-18",
+      "path": "registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json",
+      "kind": "partial-live-operational-projection-verified-source-preserving-migration-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-disposable-source-management-preview-2026-07-18",
+      "path": "registry/cc-switch-disposable-source-management-preview-2026-07-18.json",
+      "kind": "verified-disposable-source-management-contract-with-upstream-windows-test-isolation-defect",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-disposable-source-update-and-recovery-review-2026-07-18",
+      "path": "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json",
+      "kind": "verified-loopback-source-update-manual-recovery-and-cleaned-isolation-incident",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-handoff-real-canary-readonly-preview-2026-07-18",
+      "path": "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json",
+      "kind": "decision-ready-read-only-one-skill-canary-preview-with-external-revision-pin-and-rollback",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.cc-switch-handoff-real-canary-execution-2026-07-18",
+      "path": "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+      "kind": "verified-local-live-source-backed-one-skill-canary-with-fail-closed-correction-and-update-check",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.dynamic-runtime-control-gap-review-2026-07-18",
+      "path": "registry/dynamic-runtime-control-gap-review-2026-07-18.json",
+      "kind": "partial-native-runtime-control-and-instruction-carrier-boundary-review",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.dynamic-runtime-control-gap-research",
+        "acceptance.self-authored-dynamic-adaptation",
+        "acceptance.optional-hook-mode-chain"
+      ]
+    },
+    {
+      "id": "evidence.custom-manager-retirement-reconciliation",
+      "path": "registry/custom-manager-retirement-reconciliation-2026-07-18.json",
+      "kind": "verified-current-governance-migration-and-historical-manager-evidence-retention",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.custom-manager-retirement-reconciliation",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain"
+      ]
+    },
+    {
+      "id": "evidence.evidence-backed-release-evolution-reconciliation",
+      "path": "registry/evidence-backed-release-evolution-reconciliation-2026-07-18.json",
+      "kind": "verified-no-count-quota-release-evolution-contract",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.evidence-backed-release-evolution"
+      ]
+    },
+    {
+      "id": "evidence.layered-reliability-projection-reconciliation",
+      "path": "registry/layered-reliability-projection-reconciliation-2026-07-18.json",
+      "kind": "verified-projection-only-layer-roles-and-project-standard-precedence-contract",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence"
+      ]
+    },
+    {
+      "id": "evidence.decision-ready-consumer-projection-evaluation",
+      "path": "registry/decision-ready-consumer-projection-evaluation-2026-07-18.json",
+      "kind": "verified-repository-fixture-and-structural-burden-evaluation-with-consumer-verification-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.decision-ready-consumer-projection"
       ]
     },
     {
       "id": "evidence.production-capability-manager-design",
       "path": "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
-      "kind": "owner-approved-conversational-design-written-spec-review-pending",
+      "kind": "superseded-owner-accepted-historical-written-design",
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.standard-revalidation-cascade",
         "acceptance.manager-design-contract",
         "acceptance.manager-topology-impact-gate",
-        "acceptance.approved-release-coverage-growth",
-        "acceptance.manager-user-sovereignty",
+        "acceptance.evidence-backed-release-evolution",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain",
         "acceptance.native-task-orchestration-boundary"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-design-acceptance",
+      "path": "registry/production-capability-manager-design-acceptance-event-2026-07-15.json",
+      "kind": "owner-design-acceptance-event-without-implementation-authority",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-topology-impact",
+      "path": "registry/production-capability-manager-topology-impact-package-2026-07-15.json",
+      "kind": "owner-accepted-topology-impact-package",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.manager-topology-impact-gate"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-topology-acceptance",
+      "path": "registry/production-capability-manager-topology-acceptance-event-2026-07-15.json",
+      "kind": "owner-topology-acceptance-event-without-repository-creation-authority",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.manager-topology-impact-gate"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-external-ecosystem-and-stack-review",
+      "path": "registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json",
+      "kind": "source-pinned-reuse-and-stack-decision-support",
+      "asOf": "2026-07-15",
+      "supports": [
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.discovery-reuse-before-authoring"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-repository-slug-acceptance",
+      "path": "registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json",
+      "kind": "owner-repository-slug-decision-without-creation-authority",
+      "asOf": "2026-07-16",
+      "supports": [
+        "acceptance.manager-topology-impact-gate"
+      ]
+    },
+    {
+      "id": "evidence.agent-capability-manager-stack-and-foundation-authorization",
+      "path": "registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json",
+      "kind": "owner-rust-stack-dependency-repository-and-disposable-root-slice-authorization",
+      "asOf": "2026-07-16",
+      "supports": [
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.user-sovereign-capability-governance"
+      ]
+    },
+    {
+      "id": "evidence.agent-capability-manager-foundation-slice-plan",
+      "path": "registry/agent-capability-manager-foundation-slice-plan-2026-07-16.json",
+      "kind": "authorized-disposable-root-transaction-closure-plan",
+      "asOf": "2026-07-16",
+      "supports": [
+        "acceptance.manager-design-contract",
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.user-sovereign-capability-governance"
+      ]
+    },
+    {
+      "id": "evidence.agent-capability-manager-foundation-slice-implementation",
+      "path": "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json",
+      "kind": "verified-local-uncommitted-disposable-root-foundation",
+      "asOf": "2026-07-16",
+      "supports": [
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.manager-codex-readonly-adapter-preview",
+        "acceptance.user-sovereign-capability-governance"
+      ]
+    },
+    {
+      "id": "evidence.production-capability-manager-post-matrix-reintake",
+      "path": "registry/production-capability-manager-post-matrix-reintake-2026-07-17.json",
+      "kind": "verified-current-topology-and-authority-reintake",
+      "asOf": "2026-07-17",
+      "supports": [
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.manager-codex-readonly-adapter-preview"
+      ]
+    },
+    {
+      "id": "evidence.agent-capability-manager-codex-readonly-adapter-slice-plan",
+      "path": "registry/agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17.json",
+      "kind": "authorized-codex-readonly-disposable-home-preview-plan",
+      "asOf": "2026-07-17",
+      "supports": [
+        "acceptance.manager-codex-readonly-adapter-preview"
+      ]
+    },
+    {
+      "id": "evidence.agent-capability-manager-codex-readonly-adapter-implementation",
+      "path": "registry/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.json",
+      "kind": "verified-local-uncommitted-codex-readonly-disposable-home-preview",
+      "asOf": "2026-07-17",
+      "supports": [
+        "acceptance.manager-codex-readonly-adapter-preview",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.user-sovereign-capability-governance"
       ]
     },
     {
       "id": "evidence.harness-model",
       "path": "docs/curation-harness-model.md",
       "kind": "human-projection",
-      "asOf": "2026-07-15",
+      "asOf": "2026-07-18",
       "supports": [
         "acceptance.skills-terminal-positioning",
         "acceptance.calibration-reference-boundary",
         "acceptance.decision-ready-consumer-projection",
         "acceptance.cross-agent-claim-limits",
-        "acceptance.feedback-loop"
+        "acceptance.feedback-loop",
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence"
       ]
     },
     {
@@ -929,7 +1680,8 @@
       "kind": "verified-dated-local-metadata-baseline",
       "asOf": "2026-07-15",
       "supports": [
-        "acceptance.native-runtime-baseline"
+        "acceptance.native-runtime-baseline",
+        "acceptance.optional-hook-mode-chain"
       ]
     },
     {
@@ -938,7 +1690,8 @@
       "kind": "verified-public-metadata-snapshot",
       "asOf": "2026-07-15",
       "supports": [
-        "acceptance.discovery-clustering-stop-rule"
+        "acceptance.discovery-clustering-stop-rule",
+        "acceptance.discovery-reuse-before-authoring"
       ]
     },
     {
@@ -959,7 +1712,8 @@
         "acceptance.alternative-comparison",
         "acceptance.residual-gap-proof",
         "acceptance.full-chain-coverage-matrix",
-        "acceptance.capability-survey-result-package"
+        "acceptance.capability-survey-result-package",
+        "acceptance.discovery-reuse-before-authoring"
       ]
     },
     {
@@ -987,13 +1741,228 @@
       ]
     },
     {
+      "id": "evidence.round03-capability-survey-result-package",
+      "path": "registry/round03-capability-survey-result-package-2026-07-18.json",
+      "kind": "verified-ten-component-complete-coordinate-envelope-demand-model-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.capability-survey-result-package",
+        "acceptance.complete-coordinate-envelope-reconciliation",
+        "acceptance.full-chain-coverage-matrix",
+        "acceptance.evidence-backed-release-evolution"
+      ]
+    },
+    {
+      "id": "evidence.round03-complete-coordinate-envelope-reconciliation",
+      "path": "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json",
+      "kind": "verified-bounded-coordinate-envelope-reconciliation-demand-model-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.complete-coordinate-envelope-reconciliation",
+        "acceptance.full-chain-coverage-matrix",
+        "acceptance.evidence-backed-release-evolution"
+      ]
+    },
+    {
+      "id": "evidence.demand-coordinate-contract-reconciliation-2026-07-18",
+      "path": "registry/demand-coordinate-contract-reconciliation-2026-07-18.json",
+      "kind": "verified-bounded-demand-coordinate-contract-demand-model-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.demand-coordinate-contract"
+      ]
+    },
+    {
+      "id": "evidence.native-runtime-baseline-evidence-gap-reconciliation-2026-07-18",
+      "path": "registry/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.json",
+      "kind": "partial-single-host-four-record-metadata-baseline-four-review-only-lanes",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.native-runtime-baseline"
+      ]
+    },
+    {
+      "id": "evidence.residual-gap-proof-evidence-gap-reconciliation-2026-07-18",
+      "path": "registry/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.json",
+      "kind": "partial-rejection-firewall-verified-positive-support-path-unexercised",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
       "id": "evidence.lifecycle-policy",
       "path": "policies/lifecycle.md",
       "kind": "governance-policy",
       "asOf": "2026-07-15",
       "supports": [
         "acceptance.feedback-loop",
+        "acceptance.deprecation-retirement-loop",
+        "acceptance.evidence-backed-release-evolution"
+      ]
+    },
+    {
+      "id": "evidence.lifecycle-metabolism-reconciliation-2026-07-18",
+      "path": "registry/lifecycle-metabolism-reconciliation-2026-07-18.json",
+      "kind": "verified-feedback-return-and-deterministic-retirement-contract-live-exercise-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.feedback-loop",
         "acceptance.deprecation-retirement-loop"
+      ]
+    },
+    {
+      "id": "evidence.cross-agent-claim-limit-reconciliation-2026-07-18",
+      "path": "registry/cross-agent-claim-limit-reconciliation-2026-07-18.json",
+      "kind": "verified-claim-governance-not-cross-agent-behavior",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cross-agent-claim-limits"
+      ]
+    },
+    {
+      "id": "evidence.consumer-mapping-evidence-gap-reconciliation-2026-07-18",
+      "path": "registry/consumer-mapping-evidence-gap-reconciliation-2026-07-18.json",
+      "kind": "verified-current-static-partial-no-supported-consumer-mapping-claimed",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.consumer-mapping-evidence"
+      ]
+    },
+    {
+      "id": "evidence.user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18",
+      "path": "registry/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.json",
+      "kind": "verified-user-sovereignty-contract-foreign-multi-agent-coexistence-still-partial",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.foreign-managed-capability-coexistence"
+      ]
+    },
+    {
+      "id": "evidence.public-skill-source-discovery-preflight-2026-07-18",
+      "path": "registry/public-skill-source-discovery-preflight-2026-07-18.json",
+      "kind": "verified-public-metadata-discovery-and-balanced-preflight",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.public-source-balanced-preflight",
+        "acceptance.discovery-clustering-stop-rule",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission"
+      ]
+    },
+    {
+      "id": "evidence.user-starred-skill-source-list-intake-2026-07-18",
+      "path": "registry/user-starred-skill-source-list-intake-2026-07-18.json",
+      "kind": "verified-public-user-curated-discovery-signal",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.public-source-balanced-preflight",
+        "acceptance.discovery-clustering-stop-rule"
+      ]
+    },
+    {
+      "id": "evidence.user-starred-index-child-source-classification-2026-07-18",
+      "path": "registry/user-starred-index-child-source-classification-2026-07-18.json",
+      "kind": "verified-bounded-round-stop-rule-not-ecosystem-completeness",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.discovery-clustering-stop-rule"
+      ]
+    },
+    {
+      "id": "evidence.public-skill-source-static-review-batch-2026-07-18",
+      "path": "registry/public-skill-source-static-review-batch-2026-07-18.json",
+      "kind": "verified-non-executing-source-pinned-static-review",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.public-source-static-review",
+        "acceptance.strict-admission-free-consumption",
+        "acceptance.source-suite-selective-admission",
+        "acceptance.adaptive-harness-proportionality"
+      ]
+    },
+    {
+      "id": "evidence.loopy-demand-level-alternative-comparison-2026-07-18",
+      "path": "registry/loopy-demand-level-alternative-comparison-2026-07-18.json",
+      "kind": "reviewed-non-executing-demand-level-alternative-comparison",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.public-source-next-gate-triage"
+      ]
+    },
+    {
+      "id": "evidence.loopy-disposable-agent-trial-result-2026-07-18",
+      "path": "registry/loopy-disposable-agent-trial-result-2026-07-18.json",
+      "kind": "verified-disposable-agent-trial-reference-only",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.loopy-disposable-agent-trial-disposition",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
+      "id": "evidence.round03-intent-binding-demand-review-2026-07-18",
+      "path": "registry/round03-intent-binding-demand-review-2026-07-18.json",
+      "kind": "verified-source-bound-demand-current-path-sufficient",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.intent-binding-demand-lane",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
+      "id": "evidence.round03-authority-boundary-demand-review-2026-07-18",
+      "path": "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+      "kind": "verified-source-bound-layered-authority-current-path-sufficient",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.authority-boundary-demand-lane",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
+      "id": "evidence.round03-premise-challenge-demand-review-2026-07-18",
+      "path": "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+      "kind": "verified-source-bound-proportional-current-path-sufficient",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.premise-challenge-demand-lane",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
+      "id": "evidence.round03-cognitive-offload-monitoring-demand-review-2026-07-18",
+      "path": "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
+      "kind": "verified-source-bound-current-classes-sufficient-longitudinal-evidence-open",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cognitive-offload-monitoring-demand-lane",
+        "acceptance.alternative-comparison",
+        "acceptance.residual-gap-proof"
+      ]
+    },
+    {
+      "id": "evidence.legacy-curated-skill-source-migration-review-2026-07-18",
+      "path": "registry/legacy-curated-skill-source-migration-review-2026-07-18.json",
+      "kind": "verified-read-only-provisional-per-skill-migration-dispositions",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.cc-switch-source-preserving-skill-pool"
+      ]
+    },
+    {
+      "id": "evidence.user-starred-new-source-preflight-2026-07-18",
+      "path": "registry/user-starred-new-source-preflight-2026-07-18.json",
+      "kind": "verified-read-only-metadata-and-existing-evidence-preflight",
+      "asOf": "2026-07-18",
+      "supports": [
+        "acceptance.public-source-next-gate-triage"
       ]
     }
   ]

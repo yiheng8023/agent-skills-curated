@@ -33,6 +33,9 @@ from contracts import (
 )
 from simulate_routing import run_scenarios
 from evaluate_round03_evidence_fixtures import evaluate_fixture_document
+from evaluate_loopy_contract_fixtures import evaluate_fixture_document as evaluate_loopy_contract_fixture_document
+from evaluate_lifecycle_metabolism_fixtures import evaluate_fixture_document as evaluate_lifecycle_metabolism_fixture_document
+from build_capability_survey_result_package import build_matrix as build_capability_survey_matrix
 
 ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM_SOURCE_ID = "github:addyosmani/agent-skills"
@@ -53,7 +56,13 @@ FORBIDDEN_APPROVED_TEXT = (
 )
 REQUIRED_FILES = (
     ".github/workflows/discover-candidate-sources.yml",
+    ".github/FUNDING.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/ISSUE_TEMPLATE/candidate-source.yml",
+    ".github/ISSUE_TEMPLATE/governance-or-verification.yml",
     "AGENTS.md", "README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md",
+    "SUPPORT.md", "SUPPORT.zh-CN.md", "SPONSORING.md", "SPONSORING.zh-CN.md",
     "sources/lock.json", "sources/addyosmani-agent-skills/selection.json",
     "sources/addyosmani-agent-skills/LICENSE",
     "sources/addyosmani-agent-skills/files.sha256", "registry/skills.json",
@@ -64,6 +73,56 @@ REQUIRED_FILES = (
     "registry/curation-program-plan.json",
     "registry/program-acceptance-map.json",
     "registry/program-control-acceptance-event-2026-07-15.json",
+    "registry/production-capability-manager-design-acceptance-event-2026-07-15.json",
+    "registry/production-capability-manager-topology-impact-package-2026-07-15.json",
+    "registry/production-capability-manager-topology-acceptance-event-2026-07-15.json",
+    "registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json",
+    "registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json",
+    "registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json",
+    "registry/agent-capability-manager-foundation-slice-plan-2026-07-16.json",
+    "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json",
+    "registry/production-capability-manager-post-matrix-reintake-2026-07-17.json",
+    "registry/agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17.json",
+    "registry/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.json",
+    "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json",
+    "registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json",
+    "registry/cc-switch-disposable-source-management-preview-2026-07-18.json",
+    "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json",
+    "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json",
+    "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+    "registry/dynamic-runtime-control-gap-review-2026-07-18.json",
+    "registry/legacy-curated-skill-source-migration-review-2026-07-18.json",
+    "registry/custom-manager-retirement-reconciliation-2026-07-18.json",
+    "registry/evidence-backed-release-evolution-reconciliation-2026-07-18.json",
+    "registry/lifecycle-metabolism-reconciliation-2026-07-18.json",
+    "registry/cross-agent-claim-limit-reconciliation-2026-07-18.json",
+    "registry/demand-coordinate-contract-reconciliation-2026-07-18.json",
+    "registry/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.json",
+    "registry/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.json",
+    "registry/consumer-mapping-evidence-gap-reconciliation-2026-07-18.json",
+    "registry/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.json",
+    "registry/layered-reliability-projection-reconciliation-2026-07-18.json",
+    "registry/decision-ready-consumer-projection-evaluation-2026-07-18.json",
+    "registry/github-repository-configuration-evidence-2026-07-18.json",
+    "registry/adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18.json",
+    "registry/public-skill-source-discovery-preflight-2026-07-18.json",
+    "registry/user-starred-skill-source-list-intake-2026-07-18.json",
+    "registry/public-skill-source-static-review-batch-2026-07-18.json",
+    "registry/loopy-demand-level-alternative-comparison-2026-07-18.json",
+    "registry/loopy-contract-fixture-protocol-2026-07-18.json",
+    "registry/loopy-disposable-agent-trial-result-2026-07-18.json",
+    "registry/user-starred-new-source-preflight-2026-07-18.json",
+    "registry/user-starred-index-child-source-extraction-2026-07-18.json",
+    "registry/user-starred-index-child-source-preflight-2026-07-18.json",
+    "registry/user-starred-index-stale-source-resolution-2026-07-18.json",
+    "registry/user-starred-index-child-source-classification-2026-07-18.json",
+    "registry/pm-skills-current-revision-delta-review-2026-07-18.json",
+    "registry/round03-capability-survey-result-package-2026-07-18.json",
+    "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json",
+    "registry/round03-intent-binding-demand-review-2026-07-18.json",
+    "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+    "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+    "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
     "registry/round-lifecycle-contract.json",
     "registry/radar-feedback.json",
     "registry/github-skill-discovery-profile.json",
@@ -100,6 +159,8 @@ REQUIRED_FILES = (
     "registry/round03-alternative-comparison-batch-01.json",
     "registry/round03-evidence-protocol-batch-01.json",
     "tests/fixtures/round03-evidence-fixtures-batch-01.json",
+    "tests/fixtures/loopy-contract-paired-fixtures-2026-07-18.json",
+    "tests/fixtures/lifecycle-metabolism-fixtures-2026-07-18.json",
     "registry/round03-capability-survey-rebaseline-acceptance-event-2026-07-15.json",
     "registry/mvp-candidate-batches.json",
     "registry/mvp-candidate-reviews.json",
@@ -122,6 +183,13 @@ REQUIRED_FILES = (
     "policies/overlap-resolution.md", "policies/lifecycle.md",
     "scripts/discover_github_skill_sources.py",
     "scripts/evaluate_round03_evidence_fixtures.py",
+    "scripts/evaluate_loopy_contract_fixtures.py",
+    "scripts/evaluate_loopy_agent_trial_result.py",
+    "scripts/evaluate_lifecycle_metabolism_fixtures.py",
+    "scripts/run_loopy_agent_trial.py",
+    "scripts/extract_github_skill_index_sources.py",
+    "scripts/preflight_github_source_list.py",
+    "scripts/build_capability_survey_result_package.py",
     "scripts/build_topology.py", "scripts/build_release_manifest.py",
     "scripts/verify.py", "scripts/simulate_routing.py", "release-manifest.json",
     "generated/routing-index.json", "generated/routing-simulation-report.json",
@@ -143,6 +211,86 @@ REQUIRED_FILES = (
     "docs/coverage-and-curation-expansion.md",
     "docs/curation-harness-model.md",
     "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
+    "docs/superpowers/specs/2026-07-15-production-capability-manager-topology-impact.md",
+    "docs/superpowers/plans/2026-07-15-production-capability-manager-topology-gate.md",
+    "docs/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.md",
+    "docs/superpowers/plans/2026-07-16-agent-capability-manager-foundation-slice.md",
+    "docs/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.md",
+    "docs/production-capability-manager-post-matrix-reintake-2026-07-17.md",
+    "docs/superpowers/plans/2026-07-17-agent-capability-manager-codex-readonly-adapter-slice.md",
+    "docs/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.md",
+    "docs/cc-switch-source-preserving-skill-pool-strategy-2026-07-17.md",
+    "docs/cc-switch-live-source-ownership-reconciliation-2026-07-18.md",
+    "docs/cc-switch-live-source-ownership-reconciliation-2026-07-18.zh-CN.md",
+    "docs/cc-switch-disposable-source-management-preview-2026-07-18.md",
+    "docs/cc-switch-disposable-source-management-preview-2026-07-18.zh-CN.md",
+    "docs/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.md",
+    "docs/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.zh-CN.md",
+    "docs/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.md",
+    "docs/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.zh-CN.md",
+    "docs/cc-switch-handoff-real-canary-execution-2026-07-18.md",
+    "docs/cc-switch-handoff-real-canary-execution-2026-07-18.zh-CN.md",
+    "docs/dynamic-runtime-control-gap-review-2026-07-18.md",
+    "docs/dynamic-runtime-control-gap-review-2026-07-18.zh-CN.md",
+    "docs/legacy-curated-skill-source-migration-review-2026-07-18.md",
+    "docs/legacy-curated-skill-source-migration-review-2026-07-18.zh-CN.md",
+    "docs/custom-manager-retirement-reconciliation-2026-07-18.md",
+    "docs/custom-manager-retirement-reconciliation-2026-07-18.zh-CN.md",
+    "docs/evidence-backed-release-evolution-reconciliation-2026-07-18.md",
+    "docs/evidence-backed-release-evolution-reconciliation-2026-07-18.zh-CN.md",
+    "docs/lifecycle-metabolism-reconciliation-2026-07-18.md",
+    "docs/lifecycle-metabolism-reconciliation-2026-07-18.zh-CN.md",
+    "docs/cross-agent-claim-limit-reconciliation-2026-07-18.md",
+    "docs/cross-agent-claim-limit-reconciliation-2026-07-18.zh-CN.md",
+    "docs/demand-coordinate-contract-reconciliation-2026-07-18.md",
+    "docs/demand-coordinate-contract-reconciliation-2026-07-18.zh-CN.md",
+    "docs/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.md",
+    "docs/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.zh-CN.md",
+    "docs/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.md",
+    "docs/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.zh-CN.md",
+    "docs/consumer-mapping-evidence-gap-reconciliation-2026-07-18.md",
+    "docs/consumer-mapping-evidence-gap-reconciliation-2026-07-18.zh-CN.md",
+    "docs/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.md",
+    "docs/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.zh-CN.md",
+    "docs/layered-reliability-projection-reconciliation-2026-07-18.md",
+    "docs/layered-reliability-projection-reconciliation-2026-07-18.zh-CN.md",
+    "docs/decision-ready-consumer-projection-evaluation-2026-07-18.md",
+    "docs/decision-ready-consumer-projection-evaluation-2026-07-18.zh-CN.md",
+    "docs/github-repository-configuration-evidence-2026-07-18.md",
+    "docs/github-repository-configuration-evidence-2026-07-18.zh-CN.md",
+    "docs/adaptive-harness-source-suite-and-user-sovereignty-2026-07-18.md",
+    "docs/public-skill-source-discovery-preflight-2026-07-18.md",
+    "docs/public-skill-source-discovery-preflight-2026-07-18.zh-CN.md",
+    "docs/user-starred-skill-source-list-intake-2026-07-18.md",
+    "docs/user-starred-skill-source-list-intake-2026-07-18.zh-CN.md",
+    "docs/public-skill-source-static-review-batch-2026-07-18.md",
+    "docs/public-skill-source-static-review-batch-2026-07-18.zh-CN.md",
+    "docs/loopy-demand-level-alternative-comparison-2026-07-18.md",
+    "docs/loopy-demand-level-alternative-comparison-2026-07-18.zh-CN.md",
+    "docs/loopy-contract-fixture-protocol-2026-07-18.md",
+    "docs/loopy-contract-fixture-protocol-2026-07-18.zh-CN.md",
+    "docs/loopy-disposable-agent-trial-result-2026-07-18.md",
+    "docs/loopy-disposable-agent-trial-result-2026-07-18.zh-CN.md",
+    "docs/user-starred-new-source-preflight-2026-07-18.md",
+    "docs/user-starred-new-source-preflight-2026-07-18.zh-CN.md",
+    "docs/user-starred-index-stale-source-resolution-2026-07-18.md",
+    "docs/user-starred-index-stale-source-resolution-2026-07-18.zh-CN.md",
+    "docs/user-starred-index-child-source-classification-2026-07-18.md",
+    "docs/user-starred-index-child-source-classification-2026-07-18.zh-CN.md",
+    "docs/pm-skills-current-revision-delta-review-2026-07-18.md",
+    "docs/pm-skills-current-revision-delta-review-2026-07-18.zh-CN.md",
+    "docs/round03-capability-survey-result-package-2026-07-18.md",
+    "docs/round03-capability-survey-result-package-2026-07-18.zh-CN.md",
+    "docs/round03-complete-coordinate-envelope-reconciliation-2026-07-18.md",
+    "docs/round03-complete-coordinate-envelope-reconciliation-2026-07-18.zh-CN.md",
+    "docs/round03-intent-binding-demand-review-2026-07-18.md",
+    "docs/round03-intent-binding-demand-review-2026-07-18.zh-CN.md",
+    "docs/round03-authority-boundary-demand-review-2026-07-18.md",
+    "docs/round03-authority-boundary-demand-review-2026-07-18.zh-CN.md",
+    "docs/round03-premise-challenge-demand-review-2026-07-18.md",
+    "docs/round03-premise-challenge-demand-review-2026-07-18.zh-CN.md",
+    "docs/round03-cognitive-offload-monitoring-demand-review-2026-07-18.md",
+    "docs/round03-cognitive-offload-monitoring-demand-review-2026-07-18.zh-CN.md",
     "docs/round02-source-intake-2026-07-02.md",
     "docs/round02-candidate-review-2026-07-02.md",
     "docs/round02-obsidian-adaptation-gate.md",
@@ -238,6 +386,57 @@ def verify() -> None:
     curation_program_plan_doc = load("registry/curation-program-plan.json")
     program_acceptance_map_doc = load("registry/program-acceptance-map.json")
     program_control_acceptance_event_doc = load("registry/program-control-acceptance-event-2026-07-15.json")
+    manager_design_acceptance_event_doc = load("registry/production-capability-manager-design-acceptance-event-2026-07-15.json")
+    manager_topology_impact_package_doc = load("registry/production-capability-manager-topology-impact-package-2026-07-15.json")
+    manager_topology_acceptance_event_doc = load("registry/production-capability-manager-topology-acceptance-event-2026-07-15.json")
+    manager_external_ecosystem_stack_review_doc = load("registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json")
+    manager_repository_slug_acceptance_event_doc = load("registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json")
+    manager_stack_foundation_authorization_event_doc = load("registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json")
+    manager_foundation_slice_plan_doc = load("registry/agent-capability-manager-foundation-slice-plan-2026-07-16.json")
+    manager_foundation_slice_implementation_evidence_doc = load("registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json")
+    manager_post_matrix_reintake_doc = load("registry/production-capability-manager-post-matrix-reintake-2026-07-17.json")
+    manager_codex_readonly_adapter_slice_plan_doc = load("registry/agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17.json")
+    manager_codex_readonly_adapter_implementation_evidence_doc = load("registry/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.json")
+    cc_switch_skill_pool_strategy_doc = load("registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json")
+    cc_switch_live_source_ownership_reconciliation_doc = load("registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json")
+    cc_switch_disposable_source_management_preview_doc = load("registry/cc-switch-disposable-source-management-preview-2026-07-18.json")
+    cc_switch_disposable_source_update_recovery_review_doc = load("registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json")
+    cc_switch_handoff_real_canary_readonly_preview_doc = load("registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json")
+    cc_switch_handoff_real_canary_execution_doc = load("registry/cc-switch-handoff-real-canary-execution-2026-07-18.json")
+    dynamic_runtime_control_gap_review_doc = load("registry/dynamic-runtime-control-gap-review-2026-07-18.json")
+    legacy_curated_skill_source_migration_review_doc = load("registry/legacy-curated-skill-source-migration-review-2026-07-18.json")
+    custom_manager_retirement_reconciliation_doc = load("registry/custom-manager-retirement-reconciliation-2026-07-18.json")
+    evidence_backed_release_evolution_reconciliation_doc = load("registry/evidence-backed-release-evolution-reconciliation-2026-07-18.json")
+    lifecycle_metabolism_reconciliation_doc = load("registry/lifecycle-metabolism-reconciliation-2026-07-18.json")
+    cross_agent_claim_limit_reconciliation_doc = load("registry/cross-agent-claim-limit-reconciliation-2026-07-18.json")
+    demand_coordinate_contract_reconciliation_doc = load("registry/demand-coordinate-contract-reconciliation-2026-07-18.json")
+    native_runtime_baseline_evidence_gap_reconciliation_doc = load("registry/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.json")
+    residual_gap_proof_evidence_gap_reconciliation_doc = load("registry/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.json")
+    consumer_mapping_evidence_gap_reconciliation_doc = load("registry/consumer-mapping-evidence-gap-reconciliation-2026-07-18.json")
+    user_sovereignty_foreign_coexistence_reconciliation_doc = load("registry/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.json")
+    layered_reliability_projection_reconciliation_doc = load("registry/layered-reliability-projection-reconciliation-2026-07-18.json")
+    decision_ready_consumer_projection_evaluation_doc = load("registry/decision-ready-consumer-projection-evaluation-2026-07-18.json")
+    github_repository_configuration_evidence_doc = load("registry/github-repository-configuration-evidence-2026-07-18.json")
+    adaptive_harness_user_sovereignty_doc = load("registry/adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18.json")
+    public_skill_source_discovery_preflight_doc = load("registry/public-skill-source-discovery-preflight-2026-07-18.json")
+    user_starred_skill_source_list_intake_doc = load("registry/user-starred-skill-source-list-intake-2026-07-18.json")
+    public_skill_source_static_review_batch_doc = load("registry/public-skill-source-static-review-batch-2026-07-18.json")
+    loopy_demand_level_alternative_comparison_doc = load("registry/loopy-demand-level-alternative-comparison-2026-07-18.json")
+    loopy_contract_fixture_protocol_doc = load("registry/loopy-contract-fixture-protocol-2026-07-18.json")
+    loopy_disposable_agent_trial_result_doc = load("registry/loopy-disposable-agent-trial-result-2026-07-18.json")
+    loopy_contract_paired_fixtures_doc = load("tests/fixtures/loopy-contract-paired-fixtures-2026-07-18.json")
+    user_starred_new_source_preflight_doc = load("registry/user-starred-new-source-preflight-2026-07-18.json")
+    user_starred_index_child_source_extraction_doc = load("registry/user-starred-index-child-source-extraction-2026-07-18.json")
+    user_starred_index_child_source_preflight_doc = load("registry/user-starred-index-child-source-preflight-2026-07-18.json")
+    user_starred_index_stale_source_resolution_doc = load("registry/user-starred-index-stale-source-resolution-2026-07-18.json")
+    user_starred_index_child_source_classification_doc = load("registry/user-starred-index-child-source-classification-2026-07-18.json")
+    pm_skills_current_revision_delta_review_doc = load("registry/pm-skills-current-revision-delta-review-2026-07-18.json")
+    round03_capability_survey_result_package_doc = load("registry/round03-capability-survey-result-package-2026-07-18.json")
+    round03_complete_coordinate_envelope_reconciliation_doc = load("registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json")
+    round03_intent_binding_demand_review_doc = load("registry/round03-intent-binding-demand-review-2026-07-18.json")
+    round03_authority_boundary_demand_review_doc = load("registry/round03-authority-boundary-demand-review-2026-07-18.json")
+    round03_premise_challenge_demand_review_doc = load("registry/round03-premise-challenge-demand-review-2026-07-18.json")
+    round03_cognitive_offload_monitoring_demand_review_doc = load("registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json")
     round_lifecycle_contract_doc = load("registry/round-lifecycle-contract.json")
     radar_feedback_doc = load("registry/radar-feedback.json")
     github_discovery_profile_doc = load("registry/github-skill-discovery-profile.json")
@@ -296,6 +495,7 @@ def verify() -> None:
     selection_document = "sources/addyosmani-agent-skills/selection.json"
     selection_doc = load(selection_document)
     manifest = load("release-manifest.json")
+    validate_repository_community_configuration()
     validate_skills_document(skills_doc, "registry/skills.json")
     validate_capabilities_document(capabilities_doc, "registry/capabilities.json")
     validate_relations_document(relations_doc, "registry/relations.json")
@@ -304,7 +504,119 @@ def verify() -> None:
     validate_collaboration_domain_coverage(collaboration_domain_coverage_doc)
     validate_curation_expansion_rounds(curation_expansion_rounds_doc, collaboration_domain_coverage_doc)
     validate_curation_program_plan(curation_program_plan_doc, curation_expansion_rounds_doc)
+    validate_production_capability_manager_design_acceptance_event(
+        manager_design_acceptance_event_doc,
+        curation_program_plan_doc,
+    )
+    validate_production_capability_manager_topology_impact_package(
+        manager_topology_impact_package_doc,
+        manager_design_acceptance_event_doc,
+        manager_topology_acceptance_event_doc,
+        manager_external_ecosystem_stack_review_doc,
+        manager_repository_slug_acceptance_event_doc,
+    )
+    validate_production_capability_manager_topology_acceptance_event(
+        manager_topology_acceptance_event_doc,
+        manager_topology_impact_package_doc,
+    )
+    validate_production_capability_manager_external_ecosystem_and_stack_review(
+        manager_external_ecosystem_stack_review_doc,
+    )
+    validate_production_capability_manager_repository_slug_acceptance_event(
+        manager_repository_slug_acceptance_event_doc,
+    )
+    validate_agent_capability_manager_stack_and_foundation_authorization_event(
+        manager_stack_foundation_authorization_event_doc,
+        manager_foundation_slice_plan_doc,
+    )
+    validate_agent_capability_manager_foundation_slice_plan(
+        manager_foundation_slice_plan_doc,
+    )
+    validate_agent_capability_manager_foundation_slice_implementation_evidence(
+        manager_foundation_slice_implementation_evidence_doc,
+        manager_foundation_slice_plan_doc,
+    )
+    validate_production_capability_manager_post_matrix_reintake(
+        manager_post_matrix_reintake_doc,
+    )
+    validate_agent_capability_manager_codex_readonly_adapter_slice_plan(
+        manager_codex_readonly_adapter_slice_plan_doc,
+        manager_post_matrix_reintake_doc,
+    )
+    validate_agent_capability_manager_codex_readonly_adapter_implementation_evidence(
+        manager_codex_readonly_adapter_implementation_evidence_doc,
+        manager_codex_readonly_adapter_slice_plan_doc,
+    )
+    validate_cc_switch_source_preserving_skill_pool_strategy(
+        cc_switch_skill_pool_strategy_doc,
+        curation_program_plan_doc,
+    )
+    validate_cc_switch_live_source_ownership_reconciliation(
+        cc_switch_live_source_ownership_reconciliation_doc,
+        cc_switch_skill_pool_strategy_doc,
+        consumer_mapping_evidence_gap_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_cc_switch_disposable_source_management_preview(
+        cc_switch_disposable_source_management_preview_doc,
+        cc_switch_live_source_ownership_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_cc_switch_disposable_source_update_and_recovery_review(
+        cc_switch_disposable_source_update_recovery_review_doc,
+        cc_switch_disposable_source_management_preview_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
+    validate_cc_switch_handoff_real_canary_readonly_preview(
+        cc_switch_handoff_real_canary_readonly_preview_doc,
+        cc_switch_disposable_source_update_recovery_review_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
+    validate_cc_switch_handoff_real_canary_execution(
+        cc_switch_handoff_real_canary_execution_doc,
+        cc_switch_handoff_real_canary_readonly_preview_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
+    validate_dynamic_runtime_control_gap_review(
+        dynamic_runtime_control_gap_review_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
+    validate_legacy_curated_skill_source_migration_review(
+        legacy_curated_skill_source_migration_review_doc,
+        cc_switch_live_source_ownership_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_adaptive_harness_source_suite_and_user_sovereignty(
+        adaptive_harness_user_sovereignty_doc,
+        curation_program_plan_doc,
+    )
     validate_program_acceptance_map(program_acceptance_map_doc, curation_program_plan_doc)
+    validate_custom_manager_retirement_reconciliation(
+        custom_manager_retirement_reconciliation_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+    )
+    validate_evidence_backed_release_evolution_reconciliation(
+        evidence_backed_release_evolution_reconciliation_doc,
+        curation_program_plan_doc,
+        program_acceptance_map_doc,
+        round03_capability_survey_result_package_doc,
+    )
+    validate_layered_reliability_projection_reconciliation(
+        layered_reliability_projection_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_decision_ready_consumer_projection_evaluation(
+        decision_ready_consumer_projection_evaluation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_github_repository_configuration_evidence(
+        github_repository_configuration_evidence_doc,
+    )
     validate_program_control_acceptance_event(
         program_control_acceptance_event_doc,
         curation_program_plan_doc,
@@ -313,6 +625,86 @@ def verify() -> None:
     validate_round_lifecycle_contract(round_lifecycle_contract_doc, curation_expansion_rounds_doc)
     validate_radar_feedback(radar_feedback_doc)
     validate_github_skill_discovery_profile(github_discovery_profile_doc)
+    validate_public_skill_source_discovery_preflight(
+        public_skill_source_discovery_preflight_doc,
+        github_discovery_profile_doc,
+        curation_program_plan_doc,
+    )
+    validate_user_starred_skill_source_list_intake(
+        user_starred_skill_source_list_intake_doc,
+        public_skill_source_discovery_preflight_doc,
+    )
+    validate_public_skill_source_static_review_batch(
+        public_skill_source_static_review_batch_doc,
+        public_skill_source_discovery_preflight_doc,
+    )
+    validate_loopy_demand_level_alternative_comparison(
+        loopy_demand_level_alternative_comparison_doc,
+        public_skill_source_static_review_batch_doc,
+    )
+    validate_loopy_contract_fixture_protocol(
+        loopy_contract_fixture_protocol_doc,
+        loopy_contract_paired_fixtures_doc,
+        loopy_demand_level_alternative_comparison_doc,
+    )
+    validate_loopy_disposable_agent_trial_result(
+        loopy_disposable_agent_trial_result_doc,
+        loopy_contract_fixture_protocol_doc,
+    )
+    validate_round03_intent_binding_demand_review(
+        round03_intent_binding_demand_review_doc,
+        skills_doc,
+        admissions_doc,
+        recipes_doc,
+        scenarios_doc,
+    )
+    validate_round03_authority_boundary_demand_review(
+        round03_authority_boundary_demand_review_doc,
+        skills_doc,
+        admissions_doc,
+        recipes_doc,
+        scenarios_doc,
+    )
+    validate_round03_premise_challenge_demand_review(
+        round03_premise_challenge_demand_review_doc,
+        skills_doc,
+        admissions_doc,
+        recipes_doc,
+        scenarios_doc,
+    )
+    validate_round03_cognitive_offload_monitoring_demand_review(
+        round03_cognitive_offload_monitoring_demand_review_doc,
+        skills_doc,
+        admissions_doc,
+        scenarios_doc,
+    )
+    validate_user_starred_new_source_preflight(
+        user_starred_new_source_preflight_doc,
+        user_starred_skill_source_list_intake_doc,
+    )
+    validate_user_starred_index_child_source_extraction(
+        user_starred_index_child_source_extraction_doc,
+        public_skill_source_discovery_preflight_doc,
+    )
+    validate_user_starred_index_child_source_preflight(
+        user_starred_index_child_source_preflight_doc,
+        user_starred_index_child_source_extraction_doc,
+    )
+    validate_user_starred_index_stale_source_resolution(
+        user_starred_index_stale_source_resolution_doc,
+        user_starred_index_child_source_preflight_doc,
+    )
+    validate_user_starred_index_child_source_classification(
+        user_starred_index_child_source_classification_doc,
+        user_starred_index_child_source_preflight_doc,
+        user_starred_index_stale_source_resolution_doc,
+        round03_capability_survey_result_package_doc,
+        program_acceptance_map_doc,
+    )
+    validate_pm_skills_current_revision_delta_review(
+        pm_skills_current_revision_delta_review_doc,
+        user_starred_new_source_preflight_doc,
+    )
     validate_starred_skill_sources(starred_sources_doc)
     validate_source_intake_batches(source_intake_batches_doc, collaboration_domain_coverage_doc, curation_expansion_rounds_doc)
     validate_round02_candidate_reviews(round02_candidate_reviews_doc, source_intake_batches_doc, skills_doc, manifest)
@@ -489,6 +881,54 @@ def verify() -> None:
         round_lifecycle_contract_doc,
         program_acceptance_map_doc,
     )
+    validate_round03_capability_survey_result_package(
+        round03_capability_survey_result_package_doc,
+        round03_demand_records_batch_01_doc,
+        round03_alternative_comparison_batch_01_doc,
+        program_acceptance_map_doc,
+        round03_intent_binding_demand_review_doc,
+        round03_authority_boundary_demand_review_doc,
+        round03_premise_challenge_demand_review_doc,
+        round03_cognitive_offload_monitoring_demand_review_doc,
+    )
+    validate_round03_complete_coordinate_envelope_reconciliation(
+        round03_complete_coordinate_envelope_reconciliation_doc,
+        round03_capability_survey_result_package_doc,
+        program_acceptance_map_doc,
+    )
+    validate_demand_coordinate_contract_reconciliation(
+        demand_coordinate_contract_reconciliation_doc,
+        round03_demand_coordinate_source_contract_doc,
+        round03_demand_records_batch_01_doc,
+        round03_intent_binding_demand_review_doc,
+        round03_authority_boundary_demand_review_doc,
+        round03_premise_challenge_demand_review_doc,
+        round03_cognitive_offload_monitoring_demand_review_doc,
+        round03_capability_survey_result_package_doc,
+        round03_complete_coordinate_envelope_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_native_runtime_baseline_evidence_gap_reconciliation(
+        native_runtime_baseline_evidence_gap_reconciliation_doc,
+        round03_native_runtime_baseline_doc,
+        round03_demand_records_batch_01_doc,
+        round03_intent_binding_demand_review_doc,
+        round03_authority_boundary_demand_review_doc,
+        round03_premise_challenge_demand_review_doc,
+        round03_cognitive_offload_monitoring_demand_review_doc,
+        round03_capability_survey_result_package_doc,
+        cross_agent_claim_limit_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_residual_gap_proof_evidence_gap_reconciliation(
+        residual_gap_proof_evidence_gap_reconciliation_doc,
+        round03_alternative_comparison_batch_01_doc,
+        round03_evidence_protocol_batch_01_doc,
+        loopy_disposable_agent_trial_result_doc,
+        round03_capability_survey_result_package_doc,
+        round03_complete_coordinate_envelope_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
     validate_admissions_document(admissions_doc, "registry/admissions.json")
     validate_routing_document(routing_doc, "registry/routing.json")
     validate_scenarios_document(scenarios_doc, "registry/scenarios.json")
@@ -655,6 +1095,40 @@ def verify() -> None:
         radar_feedback_doc,
         mvp06_lifecycle_feedback_doc,
     )
+    validate_lifecycle_metabolism_reconciliation(
+        lifecycle_metabolism_reconciliation_doc,
+        mvp06_lifecycle_feedback_doc,
+        radar_feedback_doc,
+        pm_skills_current_revision_delta_review_doc,
+        custom_manager_retirement_reconciliation_doc,
+        evidence_backed_release_evolution_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_cross_agent_claim_limit_reconciliation(
+        cross_agent_claim_limit_reconciliation_doc,
+        round03_native_runtime_baseline_doc,
+        round03_capability_survey_result_package_doc,
+        loopy_disposable_agent_trial_result_doc,
+        decision_ready_consumer_projection_evaluation_doc,
+        public_skill_source_discovery_preflight_doc,
+        mvp06_lifecycle_feedback_doc,
+        lifecycle_metabolism_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_consumer_mapping_evidence_gap_reconciliation(
+        consumer_mapping_evidence_gap_reconciliation_doc,
+        round03_native_runtime_baseline_doc,
+        mvp06_lifecycle_feedback_doc,
+        cross_agent_claim_limit_reconciliation_doc,
+        program_acceptance_map_doc,
+    )
+    validate_user_sovereignty_and_foreign_coexistence_reconciliation(
+        user_sovereignty_foreign_coexistence_reconciliation_doc,
+        manager_foundation_slice_implementation_evidence_doc,
+        manager_codex_readonly_adapter_implementation_evidence_doc,
+        cc_switch_skill_pool_strategy_doc,
+        program_acceptance_map_doc,
+    )
     validate_references(
         {
             "skills": skills_doc,
@@ -814,7 +1288,13 @@ def validate_github_skill_discovery_profile(document: dict[str, object]) -> None
     defaults = document.get("defaults")
     if not isinstance(defaults, dict):
         raise RuntimeError("GitHub Skill discovery profile defaults are required.")
-    for key in ["perQueryLimit", "maxTreeInspections", "minimumPriorityStars", "activeWithinDays"]:
+    for key in [
+        "perQueryLimit",
+        "maxTreeInspections",
+        "minimumTreeInspectionsPerQuery",
+        "minimumPriorityStars",
+        "activeWithinDays",
+    ]:
         if not isinstance(defaults.get(key), int) or defaults.get(key) <= 0:
             raise RuntimeError(f"GitHub Skill discovery profile default is invalid: {key}")
     schedule = document.get("schedule")
@@ -835,8 +1315,22 @@ def validate_github_skill_discovery_profile(document: dict[str, object]) -> None
         seen.add(query_id)
         if not isinstance(query.get("query"), str) or not query.get("query"):
             raise RuntimeError(f"GitHub Skill discovery query text is required: {query_id}")
+        if "is:public" not in str(query.get("query")).split():
+            raise RuntimeError(
+                f"GitHub Skill discovery query must be explicitly public-only: {query_id}"
+            )
         if not isinstance(query.get("intent"), str) or not query.get("intent"):
             raise RuntimeError(f"GitHub Skill discovery query intent is required: {query_id}")
+    for required_query in {
+        "agent-skill-suites",
+        "agent-skill-hooks",
+        "adaptive-agent-workflows",
+        "human-ai-collaboration",
+    }:
+        if required_query not in seen:
+            raise RuntimeError(
+                f"GitHub Skill discovery profile missing current query lane: {required_query}"
+            )
     policy = document.get("candidatePolicy")
     if not isinstance(policy, dict):
         raise RuntimeError("GitHub Skill discovery profile candidatePolicy is required.")
@@ -844,8 +1338,3064 @@ def validate_github_skill_discovery_profile(document: dict[str, object]) -> None
         raise RuntimeError("GitHub Skill discovery profile must treat stars as weak signal.")
     if policy.get("quantityIsNotApproval") is not True:
         raise RuntimeError("GitHub Skill discovery profile must reject quantity as approval.")
+    for key in [
+        "publicOnlyQueriesRequired",
+        "sourceSuiteIsNotAtomic",
+        "skillAdmissionDoesNotAdmitHooks",
+        "upstreamBodiesRemainExactDuringPreflight",
+    ]:
+        if policy.get(key) is not True:
+            raise RuntimeError(f"GitHub Skill discovery profile policy drifted: {key}")
     if policy.get("requiresHumanGateForRuntime") is not True:
         raise RuntimeError("GitHub Skill discovery profile must require a human runtime gate.")
+
+
+def validate_public_skill_source_discovery_preflight(
+    document: dict[str, object],
+    profile: dict[str, object],
+    program_doc: dict[str, object],
+) -> None:
+    """Validate the dated broad public discovery and balanced metadata preflight."""
+    if document.get("schema") != 1:
+        raise RuntimeError("Public Skill source preflight schema drifted.")
+    if document.get("id") != "public-skill-source-discovery-preflight-2026-07-18":
+        raise RuntimeError("Public Skill source preflight identity drifted.")
+    if document.get("status") != "verified-public-metadata-discovery-and-balanced-preflight":
+        raise RuntimeError("Public Skill source preflight status drifted.")
+
+    working = document.get("workingArtifactBoundary")
+    if not isinstance(working, dict):
+        raise RuntimeError("Public Skill source working-artifact boundary is required.")
+    if (
+        working.get("hardStandard") is not False
+        or working.get("standardizationDeferredUntilChainMaturity") is not True
+        or "working-hypotheses" not in str(working.get("role", ""))
+    ):
+        raise RuntimeError("Public Skill source preflight must remain non-standardizing.")
+
+    inputs = document.get("inputs")
+    if not isinstance(inputs, dict):
+        raise RuntimeError("Public Skill source preflight inputs are required.")
+    if inputs.get("profile") != "registry/github-skill-discovery-profile.json":
+        raise RuntimeError("Public Skill source preflight profile linkage drifted.")
+    if inputs.get("script") != "scripts/discover_github_skill_sources.py":
+        raise RuntimeError("Public Skill source preflight script linkage drifted.")
+    if inputs.get("calibrationRepositoryHead") != "e060a08f05361cb4cc9a67be050236cdbbde1de5":
+        raise RuntimeError("Public Skill source CALIBRATION revision drifted.")
+    if inputs.get("calibrationSourceSha256") != "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727":
+        raise RuntimeError("Public Skill source CALIBRATION source identity drifted.")
+    if inputs.get("calibrationAuthority") != "read-only-non-authoritative-candidate-evidence":
+        raise RuntimeError("Public Skill source CALIBRATION authority drifted.")
+
+    capture = document.get("capture")
+    if not isinstance(capture, dict):
+        raise RuntimeError("Public Skill source capture evidence is required.")
+    if capture.get("resultCount") != 188 or capture.get("deduplicated") is not True:
+        raise RuntimeError("Public Skill source capture count or dedupe state drifted.")
+    if capture.get("rawCaptureBytes") != 234083:
+        raise RuntimeError("Public Skill source raw capture byte count drifted.")
+    if capture.get("rawCaptureSha256") != "AA7945430DF45A4111C71F88F43D2DC47C1CCADF401ED3D9426E86C12E105E13":
+        raise RuntimeError("Public Skill source raw capture digest drifted.")
+    if capture.get("rawCaptureRetainedInRepository") is not False:
+        raise RuntimeError("Public Skill source raw-capture retention claim drifted.")
+
+    expected_boundary = {
+        "githubVisibility": "public-only",
+        "queriesRequire": "is:public",
+        "privateRepositoryMetadataAllowed": False,
+        "credentialsOrAccountDataRecorded": False,
+        "sourceBodiesVendored": False,
+        "candidateCodeExecuted": False,
+        "candidateInstalledOrConnected": False,
+        "hookEnabledOrMutated": False,
+        "consumerConfigurationWritten": False,
+        "externalWritePerformed": False,
+    }
+    if document.get("dataBoundary") != expected_boundary:
+        raise RuntimeError("Public Skill source preflight data boundary drifted.")
+
+    profile_queries = {
+        item.get("id"): item.get("query")
+        for item in profile.get("queries", [])
+        if isinstance(item, dict)
+    }
+    observations = document.get("queryObservations")
+    if not isinstance(observations, list) or len(observations) != len(profile_queries):
+        raise RuntimeError("Public Skill source query observations are incomplete.")
+    observed_queries: dict[str, dict[str, object]] = {}
+    for item in observations:
+        if not isinstance(item, dict):
+            raise RuntimeError("Public Skill source query observation must be an object.")
+        query_id = item.get("id")
+        if not isinstance(query_id, str) or query_id in observed_queries:
+            raise RuntimeError("Public Skill source query observation id is invalid or duplicated.")
+        observed_queries[query_id] = item
+        if item.get("query") != profile_queries.get(query_id):
+            raise RuntimeError(f"Public Skill source query drifted: {query_id}")
+        if "is:public" not in str(item.get("query", "")).split():
+            raise RuntimeError(f"Public Skill source query is not public-only: {query_id}")
+        for key in ["totalCount", "reviewedTopCount"]:
+            if not isinstance(item.get(key), int) or item.get(key) < 0:
+                raise RuntimeError(f"Public Skill source query count is invalid: {query_id}/{key}")
+    if set(observed_queries) != set(profile_queries):
+        raise RuntimeError("Public Skill source query set drifted from the profile.")
+
+    source_ids = document.get("discoveredSourceIds")
+    if not isinstance(source_ids, list) or len(source_ids) != 188:
+        raise RuntimeError("Public Skill source durable source projection must contain 188 ids.")
+    if len(set(source_ids)) != len(source_ids):
+        raise RuntimeError("Public Skill source durable source projection contains duplicates.")
+    if not all(isinstance(item, str) and item.startswith("github:") for item in source_ids):
+        raise RuntimeError("Public Skill source durable source projection id is invalid.")
+
+    preflight = document.get("balancedPreflight")
+    if not isinstance(preflight, dict):
+        raise RuntimeError("Public Skill source balanced preflight is required.")
+    expected_counts = {
+        "selectedCount": 20,
+        "pinnedRevisionCount": 20,
+        "treeInspectionSuccessCount": 20,
+        "multiSkillSuiteCount": 14,
+        "singleSkillSourceCount": 1,
+        "noSkillMdDetectedCount": 5,
+        "independentAgentHookReviewRequiredCount": 6,
+    }
+    for key, expected in expected_counts.items():
+        if preflight.get(key) != expected:
+            raise RuntimeError(f"Public Skill source balanced preflight count drifted: {key}")
+    sources = preflight.get("sources")
+    if not isinstance(sources, list) or len(sources) != 20:
+        raise RuntimeError("Public Skill source balanced preflight must contain twenty sources.")
+    preflight_ids: set[str] = set()
+    for source in sources:
+        if not isinstance(source, dict):
+            raise RuntimeError("Public Skill source preflight source must be an object.")
+        source_id = source.get("id")
+        if not isinstance(source_id, str) or source_id in preflight_ids:
+            raise RuntimeError("Public Skill source preflight id is invalid or duplicated.")
+        preflight_ids.add(source_id)
+        if source_id not in source_ids:
+            raise RuntimeError(f"Public Skill source preflight source is not in discovery: {source_id}")
+        if not re.fullmatch(r"[0-9a-f]{40}", str(source.get("revision", ""))):
+            raise RuntimeError(f"Public Skill source revision is invalid: {source_id}")
+        for key in ["skillMdCount", "agentHookFileCount", "executableFileCount"]:
+            if not isinstance(source.get(key), int) or source.get(key) < 0:
+                raise RuntimeError(f"Public Skill source structure count is invalid: {source_id}/{key}")
+        if not isinstance(source.get("disposition"), str) or not source.get("disposition"):
+            raise RuntimeError(f"Public Skill source disposition is required: {source_id}")
+    if sum(1 for source in sources if source.get("agentHookFileCount", 0) > 0) != 6:
+        raise RuntimeError("Public Skill source independent Hook count is inconsistent.")
+
+    next_batch = document.get("nextStaticReviewBatch")
+    if not isinstance(next_batch, list) or len(next_batch) != 5:
+        raise RuntimeError("Public Skill source next static review batch must contain five sources.")
+    if not set(next_batch).issubset(preflight_ids):
+        raise RuntimeError("Public Skill source next static review batch escaped preflight.")
+    hypotheses = document.get("shortfallMappingHypotheses")
+    if not isinstance(hypotheses, list) or len(hypotheses) != 5:
+        raise RuntimeError("Public Skill source shortfall hypotheses must cover the next batch.")
+    if {item.get("sourceId") for item in hypotheses if isinstance(item, dict)} != set(next_batch):
+        raise RuntimeError("Public Skill source shortfall hypotheses drifted from the next batch.")
+    for item in hypotheses:
+        if not str(item.get("state", "")).endswith("hypothesis-only"):
+            raise RuntimeError("Public Skill source shortfall mapping was upgraded beyond hypothesis.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Public Skill source decision boundary is required.")
+    for key, value in decision.items():
+        if isinstance(value, bool) and value is not False:
+            raise RuntimeError(f"Public Skill source decision must remain false: {key}")
+    if "static license provenance security" not in str(decision.get("nextGate", "")):
+        raise RuntimeError("Public Skill source next gate drifted.")
+
+    initiatives = {
+        item.get("id"): item
+        for item in program_doc.get("currentInitiatives", [])
+        if isinstance(item, dict)
+    }
+    initiative = initiatives.get("initiative.capability-survey-gap-proof", {})
+    if initiative.get("status") != "active":
+        raise RuntimeError("Public Skill source preflight requires the active survey initiative.")
+    if "acceptance.public-source-balanced-preflight" not in initiative.get("acceptanceIds", []):
+        raise RuntimeError("Public Skill source preflight acceptance is not mapped to the active initiative.")
+    if "hard-standard extraction remains deferred" not in str(initiative.get("decisionGate", "")):
+        raise RuntimeError("Public Skill source preflight lost the standardization maturity boundary.")
+
+    expected_docs = {
+        "docs/public-skill-source-discovery-preflight-2026-07-18.md": [
+            "188 unique", "20 selected", "not hard standards", "No source body was vendored",
+        ],
+        "docs/public-skill-source-discovery-preflight-2026-07-18.zh-CN.md": [
+            "188 个去重来源", "20 个抽样来源", "不是硬标准", "没有收录来源正文",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Public Skill source preflight evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Public Skill source preflight doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_user_starred_skill_source_list_intake(
+    document: dict[str, object],
+    discovery_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("User-starred Skill source intake schema drifted.")
+    if document.get("id") != "user-starred-skill-source-list-intake-2026-07-18":
+        raise RuntimeError("User-starred Skill source intake identity drifted.")
+    if document.get("status") != "verified-public-user-curated-discovery-signal":
+        raise RuntimeError("User-starred Skill source intake status drifted.")
+
+    source = document.get("source")
+    if not isinstance(source, dict):
+        raise RuntimeError("User-starred Skill source intake source is required.")
+    if source.get("url") != "https://github.com/stars/yiheng8023/lists/skills":
+        raise RuntimeError("User-starred Skill source intake locator drifted.")
+    if source.get("visibleRepositoryCount") != 13:
+        raise RuntimeError("User-starred Skill source intake count drifted.")
+
+    role = document.get("role")
+    if not isinstance(role, dict):
+        raise RuntimeError("User-starred Skill source intake role is required.")
+    expected_role = {
+        "kind": "user-curated-discovery-signal",
+        "raisesReviewPriority": True,
+        "limitsDiscoveryToThisList": False,
+        "provesQuality": False,
+        "provesSafety": False,
+        "provesLicenseFitness": False,
+        "authorizesAdmission": False,
+        "authorizesInstallOrExecution": False,
+    }
+    if role != expected_role:
+        raise RuntimeError("User-starred Skill source intake role boundary drifted.")
+
+    expected_boundary = {
+        "userProvidedStableLocator": True,
+        "publicListOnly": True,
+        "privateStarsOrAccountSettingsInspected": False,
+        "listMutated": False,
+        "repositoryStarStateMutated": False,
+        "credentialsRecorded": False,
+        "externalWritePerformed": False,
+    }
+    if document.get("dataBoundary") != expected_boundary:
+        raise RuntimeError("User-starred Skill source intake data boundary drifted.")
+
+    repository_ids = document.get("repositoryIds")
+    if not isinstance(repository_ids, list) or len(repository_ids) != 13:
+        raise RuntimeError("User-starred Skill source intake must contain thirteen ids.")
+    if len(set(repository_ids)) != len(repository_ids):
+        raise RuntimeError("User-starred Skill source intake contains duplicate ids.")
+    if not all(isinstance(item, str) and item.startswith("github:") for item in repository_ids):
+        raise RuntimeError("User-starred Skill source intake id is invalid.")
+
+    comparison = document.get("comparisonToPublicDiscovery")
+    if not isinstance(comparison, dict):
+        raise RuntimeError("User-starred Skill source discovery comparison is required.")
+    discovered_ids = set(discovery_document.get("discoveredSourceIds", []))
+    overlap_ids = set(repository_ids) & discovered_ids
+    new_ids = set(repository_ids) - discovered_ids
+    if len(overlap_ids) != 8 or comparison.get("overlapCount") != 8:
+        raise RuntimeError("User-starred Skill source overlap count drifted.")
+    if len(new_ids) != 5 or comparison.get("newSourceCount") != 5:
+        raise RuntimeError("User-starred Skill source new-source count drifted.")
+    if set(comparison.get("newSourceIds", [])) != new_ids:
+        raise RuntimeError("User-starred Skill source new-source projection drifted.")
+
+    expected_docs = {
+        "docs/user-starred-skill-source-list-intake-2026-07-18.md": [
+            "supplemental discovery signal", "not a whitelist", "13 visible repositories", "five previously unseen sources",
+        ],
+        "docs/user-starred-skill-source-list-intake-2026-07-18.zh-CN.md": [
+            "补充发现信号", "不是白名单", "13 个仓库", "5 个此前未出现的来源",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("User-starred Skill source evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"User-starred Skill source doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_repository_community_configuration() -> None:
+    funding = (ROOT / ".github/FUNDING.yml").read_text(encoding="utf-8")
+    if "custom:" not in funding or "https://www.paypal.com/ncp/payment/LNTF8KXGJXMZY" not in funding:
+        raise RuntimeError("Repository funding configuration lost the reviewed custom payment link.")
+    if re.search(r"(?m)^github\s*:", funding):
+        raise RuntimeError("Repository funding configuration restored an unverified GitHub Sponsors handle.")
+
+    expected_text = {
+        ".github/PULL_REQUEST_TEMPLATE.md": [
+            "Source and authority", "Skill bodies, suites, Hooks", "Safety and data review", "Decision",
+        ],
+        ".github/ISSUE_TEMPLATE/candidate-source.yml": [
+            "Canonical public source", "Security, account, data, cost, and side-effect boundaries", "does not authorize download",
+        ],
+        ".github/ISSUE_TEMPLATE/governance-or-verification.yml": [
+            "Observed behavior", "Expected contract", "Public-data check",
+        ],
+        "SUPPORT.md": [
+            "Community support is best effort", "private GitHub Security Advisory", "Sponsorship does not change these boundaries",
+        ],
+        "SUPPORT.zh-CN.md": [
+            "社区支持按尽力而为原则", "GitHub 私有安全公告", "赞助不会改变这些边界",
+        ],
+        "SPONSORING.md": [
+            "Sponsorship is voluntary", "PayPal", "does not purchase a support SLA",
+        ],
+        "SPONSORING.zh-CN.md": [
+            "赞助完全自愿", "PayPal", "不购买支持服务等级",
+        ],
+        "README.md": [
+            "## Sponsor", "WeChat Pay (CNY)", "Alipay (CNY)", "SPONSORING.md",
+        ],
+        "README.zh-CN.md": [
+            "## 赞助", "微信支付（人民币）", "支付宝（人民币）", "SPONSORING.zh-CN.md",
+        ],
+    }
+    for path, phrases in expected_text.items():
+        text = " ".join((ROOT / path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Repository community configuration missing phrase in {path}: {phrase}")
+
+    issue_config = (ROOT / ".github/ISSUE_TEMPLATE/config.yml").read_text(encoding="utf-8")
+    for phrase in [
+        "blank_issues_enabled: true",
+        "security/advisories/new",
+        "blob/main/SUPPORT.md",
+    ]:
+        if phrase not in issue_config:
+            raise RuntimeError(f"Repository issue-template configuration missing phrase: {phrase}")
+
+
+def validate_public_skill_source_static_review_batch(
+    document: dict[str, object],
+    discovery_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Public Skill source static review schema drifted.")
+    if document.get("id") != "public-skill-source-static-review-batch-2026-07-18":
+        raise RuntimeError("Public Skill source static review identity drifted.")
+    if document.get("status") != "verified-non-executing-source-pinned-static-review":
+        raise RuntimeError("Public Skill source static review status drifted.")
+
+    working = document.get("workingArtifactBoundary")
+    if not isinstance(working, dict):
+        raise RuntimeError("Public Skill source static review working boundary is required.")
+    if (
+        working.get("hardStandard") is not False
+        or working.get("standardizationDeferredUntilChainMaturity") is not True
+        or "working-hypotheses" not in str(working.get("role", ""))
+    ):
+        raise RuntimeError("Public Skill source static review became a premature standard.")
+
+    boundary = document.get("reviewBoundary")
+    if not isinstance(boundary, dict):
+        raise RuntimeError("Public Skill source static review boundary is required.")
+    if boundary.get("sourceCommitPinned") is not True or boundary.get("publicSourceTextOnly") is not True:
+        raise RuntimeError("Public Skill source static review lost its source-pinned read-only boundary.")
+    for key in [
+        "sourceBodyVendoredIntoRepository",
+        "candidateCodeExecuted",
+        "candidateInstalledOrConnected",
+        "runtimeOrHookMutated",
+        "consumerConfigurationWritten",
+        "crossRepositoryWritePerformed",
+        "approvalOrAdmissionGranted",
+    ]:
+        if boundary.get(key) is not False:
+            raise RuntimeError(f"Public Skill source static review crossed its boundary: {key}")
+
+    reviews = document.get("reviews")
+    if not isinstance(reviews, list) or len(reviews) != 5:
+        raise RuntimeError("Public Skill source static review must contain five reviews.")
+    review_by_id = {
+        review.get("sourceId"): review
+        for review in reviews
+        if isinstance(review, dict)
+    }
+    expected_ids = set(discovery_document.get("nextStaticReviewBatch", []))
+    if set(review_by_id) != expected_ids:
+        raise RuntimeError("Public Skill source static review batch drifted from discovery preflight.")
+    preflight_sources = {
+        item.get("id"): item
+        for item in discovery_document.get("balancedPreflight", {}).get("sources", [])
+        if isinstance(item, dict)
+    }
+    for source_id, review in review_by_id.items():
+        if review.get("revision") != preflight_sources.get(source_id, {}).get("revision"):
+            raise RuntimeError(f"Public Skill source static review revision drifted: {source_id}")
+        license_review = review.get("licenseReview")
+        if not isinstance(license_review, dict) or not license_review.get("evidence"):
+            raise RuntimeError(f"Public Skill source static review license evidence is missing: {source_id}")
+        if not isinstance(review.get("disposition"), str) or not review.get("disposition"):
+            raise RuntimeError(f"Public Skill source static review disposition is missing: {source_id}")
+
+    loopy = review_by_id["github:Forward-Future/loopy"]
+    components = {
+        item.get("component"): item.get("disposition")
+        for item in loopy.get("componentDecisions", [])
+        if isinstance(item, dict)
+    }
+    if components.get("skills/loop-library") != "exclude-redundant-legacy-alias-from-further-admission-review":
+        raise RuntimeError("Public Skill source static review lost Loopy alias deduplication.")
+    if "candidate-with-limits" not in str(loopy.get("disposition", "")):
+        raise RuntimeError("Public Skill source static review Loopy disposition drifted.")
+
+    diet = review_by_id["github:diet103/claude-code-infrastructure-showcase"]
+    if "39 Agent Hook files" not in str(diet.get("hookState", "")):
+        raise RuntimeError("Public Skill source static review lost independent diet103 Hook review.")
+    context = review_by_id["github:mksglu/context-mode"]
+    context_license = context.get("licenseReview", {}).get("evidence", [{}])[0].get("license")
+    if context_license != "Elastic-2.0":
+        raise RuntimeError("Public Skill source static review context-mode license drifted.")
+    if "not-direct-skill-or-hook-admission" not in str(context.get("disposition", "")):
+        raise RuntimeError("Public Skill source static review context-mode boundary drifted.")
+
+    decision = document.get("batchDecision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Public Skill source static review decision is required.")
+    expected_counts = {
+        "reviewedSourceCount": 5,
+        "permissiveLicenseSourceCount": 4,
+        "sourceAvailableRestrictedLicenseSourceCount": 1,
+        "candidateWithLimitsCount": 1,
+        "heldSourceCount": 4,
+        "approvedSourceCount": 0,
+        "approvedComponentCount": 0,
+        "executableCandidateCount": 0,
+        "hookAdmissionCount": 0,
+    }
+    for key, expected in expected_counts.items():
+        if decision.get(key) != expected:
+            raise RuntimeError(f"Public Skill source static review count drifted: {key}")
+    for key in [
+        "qualityOrSuperiorityProven",
+        "residualGapProven",
+        "repositoryAuthoredSkillOrHookEligible",
+        "hardStandardEligible",
+    ]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Public Skill source static review overclaimed: {key}")
+
+    expected_docs = {
+        "docs/public-skill-source-static-review-batch-2026-07-18.md": [
+            "five public sources", "No source or component is approved", "not hard standards",
+        ],
+        "docs/public-skill-source-static-review-batch-2026-07-18.zh-CN.md": [
+            "5 个公开来源", "没有任何来源或组件获批", "不是硬标准",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Public Skill source static review evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Public Skill source static review doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_loopy_demand_level_alternative_comparison(
+    document: dict[str, object],
+    static_review_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("Loopy demand-level comparison schema drifted.")
+    if document.get("id") != "loopy-demand-level-alternative-comparison-2026-07-18":
+        raise RuntimeError("Loopy demand-level comparison identity drifted.")
+    if document.get("status") != "reviewed-non-executing-demand-level-comparison":
+        raise RuntimeError("Loopy demand-level comparison status drifted.")
+
+    candidate = document.get("candidate")
+    if not isinstance(candidate, dict):
+        raise RuntimeError("Loopy demand-level comparison candidate is required.")
+    static_loopy = next(
+        (
+            item
+            for item in static_review_document.get("reviews", [])
+            if isinstance(item, dict) and item.get("sourceId") == "github:Forward-Future/loopy"
+        ),
+        None,
+    )
+    if not isinstance(static_loopy, dict):
+        raise RuntimeError("Loopy static-review source is missing.")
+    if (
+        candidate.get("sourceId") != "github:Forward-Future/loopy"
+        or candidate.get("revision") != static_loopy.get("revision")
+        or candidate.get("path") != "skills/loopy/SKILL.md"
+        or candidate.get("gitBlob") != "5fe3082a41521c1e5793d1a271990bc841c9a92f"
+        or candidate.get("bytes") != 15519
+        or candidate.get("license") != "MIT"
+    ):
+        raise RuntimeError("Loopy demand-level comparison source pin drifted.")
+
+    boundary = document.get("comparisonBoundary")
+    if not isinstance(boundary, dict):
+        raise RuntimeError("Loopy demand-level comparison boundary is required.")
+    for key in [
+        "candidateExecuted",
+        "candidateInstalled",
+        "catalogQueried",
+        "loopSavedOrPublished",
+        "sourceBodyModifiedOrVendored",
+        "runtimeHookOrConsumerConfigurationChanged",
+        "admissionGranted",
+        "residualGapProven",
+        "hardStandardProposed",
+    ]:
+        if boundary.get(key) is not False:
+            raise RuntimeError(f"Loopy demand-level comparison crossed its boundary: {key}")
+
+    demand_links = document.get("demandLinks")
+    if not isinstance(demand_links, list) or {
+        item.get("demandRecordId") for item in demand_links if isinstance(item, dict)
+    } != {
+        "round03-demand.el-01-transition-continuity",
+        "round03-demand.el-02-routing-portability-cost",
+        "round03-demand.el-04-projection-governance",
+    }:
+        raise RuntimeError("Loopy demand-level comparison demand links drifted.")
+    observed_coordinates = {
+        coordinate
+        for item in demand_links
+        if isinstance(item, dict)
+        for coordinate in item.get("coordinates", [])
+        if isinstance(coordinate, str)
+    }
+    if not {"P20", "P24", "STM-05", "STM-25"}.issubset(observed_coordinates):
+        raise RuntimeError("Loopy demand-level comparison coordinates are incomplete.")
+
+    alternatives = document.get("alternatives")
+    if not isinstance(alternatives, list) or {
+        item.get("id") for item in alternatives if isinstance(item, dict)
+    } != {
+        "alternative.native-or-one-shot",
+        "alternative.current-curated-chain",
+        "alternative.loopy-exact-body",
+    }:
+        raise RuntimeError("Loopy demand-level comparison alternatives drifted.")
+    scenarios = document.get("scenarioMatrix")
+    if not isinstance(scenarios, list) or len(scenarios) != 4:
+        raise RuntimeError("Loopy demand-level comparison scenario matrix drifted.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Loopy demand-level comparison decision is required.")
+    if decision.get("fullBodyDisposition") != "candidate-with-limits-not-admitted":
+        raise RuntimeError("Loopy demand-level comparison admission boundary drifted.")
+    for key in ["qualityOrSuperiorityProven", "residualGapProven", "repositoryAuthoredReplacementEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Loopy demand-level comparison overclaimed: {key}")
+    if "fixture-only paired behavior comparison" not in str(decision.get("nextGate", "")):
+        raise RuntimeError("Loopy demand-level comparison next gate drifted.")
+
+    expected_docs = {
+        "docs/loopy-demand-level-alternative-comparison-2026-07-18.md": [
+            "candidate with limits", "one shot", "fixture-only paired comparisons",
+        ],
+        "docs/loopy-demand-level-alternative-comparison-2026-07-18.zh-CN.md": [
+            "有限制候选", "一次性完成", "纯夹具",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Loopy demand-level comparison evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Loopy demand-level comparison doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_loopy_contract_fixture_protocol(
+    document: dict[str, object],
+    fixtures: dict[str, object],
+    comparison_document: dict[str, object],
+) -> None:
+    expected = {
+        "schema": 1,
+        "id": "loopy-contract-fixture-protocol-2026-07-18",
+        "date": "2026-07-18",
+        "status": "verified-local-contract-fixtures-agent-behavior-pending",
+        "basis": "registry/loopy-demand-level-alternative-comparison-2026-07-18.json",
+        "fixtureCorpus": "tests/fixtures/loopy-contract-paired-fixtures-2026-07-18.json",
+        "fixtureEvaluator": "scripts/evaluate_loopy_contract_fixtures.py",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Loopy contract fixture protocol {key} drifted.")
+
+    candidate = document.get("candidatePin")
+    comparison_candidate = comparison_document.get("candidate")
+    if not isinstance(candidate, dict) or not isinstance(comparison_candidate, dict):
+        raise RuntimeError("Loopy contract fixture candidate pin is required.")
+    for key in ["sourceId", "revision", "path", "gitBlob", "bytes"]:
+        if candidate.get(key) != comparison_candidate.get(key):
+            raise RuntimeError(f"Loopy contract fixture candidate pin drifted: {key}")
+
+    if fixtures.get("schema") != 1 or fixtures.get("id") != "loopy-contract-paired-fixtures-2026-07-18":
+        raise RuntimeError("Loopy contract fixture corpus identity drifted.")
+    routes = fixtures.get("routes")
+    expected_routes = ["native", "current-chain", "loopy-exact-body"]
+    if routes != expected_routes:
+        raise RuntimeError("Loopy contract fixture routes drifted.")
+    families = fixtures.get("scenarioFamilies")
+    expected_families = {
+        "iterative-local-repair",
+        "one-shot-analysis",
+        "high-impact-external-action",
+        "debugging-reproduction",
+        "open-divergent-ideation",
+        "missing-observable-or-finite-gate",
+    }
+    if not isinstance(families, list) or set(families) != expected_families:
+        raise RuntimeError("Loopy contract fixture scenario families drifted.")
+    fixture_items = fixtures.get("fixtures")
+    if not isinstance(fixture_items, list) or len(fixture_items) != 18:
+        raise RuntimeError("Loopy contract fixture count drifted.")
+    if len({item.get("id") for item in fixture_items if isinstance(item, dict)}) != 18:
+        raise RuntimeError("Loopy contract fixture identities are not unique.")
+    pair_counts = {
+        family: sum(
+            isinstance(item, dict) and item.get("scenarioFamily") == family
+            for item in fixture_items
+        )
+        for family in expected_families
+    }
+    if any(count != 3 for count in pair_counts.values()):
+        raise RuntimeError("Loopy contract fixture scenario pairing drifted.")
+    for family in expected_families:
+        family_routes = {
+            item.get("route")
+            for item in fixture_items
+            if isinstance(item, dict) and item.get("scenarioFamily") == family
+        }
+        if family_routes != set(expected_routes):
+            raise RuntimeError(f"Loopy contract fixture route coverage drifted: {family}")
+
+    results = evaluate_loopy_contract_fixture_document(fixtures)
+    failures = [item for item in results if item["expected"] != item["actual"]]
+    if failures:
+        raise RuntimeError(f"Loopy deterministic contract fixture failed: {failures[0]['id']}")
+
+    local = document.get("localContractEvidence")
+    if not isinstance(local, dict):
+        raise RuntimeError("Loopy local contract evidence is required.")
+    expected_counts = {
+        "fixtureCount": 18,
+        "routeCount": 3,
+        "scenarioFamilyCount": 6,
+        "fixturesPerScenarioFamily": 3,
+    }
+    for key, value in expected_counts.items():
+        if local.get(key) != value:
+            raise RuntimeError(f"Loopy local contract evidence count drifted: {key}")
+    if local.get("deterministicEvaluationPassed") is not True:
+        raise RuntimeError("Loopy deterministic contract evidence status drifted.")
+    if len(local.get("scenarioOutcomes", [])) != 6 or len(local.get("proves", [])) != 5 or len(local.get("doesNotProve", [])) != 5:
+        raise RuntimeError("Loopy local contract evidence claim boundary drifted.")
+
+    trial = document.get("controlledAgentTrial")
+    if not isinstance(trial, dict):
+        raise RuntimeError("Loopy controlled Agent trial contract is required.")
+    if (
+        trial.get("status") != "pending-separate-candidate-execution-authorization"
+        or trial.get("candidateExecutionAuthorized") is not False
+        or trial.get("installationRequired") is not False
+        or trial.get("liveAgentOrHookMutationRequired") is not False
+    ):
+        raise RuntimeError("Loopy controlled Agent trial authorization boundary drifted.")
+    if len(trial.get("minimumArms", [])) != 3 or len(trial.get("minimumScenarioFamilies", [])) != 2:
+        raise RuntimeError("Loopy controlled Agent trial comparison design drifted.")
+    if not trial.get("minimumMethod") or len(trial.get("measure", [])) != 8 or len(trial.get("stopConditions", [])) != 4:
+        raise RuntimeError("Loopy controlled Agent trial evidence surface drifted.")
+    for phrase in ["material correctness", "over both native and current-chain", "proportionate"]:
+        if phrase not in str(trial.get("successRule", "")):
+            raise RuntimeError(f"Loopy controlled Agent trial success rule missing phrase: {phrase}")
+    for phrase in ["reference-only", "not materially better", "do not rewrite"]:
+        if phrase not in str(trial.get("failureRule", "")):
+            raise RuntimeError(f"Loopy controlled Agent trial failure rule missing phrase: {phrase}")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Loopy contract fixture decision is required.")
+    decision_counts = {
+        "loopyPreferredScenarioCount": 0,
+        "loopyControlledTrialCandidateScenarioCount": 1,
+        "loopyNotPreferredScenarioCount": 5,
+    }
+    for key, value in decision_counts.items():
+        if decision.get(key) != value:
+            raise RuntimeError(f"Loopy contract fixture decision count drifted: {key}")
+    for key in [
+        "qualityOrSuperiorityProven",
+        "supportedResidualGapProven",
+        "candidateAdmissionEligible",
+        "repositoryAuthoredReplacementEligible",
+        "hookEligible",
+        "controlledAgentTrialAuthorized",
+    ]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Loopy contract fixture protocol overclaimed: {key}")
+    if "separate authorization" not in str(decision.get("nextGate", "")):
+        raise RuntimeError("Loopy contract fixture next gate drifted.")
+    if not document.get("nonAuthorization"):
+        raise RuntimeError("Loopy contract fixture non-authorization boundary is required.")
+
+    expected_docs = {
+        "docs/loopy-contract-fixture-protocol-2026-07-18.md": [
+            "All 18 contract fixtures pass", "Only reversible iterative local repair", "not Agent behavior evidence", "not authorized",
+        ],
+        "docs/loopy-contract-fixture-protocol-2026-07-18.zh-CN.md": [
+            "18/18 合同夹具全部通过", "只有“可逆的本地迭代修复”", "不是真实 Agent 行为证据", "不自动授权",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Loopy contract fixture evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Loopy contract fixture doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_loopy_disposable_agent_trial_result(
+    document: dict[str, object],
+    protocol_document: dict[str, object],
+) -> None:
+    expected_identity = {
+        "schema": 1,
+        "id": "loopy-disposable-agent-trial-result-2026-07-18",
+        "date": "2026-07-18",
+        "status": "verified-disposable-agent-trial-reference-only",
+        "basis": "registry/loopy-contract-fixture-protocol-2026-07-18.json",
+    }
+    for key, value in expected_identity.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Loopy disposable Agent trial {key} drifted.")
+    if protocol_document.get("id") != "loopy-contract-fixture-protocol-2026-07-18":
+        raise RuntimeError("Loopy disposable Agent trial basis drifted.")
+
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict) or (
+        authorization.get("consumedByThisTrial") is not True
+        or authorization.get("furtherCandidateExecutionAuthorized") is not False
+        or "fresh disposable local Agent tasks only" not in str(authorization.get("scope", ""))
+    ):
+        raise RuntimeError("Loopy disposable Agent trial authorization boundary drifted.")
+
+    candidate = document.get("candidatePin")
+    expected_candidate = {
+        "sourceId": "github:Forward-Future/loopy",
+        "revision": "75966cbd572a4185064971c9fe5e9c52e8f8456d",
+        "skillPath": "skills/loopy/SKILL.md",
+        "skillBlob": "5fe3082a41521c1e5793d1a271990bc841c9a92f",
+        "skillBytes": 15519,
+        "runReferencePath": "skills/loopy/references/run.md",
+        "runReferenceBlob": "d971577cf0c9e2022fdc892fdefced7e448e9ead",
+    }
+    if candidate != expected_candidate:
+        raise RuntimeError("Loopy disposable Agent trial candidate pin drifted.")
+
+    method = document.get("method")
+    expected_method = {
+        "model": "gpt-5.6-sol",
+        "reasoningEffort": "medium",
+        "host": "codex-cli-0.144.5-windows",
+        "ephemeralSessions": True,
+        "userConfigIgnored": True,
+        "rulesIgnored": True,
+        "pluginsDisabled": True,
+        "hooksDisabled": True,
+        "workspaceWriteNetworkAccess": False,
+        "ambientSkillInventoryVisibleToAllArms": True,
+        "scenarioCount": 2,
+        "armCount": 3,
+        "repetitionsPerCell": 2,
+        "formalRunCount": 12,
+    }
+    if method != expected_method:
+        raise RuntimeError("Loopy disposable Agent trial method drifted.")
+
+    raw = document.get("rawEvidence")
+    excluded = raw.get("excludedEnvironmentAttempt") if isinstance(raw, dict) else None
+    if not isinstance(raw, dict) or (
+        raw.get("sha256") != "5608D775FD26F9CBB50A74FBDAEF80D745C3651A7E237CCCBFF351B0EA492D35"
+        or raw.get("bytes") != 62808
+        or "not checked into the repository" not in str(raw.get("retention", ""))
+    ):
+        raise RuntimeError("Loopy disposable Agent trial raw evidence drifted.")
+    if not isinstance(excluded, dict) or excluded != {
+        "sha256": "EF3021668B71872A2F55CAE9B92E3BFE5D987D8F531F1EB3C15C41BD26F79E67",
+        "bytes": 29070,
+        "recordedRunCount": 6,
+        "reason": "shared child-Agent sandbox was read-only and blocked the acceptance gate",
+        "excludedFromComparison": True,
+    }:
+        raise RuntimeError("Loopy disposable Agent trial excluded attempt drifted.")
+
+    cells = document.get("aggregate")
+    expected_metrics = {
+        ("iterative-local-repair", "native"): (56.901, 4.0, 189311.5, 1516.0),
+        ("iterative-local-repair", "current-chain"): (64.153, 4.5, 195651.0, 1998.5),
+        ("iterative-local-repair", "loopy-exact-body"): (59.028, 3.5, 201975.5, 1867.5),
+        ("one-shot-analysis-negative-control", "native"): (23.311, 1.0, 60370.0, 461.0),
+        ("one-shot-analysis-negative-control", "current-chain"): (24.039, 1.0, 60556.0, 562.5),
+        ("one-shot-analysis-negative-control", "loopy-exact-body"): (22.808, 1.0, 68490.0, 537.5),
+    }
+    if not isinstance(cells, list) or len(cells) != 6:
+        raise RuntimeError("Loopy disposable Agent trial aggregate count drifted.")
+    seen: set[tuple[object, object]] = set()
+    for cell in cells:
+        if not isinstance(cell, dict):
+            raise RuntimeError("Loopy disposable Agent trial aggregate entry drifted.")
+        key = (cell.get("scenario"), cell.get("arm"))
+        seen.add(key)
+        actual_metrics = (
+            cell.get("meanWallSeconds"),
+            cell.get("meanCommandCount"),
+            cell.get("meanInputTokens"),
+            cell.get("meanOutputTokens"),
+        )
+        if actual_metrics != expected_metrics.get(key):
+            raise RuntimeError(f"Loopy disposable Agent trial aggregate metrics drifted: {key}")
+        for count_key in [
+            "runCount", "taskCorrectCount", "receiptCompleteCount",
+            "terminalStateHonestCount", "authorityBoundaryPreservedCount",
+        ]:
+            if cell.get(count_key) != 2:
+                raise RuntimeError(f"Loopy disposable Agent trial aggregate count drifted: {key} {count_key}")
+        if (
+            cell.get("falsePositiveLoopSelectionCount") != 0
+            or cell.get("unexpectedFiles") != []
+            or cell.get("forbiddenCommands") != []
+        ):
+            raise RuntimeError(f"Loopy disposable Agent trial boundary evidence drifted: {key}")
+    if seen != set(expected_metrics):
+        raise RuntimeError("Loopy disposable Agent trial aggregate cells drifted.")
+
+    observations = document.get("observations")
+    if not isinstance(observations, dict) or observations != {
+        "formalTaskCorrectCount": 12,
+        "completeReceiptCount": 12,
+        "honestTerminalStateCount": 12,
+        "authorityBoundaryPreservedCount": 12,
+        "falsePositiveLoopSelectionCount": 0,
+        "currentChainSkillBodyReadCount": 0,
+        "currentChainSelectedNativeNoSkillPath": True,
+        "candidateBodyModified": False,
+        "candidateInstalledOrVendored": False,
+        "liveAgentConfigurationOrHookChanged": False,
+    }:
+        raise RuntimeError("Loopy disposable Agent trial observations drifted.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("fullBodyDisposition") != "reference-only-not-admitted":
+        raise RuntimeError("Loopy disposable Agent trial disposition drifted.")
+    for key in [
+        "materialBenefitOverBothBaselines",
+        "qualityOrSuperiorityProven",
+        "supportedResidualGapProven",
+        "candidateAdmissionEligible",
+        "repositoryAuthoredReplacementEligible",
+    ]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Loopy disposable Agent trial overclaimed: {key}")
+    if "another source-supported demand lane" not in str(decision.get("nextGate", "")):
+        raise RuntimeError("Loopy disposable Agent trial next gate drifted.")
+
+    expected_docs = {
+        "docs/loopy-disposable-agent-trial-result-2026-07-18.md": [
+            "reference-only and is not admitted", "12 formal", "material benefit over **both** baselines",
+        ],
+        "docs/loopy-disposable-agent-trial-result-2026-07-18.zh-CN.md": [
+            "仅作参考，不准入", "12/12", "两个**基线都体现实质增益",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Loopy disposable Agent trial evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Loopy disposable Agent trial doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_user_starred_new_source_preflight(
+    document: dict[str, object],
+    list_intake_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1:
+        raise RuntimeError("User-starred new-source preflight schema drifted.")
+    if document.get("id") != "user-starred-new-source-preflight-2026-07-18":
+        raise RuntimeError("User-starred new-source preflight identity drifted.")
+    if document.get("status") != "verified-read-only-metadata-and-existing-evidence-preflight":
+        raise RuntimeError("User-starred new-source preflight status drifted.")
+    if document.get("sourceListEvidence") != "registry/user-starred-skill-source-list-intake-2026-07-18.json":
+        raise RuntimeError("User-starred new-source preflight source-list evidence drifted.")
+
+    scope = document.get("scope")
+    if not isinstance(scope, dict) or scope.get("sourceCount") != 5:
+        raise RuntimeError("User-starred new-source preflight scope drifted.")
+    for key in ["sourceDownloadedOrExecuted", "candidateInstalledOrAdmitted", "consumerOrHookChanged"]:
+        if scope.get(key) is not False:
+            raise RuntimeError(f"User-starred new-source preflight crossed its boundary: {key}")
+
+    sources = document.get("sources")
+    if not isinstance(sources, list) or len(sources) != 5:
+        raise RuntimeError("User-starred new-source preflight must contain five sources.")
+    source_by_id = {item.get("sourceId"): item for item in sources if isinstance(item, dict)}
+    expected_ids = set(
+        list_intake_document.get("comparisonToPublicDiscovery", {}).get("newSourceIds", [])
+    )
+    if set(source_by_id) != expected_ids:
+        raise RuntimeError("User-starred new-source preflight source set drifted from list intake.")
+
+    expected_revisions = {
+        "github:helloianneo/awesome-claude-code-skills": "37cf1a830b904f9fd2b995455f3b00fdae17bdc0",
+        "github:alchaincyf/huashu-design": "0e7ec8aca0058184c1a9e06e57697e84f68a3f0f",
+        "github:multica-ai/andrej-karpathy-skills": "2c606141936f1eeef17fa3043a72095b4765b9c2",
+        "github:phuryn/pm-skills": "18468a95b427e70e258b51389796367c6f684e7d",
+        "github:vercel-labs/skills": "777599e1159e401b11ce4c8a57c20f09a8f1596e",
+    }
+    expected_dispositions = {
+        "github:helloianneo/awesome-claude-code-skills": "retain-as-non-exclusive-discovery-index-only",
+        "github:alchaincyf/huashu-design": "reuse-prior-review-and-require-pinned-delta-review-before-any-current-admission",
+        "github:multica-ai/andrej-karpathy-skills": "reference-only-license-incomplete-and-high-overlap",
+        "github:phuryn/pm-skills": "reuse-prior-suite-decomposition-and-delta-review-only-selected-components",
+        "github:vercel-labs/skills": "retain-as-external-tooling-and-path-map-baseline-not-skill-candidate",
+    }
+    for source_id, source in source_by_id.items():
+        if source.get("revision") != expected_revisions[source_id]:
+            raise RuntimeError(f"User-starred new-source revision drifted: {source_id}")
+        structure = source.get("structure")
+        if not isinstance(structure, dict) or any(
+            not isinstance(structure.get(key), int) or structure.get(key) < 0
+            for key in ["files", "skillMd", "agentInstructions", "hooks", "executables"]
+        ):
+            raise RuntimeError(f"User-starred new-source structure evidence drifted: {source_id}")
+        if source.get("disposition") != expected_dispositions[source_id]:
+            raise RuntimeError(f"User-starred new-source disposition drifted: {source_id}")
+        if not isinstance(source.get("license"), dict) or not source.get("license", {}).get("state"):
+            raise RuntimeError(f"User-starred new-source license evidence is missing: {source_id}")
+
+    for source_id in ["github:alchaincyf/huashu-design", "github:phuryn/pm-skills", "github:vercel-labs/skills"]:
+        drift = source_by_id[source_id].get("drift")
+        if not isinstance(drift, dict) or not drift.get("priorReviewedRevision") or not drift.get("changedFileCount"):
+            raise RuntimeError(f"User-starred new-source historical drift evidence is missing: {source_id}")
+    for source_id in ["github:multica-ai/andrej-karpathy-skills", "github:vercel-labs/skills"]:
+        if source_by_id[source_id].get("license", {}).get("redistributionCleared") is not False:
+            raise RuntimeError(f"User-starred new-source license boundary drifted: {source_id}")
+
+    decision = document.get("batchDecision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("User-starred new-source batch decision is required.")
+    expected_counts = {
+        "reviewedSourceCount": 5,
+        "directSkillAdmissionCandidates": 0,
+        "discoveryIndexCount": 1,
+        "historicalDeepReviewReuseCount": 2,
+        "referenceOnlyCount": 1,
+        "externalToolingBaselineCount": 1,
+        "currentRevisionDeltaReviewRequiredCount": 3,
+        "licenseIncompleteCount": 2,
+        "approvedSourceCount": 0,
+        "approvedSkillCount": 0,
+        "hookAdmissionCount": 0,
+    }
+    for key, expected in expected_counts.items():
+        if decision.get(key) != expected:
+            raise RuntimeError(f"User-starred new-source count drifted: {key}")
+    for key in ["sourceDownloadAuthorizedByThisEvidence", "qualityOrSuperiorityProven", "residualGapProven"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"User-starred new-source preflight overclaimed: {key}")
+
+    expected_docs = {
+        "docs/user-starred-new-source-preflight-2026-07-18.md": [
+            "five sources", "No source was downloaded", "no whole-suite admission",
+        ],
+        "docs/user-starred-new-source-preflight-2026-07-18.zh-CN.md": [
+            "5 个新增来源", "没有下载", "不做整套准入",
+        ],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("User-starred new-source preflight evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"User-starred new-source preflight doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_user_starred_index_child_source_extraction(
+    document: dict[str, object],
+    broad_discovery_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "user-starred-index-child-source-extraction-2026-07-18":
+        raise RuntimeError("User-starred child-source extraction identity drifted.")
+    if document.get("status") != "verified-pinned-index-text-extraction":
+        raise RuntimeError("User-starred child-source extraction status drifted.")
+    source = document.get("source")
+    if not isinstance(source, dict) or source != {
+        "sourceId": "github:helloianneo/awesome-claude-code-skills",
+        "revision": "37cf1a830b904f9fd2b995455f3b00fdae17bdc0",
+        "path": "README.md",
+        "gitBlob": "4ae18bec2ffff9b38734be2441e4ad3ea004a7d2",
+        "bytes": 14687,
+        "sha256": "18C1791E7766E8A2D0E89F075F40536C04FDAE00D7A61602C55DC4CF4149ED41",
+    }:
+        raise RuntimeError("User-starred child-source extraction pin drifted.")
+    extraction = document.get("extraction")
+    comparison = document.get("comparisonToBroadDiscovery")
+    if not isinstance(extraction, dict) or not isinstance(comparison, dict):
+        raise RuntimeError("User-starred child-source extraction data is required.")
+    expected_counts = {
+        "directInstallSourceCount": 20,
+        "githubLinkSourceCount": 15,
+        "allObservedGithubSourceCount": 27,
+    }
+    for key, value in expected_counts.items():
+        if extraction.get(key) != value:
+            raise RuntimeError(f"User-starred child-source extraction count drifted: {key}")
+    if comparison.get("evidence") != "registry/public-skill-source-discovery-preflight-2026-07-18.json":
+        raise RuntimeError("User-starred child-source broad-discovery evidence drifted.")
+    if broad_discovery_document.get("id") != "public-skill-source-discovery-preflight-2026-07-18":
+        raise RuntimeError("User-starred child-source broad-discovery document drifted.")
+    if comparison.get("directOverlapCount") != 4 or comparison.get("newDirectSourceCount") != 16:
+        raise RuntimeError("User-starred child-source overlap counts drifted.")
+    direct_ids = extraction.get("directInstallSourceIds")
+    overlap_ids = comparison.get("directOverlapSourceIds")
+    new_ids = comparison.get("newDirectSourceIds")
+    if not all(isinstance(value, list) for value in [direct_ids, overlap_ids, new_ids]):
+        raise RuntimeError("User-starred child-source extraction lists are required.")
+    if set(direct_ids) != set(overlap_ids) | set(new_ids) or set(overlap_ids) & set(new_ids):
+        raise RuntimeError("User-starred child-source overlap partition drifted.")
+    boundaries = document.get("boundaries")
+    if not isinstance(boundaries, dict) or any(boundaries.get(key) is not False for key in [
+        "indexRecommendationsAreReviewEvidence",
+        "installCommandsExecuted",
+        "childSourcesDownloaded",
+        "childSourcesPinnedByThisExtraction",
+        "qualitySafetyLicenseOrAdmissionProven",
+        "discoveryLimitedToThisIndex",
+    ]):
+        raise RuntimeError("User-starred child-source extraction boundary drifted.")
+
+
+def validate_user_starred_index_child_source_preflight(
+    document: dict[str, object],
+    extraction_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "user-starred-index-child-source-preflight-2026-07-18":
+        raise RuntimeError("User-starred child-source preflight identity drifted.")
+    if document.get("status") != "verified-read-only-source-pinned-structure-preflight":
+        raise RuntimeError("User-starred child-source preflight status drifted.")
+    if document.get("sourceCount") != 16 or document.get("inputEvidence") != "registry/user-starred-index-child-source-extraction-2026-07-18.json":
+        raise RuntimeError("User-starred child-source preflight scope drifted.")
+    sources = document.get("sources")
+    expected_ids = extraction_document.get("comparisonToBroadDiscovery", {}).get("newDirectSourceIds", [])
+    if not isinstance(sources, list) or {item.get("sourceId") for item in sources if isinstance(item, dict)} != set(expected_ids):
+        raise RuntimeError("User-starred child-source preflight source set drifted.")
+    unavailable = {
+        item.get("sourceId")
+        for item in sources
+        if isinstance(item, dict) and item.get("treeStatus") != "ok"
+    }
+    if unavailable != {
+        "github:guilhermemarketing/gui-marketing-skills",
+        "github:supercent-io/skills-template",
+    }:
+        raise RuntimeError("User-starred child-source unavailable set drifted.")
+    summary = document.get("summary")
+    expected_summary = {
+        "treeOkCount": 14,
+        "treeUnavailableCount": 2,
+        "singleSkillSourceCount": 2,
+        "multiSkillSuiteCount": 11,
+        "noSkillMdCount": 1,
+        "licenseArtifactOrMetadataPresentAmongAvailableCount": 10,
+        "licenseMissingAmongAvailableCount": 4,
+        "licenseUnknownBecauseUnavailableCount": 2,
+        "agentHookSurfaceCount": 2,
+        "executableSurfaceCount": 12,
+    }
+    if not isinstance(summary, dict) or any(summary.get(key) != value for key, value in expected_summary.items()):
+        raise RuntimeError("User-starred child-source preflight summary drifted.")
+    boundaries = document.get("boundaries")
+    if not isinstance(boundaries, dict) or boundaries.get("metadataAndTreeOnly") is not True:
+        raise RuntimeError("User-starred child-source preflight evidence boundary drifted.")
+    for key in [
+        "sourceBodyDownloaded", "candidateCodeExecuted", "installCommandExecuted",
+        "agentOrHookMutated", "qualitySafetyLicenseFitnessOrAdmissionProven", "starsUsedAsApproval",
+    ]:
+        if boundaries.get(key) is not False:
+            raise RuntimeError(f"User-starred child-source preflight crossed boundary: {key}")
+
+
+def validate_user_starred_index_stale_source_resolution(
+    document: dict[str, object],
+    preflight_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "user-starred-index-stale-source-resolution-2026-07-18":
+        raise RuntimeError("User-starred stale-source resolution identity drifted.")
+    if document.get("status") != "verified-read-only-stale-source-resolution":
+        raise RuntimeError("User-starred stale-source resolution status drifted.")
+    unavailable_ids = {
+        item.get("sourceId")
+        for item in preflight_document.get("sources", [])
+        if isinstance(item, dict) and item.get("treeStatus") != "ok"
+    }
+    resolutions = document.get("resolutions")
+    if not isinstance(resolutions, list) or {item.get("sourceId") for item in resolutions if isinstance(item, dict)} != unavailable_ids:
+        raise RuntimeError("User-starred stale-source resolution set drifted.")
+    by_id = {item["sourceId"]: item for item in resolutions}
+    successor = by_id["github:guilhermemarketing/gui-marketing-skills"].get("possibleSuccessor")
+    if not isinstance(successor, dict) or successor.get("sourceId") != "github:guilhermemarketing/esc-skills":
+        raise RuntimeError("User-starred possible successor evidence drifted.")
+    if successor.get("revision") != "11d033203884d20da7c4b5abaedc77efc4589402" or successor.get("relationshipState") != "unproven-possible-successor-only":
+        raise RuntimeError("User-starred possible successor boundary drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("staleEntryCount") != 2 or decision.get("automaticSubstitutionCount") != 0:
+        raise RuntimeError("User-starred stale-source decision drifted.")
+    boundaries = document.get("boundaries")
+    if not isinstance(boundaries, dict) or boundaries.get("metadataOnly") is not True:
+        raise RuntimeError("User-starred stale-source metadata boundary drifted.")
+    for key in ["candidateBodyDownloaded", "candidateCodeExecuted", "installCommandExecuted", "successorIdentityAssumed", "indexModified", "runtimeOrHookMutated", "admissionAuthorized"]:
+        if boundaries.get(key) is not False:
+            raise RuntimeError(f"User-starred stale-source resolution crossed boundary: {key}")
+
+
+def validate_user_starred_index_child_source_classification(
+    document: dict[str, object],
+    preflight_document: dict[str, object],
+    stale_resolution_document: dict[str, object],
+    survey_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "user-starred-index-child-source-classification-2026-07-18":
+        raise RuntimeError("User-starred child-source classification identity drifted.")
+    if document.get("status") != "verified-bounded-round-stop-rule-not-ecosystem-completeness":
+        raise RuntimeError("User-starred child-source classification status drifted.")
+
+    boundary = document.get("reviewBoundary")
+    expected_boundary = {
+        "userStarredListIsNonExclusive": True,
+        "availablePinnedChildSourcesClassified": 14,
+        "staleChildSourcesResolvedSeparately": 2,
+        "sourceBodiesDeepReviewed": False,
+        "sourceCodeExecuted": False,
+        "sourceDownloadedOrInstalled": False,
+        "candidateAdmitted": False,
+        "runtimeAgentOrHookMutated": False,
+        "ecosystemCompletenessClaimed": False,
+    }
+    if boundary != expected_boundary:
+        raise RuntimeError("User-starred child-source classification boundary drifted.")
+
+    available = {
+        item.get("sourceId"): item
+        for item in preflight_document.get("sources", [])
+        if isinstance(item, dict) and item.get("treeStatus") == "ok"
+    }
+    sources = {
+        item.get("sourceId"): item
+        for item in document.get("sources", [])
+        if isinstance(item, dict)
+    }
+    if len(sources) != 14 or set(sources) != set(available):
+        raise RuntimeError("User-starred child-source classification source set drifted.")
+
+    expected_dispositions = {
+        "github:emilkowalski/skill": "hold-until-design-quality-demand-is-bound",
+        "github:frankbria/ralph-claude-code": "retain-as-autonomous-loop-tooling-baseline-not-skill-candidate",
+        "github:google-labs-code/stitch-skills": "hold-for-stitch-mcp-bound-component-demand",
+        "github:hairyf/skills": "hold-for-component-specific-residual-gap",
+        "github:inferen-sh/skills": "hold-license-and-account-boundary-unresolved",
+        "github:intellectronica/agent-skills": "hold-for-component-and-runtime-overlap-review",
+        "github:jakubkrehel/make-interfaces-feel-better": "hold-until-design-quality-demand-is-bound",
+        "github:jezweb/claude-skills": "hold-for-host-and-domain-specific-component-demand",
+        "github:Pixel-Process-UG/superkit-agents": "hold-for-atomicity-security-and-independent-hook-review",
+        "github:remotion-dev/skills": "hold-license-and-video-domain-demand-unresolved",
+        "github:shadcn/ui": "hold-project-repository-component-only",
+        "github:vercel-labs/agent-skills": "hold-license-and-vercel-domain-component-demand-unresolved",
+        "github:vercel-labs/skills": "retain-as-external-tooling-and-path-map-baseline-not-skill-candidate",
+        "github:wshobson/agents": "hold-for-component-atomicity-security-and-independent-hook-review",
+    }
+    for source_id, source in sources.items():
+        if source.get("revision") != available[source_id].get("revision"):
+            raise RuntimeError(f"User-starred child-source classification revision drifted: {source_id}")
+        if source.get("disposition") != expected_dispositions[source_id] or not source.get("reason"):
+            raise RuntimeError(f"User-starred child-source classification disposition drifted: {source_id}")
+
+    expected_clusters = {
+        "cluster.domain-design-frontend-media": 6,
+        "cluster.operational-loop-installer-and-manager-tooling": 3,
+        "cluster.broad-multi-skill-and-plugin-suites": 4,
+        "cluster.external-api-and-account-ecosystem": 1,
+    }
+    clusters = {
+        item.get("id"): item
+        for item in document.get("clusters", [])
+        if isinstance(item, dict)
+    }
+    if set(clusters) != set(expected_clusters):
+        raise RuntimeError("User-starred child-source classification cluster set drifted.")
+    clustered_ids: list[str] = []
+    for cluster_id, expected_count in expected_clusters.items():
+        cluster = clusters[cluster_id]
+        source_ids = cluster.get("sourceIds")
+        if not isinstance(source_ids, list) or len(source_ids) != expected_count:
+            raise RuntimeError(f"User-starred child-source classification cluster count drifted: {cluster_id}")
+        if not cluster.get("representativeRule") or not cluster.get("marginalYield"):
+            raise RuntimeError(f"User-starred child-source classification cluster rationale missing: {cluster_id}")
+        clustered_ids.extend(source_ids)
+    if len(clustered_ids) != len(set(clustered_ids)) or set(clustered_ids) != set(sources):
+        raise RuntimeError("User-starred child-source classification clusters do not form an exact partition.")
+    for source_id, source in sources.items():
+        if source.get("clusterId") not in clusters or source_id not in clusters[source.get("clusterId")].get("sourceIds", []):
+            raise RuntimeError(f"User-starred child-source classification cluster link drifted: {source_id}")
+
+    stale_decision = stale_resolution_document.get("decision", {})
+    deduplication = document.get("deduplication")
+    expected_deduplication = {
+        "directSourcesInUserIndex": 20,
+        "alreadyPresentInBroadDiscovery": 4,
+        "newDirectSourcesPreflighted": 16,
+        "availablePinnedSourcesClassified": 14,
+        "staleOrUnavailableSourcesResolved": 2,
+        "duplicateOrAutomaticReplacementAdmitted": 0,
+    }
+    if deduplication != expected_deduplication or stale_decision.get("automaticSubstitutionCount") != 0:
+        raise RuntimeError("User-starred child-source classification deduplication drifted.")
+
+    representative = document.get("representativeSelection")
+    if not isinstance(representative, dict) or representative.get("currentDemandLinkedDeepReviewBatch") != [] or representative.get("selectedCount") != 0:
+        raise RuntimeError("User-starred child-source classification selected an unsupported batch.")
+    if survey_document.get("decision", {}).get("supportedResidualGapCount") != 0 or "zero supported residual gaps" not in representative.get("reason", ""):
+        raise RuntimeError("User-starred child-source classification residual-gap linkage drifted.")
+
+    history = document.get("marginalYieldHistory")
+    if not isinstance(history, list) or len(history) != 4 or history[-1].get("inputCount") != 16:
+        raise RuntimeError("User-starred child-source classification marginal-yield history drifted.")
+    if "no new current Harness shortfall class" not in history[-1].get("yield", ""):
+        raise RuntimeError("User-starred child-source classification marginal-yield conclusion drifted.")
+
+    stop = document.get("stopDecision")
+    expected_stop = {
+        "stopCurrentDiscoveryExpansion": True,
+        "boundedRoundVerified": True,
+        "ecosystemComplete": False,
+        "allFutureDiscoveryStopped": False,
+        "candidateApprovedCount": 0,
+        "candidateExecutionAuthorized": False,
+        "repositoryAuthoredSkillOrHookEligible": False,
+    }
+    if not isinstance(stop, dict) or any(stop.get(key) != value for key, value in expected_stop.items()) or not stop.get("reason"):
+        raise RuntimeError("User-starred child-source classification stop decision drifted.")
+    if len(document.get("remainingUncertainty", [])) != 5 or len(document.get("recheckTriggers", [])) != 5:
+        raise RuntimeError("User-starred child-source classification uncertainty or recheck triggers drifted.")
+
+    assessment = document.get("acceptanceAssessment")
+    if not isinstance(assessment, dict) or assessment.get("acceptanceId") != "acceptance.discovery-clustering-stop-rule" or assessment.get("from") != "partial" or assessment.get("to") != "verified" or "bounded discovery round only" not in assessment.get("scope", ""):
+        raise RuntimeError("User-starred child-source classification acceptance assessment drifted.")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    criterion = criteria.get("acceptance.discovery-clustering-stop-rule", {})
+    evidence_id = "evidence.user-starred-index-child-source-classification-2026-07-18"
+    if criterion.get("assessment") != "verified" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("User-starred child-source classification acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/user-starred-index-child-source-classification-2026-07-18.json" or evidence.get("supports") != ["acceptance.discovery-clustering-stop-rule"]:
+        raise RuntimeError("User-starred child-source classification evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/user-starred-index-child-source-classification-2026-07-18.md": ["14 available sources", "verified bounded-round stop rule", "not an ecosystem-completeness"],
+        "docs/user-starred-index-child-source-classification-2026-07-18.zh-CN.md": ["14 个可用来源", "有界发现轮次的停止规则已验证", "不是“全网生态已经找全”"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("User-starred child-source classification evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"User-starred child-source classification doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_lifecycle_metabolism_reconciliation(
+    document: dict[str, object],
+    feedback_document: dict[str, object],
+    radar_document: dict[str, object],
+    upstream_delta_document: dict[str, object],
+    manager_retirement_document: dict[str, object],
+    release_evolution_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "lifecycle-metabolism-reconciliation-2026-07-18":
+        raise RuntimeError("Lifecycle metabolism reconciliation identity drifted.")
+    if document.get("status") != "verified-feedback-return-and-deterministic-retirement-contract-live-exercise-open":
+        raise RuntimeError("Lifecycle metabolism reconciliation status drifted.")
+
+    trigger_matrix = {
+        item.get("id"): item
+        for item in document.get("triggerMatrix", [])
+        if isinstance(item, dict)
+    }
+    expected_trigger_states = {
+        "consumer-feedback": "observed-and-verified",
+        "community-feedback": "contracted-not-yet-exercised",
+        "security-finding": "contracted-not-yet-exercised",
+        "license-or-provenance-change": "contracted-not-yet-exercised",
+        "upstream-refresh": "observed-read-only-delta-review",
+        "validation-failure-or-change": "observed-success-path-and-contracted-failure-path",
+    }
+    if set(trigger_matrix) != set(expected_trigger_states):
+        raise RuntimeError("Lifecycle metabolism trigger matrix drifted.")
+    for trigger_id, evidence_state in expected_trigger_states.items():
+        trigger = trigger_matrix[trigger_id]
+        if trigger.get("evidenceState") != evidence_state or not trigger.get("returnPath") or not trigger.get("currentEvidence"):
+            raise RuntimeError(f"Lifecycle metabolism trigger evidence drifted: {trigger_id}")
+
+    observed = document.get("observedFeedbackCycle")
+    if not isinstance(observed, dict):
+        raise RuntimeError("Lifecycle metabolism observed feedback cycle is missing.")
+    if observed.get("source") != "registry/mvp06-lifecycle-feedback.json" or observed.get("consumerRevision") != feedback_document.get("consumer_head"):
+        raise RuntimeError("Lifecycle metabolism observed feedback identity drifted.")
+    expected_outcomes = {
+        "recipeProjection": 1,
+        "mergeIntoExistingApprovedSkill": 2,
+        "standaloneSkillAdded": 0,
+        "deprecated": 0,
+        "retired": 0,
+    }
+    if observed.get("candidateCount") != len(feedback_document.get("candidate_lifecycle", [])) or observed.get("outcomes") != expected_outcomes:
+        raise RuntimeError("Lifecycle metabolism observed feedback outcomes drifted.")
+    if observed.get("runtimeDetailsRemainConsumerOwned") is not True or len(observed.get("feedbackEffects", [])) != 4:
+        raise RuntimeError("Lifecycle metabolism consumer authority boundary drifted.")
+    radar_source = next(
+        item for item in radar_document.get("decisions", [])
+        if isinstance(item, dict) and item.get("id") == "github:addyosmani/agent-skills"
+    )
+    if radar_source.get("disposition") != "already-reviewed" or len(radar_source.get("candidateFeedback", [])) != 3:
+        raise RuntimeError("Lifecycle metabolism radar feedback projection drifted.")
+
+    outcome_coverage = {
+        item.get("outcome"): item
+        for item in document.get("lifecycleOutcomeCoverage", [])
+        if isinstance(item, dict)
+    }
+    expected_outcome_states = {
+        "retain": "observed",
+        "compose-or-route": "observed",
+        "merge-or-revise-existing-approved-skill": "observed",
+        "upstream-refresh-delta-review": "observed-read-only",
+        "supersede-or-retire-governance-initiative": "observed-non-payload",
+        "approved-skill-deprecation-migration-rollback-retirement": "validated-deterministic-policy-fixture-live-consumer-exercise-open",
+    }
+    if {key: item.get("evidenceState") for key, item in outcome_coverage.items()} != expected_outcome_states:
+        raise RuntimeError("Lifecycle metabolism outcome coverage drifted.")
+    if upstream_delta_document.get("decision", {}).get("currentRevisionAdmissionAuthorized") is not False:
+        raise RuntimeError("Lifecycle metabolism upstream delta must remain non-admitting.")
+    if manager_retirement_document.get("currentProductDirection", {}).get("customManagerInitiativeState") != "superseded-historical-only":
+        raise RuntimeError("Lifecycle metabolism non-payload retirement evidence drifted.")
+    if release_evolution_document.get("currentDecision", {}).get("currentOutcome") != "retain-current-release-and-monitor-evidence":
+        raise RuntimeError("Lifecycle metabolism release-evolution linkage drifted.")
+
+    if len(document.get("decisionRecordRequirements", [])) != 7:
+        raise RuntimeError("Lifecycle metabolism decision-record requirements drifted.")
+    fixture = document.get("deterministicFixtureEvidence")
+    if not isinstance(fixture, dict) or fixture.get("path") != "tests/fixtures/lifecycle-metabolism-fixtures-2026-07-18.json" or fixture.get("evaluator") != "scripts/evaluate_lifecycle_metabolism_fixtures.py":
+        raise RuntimeError("Lifecycle metabolism deterministic fixture linkage drifted.")
+    fixture_document = load("tests/fixtures/lifecycle-metabolism-fixtures-2026-07-18.json")
+    fixture_results = evaluate_lifecycle_metabolism_fixture_document(fixture_document)
+    expected_by_id = {
+        item.get("id"): item.get("expected")
+        for item in fixture_document.get("cases", [])
+        if isinstance(item, dict)
+    }
+    if len(fixture_results) != 8 or any(
+        result.get("decision") != expected_by_id.get(result.get("id"), {}).get("decision")
+        or result.get("reasonCode") != expected_by_id.get(result.get("id"), {}).get("reasonCode")
+        for result in fixture_results
+    ):
+        raise RuntimeError("Lifecycle metabolism deterministic fixture result drifted.")
+    accepted_count = sum(result.get("decision") == "accept" for result in fixture_results)
+    rejected_count = sum(result.get("decision") == "reject" for result in fixture_results)
+    if fixture.get("caseCount") != 8 or fixture.get("acceptedCount") != accepted_count or fixture.get("rejectedCount") != rejected_count or fixture.get("liveConsumerMutationPerformed") is not False:
+        raise RuntimeError("Lifecycle metabolism deterministic fixture summary drifted.")
+    boundaries = document.get("boundaries")
+    expected_boundaries = {
+        "feedbackCanReopenReview": True,
+        "feedbackCanSuppressExactReproposal": True,
+        "feedbackAutomaticallyApprovesCandidate": False,
+        "feedbackAutomaticallyMutatesRelease": False,
+        "feedbackAutomaticallyWritesConsumer": False,
+        "upstreamUpdateAutomaticallyReplacesPinnedRelease": False,
+        "inventoryGrowthIsSuccessMetric": False,
+        "approvedSkillRetirementMaturityClaimed": False,
+        "runtimeOrHookMutationAuthorized": False,
+        "crossRepositoryWriteAuthorized": False,
+    }
+    if boundaries != expected_boundaries:
+        raise RuntimeError("Lifecycle metabolism authority boundary drifted.")
+
+    assessments = {
+        item.get("acceptanceId"): item
+        for item in document.get("acceptanceAssessment", [])
+        if isinstance(item, dict)
+    }
+    if assessments.get("acceptance.feedback-loop", {}).get("to") != "verified":
+        raise RuntimeError("Lifecycle metabolism feedback assessment drifted.")
+    retirement_assessment = assessments.get("acceptance.deprecation-retirement-loop", {})
+    if retirement_assessment.get("to") != "verified" or "live approved-Skill consumer exercise remains open" not in retirement_assessment.get("scope", ""):
+        raise RuntimeError("Lifecycle metabolism retirement assessment overclaimed.")
+    if "live approved-Skill consumer event" not in document.get("nextGate", ""):
+        raise RuntimeError("Lifecycle metabolism next gate drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.lifecycle-metabolism-reconciliation-2026-07-18"
+    feedback_criterion = criteria.get("acceptance.feedback-loop", {})
+    retirement_criterion = criteria.get("acceptance.deprecation-retirement-loop", {})
+    if feedback_criterion.get("assessment") != "verified" or evidence_id not in feedback_criterion.get("evidenceIds", []):
+        raise RuntimeError("Lifecycle metabolism feedback acceptance mapping drifted.")
+    if retirement_criterion.get("assessment") != "verified" or evidence_id not in retirement_criterion.get("evidenceIds", []):
+        raise RuntimeError("Lifecycle metabolism retirement acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/lifecycle-metabolism-reconciliation-2026-07-18.json" or set(evidence.get("supports", [])) != {"acceptance.feedback-loop", "acceptance.deprecation-retirement-loop"}:
+        raise RuntimeError("Lifecycle metabolism evidence mapping drifted.")
+
+    lifecycle_policy = " ".join((ROOT / "policies/lifecycle.md").read_text(encoding="utf-8").split())
+    for phrase in [
+        "Lifecycle metabolism is event-driven",
+        "consumer usage, failure, collision, context-cost, or validation evidence",
+        "license, provenance, ownership, or redistribution changes",
+        "Inventory growth is not a default outcome",
+        "Release mutation remains separately governed",
+    ]:
+        if phrase not in lifecycle_policy:
+            raise RuntimeError(f"Lifecycle metabolism policy missing phrase: {phrase}")
+
+    expected_docs = {
+        "docs/lifecycle-metabolism-reconciliation-2026-07-18.md": ["one observed consumer feedback cycle", "Eight policy fixtures", "cannot approve a candidate"],
+        "docs/lifecycle-metabolism-reconciliation-2026-07-18.zh-CN.md": ["一次真实消费者反馈循环", "8 个政策夹具", "不能批准候选"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Lifecycle metabolism evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Lifecycle metabolism doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_cross_agent_claim_limit_reconciliation(
+    document: dict[str, object],
+    baseline_document: dict[str, object],
+    survey_document: dict[str, object],
+    loopy_document: dict[str, object],
+    projection_document: dict[str, object],
+    preflight_document: dict[str, object],
+    feedback_document: dict[str, object],
+    lifecycle_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "cross-agent-claim-limit-reconciliation-2026-07-18":
+        raise RuntimeError("Cross-Agent claim-limit reconciliation identity drifted.")
+    if document.get("status") != "verified-claim-governance-not-cross-agent-behavior":
+        raise RuntimeError("Cross-Agent claim-limit reconciliation status drifted.")
+
+    expected_dimensions = {
+        "host", "model", "reasoning", "loader", "activation",
+        "permissions", "workspace", "date", "evidenceClass",
+    }
+    if set(document.get("requiredClaimDimensions", [])) != expected_dimensions:
+        raise RuntimeError("Cross-Agent claim-limit required dimensions drifted.")
+    ledger = {
+        item.get("id"): item
+        for item in document.get("claimLedger", [])
+        if isinstance(item, dict)
+    }
+    expected_claim_ids = {
+        "claim.codex-native-runtime-baseline",
+        "claim.local-skill-root-enumeration",
+        "claim.codex-advisory-hook-metadata",
+        "claim.routing-scenario-policy",
+        "claim.loopy-disposable-agent-trial",
+        "claim.decision-ready-consumer-projection",
+        "claim.public-source-preflight",
+        "claim.historical-codex-consumer-feedback",
+        "claim.lifecycle-policy-fixtures",
+    }
+    if set(ledger) != expected_claim_ids:
+        raise RuntimeError("Cross-Agent claim-limit ledger set drifted.")
+    for claim_id, claim in ledger.items():
+        conditions = claim.get("conditions")
+        if not isinstance(conditions, dict) or set(conditions) != expected_dimensions:
+            raise RuntimeError(f"Cross-Agent claim-limit dimensions incomplete: {claim_id}")
+        if not claim.get("claim") or not claim.get("supports") or not claim.get("doesNotSupport") or not claim.get("counterexample") or not claim.get("recheckTrigger"):
+            raise RuntimeError(f"Cross-Agent claim-limit evidence boundary incomplete: {claim_id}")
+
+    baseline_scope = baseline_document.get("scope", {})
+    baseline_observations = baseline_document.get("observations", {})
+    skill_surface = baseline_observations.get("skillNameSurface", {})
+    if baseline_scope.get("crossHostClaim") is not False or skill_surface.get("skillFileCount") != 422 or skill_surface.get("duplicateDirectoryNameGroupCount") != 87:
+        raise RuntimeError("Cross-Agent claim-limit native baseline linkage drifted.")
+    hook = baseline_observations.get("hookMetadata", {})
+    if hook.get("filePresenceProvesActivation") is not False or hook.get("effectiveActivationObserved") != "not-checked" or hook.get("behaviorProbeRun") is not False:
+        raise RuntimeError("Cross-Agent claim-limit Hook metadata boundary drifted.")
+
+    fixture = projection_document.get("fixtureResult", {})
+    proxy = projection_document.get("structuralBurdenProxy", {})
+    if fixture.get("scenarioCount") != 105 or fixture.get("passed") != 105 or fixture.get("failed") != 0:
+        raise RuntimeError("Cross-Agent claim-limit routing scenario linkage drifted.")
+    if proxy.get("baselineGovernedPayloadEntriesToEnumerate") != 29 or "structural enumeration proxy only" not in proxy.get("claimLimit", ""):
+        raise RuntimeError("Cross-Agent claim-limit projection proxy drifted.")
+
+    aggregate = loopy_document.get("aggregate", [])
+    if sum(item.get("runCount", 0) for item in aggregate if isinstance(item, dict)) != 12:
+        raise RuntimeError("Cross-Agent claim-limit Loopy trial count drifted.")
+    loopy_decision = loopy_document.get("decision", {})
+    if loopy_decision.get("materialBenefitOverBothBaselines") is not False or loopy_decision.get("qualityOrSuperiorityProven") is not False:
+        raise RuntimeError("Cross-Agent claim-limit Loopy conclusion overclaimed.")
+
+    if preflight_document.get("capture", {}).get("resultCount") != 188 or preflight_document.get("dataBoundary", {}).get("candidateCodeExecuted") is not False:
+        raise RuntimeError("Cross-Agent claim-limit public preflight linkage drifted.")
+    if feedback_document.get("consumer_head") != "a89b61737f066118b13264510cb4dbe5566e2269" or feedback_document.get("runtime_evidence", {}).get("installed_curated_skills") != 19:
+        raise RuntimeError("Cross-Agent claim-limit consumer feedback linkage drifted.")
+    if lifecycle_document.get("deterministicFixtureEvidence", {}).get("caseCount") != 8 or lifecycle_document.get("deterministicFixtureEvidence", {}).get("liveConsumerMutationPerformed") is not False:
+        raise RuntimeError("Cross-Agent claim-limit lifecycle fixture linkage drifted.")
+    survey_decision = survey_document.get("decision", {})
+    if survey_decision.get("longitudinalProductionCrossHostEvidenceOpen") is not True or survey_decision.get("wholeDemandModelClosureClaimed") is not False:
+        raise RuntimeError("Cross-Agent claim-limit survey evidence boundary drifted.")
+
+    firewall = document.get("universalClaimFirewall")
+    expected_firewall_keys = {
+        "universalAgentEqualityClaimed",
+        "modelCapabilityCeilingImprovementClaimed",
+        "crossHostBehaviorProven",
+        "implicitActivationProven",
+        "loaderPrecedenceProven",
+        "liveHookEffectivenessProven",
+        "currentConsumerParityProven",
+        "metadataProvesQualitySafetyOrAdmission",
+        "deterministicSimulationProvesRuntimeBehavior",
+        "singleConsumerEvidenceGeneralized",
+    }
+    if not isinstance(firewall, dict) or set(firewall) != expected_firewall_keys or any(value is not False for value in firewall.values()):
+        raise RuntimeError("Cross-Agent claim-limit universal firewall drifted.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("claimLedgerEntryCount") != 9 or decision.get("everyEntryHasAllRequiredDimensions") is not True or decision.get("everyEntryHasLimitCounterexampleAndRecheckTrigger") is not True:
+        raise RuntimeError("Cross-Agent claim-limit decision summary drifted.")
+    if decision.get("acceptanceId") != "acceptance.cross-agent-claim-limits" or decision.get("from") != "partial" or decision.get("to") != "verified" or "claim-governance firewall only" not in decision.get("scope", ""):
+        raise RuntimeError("Cross-Agent claim-limit acceptance assessment drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.cross-agent-claim-limit-reconciliation-2026-07-18"
+    criterion = criteria.get("acceptance.cross-agent-claim-limits", {})
+    if criterion.get("assessment") != "verified" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Cross-Agent claim-limit acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/cross-agent-claim-limit-reconciliation-2026-07-18.json" or evidence.get("supports") != ["acceptance.cross-agent-claim-limits"]:
+        raise RuntimeError("Cross-Agent claim-limit evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/cross-agent-claim-limit-reconciliation-2026-07-18.md": ["claim governance, not universal cross-Agent behavior", "Nine evidence classes", "does not verify cross-Agent parity"],
+        "docs/cross-agent-claim-limit-reconciliation-2026-07-18.zh-CN.md": ["主张治理", "9 类证据", "不等于跨 Agent 一致性"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Cross-Agent claim-limit evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Cross-Agent claim-limit doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_consumer_mapping_evidence_gap_reconciliation(
+    document: dict[str, object],
+    baseline_document: dict[str, object],
+    feedback_document: dict[str, object],
+    claim_limit_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "consumer-mapping-evidence-gap-reconciliation-2026-07-18":
+        raise RuntimeError("Consumer-mapping evidence-gap reconciliation identity drifted.")
+    if document.get("status") != "verified-current-static-partial-no-supported-consumer-mapping-claimed":
+        raise RuntimeError("Consumer-mapping evidence-gap reconciliation status drifted.")
+    expected_dimensions = {
+        "instructionDiscovery", "skillLocations", "ownership", "precedence",
+        "projection", "verification", "backup", "restore",
+    }
+    if set(document.get("requiredMappingDimensions", [])) != expected_dimensions:
+        raise RuntimeError("Consumer-mapping required dimensions drifted.")
+    consumers = {
+        item.get("id"): item
+        for item in document.get("consumers", [])
+        if isinstance(item, dict)
+    }
+    if set(consumers) != {"consumer.codex", "consumer.claude-code"}:
+        raise RuntimeError("Consumer-mapping evidence consumer set drifted.")
+    codex = consumers["consumer.codex"]
+    claude = consumers["consumer.claude-code"]
+    if codex.get("evidenceState") != "current-static-partial" or codex.get("evidenceDates") != ["2026-06-27", "2026-07-02", "2026-07-15", "2026-07-18"]:
+        raise RuntimeError("Consumer-mapping Codex evidence state drifted.")
+    if claude.get("evidenceState") != "conceptual-only" or claude.get("evidenceDates") != []:
+        raise RuntimeError("Consumer-mapping Claude evidence state drifted.")
+    for consumer_id, consumer in consumers.items():
+        dimensions = consumer.get("dimensions")
+        if not isinstance(dimensions, dict) or set(dimensions) != expected_dimensions:
+            raise RuntimeError(f"Consumer-mapping dimensions incomplete: {consumer_id}")
+        if consumer.get("currentMappingAccepted") is not False or len(consumer.get("missingEvidence", [])) != 4:
+            raise RuntimeError(f"Consumer-mapping current support overclaimed: {consumer_id}")
+    if "missing-live-loader-precedence" not in codex.get("dimensions", {}).get("precedence", "") or claude.get("dimensions", {}).get("skillLocations") != "missing":
+        raise RuntimeError("Consumer-mapping material evidence gaps drifted.")
+
+    baseline_scope = baseline_document.get("scope", {})
+    if baseline_scope.get("host") != "OpenAI Codex desktop on Windows" or baseline_scope.get("crossHostClaim") is not False:
+        raise RuntimeError("Consumer-mapping Codex baseline linkage drifted.")
+    if feedback_document.get("consumer_head") != "a89b61737f066118b13264510cb4dbe5566e2269":
+        raise RuntimeError("Consumer-mapping historical feedback linkage drifted.")
+    if claim_limit_document.get("universalClaimFirewall", {}).get("currentConsumerParityProven") is not False:
+        raise RuntimeError("Consumer-mapping claim-limit linkage drifted.")
+
+    snapshot = document.get("consumerReadSnapshot")
+    expected_file_pins = {
+        "AGENTS.md": "332c8ab9aae2aa1fc5ba05fad5546b891165d6c5",
+        "scripts/install.py": "ee9c04c69729173de5dbe9eb052cc56ca1a4cef2",
+        "scripts/skills.py": "792b7fa7a17fdb0a1d55e22a83ce24c9700f8675",
+        "config/skills-source.json": "3da66826dadee1d86764acbdc789bda9b8a4c9ea",
+        "docs/curated-skills.md": "0a179dd38c7d90534dd0d28a3223b5367849bb2f",
+        "docs/runtime-visible-capability-restore-map.md": "c6b4927a9cd91533d7fd7e94ceba8f18566f82b1",
+        "tests/test_routing_index_install.py": "55913f96f305b71e43c86ce1367b99a4d2b0aeab",
+    }
+    if not isinstance(snapshot, dict) or (
+        snapshot.get("repository") != "yiheng8023/codex-user-config"
+        or snapshot.get("head") != "0c93458d48cb1ebaa6d0d289e3a21f46d2f61f65"
+        or snapshot.get("upstreamHead") != snapshot.get("head")
+        or snapshot.get("ahead") != 0
+        or snapshot.get("behind") != 0
+        or snapshot.get("filePins") != expected_file_pins
+    ):
+        raise RuntimeError("Consumer-mapping current Codex snapshot drifted.")
+    if set(snapshot.get("dirtyPathsExcluded", [])) != {"README.md", "README.zh-CN.md", "tests/closure_contract_cases.json", ".tmp/"}:
+        raise RuntimeError("Consumer-mapping dirty consumer exclusion drifted.")
+    if snapshot.get("fixtureResult") != {
+        "command": "python -B -m unittest tests.test_routing_index_install",
+        "passed": 5,
+        "failed": 0,
+        "writesLimitedToTemporaryDirectory": True,
+    }:
+        raise RuntimeError("Consumer-mapping current Codex fixture result drifted.")
+    if snapshot.get("liveAgentHomeReadPerformed") is not True:
+        raise RuntimeError("Consumer-mapping current Codex snapshot omitted the live Agent Home read.")
+    for key in ["externalRepositoryWritePerformed", "liveAgentHomeWritePerformed", "liveHookMutationPerformed"]:
+        if snapshot.get(key) is not False:
+            raise RuntimeError(f"Consumer-mapping current Codex snapshot overclaimed: {key}")
+
+    live_snapshot = document.get("liveAgentHomeSnapshot")
+    expected_drifted_skills = {
+        "ci-cd-and-automation", "deprecation-and-migration", "diagnose",
+        "git-guardrails", "grill-with-docs", "handoff",
+        "improve-codebase-architecture", "migrate-to-shoehorn",
+        "observability-and-instrumentation", "performance-optimization",
+        "prototype", "review", "setup-project-skills", "shipping-and-launch",
+        "tdd", "to-issues", "to-prd", "triage", "ubiquitous-language",
+    }
+    if not isinstance(live_snapshot, dict) or (
+        live_snapshot.get("path") != "C:/Users/15521/.agents"
+        or live_snapshot.get("mode") != "read-only-metadata-and-transaction-verification"
+        or live_snapshot.get("observedDate") != "2026-07-18"
+        or live_snapshot.get("skillDirectoryCount") != 73
+    ):
+        raise RuntimeError("Consumer-mapping live Agent Home snapshot drifted.")
+    transaction = live_snapshot.get("transaction", {})
+    if (
+        transaction.get("createdAt") != "20260627T022747Z"
+        or transaction.get("sourceRevision") != "e80d49733192bfa41c894a72da63def4801691f4"
+        or transaction.get("claimedManagedSkillCount") != 19
+        or transaction.get("driftedClaimedSkillCount") != 19
+        or transaction.get("verificationPassed") is not False
+        or transaction.get("backupExists") is not True
+        or transaction.get("routingIndexExists") is not True
+        or transaction.get("routingIndexMatchesTransaction") is not True
+        or set(transaction.get("driftedClaimedSkills", [])) != expected_drifted_skills
+    ):
+        raise RuntimeError("Consumer-mapping live curated transaction evidence drifted.")
+    skill_lock = live_snapshot.get("skillLock", {})
+    if skill_lock != {
+        "schemaVersion": 3,
+        "declaredOwner": "larksuite/cli",
+        "managedSkillCount": 27,
+        "updatedAtMax": "2026-07-17T07:05:42.2Z",
+        "overlapWithTransactionClaims": 0,
+    }:
+        raise RuntimeError("Consumer-mapping live Skill lock evidence drifted.")
+    if live_snapshot.get("ccSwitchProjection") != {
+        "count": 43,
+        "symbolicLinkCount": 42,
+        "junctionCount": 1,
+        "legacyCuratedTransactionClaimCount": 19,
+        "otherCcSwitchProjectionCount": 24,
+        "localDatabaseRowCount": 42,
+        "sourceBackedDatabaseRowCount": 0,
+        "missingDatabaseRowCount": 1,
+        "missingDatabaseRowSkills": ["obsidian-open-format-knowledge-files"],
+        "sourcePreservingProjectionVerified": False,
+    }:
+        raise RuntimeError("Consumer-mapping CC Switch projection classification drifted.")
+    if live_snapshot.get("consumerRepoManaged") != {
+        "repository": "yiheng8023/codex-user-config",
+        "head": "0c93458d48cb1ebaa6d0d289e3a21f46d2f61f65",
+        "count": 3,
+        "exactTreeMatchCount": 3,
+        "skills": ["capability-router", "closure-contract", "intent-contract"],
+    }:
+        raise RuntimeError("Consumer-mapping consumer-repository ownership classification drifted.")
+    for key in [
+        "externalWritePerformed", "skillBodyWritePerformed",
+        "transactionWritePerformed", "rollbackPerformed",
+        "hookReadOrWritePerformed",
+    ]:
+        if live_snapshot.get(key) is not False:
+            raise RuntimeError(f"Consumer-mapping live Agent Home boundary overclaimed: {key}")
+
+    expected_unclaimed = {"Trae", "WorkBuddy", "Copilot", "ChatGPT", "Grok", "future Agents and toolchains"}
+    if set(document.get("unclaimedConsumers", [])) != expected_unclaimed:
+        raise RuntimeError("Consumer-mapping unclaimed consumer boundary drifted.")
+    boundaries = document.get("boundaries")
+    expected_boundaries = {
+        "publicTemplatesAreCurrentConsumerEvidence": False,
+        "privateConfigurationRepositoriesAssumedCurrentDownstream": False,
+        "directoryNamesProveMapping": False,
+        "historicalTransactionProvesCurrentParity": False,
+        "conceptualChainProvesRuntimeBehavior": False,
+        "currentSupportedConsumerMappingCount": 0,
+        "externalConsumerReadPerformed": True,
+        "externalConsumerReadSnapshotPinned": True,
+        "liveAgentHomeReadPerformed": True,
+        "externalConsumerWritePerformed": False,
+        "liveAgentOrHookMutationPerformed": False,
+    }
+    if boundaries != expected_boundaries:
+        raise RuntimeError("Consumer-mapping authority or evidence boundary drifted.")
+
+    assessment = document.get("acceptanceAssessment")
+    if not isinstance(assessment, dict) or assessment.get("acceptanceId") != "acceptance.consumer-mapping-evidence" or assessment.get("from") != "partial" or assessment.get("to") != "partial":
+        raise RuntimeError("Consumer-mapping acceptance assessment drifted.")
+    if "cannot become verified by claiming zero supported consumers" not in assessment.get("nonVacuityRule", ""):
+        raise RuntimeError("Consumer-mapping non-vacuity rule drifted.")
+    if "separately authorized live consumer-evidence and migration tasks" not in document.get("nextGate", ""):
+        raise RuntimeError("Consumer-mapping next gate drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.consumer-mapping-evidence-gap-reconciliation-2026-07-18"
+    criterion = criteria.get("acceptance.consumer-mapping-evidence", {})
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Consumer-mapping acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/consumer-mapping-evidence-gap-reconciliation-2026-07-18.json" or evidence.get("supports") != ["acceptance.consumer-mapping-evidence"]:
+        raise RuntimeError("Consumer-mapping evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/consumer-mapping-evidence-gap-reconciliation-2026-07-18.md": ["four dated evidence slices", "73 Skill directories", "all 19 exactly match", "zero have source-backed rows", "remains partial", "not made vacuously true"],
+        "docs/consumer-mapping-evidence-gap-reconciliation-2026-07-18.zh-CN.md": ["四段带日期证据", "73 个 Skill", "这 19 个", "来源仓记录为 0", "继续保持部分完成", "空真"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Consumer-mapping evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Consumer-mapping doc missing phrase in {doc_path}: {phrase}")
+    readme_text = " ".join((ROOT / "README.md").read_text(encoding="utf-8").split())
+    readme_zh_text = " ".join((ROOT / "README.zh-CN.md").read_text(encoding="utf-8").split())
+    if "Neither is a current supported mapping yet" not in readme_text or "not assumed to be a current downstream" not in readme_text:
+        raise RuntimeError("Consumer-mapping English README still overclaims current downstreams.")
+    if "两者都还不是当前已支持映射" not in readme_zh_text or "被假定为当前下游" not in readme_zh_text:
+        raise RuntimeError("Consumer-mapping Chinese README still overclaims current downstreams.")
+
+
+def validate_user_sovereignty_and_foreign_coexistence_reconciliation(
+    document: dict[str, object],
+    foundation_document: dict[str, object],
+    adapter_document: dict[str, object],
+    strategy_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18":
+        raise RuntimeError("User-sovereignty reconciliation identity drifted.")
+    if document.get("status") != "verified-user-sovereignty-contract-foreign-multi-agent-coexistence-still-partial":
+        raise RuntimeError("User-sovereignty reconciliation status drifted.")
+
+    classes = {
+        item.get("id"): item
+        for item in document.get("ownershipClasses", [])
+        if isinstance(item, dict)
+    }
+    expected_classes = {
+        "curated-release-payload",
+        "user-installed",
+        "agent-installed",
+        "project-local",
+        "ecosystem-managed",
+        "unknown-or-conflicting",
+    }
+    if set(classes) != expected_classes:
+        raise RuntimeError("User-sovereignty ownership class set drifted.")
+    for class_id in expected_classes - {"curated-release-payload"}:
+        disposition = classes[class_id].get("defaultDisposition", "")
+        if "foreign" not in disposition and "freeze" not in disposition:
+            raise RuntimeError(f"User-sovereignty foreign default drifted: {class_id}")
+
+    transition = document.get("ownershipTransitionContract")
+    if not isinstance(transition, dict) or len(transition.get("steps", [])) != 10:
+        raise RuntimeError("User-sovereignty ownership transition steps drifted.")
+    expected_transition_flags = {
+        "discoveryImpliesTakeover": False,
+        "downloadImpliesExecution": False,
+        "admissionImpliesInstallation": False,
+        "sameNameImpliesReplace": False,
+        "unknownOwnershipMayBeClaimed": False,
+        "outOfBandEditMayBeOverwritten": False,
+        "userCustomizationAllowed": True,
+        "customizedDerivativeRetainsOriginalVerificationClaim": False,
+    }
+    if any(transition.get(key) != value for key, value in expected_transition_flags.items()):
+        raise RuntimeError("User-sovereignty ownership transition boundary drifted.")
+
+    evidence = {
+        item.get("id"): item
+        for item in document.get("evidenceReconciliation", [])
+        if isinstance(item, dict)
+    }
+    expected_evidence_ids = {
+        "disposable-root-transaction-closure",
+        "codex-disposable-home-readonly-preview",
+        "current-operational-manager-boundary",
+        "live-cc-switch-shared-root-source-reconciliation",
+    }
+    if set(evidence) != expected_evidence_ids:
+        raise RuntimeError("User-sovereignty evidence reconciliation set drifted.")
+    if any(not item.get("observed") or not item.get("limitations") for item in evidence.values()):
+        raise RuntimeError("User-sovereignty evidence limitations are incomplete.")
+
+    implemented = set(foundation_document.get("implementedCapabilities", []))
+    for phrase in [
+        "ownership inspection and foreign-content freeze",
+        "digest-verified backups and append-only SQLite journal",
+        "apply, verify, bounded rollback, and idempotent recovery",
+    ]:
+        if phrase not in implemented:
+            raise RuntimeError(f"User-sovereignty foundation evidence missing: {phrase}")
+    foundation_authority = foundation_document.get("authorityBoundary", {})
+    if foundation_authority.get("accountOrTelemetryUseObserved") is not False or foundation_authority.get("realAgentConfigurationWritesObserved") is not False:
+        raise RuntimeError("User-sovereignty foundation authority boundary drifted.")
+
+    adapter_contract = adapter_document.get("implementedContract", {})
+    if set(adapter_contract.get("previewDecisions", [])) != {"create", "update-manager-owned", "blocked-foreign", "no-change"}:
+        raise RuntimeError("User-sovereignty adapter preview decisions drifted.")
+    if adapter_contract.get("durablePreviewTransactionsCreated") is not False or adapter_contract.get("targetMutationDuringInventoryOrPreview") is not False:
+        raise RuntimeError("User-sovereignty adapter preview mutation boundary drifted.")
+    adapter_authority = adapter_document.get("authorityBoundary", {})
+    if adapter_authority.get("realAgentHomeReadObserved") is not False or adapter_authority.get("realAgentConfigurationWriteObserved") is not False or adapter_authority.get("adapterApplyPathImplemented") is not False:
+        raise RuntimeError("User-sovereignty adapter authority boundary drifted.")
+
+    strategy = strategy_document.get("currentStrategy", {})
+    if strategy.get("operationalSkillManager") != "CC Switch" or strategy.get("payloadPolicy") != "upstream-exact-no-content-rewrite" or strategy.get("repositoryAuthoringIsLastResort") is not True:
+        raise RuntimeError("User-sovereignty current operational strategy drifted.")
+
+    authority = document.get("authorityAndDataBoundary")
+    expected_authority_keys = {
+        "repositoryOwnedProductAccount",
+        "repositoryOwnedTelemetry",
+        "credentialOrAccountReadAuthorized",
+        "liveConsumerWriteAuthorized",
+        "liveCcSwitchReadObserved",
+        "realAgentHomeReadObserved",
+        "realAgentHomeWriteObserved",
+        "hookReadOrMutationObserved",
+        "foreignOwnershipConversionAuthorized",
+        "crossRepositoryWriteAuthorized",
+    }
+    if not isinstance(authority, dict) or set(authority) != expected_authority_keys:
+        raise RuntimeError("User-sovereignty authority and data boundary drifted.")
+    expected_authority = {key: False for key in expected_authority_keys}
+    expected_authority["liveCcSwitchReadObserved"] = True
+    expected_authority["realAgentHomeReadObserved"] = True
+    if authority != expected_authority:
+        raise RuntimeError("User-sovereignty authority and data boundary drifted.")
+
+    assessments = {
+        item.get("acceptanceId"): item
+        for item in document.get("acceptanceAssessment", [])
+        if isinstance(item, dict)
+    }
+    user_assessment = assessments.get("acceptance.user-sovereign-capability-governance", {})
+    coexistence_assessment = assessments.get("acceptance.foreign-managed-capability-coexistence", {})
+    if user_assessment.get("from") != "partial" or user_assessment.get("to") != "verified" or "one current read-only CC Switch and Agent Home ownership observation" not in user_assessment.get("scope", ""):
+        raise RuntimeError("User-sovereignty acceptance assessment drifted.")
+    if coexistence_assessment.get("from") != "partial" or coexistence_assessment.get("to") != "partial" or "cross-Agent" not in coexistence_assessment.get("scope", ""):
+        raise RuntimeError("Foreign coexistence acceptance assessment overclaimed.")
+    if "a second Agent" not in document.get("nextGate", ""):
+        raise RuntimeError("Foreign coexistence next gate drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18"
+    user_criterion = criteria.get("acceptance.user-sovereign-capability-governance", {})
+    coexistence_criterion = criteria.get("acceptance.foreign-managed-capability-coexistence", {})
+    if user_criterion.get("assessment") != "verified" or evidence_id not in user_criterion.get("evidenceIds", []):
+        raise RuntimeError("User-sovereignty acceptance mapping drifted.")
+    if coexistence_criterion.get("assessment") != "partial" or evidence_id not in coexistence_criterion.get("evidenceIds", []):
+        raise RuntimeError("Foreign coexistence acceptance mapping drifted.")
+    mapped_evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if mapped_evidence.get("path") != "registry/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.json" or set(mapped_evidence.get("supports", [])) != {"acceptance.user-sovereign-capability-governance", "acceptance.foreign-managed-capability-coexistence"}:
+        raise RuntimeError("User-sovereignty evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.md": ["foreign-owned by default", "never implies takeover", "no product account or telemetry", "remains partial"],
+        "docs/user-sovereignty-and-foreign-coexistence-reconciliation-2026-07-18.zh-CN.md": ["默认都属于外部所有", "都不代表接管", "不假定产品账号或遥测", "继续保持部分完成"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("User-sovereignty evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"User-sovereignty doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_pm_skills_current_revision_delta_review(
+    document: dict[str, object],
+    preflight_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "pm-skills-current-revision-delta-review-2026-07-18":
+        raise RuntimeError("PM Skills delta review identity drifted.")
+    if document.get("status") != "verified-read-only-current-revision-delta-review":
+        raise RuntimeError("PM Skills delta review status drifted.")
+    if document.get("priorReviewedRevision") != "a0cd730d4c61e519ca8568b172334402257a74a9" or document.get("currentRevision") != "18468a95b427e70e258b51389796367c6f684e7d":
+        raise RuntimeError("PM Skills delta review revisions drifted.")
+    source = next(
+        item for item in preflight_document.get("sources", [])
+        if isinstance(item, dict) and item.get("sourceId") == "github:phuryn/pm-skills"
+    )
+    if source.get("revision") != document.get("currentRevision"):
+        raise RuntimeError("PM Skills delta review does not match current preflight revision.")
+    compare = document.get("compareEvidence")
+    expected = {
+        "aheadBy": 1, "behindBy": 0, "totalCommits": 1,
+        "changedFileCount": 27, "changedSkillBodyCount": 2,
+        "changedSkillBodyLineCount": 5, "changedCommandCount": 5,
+    }
+    if not isinstance(compare, dict) or any(compare.get(key) != value for key, value in expected.items()):
+        raise RuntimeError("PM Skills delta review compare evidence drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("priorSuiteDecompositionReusable") is not True or decision.get("wholeSuiteRereviewRequired") is not False:
+        raise RuntimeError("PM Skills delta review disposition drifted.")
+    for key in ["currentRevisionAdmissionAuthorized", "currentRevisionExecutionAuthorized"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"PM Skills delta review overclaimed: {key}")
+
+
+def validate_round03_intent_binding_demand_review(
+    document: dict[str, object],
+    skills_document: dict[str, object],
+    admissions_document: dict[str, object],
+    recipes_document: dict[str, object],
+    scenarios_document: dict[str, object],
+) -> None:
+    if (
+        document.get("schema") != 1
+        or document.get("id") != "round03-intent-binding-demand-review-2026-07-18"
+        or document.get("status") != "verified-source-bound-demand-current-path-sufficient"
+    ):
+        raise RuntimeError("Round 03 intent-binding demand review identity drifted.")
+    upstream = document.get("upstream")
+    if not isinstance(upstream, dict) or (
+        upstream.get("revision") != "e060a08f05361cb4cc9a67be050236cdbbde1de5"
+        or upstream.get("authority") != "non-authoritative-candidate-evidence"
+    ):
+        raise RuntimeError("Round 03 intent-binding upstream boundary drifted.")
+    expected_hashes = {
+        "sources/2026-07-11-human-ai-shortfall-research-refresh.md": (62925, "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727"),
+        "taxonomy/two-layer-taxonomy-20260712.md": (21338, "477316BB05555271A0538A5BF6C3F42C9C0EA08C07D0EF6254E07AFC8233F274"),
+        "mapping/problem-owner-standard-gap-matrix-20260712.md": (39151, "DD671768DBA9C5CE408F5C33DD88F42125FB4B4027BBBCFC0C36CC679991B9F5"),
+    }
+    artifacts = upstream.get("artifacts")
+    if not isinstance(artifacts, list) or {
+        item.get("path"): (item.get("bytes"), item.get("sha256"))
+        for item in artifacts if isinstance(item, dict)
+    } != expected_hashes:
+        raise RuntimeError("Round 03 intent-binding upstream artifact pins drifted.")
+    demand = document.get("demandRecord")
+    if not isinstance(demand, dict) or (
+        demand.get("id") != "round03-demand.el-05-intent-binding-and-compound-units"
+        or demand.get("sourceLaneId") != "EL-05"
+        or demand.get("coordinateIds") != {"STM": ["STM-11"], "P": ["P1", "P2"], "SG": ["SG-01"]}
+        or len(demand.get("uncertainty", [])) != 3
+        or len(demand.get("heldClaims", [])) != 2
+        or len(demand.get("recheckTriggers", [])) != 3
+    ):
+        raise RuntimeError("Round 03 intent-binding demand contract drifted.")
+    alternatives = document.get("alternatives")
+    expected_classes = {
+        "native-no-skill-fast-path", "current-intake-enhancement",
+        "curated-single-or-composed-skill", "recipe",
+        "official-or-runtime-equivalent", "safe-fallback", "human-or-domain-authority",
+    }
+    if not isinstance(alternatives, list) or len(alternatives) != 7 or {
+        item.get("class") for item in alternatives if isinstance(item, dict)
+    } != expected_classes:
+        raise RuntimeError("Round 03 intent-binding alternatives drifted.")
+    skills = {item.get("id"): item for item in skills_document.get("skills", []) if isinstance(item, dict)}
+    for skill_id in ["skill.curated.grill-with-docs", "skill.curated.ubiquitous-language"]:
+        if skills.get(skill_id, {}).get("status") != "approved":
+            raise RuntimeError(f"Round 03 intent-binding curated owner drifted: {skill_id}")
+    admissions = {item.get("skill"): item for item in admissions_document.get("admissions", []) if isinstance(item, dict)}
+    if any(admissions.get(skill_id, {}).get("disposition") != "approve" for skill_id in ["skill.curated.grill-with-docs", "skill.curated.ubiquitous-language"]):
+        raise RuntimeError("Round 03 intent-binding admission evidence drifted.")
+    recipe_ids = {item.get("id") for item in recipes_document.get("recipes", []) if isinstance(item, dict)}
+    if "recipe.spec-driven-development" not in recipe_ids:
+        raise RuntimeError("Round 03 intent-binding recipe evidence drifted.")
+    matched_scenarios = [
+        item for item in scenarios_document.get("scenarios", [])
+        if isinstance(item, dict) and "capability.requirements-clarification" in item.get("expectedCapabilities", [])
+    ]
+    deterministic = document.get("deterministicEvidence")
+    if not isinstance(deterministic, dict) or deterministic != {
+        "requirementsClarificationScenarioCount": 4,
+        "decisionClasses": ["curated", "gap", "native-sufficient", "runtime-resolved"],
+        "wholeRoutingScenarioCount": 105,
+        "wholeRoutingPassed": 105,
+        "wholeRoutingFailed": 0,
+    } or len(matched_scenarios) != 4 or sorted(item.get("decisionClass") for item in matched_scenarios) != deterministic["decisionClasses"]:
+        raise RuntimeError("Round 03 intent-binding deterministic evidence drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or (
+        decision.get("sourceSupportedDemandBound") is not True
+        or decision.get("currentPathSufficientForBoundedDemand") is not True
+        or decision.get("supportedResidualGapCount") != 0
+        or decision.get("externalCandidateDiscoveryRequiredNow") is not False
+    ):
+        raise RuntimeError("Round 03 intent-binding decision drifted.")
+    for key in ["candidateExecutionAuthorized", "candidateAdmissionEligible", "repositoryAuthoredSkillOrHookEligible", "portableHardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 intent-binding review overclaimed: {key}")
+    expected_docs = {
+        "docs/round03-intent-binding-demand-review-2026-07-18.md": ["STM-11", "105/105", "no residual Skill gap"],
+        "docs/round03-intent-binding-demand-review-2026-07-18.zh-CN.md": ["STM-11", "105/105", "没有证明残余 Skill 缺口"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 intent-binding evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 intent-binding doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_authority_boundary_demand_review(
+    document: dict[str, object],
+    skills_document: dict[str, object],
+    admissions_document: dict[str, object],
+    recipes_document: dict[str, object],
+    scenarios_document: dict[str, object],
+) -> None:
+    if (
+        document.get("schema") != 1
+        or document.get("id") != "round03-authority-boundary-demand-review-2026-07-18"
+        or document.get("status") != "verified-source-bound-demand-layered-current-path-sufficient"
+    ):
+        raise RuntimeError("Round 03 authority-boundary demand review identity drifted.")
+    upstream = document.get("upstream")
+    if not isinstance(upstream, dict) or (
+        upstream.get("revision") != "e060a08f05361cb4cc9a67be050236cdbbde1de5"
+        or upstream.get("authority") != "non-authoritative-candidate-evidence"
+    ):
+        raise RuntimeError("Round 03 authority-boundary upstream boundary drifted.")
+    expected_hashes = {
+        "sources/2026-07-11-human-ai-shortfall-research-refresh.md": (62925, "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727"),
+        "taxonomy/two-layer-taxonomy-20260712.md": (21338, "477316BB05555271A0538A5BF6C3F42C9C0EA08C07D0EF6254E07AFC8233F274"),
+        "mapping/problem-owner-standard-gap-matrix-20260712.md": (39151, "DD671768DBA9C5CE408F5C33DD88F42125FB4B4027BBBCFC0C36CC679991B9F5"),
+    }
+    artifacts = upstream.get("artifacts")
+    if not isinstance(artifacts, list) or {
+        item.get("path"): (item.get("bytes"), item.get("sha256"))
+        for item in artifacts if isinstance(item, dict)
+    } != expected_hashes:
+        raise RuntimeError("Round 03 authority-boundary upstream artifact pins drifted.")
+    demand = document.get("demandRecord")
+    if not isinstance(demand, dict) or (
+        demand.get("id") != "round03-demand.el-06-authority-boundary-and-excessive-agency"
+        or demand.get("sourceLaneId") != "EL-06"
+        or demand.get("coordinateIds") != {"STM": ["STM-20"], "P": ["P9"], "SG": ["SG-05"]}
+        or len(demand.get("uncertainty", [])) != 3
+        or len(demand.get("heldClaims", [])) != 2
+        or len(demand.get("recheckTriggers", [])) != 3
+    ):
+        raise RuntimeError("Round 03 authority-boundary demand contract drifted.")
+    separation = document.get("layerSeparation")
+    if not isinstance(separation, dict) or set(separation) != {
+        "advisoryGuidance", "runtimeEnforcement", "accountableAuthority", "invariant",
+    } or "cannot mint runtime permission" not in str(separation.get("invariant", "")):
+        raise RuntimeError("Round 03 authority-boundary layer separation drifted.")
+    alternatives = document.get("alternatives")
+    expected_classes = {
+        "native-no-action-or-bounded-action", "current-intake-authority-binding",
+        "current-routing-human-confirmation", "approved-narrow-guardrail",
+        "official-or-runtime-enforcement", "recipe-or-transaction-recovery",
+        "closure-and-status-mutation-boundary", "human-or-domain-authority",
+    }
+    if not isinstance(alternatives, list) or len(alternatives) != 8 or {
+        item.get("class") for item in alternatives if isinstance(item, dict)
+    } != expected_classes:
+        raise RuntimeError("Round 03 authority-boundary alternatives drifted.")
+    skills = {item.get("id"): item for item in skills_document.get("skills", []) if isinstance(item, dict)}
+    if skills.get("skill.curated.git-guardrails", {}).get("status") != "approved":
+        raise RuntimeError("Round 03 authority-boundary narrow guardrail drifted.")
+    admissions = {item.get("skill"): item for item in admissions_document.get("admissions", []) if isinstance(item, dict)}
+    if admissions.get("skill.curated.git-guardrails", {}).get("disposition") != "approve":
+        raise RuntimeError("Round 03 authority-boundary guardrail admission evidence drifted.")
+    recipe_ids = {item.get("id") for item in recipes_document.get("recipes", []) if isinstance(item, dict)}
+    if "recipe.rollback-recovery" not in recipe_ids:
+        raise RuntimeError("Round 03 authority-boundary recovery recipe drifted.")
+    scenarios = [item for item in scenarios_document.get("scenarios", []) if isinstance(item, dict)]
+    human_authority = [item for item in scenarios if item.get("decisionClass") == "human-authority"]
+    direct_authority = [
+        item for item in scenarios
+        if item.get("family") in {"authority-ambiguity", "execution-reroute"}
+        and item.get("expectedDecision") == "ask-user"
+    ]
+    deterministic = document.get("deterministicEvidence")
+    if not isinstance(deterministic, dict) or deterministic != {
+        "humanAuthorityScenarioCount": 10,
+        "directAuthorityBoundaryScenarioCount": 9,
+        "directAuthorityBoundaryDecisionClasses": ["human-authority"],
+        "wholeRoutingScenarioCount": 105,
+        "wholeRoutingPassed": 105,
+        "wholeRoutingFailed": 0,
+    } or len(human_authority) != 10 or len(direct_authority) != 9 or {
+        item.get("decisionClass") for item in direct_authority
+    } != {"human-authority"}:
+        raise RuntimeError("Round 03 authority-boundary deterministic evidence drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or (
+        decision.get("sourceSupportedDemandBound") is not True
+        or decision.get("layerSeparationRequired") is not True
+        or decision.get("currentPathSufficientForBoundedDemand") is not True
+        or decision.get("runtimeEnforcementRemainsHostOwned") is not True
+        or decision.get("accountableAuthorityRemainsExternal") is not True
+        or decision.get("supportedResidualGapCount") != 0
+        or decision.get("externalCandidateDiscoveryRequiredNow") is not False
+    ):
+        raise RuntimeError("Round 03 authority-boundary decision drifted.")
+    for key in ["candidateExecutionAuthorized", "candidateAdmissionEligible", "repositoryAuthoredSkillOrHookEligible", "portableHardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 authority-boundary review overclaimed: {key}")
+    expected_docs = {
+        "docs/round03-authority-boundary-demand-review-2026-07-18.md": ["STM-20", "105/105", "no residual Skill gap"],
+        "docs/round03-authority-boundary-demand-review-2026-07-18.zh-CN.md": ["STM-20", "105/105", "没有证明残余 Skill 缺口"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 authority-boundary evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 authority-boundary doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_premise_challenge_demand_review(
+    document: dict[str, object],
+    skills_document: dict[str, object],
+    admissions_document: dict[str, object],
+    recipes_document: dict[str, object],
+    scenarios_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "round03-premise-challenge-demand-review-2026-07-18" or document.get("status") != "verified-source-bound-demand-proportional-current-path-sufficient":
+        raise RuntimeError("Round 03 premise-challenge demand review identity drifted.")
+    upstream = document.get("upstream")
+    expected_hashes = {
+        "sources/2026-07-11-human-ai-shortfall-research-refresh.md": (62925, "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727"),
+        "taxonomy/two-layer-taxonomy-20260712.md": (21338, "477316BB05555271A0538A5BF6C3F42C9C0EA08C07D0EF6254E07AFC8233F274"),
+        "mapping/problem-owner-standard-gap-matrix-20260712.md": (39151, "DD671768DBA9C5CE408F5C33DD88F42125FB4B4027BBBCFC0C36CC679991B9F5"),
+    }
+    if not isinstance(upstream, dict) or upstream.get("revision") != "e060a08f05361cb4cc9a67be050236cdbbde1de5" or upstream.get("authority") != "non-authoritative-candidate-evidence" or {
+        item.get("path"): (item.get("bytes"), item.get("sha256")) for item in upstream.get("artifacts", []) if isinstance(item, dict)
+    } != expected_hashes:
+        raise RuntimeError("Round 03 premise-challenge upstream boundary drifted.")
+    demand = document.get("demandRecord")
+    if not isinstance(demand, dict) or demand.get("id") != "round03-demand.el-07-balanced-premise-challenge" or demand.get("sourceLaneId") != "EL-07" or demand.get("coordinateIds") != {"STM": ["STM-07"], "P": ["P4"], "SG": ["SG-03"]} or len(demand.get("uncertainty", [])) != 3 or len(demand.get("heldClaims", [])) != 2 or len(demand.get("recheckTriggers", [])) != 3:
+        raise RuntimeError("Round 03 premise-challenge demand contract drifted.")
+    alternatives = document.get("alternatives")
+    expected_classes = {"native-proportional-challenge", "evidence-and-runtime-tools", "approved-document-grounded-challenge", "recipe-or-decision-packet", "risk-or-domain-review", "human-and-affected-subject-authority", "open-divergent-no-additional-structure"}
+    if not isinstance(alternatives, list) or len(alternatives) != 7 or {item.get("class") for item in alternatives if isinstance(item, dict)} != expected_classes:
+        raise RuntimeError("Round 03 premise-challenge alternatives drifted.")
+    skills = {item.get("id"): item for item in skills_document.get("skills", []) if isinstance(item, dict)}
+    admissions = {item.get("skill"): item for item in admissions_document.get("admissions", []) if isinstance(item, dict)}
+    if skills.get("skill.curated.grill-with-docs", {}).get("status") != "approved" or admissions.get("skill.curated.grill-with-docs", {}).get("disposition") != "approve":
+        raise RuntimeError("Round 03 premise-challenge curated evidence drifted.")
+    if "recipe.spec-driven-development" not in {item.get("id") for item in recipes_document.get("recipes", []) if isinstance(item, dict)}:
+        raise RuntimeError("Round 03 premise-challenge recipe evidence drifted.")
+    scenarios = [item for item in scenarios_document.get("scenarios", []) if isinstance(item, dict)]
+    native = [item for item in scenarios if item.get("family") == "native-no-skill"]
+    grilled = [item for item in scenarios if "skill.curated.grill-with-docs" in item.get("expectedSkills", [])]
+    deterministic = document.get("deterministicEvidence")
+    if not isinstance(deterministic, dict) or deterministic != {"nativeNoSkillScenarioCount": 12, "documentGroundedChallengeScenarioCount": 3, "documentGroundedChallengeDecisionClasses": ["curated"], "wholeRoutingScenarioCount": 105, "wholeRoutingPassed": 105, "wholeRoutingFailed": 0} or len(native) != 12 or len(grilled) != 3 or {item.get("decisionClass") for item in grilled} != {"curated"}:
+        raise RuntimeError("Round 03 premise-challenge deterministic evidence drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("sourceSupportedDemandBound") is not True or decision.get("proportionalChallengeRequired") is not True or decision.get("openDivergentFastPathPreserved") is not True or decision.get("currentPathSufficientForBoundedDemand") is not True or decision.get("supportedResidualGapCount") != 0 or decision.get("externalCandidateDiscoveryRequiredNow") is not False:
+        raise RuntimeError("Round 03 premise-challenge decision drifted.")
+    for key in ["candidateExecutionAuthorized", "candidateAdmissionEligible", "repositoryAuthoredSkillOrHookEligible", "portableHardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 premise-challenge review overclaimed: {key}")
+    expected_docs = {
+        "docs/round03-premise-challenge-demand-review-2026-07-18.md": ["STM-07", "105/105", "no residual Skill gap"],
+        "docs/round03-premise-challenge-demand-review-2026-07-18.zh-CN.md": ["STM-07", "105/105", "没有证明残余 Skill 缺口"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Round 03 premise-challenge evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Round 03 premise-challenge doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_round03_cognitive_offload_monitoring_demand_review(
+    document: dict[str, object],
+    skills_document: dict[str, object],
+    admissions_document: dict[str, object],
+    scenarios_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "round03-cognitive-offload-monitoring-demand-review-2026-07-18" or document.get("status") != "verified-source-bound-demand-current-classes-sufficient-longitudinal-evidence-open":
+        raise RuntimeError("Round 03 cognitive-monitoring demand review identity drifted.")
+    demand = document.get("demandRecord")
+    if not isinstance(demand, dict) or demand.get("coordinateIds") != {"STM": ["STM-09"], "P": ["P17", "P20"], "SG": ["SG-10"]} or len(demand.get("uncertainty", [])) != 3 or len(demand.get("heldClaims", [])) != 2 or len(demand.get("recheckTriggers", [])) != 3:
+        raise RuntimeError("Round 03 cognitive-monitoring demand contract drifted.")
+    upstream = document.get("upstream")
+    if not isinstance(upstream, dict) or upstream.get("revision") != "e060a08f05361cb4cc9a67be050236cdbbde1de5" or upstream.get("authority") != "non-authoritative-candidate-evidence":
+        raise RuntimeError("Round 03 cognitive-monitoring upstream boundary drifted.")
+    alternatives = document.get("alternatives")
+    if not isinstance(alternatives, list) or len(alternatives) != 8:
+        raise RuntimeError("Round 03 cognitive-monitoring alternatives drifted.")
+    skills = {item.get("id"): item for item in skills_document.get("skills", []) if isinstance(item, dict)}
+    admissions = {item.get("skill"): item for item in admissions_document.get("admissions", []) if isinstance(item, dict)}
+    for skill_id in ["skill.curated.handoff", "skill.curated.observability-and-instrumentation"]:
+        if skills.get(skill_id, {}).get("status") != "approved" or admissions.get(skill_id, {}).get("disposition") != "approve":
+            raise RuntimeError(f"Round 03 cognitive-monitoring curated evidence drifted: {skill_id}")
+    scenarios = [item for item in scenarios_document.get("scenarios", []) if isinstance(item, dict)]
+    observability = [item for item in scenarios if "capability.observability" in item.get("expectedCapabilities", [])]
+    handoff = [item for item in scenarios if "capability.cross-agent-handoff" in item.get("expectedCapabilities", [])]
+    retrospective = [item for item in scenarios if "capability.retrospective-evolution" in item.get("expectedCapabilities", [])]
+    deterministic = document.get("deterministicEvidence")
+    if not isinstance(deterministic, dict) or deterministic.get("observabilityScenarioCount") != 6 or sorted(deterministic.get("observabilityDecisionClasses", [])) != ["curated", "human-authority", "native-sufficient", "runtime-resolved"] or deterministic.get("handoffScenarioCount") != 2 or deterministic.get("retrospectiveNativeScenarioCount") != 1 or deterministic.get("wholeRoutingPassed") != 105 or len(observability) != 6 or len(handoff) != 2 or len(retrospective) != 1:
+        raise RuntimeError("Round 03 cognitive-monitoring deterministic evidence drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("currentCapabilityClassesSufficientForBoundedDemand") is not True or decision.get("longitudinalCognitionEvidenceOpen") is not True or decision.get("supportedResidualSkillGapCount") != 0 or decision.get("externalCandidateDiscoveryRequiredNow") is not False or decision.get("coordinateEnvelopeSelectedCount") != 62 or decision.get("wholeDemandModelClosureClaimed") is not False:
+        raise RuntimeError("Round 03 cognitive-monitoring decision drifted.")
+    for key in ["candidateExecutionAuthorized", "candidateAdmissionEligible", "repositoryAuthoredSkillOrHookEligible", "portableHardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 cognitive-monitoring review overclaimed: {key}")
+    for doc_path, phrase in {
+        "docs/round03-cognitive-offload-monitoring-demand-review-2026-07-18.md": "All 62 coordinates are now selected",
+        "docs/round03-cognitive-offload-monitoring-demand-review-2026-07-18.zh-CN.md": "全部 62 个坐标",
+    }.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Round 03 cognitive-monitoring doc drifted: {doc_path}")
+
+
+def validate_round03_capability_survey_result_package(
+    document: dict[str, object],
+    demand_document: dict[str, object],
+    alternative_document: dict[str, object],
+    acceptance_document: dict[str, object],
+    intent_binding_document: dict[str, object],
+    authority_boundary_document: dict[str, object],
+    premise_challenge_document: dict[str, object],
+    cognitive_monitoring_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "round03-capability-survey-result-package-2026-07-18":
+        raise RuntimeError("Round 03 capability-survey result-package identity drifted.")
+    if document.get("status") != "verified-ten-component-complete-coordinate-envelope-demand-model-open":
+        raise RuntimeError("Round 03 capability-survey result-package status drifted.")
+    components = document.get("components")
+    expected_component_ids = {f"component.{index:02d}-{suffix}" for index, suffix in [
+        (1, "dated-native-runtime-baseline"),
+        (2, "clustered-deduplicated-candidates"),
+        (3, "stm-p-sg-coverage-matrix"),
+        (4, "single-composed-and-non-skill-alternatives"),
+        (5, "candidate-dispositions"),
+        (6, "supported-and-unproven-residual-gaps"),
+        (7, "host-and-evidence-limitations"),
+        (8, "contract-chain-and-hook-recommendations"),
+        (9, "stop-recheck-update-and-next-round"),
+        (10, "explicit-non-authorization"),
+    ]}
+    if not isinstance(components, list) or len(components) != 10 or {item.get("id") for item in components if isinstance(item, dict)} != expected_component_ids:
+        raise RuntimeError("Round 03 capability-survey result-package components drifted.")
+    for component in components:
+        if not isinstance(component, dict) or not component.get("state") or not component.get("evidence") or not component.get("result") or not component.get("limitations"):
+            raise RuntimeError("Round 03 capability-survey result-package component is incomplete.")
+    combined_demands = {
+        **demand_document,
+        "records": [
+            *demand_document.get("records", []),
+            intent_binding_document.get("demandRecord"),
+            authority_boundary_document.get("demandRecord"),
+            premise_challenge_document.get("demandRecord"),
+            cognitive_monitoring_document.get("demandRecord"),
+        ],
+    }
+    expected_matrix = build_capability_survey_matrix(combined_demands)
+    if document.get("coordinateMatrix") != expected_matrix:
+        raise RuntimeError("Round 03 capability-survey coordinate matrix is not deterministic.")
+    scope = document.get("scopeSummary")
+    if not isinstance(scope, dict) or scope != {
+        "selectedDemandRecordCount": 8,
+        "coordinateRowCount": 62,
+        "selectedBatchCoordinateCount": 62,
+        "notSelectedUnassessedCoordinateCount": 0,
+        "coordinateEnvelopeSelectionComplete": True,
+        "demandExtractionComplete": False,
+        "surveyClosureClaimed": False,
+        "tenRequiredComponentsPresent": True,
+    }:
+        raise RuntimeError("Round 03 capability-survey result-package scope drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Round 03 capability-survey result-package decision is required.")
+    if decision.get("supportedResidualGapCount") != alternative_document.get("batchDecision", {}).get("supportedResidualGapCount"):
+        raise RuntimeError("Round 03 capability-survey residual-gap count drifted.")
+    if (
+        decision.get("tenComponentPackageAssembled") is not True
+        or decision.get("selectedDemandBatchDecisionReady") is not True
+        or decision.get("wholeCoordinateCorpusDecisionReady") is not True
+        or decision.get("wholeDemandModelClosureClaimed") is not False
+        or decision.get("longitudinalProductionCrossHostEvidenceOpen") is not True
+    ):
+        raise RuntimeError("Round 03 capability-survey decision-readiness boundary drifted.")
+    if (
+        decision.get("candidateTrialAuthorizationConsumed") is not True
+        or decision.get("loopyTrialDisposition") != "reference-only-not-admitted"
+        or decision.get("candidateApprovedCount") != 0
+        or decision.get("operatingMode") != "evidence-triggered-monitoring-and-recheck"
+        or "require a new bound demand" not in str(decision.get("nextGate", ""))
+    ):
+        raise RuntimeError("Round 03 capability-survey Loopy follow-up drifted.")
+    for key in ["candidateExecutionAuthorized", "repositoryAuthoredSkillOrHookEligible", "hookEligible", "hardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 capability-survey result package overclaimed: {key}")
+    followup = document.get("followupEvidence")
+    if not isinstance(followup, list) or followup != [
+        {
+            "id": "loopy-disposable-agent-trial-result-2026-07-18",
+            "path": "registry/loopy-disposable-agent-trial-result-2026-07-18.json",
+            "state": "verified-reference-only-not-admitted",
+            "effect": "The one-time exact-body trial closed the Loopy behavior gate without proving superiority, a residual gap, or admission eligibility.",
+        },
+        {
+            "id": "round03-intent-binding-demand-review-2026-07-18",
+            "path": "registry/round03-intent-binding-demand-review-2026-07-18.json",
+            "state": "verified-current-path-sufficient-no-residual-gap",
+            "effect": "A source-supported four-coordinate lane is now selected without requiring new external discovery or authoring.",
+        },
+        {
+            "id": "round03-authority-boundary-demand-review-2026-07-18",
+            "path": "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+            "state": "verified-layered-current-path-sufficient-no-residual-gap",
+            "effect": "A source-supported three-coordinate lane now separates advisory guidance, host runtime enforcement, and accountable authority without inferring a new Skill or Hook gap.",
+        },
+        {
+            "id": "round03-premise-challenge-demand-review-2026-07-18",
+            "path": "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+            "state": "verified-proportional-current-path-sufficient-no-residual-gap",
+            "effect": "A source-supported balanced premise lane now preserves native and open-divergent fast paths while keeping document grilling narrow and opt-in.",
+        },
+        {
+            "id": "round03-cognitive-offload-monitoring-demand-review-2026-07-18",
+            "path": "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
+            "state": "verified-current-classes-sufficient-longitudinal-evidence-open",
+            "effect": "The final coordinate lane separates immediate assistance, longitudinal cognition, production monitoring, maintainer learning, and anti-accretion without inferring a new Skill gap.",
+        },
+    ]:
+        raise RuntimeError("Round 03 capability-survey follow-up evidence drifted.")
+    loopy_candidate = next(
+        item for item in document.get("nextRoundCandidates", [])
+        if isinstance(item, dict) and item.get("candidate") == "exact-pinned-loopy-controlled-agent-trial"
+    )
+    if loopy_candidate.get("state") != "executed-reference-only-not-admitted" or "authorization consumed" not in str(loopy_candidate.get("boundary", "")):
+        raise RuntimeError("Round 03 capability-survey Loopy candidate state drifted.")
+    criterion = next(
+        item for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict) and item.get("id") == "acceptance.capability-survey-result-package"
+    )
+    if criterion.get("assessment") != "verified" or "evidence.round03-capability-survey-result-package" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Round 03 capability-survey result-package acceptance mapping drifted.")
+
+
+def validate_round03_complete_coordinate_envelope_reconciliation(
+    document: dict[str, object],
+    result_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "round03-complete-coordinate-envelope-reconciliation-2026-07-18":
+        raise RuntimeError("Round 03 coordinate-envelope reconciliation identity drifted.")
+    if document.get("status") != "verified-bounded-coordinate-envelope-reconciled-demand-model-open":
+        raise RuntimeError("Round 03 coordinate-envelope reconciliation status drifted.")
+    pins = document.get("sourcePins")
+    if not isinstance(pins, dict) or pins.get("revision") != "e060a08f05361cb4cc9a67be050236cdbbde1de5":
+        raise RuntimeError("Round 03 coordinate-envelope CALIBRATION pin drifted.")
+    artifacts = pins.get("artifacts")
+    expected_artifacts = {
+        ("sources/2026-07-11-human-ai-shortfall-research-refresh.md", "exact-bytes", 62925, "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727"),
+        ("taxonomy/two-layer-taxonomy-20260712.md", "canonical-lf-text", 21338, "477316BB05555271A0538A5BF6C3F42C9C0EA08C07D0EF6254E07AFC8233F274"),
+        ("mapping/problem-owner-standard-gap-matrix-20260712.md", "canonical-lf-text", 39151, "DD671768DBA9C5CE408F5C33DD88F42125FB4B4027BBBCFC0C36CC679991B9F5"),
+    }
+    actual_artifacts = {
+        (item.get("path"), item.get("integrity"), item.get("bytes"), item.get("sha256"))
+        for item in artifacts or []
+        if isinstance(item, dict)
+    }
+    if actual_artifacts != expected_artifacts:
+        raise RuntimeError("Round 03 coordinate-envelope source artifact pins drifted.")
+    matrix = result_document.get("coordinateMatrix")
+    if not isinstance(matrix, list) or len(matrix) != 62:
+        raise RuntimeError("Round 03 coordinate-envelope reconciliation requires 62 result rows.")
+    family_counts: dict[str, int] = {}
+    lane_counts: dict[str, int] = {}
+    for row in matrix:
+        if not isinstance(row, dict):
+            raise RuntimeError("Round 03 coordinate-envelope row must be an object.")
+        family = row.get("family")
+        if not isinstance(family, str):
+            raise RuntimeError("Round 03 coordinate-envelope row family is required.")
+        family_counts[family] = family_counts.get(family, 0) + 1
+        if not row.get("demandRecordIds") or not row.get("evidenceLaneIds") or not row.get("disposition") or not row.get("verificationMethod") or not row.get("limitations") or not row.get("recheckTrigger"):
+            raise RuntimeError("Round 03 coordinate-envelope row is not decision-ready.")
+        for lane_id in row.get("evidenceLaneIds", []):
+            lane_counts[str(lane_id)] = lane_counts.get(str(lane_id), 0) + 1
+    envelope = document.get("coordinateEnvelope")
+    if not isinstance(envelope, dict) or envelope.get("familyCounts") != family_counts or envelope.get("evidenceLaneCoordinateMembershipCounts") != lane_counts:
+        raise RuntimeError("Round 03 coordinate-envelope reconciliation counts drifted.")
+    expected_envelope = {
+        "coordinateRowCount": 62,
+        "selectedCoordinateCount": 62,
+        "unassessedCoordinateCount": 0,
+        "evidenceLaneCount": 8,
+        "coordinateSelectionComplete": True,
+        "coordinateDispositionComplete": True,
+        "wholeCoordinateCorpusDecisionReady": True,
+    }
+    for key, expected in expected_envelope.items():
+        if envelope.get(key) != expected:
+            raise RuntimeError(f"Round 03 coordinate-envelope reconciliation drifted: {key}")
+    gap_classes = document.get("gapClasses")
+    states = {
+        item.get("id"): item.get("state")
+        for item in gap_classes or []
+        if isinstance(item, dict)
+    }
+    if states != {
+        "gap-class.supported-residual-skill": "none-supported-in-bounded-envelope",
+        "gap-class.runtime-live-evidence": "open-not-a-skill-gap",
+        "gap-class.research-longitudinal-evidence": "open-not-a-skill-gap",
+        "gap-class.governance-standardization": "deferred-not-a-capability-gap",
+    }:
+        raise RuntimeError("Round 03 coordinate-envelope gap classes drifted.")
+    decision = document.get("decision")
+    if not isinstance(decision, dict):
+        raise RuntimeError("Round 03 coordinate-envelope decision is required.")
+    for key in ["boundedCoordinateEnvelopeReconciled", "tenComponentPackageAssembled", "wholeCoordinateCorpusDecisionReady"]:
+        if decision.get(key) is not True:
+            raise RuntimeError(f"Round 03 coordinate-envelope reconciliation missing positive bounded decision: {key}")
+    for key in ["demandExtractionComplete", "wholeDemandModelClosureClaimed", "surveyClosureClaimed", "ecosystemCompletenessClaimed", "newDiscoveryRequiredNow", "candidateExecutionAuthorized", "candidateAdmissionEligible", "repositoryAuthoredSkillOrHookEligible", "hardStandardEligible"]:
+        if decision.get(key) is not False:
+            raise RuntimeError(f"Round 03 coordinate-envelope reconciliation overclaimed: {key}")
+    if decision.get("operatingMode") != "evidence-triggered-monitoring-and-recheck":
+        raise RuntimeError("Round 03 coordinate-envelope operating mode drifted.")
+    criterion = next(
+        item for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict) and item.get("id") == "acceptance.complete-coordinate-envelope-reconciliation"
+    )
+    if criterion.get("assessment") != "verified" or "evidence.round03-complete-coordinate-envelope-reconciliation" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Round 03 coordinate-envelope acceptance mapping drifted.")
+    for doc_path, phrase in {
+        "docs/round03-complete-coordinate-envelope-reconciliation-2026-07-18.md": "evidence-triggered monitoring and recheck",
+        "docs/round03-complete-coordinate-envelope-reconciliation-2026-07-18.zh-CN.md": "证据触发的监测与复查",
+    }.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Round 03 coordinate-envelope reconciliation doc drifted: {doc_path}")
+
+
+def validate_demand_coordinate_contract_reconciliation(
+    document: dict[str, object],
+    source_contract: dict[str, object],
+    batch_document: dict[str, object],
+    intent_document: dict[str, object],
+    authority_document: dict[str, object],
+    premise_document: dict[str, object],
+    cognitive_document: dict[str, object],
+    survey_document: dict[str, object],
+    envelope_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "demand-coordinate-contract-reconciliation-2026-07-18":
+        raise RuntimeError("Demand-coordinate contract reconciliation identity drifted.")
+    if document.get("status") != "verified-bounded-demand-coordinate-contract-demand-model-open":
+        raise RuntimeError("Demand-coordinate contract reconciliation status drifted.")
+
+    expected_inputs = {
+        "registry/round03-demand-coordinate-source-contract.json",
+        "registry/round03-demand-records-batch-01.json",
+        "registry/round03-intent-binding-demand-review-2026-07-18.json",
+        "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+        "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+        "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
+        "registry/round03-capability-survey-result-package-2026-07-18.json",
+        "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json",
+    }
+    if set(document.get("inputs", [])) != expected_inputs:
+        raise RuntimeError("Demand-coordinate contract reconciliation inputs drifted.")
+
+    extra_sources = {
+        "EL-05": (intent_document, "registry/round03-intent-binding-demand-review-2026-07-18.json"),
+        "EL-06": (authority_document, "registry/round03-authority-boundary-demand-review-2026-07-18.json"),
+        "EL-07": (premise_document, "registry/round03-premise-challenge-demand-review-2026-07-18.json"),
+        "EL-08": (cognitive_document, "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json"),
+    }
+    records: dict[str, dict[str, object]] = {}
+    record_sources: dict[str, str] = {}
+    for record in batch_document.get("records", []):
+        if isinstance(record, dict):
+            lane_id = str(record.get("sourceLaneId"))
+            records[lane_id] = record
+            record_sources[lane_id] = "registry/round03-demand-records-batch-01.json"
+    for lane_id, (parent, path) in extra_sources.items():
+        record = parent.get("demandRecord")
+        if not isinstance(record, dict) or record.get("sourceLaneId") != lane_id:
+            raise RuntimeError(f"Demand-coordinate reconciliation record linkage drifted: {lane_id}")
+        upstream = parent.get("upstream")
+        if not isinstance(upstream, dict) or not upstream.get("artifacts") or upstream.get("authority") != "non-authoritative-candidate-evidence":
+            raise RuntimeError(f"Demand-coordinate reconciliation source evidence incomplete: {lane_id}")
+        if not record.get("sourceEvidence"):
+            raise RuntimeError(f"Demand-coordinate reconciliation source evidence incomplete: {lane_id}")
+        records[lane_id] = record
+        record_sources[lane_id] = path
+
+    expected_lanes = {f"EL-{index:02d}" for index in range(1, 9)}
+    if set(records) != expected_lanes:
+        raise RuntimeError("Demand-coordinate reconciliation demand-record set drifted.")
+    if not batch_document.get("scope", {}).get("sourceIds"):
+        raise RuntimeError("Demand-coordinate reconciliation batch source identity is incomplete.")
+
+    vocabulary = source_contract.get("evidenceVocabulary", {})
+    evidence_vocabularies = {
+        "verificationStates": set(vocabulary.get("verificationState", [])),
+        "adoptionStates": set(vocabulary.get("adoptionState", [])),
+        "applicability": set(vocabulary.get("applicability", [])),
+    }
+    record_ids: set[str] = set()
+    for lane_id, record in records.items():
+        record_id = record.get("id")
+        if not isinstance(record_id, str) or record_id in record_ids:
+            raise RuntimeError(f"Demand-coordinate reconciliation record identity drifted: {lane_id}")
+        record_ids.add(record_id)
+        coordinates = record.get("coordinateIds")
+        if not isinstance(coordinates, dict) or set(coordinates) != {"STM", "P", "SG"} or any(not coordinates.get(family) for family in ["STM", "P", "SG"]):
+            raise RuntimeError(f"Demand-coordinate reconciliation coordinates incomplete: {lane_id}")
+        evidence_state = record.get("evidenceState")
+        if not isinstance(evidence_state, dict) or set(evidence_state) != set(evidence_vocabularies) or any(not evidence_state.get(key) for key in evidence_vocabularies):
+            raise RuntimeError(f"Demand-coordinate reconciliation evidence state incomplete: {lane_id}")
+        for field, allowed in evidence_vocabularies.items():
+            if not set(evidence_state.get(field, [])).issubset(allowed):
+                raise RuntimeError(f"Demand-coordinate reconciliation evidence state vocabulary drifted: {lane_id}/{field}")
+        for field in ["heldClaims", "uncertainty", "affectedSubjects", "recheckTriggers"]:
+            if not record.get(field):
+                raise RuntimeError(f"Demand-coordinate reconciliation {field} incomplete: {lane_id}")
+        if lane_id in {"EL-01", "EL-02", "EL-03", "EL-04"} and not record.get("evidenceClaimIds"):
+            raise RuntimeError(f"Demand-coordinate reconciliation source evidence incomplete: {lane_id}")
+
+    matrix = survey_document.get("coordinateMatrix")
+    if not isinstance(matrix, list) or len(matrix) != 62:
+        raise RuntimeError("Demand-coordinate reconciliation coordinate matrix must contain 62 rows.")
+    unique_coordinates: set[str] = set()
+    family_counts: dict[str, int] = {}
+    matrix_record_counts = {record_id: 0 for record_id in record_ids}
+    for row in matrix:
+        if not isinstance(row, dict):
+            raise RuntimeError("Demand-coordinate reconciliation coordinate row must be an object.")
+        coordinate_id = row.get("coordinateId")
+        family = row.get("family")
+        if not isinstance(coordinate_id, str) or coordinate_id in unique_coordinates or not isinstance(family, str):
+            raise RuntimeError("Demand-coordinate reconciliation coordinate identity drifted.")
+        unique_coordinates.add(coordinate_id)
+        family_counts[family] = family_counts.get(family, 0) + 1
+        row_record_ids = row.get("demandRecordIds")
+        if not isinstance(row_record_ids, list) or not row_record_ids or not set(row_record_ids).issubset(record_ids):
+            raise RuntimeError("Demand-coordinate reconciliation coordinate demand binding drifted.")
+        for field in ["disposition", "verificationMethod", "limitations", "recheckTrigger"]:
+            if not row.get(field):
+                raise RuntimeError(f"Demand-coordinate reconciliation coordinate {field} incomplete.")
+        for record_id in row_record_ids:
+            matrix_record_counts[record_id] += 1
+
+    expected_family_counts = {"STM": 26, "P": 24, "SG": 12}
+    if family_counts != expected_family_counts or len(unique_coordinates) != 62:
+        raise RuntimeError("Demand-coordinate reconciliation coordinate envelope counts drifted.")
+    if envelope_document.get("coordinateEnvelope", {}).get("coordinateRowCount") != 62:
+        raise RuntimeError("Demand-coordinate reconciliation envelope linkage drifted.")
+
+    expected_ledger = {
+        records[lane_id]["id"]: (lane_id, record_sources[lane_id], matrix_record_counts[records[lane_id]["id"]])
+        for lane_id in sorted(records)
+    }
+    ledger = document.get("recordLedger")
+    if not isinstance(ledger, list) or len(ledger) != 8:
+        raise RuntimeError("Demand-coordinate reconciliation record ledger drifted.")
+    actual_ledger = {
+        item.get("demandRecordId"): (
+            item.get("sourceLaneId"), item.get("recordSource"), item.get("matrixRowCount")
+        )
+        for item in ledger
+        if isinstance(item, dict) and item.get("evidenceStateSource") == "demandRecord.evidenceState"
+    }
+    if actual_ledger != expected_ledger:
+        raise RuntimeError("Demand-coordinate reconciliation record ledger drifted.")
+
+    expected_checks = {
+        "sourceIdentityPinned": True,
+        "coordinateFamilies": expected_family_counts,
+        "demandRecordCount": 8,
+        "sourceLaneIds": [f"EL-{index:02d}" for index in range(1, 9)],
+        "everyRecordHasCoordinates": True,
+        "everyRecordHasSourceEvidence": True,
+        "everyRecordHasEvidenceState": True,
+        "everyRecordHasHeldClaims": True,
+        "everyRecordHasUncertainty": True,
+        "everyRecordHasAffectedSubjects": True,
+        "everyRecordHasRecheckTriggers": True,
+        "promotionFirewallPresent": True,
+        "coordinateMatrixRowCount": 62,
+        "uniqueCoordinateCount": 62,
+        "everyCoordinateHasDemandBinding": True,
+        "everyCoordinateHasDisposition": True,
+        "everyCoordinateHasVerificationMethod": True,
+        "everyCoordinateHasLimitations": True,
+        "everyCoordinateHasRecheckTrigger": True,
+    }
+    if document.get("contractChecks") != expected_checks or len(source_contract.get("promotionFirewall", [])) != 4:
+        raise RuntimeError("Demand-coordinate reconciliation contract checks drifted.")
+
+    expected_boundary = {
+        "boundedCoordinateEnvelopeMapped": True,
+        "coordinateSelectionCompleteWithinEnvelope": True,
+        "demandRecordExtractionComplete": False,
+        "wholeDemandModelExhaustive": False,
+        "wholeDemandModelClosureClaimed": False,
+        "surveyClosureClaimed": False,
+        "ecosystemCompletenessClaimed": False,
+        "supportedResidualGapCount": 0,
+        "candidateExecutionAuthorized": False,
+        "repositoryAuthoredSkillOrHookEligible": False,
+        "hardStandardEligible": False,
+    }
+    if document.get("modelBoundary") != expected_boundary:
+        raise RuntimeError("Demand-coordinate reconciliation model boundary overclaimed.")
+    if survey_document.get("scopeSummary", {}).get("demandExtractionComplete") is not False or survey_document.get("decision", {}).get("wholeDemandModelClosureClaimed") is not False:
+        raise RuntimeError("Demand-coordinate reconciliation survey boundary drifted.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("acceptanceId") != "acceptance.demand-coordinate-contract" or decision.get("from") != "partial" or decision.get("to") != "verified" or "bounded demand-coordinate contract only" not in decision.get("scope", ""):
+        raise RuntimeError("Demand-coordinate reconciliation decision drifted.")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.demand-coordinate-contract-reconciliation-2026-07-18"
+    criterion = criteria.get("acceptance.demand-coordinate-contract", {})
+    if criterion.get("assessment") != "verified" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Demand-coordinate reconciliation acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/demand-coordinate-contract-reconciliation-2026-07-18.json" or evidence.get("supports") != ["acceptance.demand-coordinate-contract"]:
+        raise RuntimeError("Demand-coordinate reconciliation evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/demand-coordinate-contract-reconciliation-2026-07-18.md": ["eight source-supported demand records", "all 62 rows", "not demand-model exhaustiveness"],
+        "docs/demand-coordinate-contract-reconciliation-2026-07-18.zh-CN.md": ["8 条来源支持的需求记录", "全部 62 行", "不等于需求模型穷尽"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Demand-coordinate reconciliation evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Demand-coordinate reconciliation doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_native_runtime_baseline_evidence_gap_reconciliation(
+    document: dict[str, object],
+    baseline_document: dict[str, object],
+    batch_document: dict[str, object],
+    intent_document: dict[str, object],
+    authority_document: dict[str, object],
+    premise_document: dict[str, object],
+    cognitive_document: dict[str, object],
+    survey_document: dict[str, object],
+    claim_limit_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "native-runtime-baseline-evidence-gap-reconciliation-2026-07-18":
+        raise RuntimeError("Native/runtime baseline gap reconciliation identity drifted.")
+    if document.get("status") != "partial-single-host-four-record-metadata-baseline-four-review-only-lanes":
+        raise RuntimeError("Native/runtime baseline gap reconciliation status drifted.")
+    expected_inputs = {
+        "registry/round03-native-runtime-baseline-2026-07-15.json",
+        "registry/round03-demand-records-batch-01.json",
+        "registry/round03-intent-binding-demand-review-2026-07-18.json",
+        "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+        "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+        "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
+        "registry/round03-capability-survey-result-package-2026-07-18.json",
+        "registry/cross-agent-claim-limit-reconciliation-2026-07-18.json",
+    }
+    if set(document.get("inputs", [])) != expected_inputs:
+        raise RuntimeError("Native/runtime baseline gap reconciliation inputs drifted.")
+
+    baseline_records = {
+        item.get("demandRecordId")
+        for item in baseline_document.get("demandBaselines", [])
+        if isinstance(item, dict)
+    }
+    batch_records = {
+        item.get("id")
+        for item in batch_document.get("records", [])
+        if isinstance(item, dict)
+    }
+    if baseline_records != batch_records or len(baseline_records) != 4:
+        raise RuntimeError("Native/runtime baseline gap original batch linkage drifted.")
+    scope = baseline_document.get("scope")
+    required_scope_fields = {
+        "host", "modelIdentity", "reasoningLevel", "loader", "permissions", "workspace",
+    }
+    if not isinstance(scope, dict) or any(not scope.get(field) for field in required_scope_fields) or scope.get("crossHostClaim") is not False:
+        raise RuntimeError("Native/runtime baseline gap formal scope drifted.")
+
+    formal = document.get("formalBaseline")
+    expected_formal = {
+        "date": baseline_document.get("date"),
+        "host": scope.get("host"),
+        "demandRecordCount": 4,
+        "demandRecordIds": sorted(baseline_records),
+        "scopeDimensionsPresent": ["host", "model", "reasoning", "loader", "permissions", "workspace", "date"],
+        "activationModeDeterministicallyObserved": False,
+        "nativeOfficialRuntimeInstalledAuthorizedClassesSeparatedPerDemand": False,
+        "reproducibleProbeOutcomesPerDemand": False,
+        "rawBehaviorOutcomesPerDemand": False,
+        "currentLiveAvailabilityProven": False,
+        "crossHostClaimed": False,
+        "historicalEveryDemandRecordFieldScope": "the four-record linked batch only",
+    }
+    if formal != expected_formal:
+        raise RuntimeError("Native/runtime baseline gap formal baseline drifted.")
+    if baseline_document.get("baselineDecision", {}).get("baselineRecordedForEveryDemandRecord") is not True:
+        raise RuntimeError("Native/runtime baseline gap historical decision linkage drifted.")
+
+    later_documents = {
+        "EL-05": (intent_document, "registry/round03-intent-binding-demand-review-2026-07-18.json"),
+        "EL-06": (authority_document, "registry/round03-authority-boundary-demand-review-2026-07-18.json"),
+        "EL-07": (premise_document, "registry/round03-premise-challenge-demand-review-2026-07-18.json"),
+        "EL-08": (cognitive_document, "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json"),
+    }
+    expected_review_lanes = {}
+    for lane_id, (parent, path) in later_documents.items():
+        record = parent.get("demandRecord")
+        if not isinstance(record, dict) or record.get("sourceLaneId") != lane_id or not parent.get("alternatives"):
+            raise RuntimeError(f"Native/runtime baseline gap review-only lane drifted: {lane_id}")
+        if parent.get("baselineScope") is not None or parent.get("probeOutcomes") is not None:
+            raise RuntimeError(f"Native/runtime baseline gap review-only classification drifted: {lane_id}")
+        expected_review_lanes[lane_id] = {
+            "sourceLaneId": lane_id,
+            "demandRecordId": record.get("id"),
+            "source": path,
+            "alternativeReviewPresent": True,
+            "qualifiesAsFormalBaseline": False,
+        }
+    actual_review_lanes = {
+        item.get("sourceLaneId"): item
+        for item in document.get("reviewOnlyLanes", [])
+        if isinstance(item, dict)
+    }
+    if actual_review_lanes != expected_review_lanes:
+        raise RuntimeError("Native/runtime baseline gap review-only lane set drifted.")
+
+    survey_scope = survey_document.get("scopeSummary", {})
+    if survey_scope.get("selectedDemandRecordCount") != 8 or survey_scope.get("coordinateRowCount") != 62:
+        raise RuntimeError("Native/runtime baseline gap current survey linkage drifted.")
+    expected_current_scope = {
+        "demandRecordCount": 8,
+        "boundedCoordinateRowCount": 62,
+        "formalBaselineRecordCount": 4,
+        "reviewOnlyRecordCount": 4,
+        "everySurveyedDemandAreaHasFormalBaseline": False,
+        "coordinateMappingProvesRuntimeAvailability": False,
+        "alternativeReviewProvesInstalledOrAuthorizedAvailability": False,
+    }
+    if document.get("currentSurveyScope") != expected_current_scope:
+        raise RuntimeError("Native/runtime baseline gap current scope overclaimed.")
+
+    expected_sufficiency = {
+        "datedSingleHostMetadataBaselinePresent": True,
+        "hostModelReasoningLoaderPermissionsWorkspaceLimitsExplicitForFormalBaseline": True,
+        "everySurveyedDemandAreaCovered": False,
+        "nativeOfficialRuntimeInstalledAuthorizedClassesSeparated": False,
+        "activationModeBoundPerDemand": False,
+        "reproducibleProbeMethodAndRawOutcomesPerDemand": False,
+        "currentAvailabilityVerified": False,
+        "crossAgentOrCrossHostBehaviorProven": False,
+    }
+    if document.get("criterionSufficiency") != expected_sufficiency:
+        raise RuntimeError("Native/runtime baseline gap criterion sufficiency overclaimed.")
+    claims = {
+        item.get("id"): item
+        for item in claim_limit_document.get("claimLedger", [])
+        if isinstance(item, dict)
+    }
+    baseline_claim = claims.get("claim.codex-native-runtime-baseline", {})
+    if "behavioral effectiveness" not in baseline_claim.get("doesNotSupport", []) or baseline_claim.get("conditions", {}).get("evidenceClass") != "dated-local-metadata-baseline":
+        raise RuntimeError("Native/runtime baseline gap claim-limit linkage drifted.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("acceptanceId") != "acceptance.native-runtime-baseline" or decision.get("from") != "partial" or decision.get("to") != "partial" or "four current demand records" not in decision.get("reason", ""):
+        raise RuntimeError("Native/runtime baseline gap decision drifted.")
+    non_authorization = document.get("nonAuthorization")
+    if not isinstance(non_authorization, dict) or not non_authorization or any(value is not False for value in non_authorization.values()):
+        raise RuntimeError("Native/runtime baseline gap non-authorization drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.native-runtime-baseline-evidence-gap-reconciliation-2026-07-18"
+    criterion = criteria.get("acceptance.native-runtime-baseline", {})
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Native/runtime baseline gap acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.json" or evidence.get("supports") != ["acceptance.native-runtime-baseline"]:
+        raise RuntimeError("Native/runtime baseline gap evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.md": ["four-record linked batch", "not a dimension-complete dated baseline", "remains `partial`"],
+        "docs/native-runtime-baseline-evidence-gap-reconciliation-2026-07-18.zh-CN.md": ["当时链接批次内的 4 条记录", "不是维度完整的日期化基线", "继续保持 `partial`"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Native/runtime baseline gap evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Native/runtime baseline gap doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_residual_gap_proof_evidence_gap_reconciliation(
+    document: dict[str, object],
+    alternative_document: dict[str, object],
+    protocol_document: dict[str, object],
+    loopy_document: dict[str, object],
+    survey_document: dict[str, object],
+    envelope_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "residual-gap-proof-evidence-gap-reconciliation-2026-07-18":
+        raise RuntimeError("Residual-gap proof reconciliation identity drifted.")
+    if document.get("status") != "partial-rejection-firewall-verified-positive-support-path-unexercised":
+        raise RuntimeError("Residual-gap proof reconciliation status drifted.")
+    expected_inputs = {
+        "registry/round03-alternative-comparison-batch-01.json",
+        "registry/round03-evidence-protocol-batch-01.json",
+        "registry/loopy-disposable-agent-trial-result-2026-07-18.json",
+        "registry/round03-intent-binding-demand-review-2026-07-18.json",
+        "registry/round03-authority-boundary-demand-review-2026-07-18.json",
+        "registry/round03-premise-challenge-demand-review-2026-07-18.json",
+        "registry/round03-cognitive-offload-monitoring-demand-review-2026-07-18.json",
+        "registry/round03-capability-survey-result-package-2026-07-18.json",
+        "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json",
+    }
+    if set(document.get("inputs", [])) != expected_inputs:
+        raise RuntimeError("Residual-gap proof reconciliation inputs drifted.")
+    if len(alternative_document.get("comparisons", [])) != 4:
+        raise RuntimeError("Residual-gap proof reconciliation alternative linkage drifted.")
+
+    protocol_local = protocol_document.get("localEvidence", {})
+    if protocol_local.get("fixtureCount") != 19 or protocol_local.get("deterministicEvaluationPassed") is not True:
+        raise RuntimeError("Residual-gap proof reconciliation fixture linkage drifted.")
+    protocol_limits = " ".join(str(item) for item in protocol_local.get("doesNotProve", [])).lower()
+    if "material residual gap" not in protocol_limits or "repository-authored skill need" not in protocol_limits:
+        raise RuntimeError("Residual-gap proof reconciliation fixture claim limit drifted.")
+    loopy_decision = loopy_document.get("decision", {})
+    trial_count = sum(
+        item.get("runCount", 0)
+        for item in loopy_document.get("aggregate", [])
+        if isinstance(item, dict)
+    )
+    if trial_count != 12 or loopy_decision.get("materialBenefitOverBothBaselines") is not False or loopy_decision.get("supportedResidualGapProven") is not False or loopy_decision.get("candidateAdmissionEligible") is not False:
+        raise RuntimeError("Residual-gap proof reconciliation Loopy linkage drifted.")
+
+    survey_scope = survey_document.get("scopeSummary", {})
+    survey_decision = survey_document.get("decision", {})
+    expected_bounded_evidence = {
+        "demandRecordCount": 8,
+        "coordinateRowCount": 62,
+        "supportedResidualSkillGapCount": 0,
+        "deterministicFixtureCount": 19,
+        "disposableCandidateTrialRunCount": 12,
+        "candidateMaterialBenefitObserved": False,
+        "candidateAdmissionOccurred": False,
+        "repositoryAuthoredSkillOrHookEligible": False,
+    }
+    if document.get("boundedEvidence") != expected_bounded_evidence:
+        raise RuntimeError("Residual-gap proof reconciliation bounded evidence drifted.")
+    if survey_scope.get("selectedDemandRecordCount") != 8 or survey_scope.get("coordinateRowCount") != 62 or survey_decision.get("supportedResidualGapCount") != 0 or survey_decision.get("repositoryAuthoredSkillOrHookEligible") is not False:
+        raise RuntimeError("Residual-gap proof reconciliation survey linkage drifted.")
+
+    envelope_gap_classes = {
+        item.get("id"): item
+        for item in envelope_document.get("gapClasses", [])
+        if isinstance(item, dict)
+    }
+    expected_gap_separation = {
+        "gap-class.supported-residual-skill": ("none-supported-in-bounded-envelope", True, 0),
+        "gap-class.runtime-live-evidence": ("open-not-a-skill-gap", False, None),
+        "gap-class.research-longitudinal-evidence": ("open-not-a-skill-gap", False, None),
+        "gap-class.governance-standardization": ("deferred-not-a-capability-gap", False, None),
+    }
+    actual_gap_separation = {
+        item.get("id"): (item.get("state"), item.get("isResidualSkillGap"), item.get("count"))
+        for item in document.get("gapClassSeparation", [])
+        if isinstance(item, dict)
+    }
+    if actual_gap_separation != expected_gap_separation:
+        raise RuntimeError("Residual-gap proof reconciliation gap-class separation overclaimed.")
+    for gap_id, (state, _, _) in expected_gap_separation.items():
+        if envelope_gap_classes.get(gap_id, {}).get("state") != state:
+            raise RuntimeError(f"Residual-gap proof reconciliation envelope gap linkage drifted: {gap_id}")
+
+    expected_contract = {
+        "rejectionFirewallVerified": True,
+        "coordinateMembershipAloneRejected": True,
+        "metadataSimilarityAloneRejected": True,
+        "openEvidenceQuestionAsSkillGapRejected": True,
+        "priorDraftAsGapProofRejected": True,
+        "deterministicFixturesAsResidualFailureRejected": True,
+        "noMaterialBenefitCandidateRejected": True,
+        "positiveSupportPathExercised": False,
+        "reproducibleMaterialResidualFailureObserved": False,
+        "boundedValueDeltaObserved": False,
+        "costAndFailureFanoutMeasuredForSupportedGap": False,
+        "accountableOwnerAcceptedSupportedGap": False,
+        "supportedGapVerificationCompleted": False,
+    }
+    if document.get("proofContract") != expected_contract:
+        raise RuntimeError("Residual-gap proof reconciliation proof contract overclaimed.")
+    expected_non_vacuity = {
+        "zeroSupportedGapsProvesNoFalsePositiveInBoundedEvidence": True,
+        "zeroSupportedGapsProvesPositiveSupportPath": False,
+        "openEvidenceGapsCountAsPositiveExamples": False,
+        "acceptanceMayBeVerifiedWithoutPositiveExample": False,
+    }
+    if document.get("nonVacuityRule") != expected_non_vacuity:
+        raise RuntimeError("Residual-gap proof reconciliation non-vacuity boundary overclaimed.")
+
+    decision = document.get("decision")
+    if not isinstance(decision, dict) or decision.get("acceptanceId") != "acceptance.residual-gap-proof" or decision.get("from") != "partial" or decision.get("to") != "partial" or "no supported residual gap" not in decision.get("reason", ""):
+        raise RuntimeError("Residual-gap proof reconciliation decision drifted.")
+    non_authorization = document.get("nonAuthorization")
+    if not isinstance(non_authorization, dict) or not non_authorization or any(value is not False for value in non_authorization.values()):
+        raise RuntimeError("Residual-gap proof reconciliation non-authorization drifted.")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.residual-gap-proof-evidence-gap-reconciliation-2026-07-18"
+    criterion = criteria.get("acceptance.residual-gap-proof", {})
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Residual-gap proof reconciliation acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.json" or evidence.get("supports") != ["acceptance.residual-gap-proof"]:
+        raise RuntimeError("Residual-gap proof reconciliation evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.md": ["rejection firewall is verified", "That zero is not a positive-path test", "stays `partial`"],
+        "docs/residual-gap-proof-evidence-gap-reconciliation-2026-07-18.zh-CN.md": ["拒绝侧防火墙已验证", "这个 0 不是正向路径测试", "保持 `partial`"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Residual-gap proof reconciliation evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Residual-gap proof reconciliation doc missing phrase in {doc_path}: {phrase}")
 
 
 def validate_collaboration_domain_coverage(document: dict[str, object]) -> None:
@@ -902,6 +4452,1967 @@ def validate_collaboration_domain_coverage(document: dict[str, object]) -> None:
     if not required_domains.issubset(seen):
         missing = sorted(required_domains - seen)
         raise RuntimeError("Collaboration domain coverage missing required domains: " + ", ".join(missing))
+
+
+def validate_production_capability_manager_design_acceptance_event(
+    document: dict[str, object],
+    program_doc: dict[str, object],
+) -> None:
+    """Validate the owner decision on the revised written Manager design."""
+    expected_scalars = {
+        "schema": 1,
+        "id": "production-capability-manager-design-acceptance-event-2026-07-15",
+        "date": "2026-07-15",
+        "status": "recorded",
+        "decision": "accepted-revised-written-design-and-authorized-topology-package-preparation",
+        "authoritySource": "owner-chat-review-and-explicit-implementation-direction",
+        "acceptedDesign": "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Manager design acceptance event {key} drifted.")
+
+    expected_authorization = {
+        "recordDesignAcceptanceAuthorized": True,
+        "currentRepositoryEvidenceWritesAuthorized": True,
+        "readOnlyCrossRepositoryTopologyInventoryAuthorized": True,
+        "topologyImpactPackagePreparationAuthorized": True,
+        "topologyGateImplementationPlanAuthorized": True,
+        "managerRepositoryCreationAuthorized": False,
+        "managerProductImplementationAuthorized": False,
+        "crossRepositoryWriteAuthorized": False,
+        "hookEnablementOrLiveRuntimeMutationAuthorized": False,
+        "thirdPartyCodeExecutionAuthorized": False,
+        "commitAuthorized": False,
+        "remotePushAuthorized": False,
+    }
+    if document.get("authorization") != expected_authorization:
+        raise RuntimeError("Manager design acceptance authorization drifted.")
+    truth_base = document.get("repositoryTruthBase")
+    if not isinstance(truth_base, dict):
+        raise RuntimeError("Manager design acceptance repository truth base is required.")
+    if truth_base.get("branch") != "main":
+        raise RuntimeError("Manager design acceptance branch drifted.")
+    if truth_base.get("head") != "35ddb1e367c2f6e4dc913e6707191e2df7017f2a":
+        raise RuntimeError("Manager design acceptance base HEAD drifted.")
+    if truth_base.get("designWasWorkingTreeEvidence") is not True:
+        raise RuntimeError("Manager design acceptance must disclose working-tree evidence.")
+    amendments = " ".join(str(item) for item in document.get("acceptedAmendments", [])).lower()
+    for phrase in ["multi-agent", "reuse-before-authoring", "external skills", "off, auto, and on", "broader capability ecosystem"]:
+        if phrase not in amendments:
+            raise RuntimeError(f"Manager design acceptance amendment missing phrase: {phrase}")
+    blocked = " ".join(str(item) for item in document.get("blockedActions", [])).lower()
+    for phrase in ["manager repository", "product", "cross-repository", "hook", "third-party", "committing"]:
+        if phrase not in blocked:
+            raise RuntimeError(f"Manager design acceptance blocked action missing phrase: {phrase}")
+    initiatives = program_doc.get("currentInitiatives", [])
+    manager = next(
+        (
+            item
+            for item in initiatives
+            if isinstance(item, dict)
+            and item.get("id") == "initiative.production-capability-manager-topology-design"
+        ),
+        None,
+    )
+    if not manager:
+        raise RuntimeError("Manager topology initiative is required for design acceptance.")
+    if manager.get("designDecisionEvidence") != "registry/production-capability-manager-design-acceptance-event-2026-07-15.json":
+        raise RuntimeError("Manager topology initiative design decision evidence drifted.")
+
+
+def validate_production_capability_manager_topology_impact_package(
+    document: dict[str, object],
+    design_acceptance: dict[str, object],
+    topology_acceptance: dict[str, object],
+    ecosystem_stack_review: dict[str, object],
+    slug_acceptance: dict[str, object],
+) -> None:
+    """Validate the owner-accepted MERIDIAN topology-impact package."""
+    expected_scalars = {
+        "schema": 1,
+        "id": "production-capability-manager-topology-impact-package-2026-07-15",
+        "date": "2026-07-15",
+        "status": "owner-accepted",
+        "designAcceptanceEvent": "registry/production-capability-manager-design-acceptance-event-2026-07-15.json",
+        "topologyAcceptanceEvent": "registry/production-capability-manager-topology-acceptance-event-2026-07-15.json",
+        "externalEcosystemAndStackReview": "registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json",
+        "repositorySlugDecisionEvent": "registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json",
+        "humanProjection": "docs/superpowers/specs/2026-07-15-production-capability-manager-topology-impact.md",
+        "proposedNodeId": "proposed:production-capability-manager",
+        "acceptedRepositorySlug": "agent-capability-manager",
+        "acceptedRepositoryIdentity": "github:yiheng8023/agent-capability-manager",
+    }
+    for key, expected in expected_scalars.items():
+        if document.get(key) != expected:
+            raise RuntimeError(f"Manager topology package {key} drifted.")
+    if design_acceptance.get("status") != "recorded":
+        raise RuntimeError("Manager topology package requires recorded design acceptance.")
+    if topology_acceptance.get("decision") != "accepted-production-capability-manager-meridian-topology-impact-package":
+        raise RuntimeError("Manager topology package requires recorded owner topology acceptance.")
+    if ecosystem_stack_review.get("status") != "decision-support-recorded":
+        raise RuntimeError("Manager topology package requires ecosystem and stack decision support.")
+    if slug_acceptance.get("decision") != "accepted-agent-capability-manager-repository-slug":
+        raise RuntimeError("Manager topology package requires the owner repository slug decision.")
+    if document.get("repositoryCreationAuthorized") is not False:
+        raise RuntimeError("Manager repository creation must remain unauthorized.")
+    if document.get("productImplementationAuthorized") is not False:
+        raise RuntimeError("Manager product implementation must remain unauthorized.")
+
+    snapshot = document.get("snapshot")
+    if not isinstance(snapshot, dict) or snapshot.get("capturedAt") != "2026-07-15":
+        raise RuntimeError("Manager topology package requires the dated snapshot.")
+    nodes = snapshot.get("nodes")
+    if not isinstance(nodes, list) or not all(isinstance(item, dict) for item in nodes):
+        raise RuntimeError("Manager topology package nodes are required.")
+    node_ids = {str(item.get("id")) for item in nodes}
+    required_nodes = {
+        "github:yiheng8023/YIYUAN-MERIDIAN",
+        "github:yiheng8023/resource-radar",
+        "github:yiheng8023/resource-radar-public",
+        "github:yiheng8023/research-bookmarks",
+        "github:yiheng8023/research-bookmarks-public",
+        "github:yiheng8023/agent-skills-curated",
+        "github:yiheng8023/codex-user-config",
+        "github:yiheng8023/claude-user-config",
+        "github:yiheng8023/YIYUAN-CALIBRATION",
+        "github:yiheng8023/YIYUAN-ASSETS",
+    }
+    if not required_nodes <= node_ids:
+        raise RuntimeError("Manager topology package required node set is incomplete.")
+
+    authority = document.get("proposedAuthority")
+    if not isinstance(authority, dict) or not authority.get("owns") or not authority.get("doesNotOwn"):
+        raise RuntimeError("Manager topology package authority boundary is incomplete.")
+    edges = document.get("proposedEdges")
+    if not isinstance(edges, list) or not edges or not all(isinstance(item, dict) for item in edges):
+        raise RuntimeError("Manager topology package edges are required.")
+    for edge in edges:
+        edge_type = str(edge.get("type", ""))
+        if edge_type in {
+            "candidate-proposal",
+            "optional-non-executable-discovery-metadata",
+            "read-only-observation-and-drift-evidence",
+            "optional-reviewed-feedback-package",
+        } and edge.get("executionEligible") is not False:
+            raise RuntimeError(f"Manager topology non-executable edge became executable: {edge_type}")
+        if edge.get("executionEligible") is True and not edge.get("requires"):
+            raise RuntimeError(f"Manager topology executable edge lacks requirements: {edge_type}")
+
+    required_sections = {
+        "publicPrivateBoundary": dict,
+        "versionAndRelease": dict,
+        "githubActionsBoundary": dict,
+        "acceptanceResponsibility": dict,
+        "rollbackAndRetirement": dict,
+        "requiredFutureCrossRepositoryUpdates": list,
+        "observedDrift": list,
+        "ownerDecisionRequired": list,
+        "verification": list,
+    }
+    for key, expected_type in required_sections.items():
+        value = document.get(key)
+        if not isinstance(value, expected_type) or not value:
+            raise RuntimeError(f"Manager topology package section is incomplete: {key}")
+    public_boundary = document["publicPrivateBoundary"]
+    if public_boundary.get("telemetryDefault") != "off":
+        raise RuntimeError("Manager topology telemetry must remain off.")
+    if public_boundary.get("productAccountSystem") != "forbidden-by-design":
+        raise RuntimeError("Manager topology must forbid a product account system.")
+
+    topology_doc = " ".join(
+        (ROOT / str(document["humanProjection"])).read_text(encoding="utf-8").split()
+    ).lower()
+    for phrase in [
+        "owner accepted",
+        "repository creation authority: none",
+        "product implementation authority: none",
+        "proposed node boundary",
+        "proposed graph edges",
+        "public and private boundary",
+        "actions, versioning, and release",
+        "acceptance, rollback, and retirement",
+        "actual drift and limits",
+        "remaining owner decisions",
+    ]:
+        if phrase not in topology_doc:
+            raise RuntimeError(f"Manager topology projection missing phrase: {phrase}")
+
+
+def validate_production_capability_manager_topology_acceptance_event(
+    document: dict[str, object],
+    topology_package: dict[str, object],
+) -> None:
+    """Validate acceptance without smuggling in creation or implementation authority."""
+    expected = {
+        "schema": 1,
+        "id": "production-capability-manager-topology-acceptance-event-2026-07-15",
+        "date": "2026-07-15",
+        "status": "recorded",
+        "decision": "accepted-production-capability-manager-meridian-topology-impact-package",
+        "authoritySource": "owner-chat-review",
+        "acceptedPackage": "registry/production-capability-manager-topology-impact-package-2026-07-15.json",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager topology acceptance event {key} drifted.")
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict):
+        raise RuntimeError("Manager topology acceptance authorization is required.")
+    for key in [
+        "managerRepositoryCreationAuthorized",
+        "managerProductImplementationAuthorized",
+        "crossRepositoryWriteAuthorized",
+        "hookEnablementOrLiveRuntimeMutationAuthorized",
+        "thirdPartyCodeExecutionAuthorized",
+        "commitAuthorized",
+        "remotePushAuthorized",
+    ]:
+        if authorization.get(key) is not False:
+            raise RuntimeError(f"Manager topology acceptance must not authorize {key}.")
+    if topology_package.get("status") != "owner-accepted":
+        raise RuntimeError("Manager topology acceptance event requires an accepted package projection.")
+
+
+def validate_production_capability_manager_external_ecosystem_and_stack_review(
+    document: dict[str, object],
+) -> None:
+    """Validate reuse-first evidence and the non-authorizing stack recommendation."""
+    expected = {
+        "schema": 1,
+        "id": "production-capability-manager-external-ecosystem-and-stack-review-2026-07-15",
+        "date": "2026-07-15",
+        "status": "decision-support-recorded",
+        "humanProjection": "docs/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.md",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager ecosystem and stack review {key} drifted.")
+    candidates = document.get("sourcePinnedCandidates")
+    if not isinstance(candidates, list) or len(candidates) < 8:
+        raise RuntimeError("Manager ecosystem review requires a broad source-pinned candidate set.")
+    for candidate in candidates:
+        if not isinstance(candidate, dict) or not re.fullmatch(r"[0-9a-f]{40}", str(candidate.get("revision", ""))):
+            raise RuntimeError("Manager ecosystem review candidate revision must be a full source pin.")
+        if not candidate.get("disposition") or not candidate.get("gap"):
+            raise RuntimeError("Manager ecosystem review candidates require disposition and gap evidence.")
+    reuse = document.get("reuseStrategy")
+    if not isinstance(reuse, dict) or reuse.get("decision") != "reuse-or-adapt-before-authoring":
+        raise RuntimeError("Manager ecosystem review must preserve reuse-before-authoring.")
+    if len(reuse.get("selfBuildOnlyResidualCore", [])) < 6:
+        raise RuntimeError("Manager ecosystem review residual self-build boundary is incomplete.")
+    recommendation = document.get("technologyRecommendation")
+    if not isinstance(recommendation, dict) or recommendation.get("decisionState") != "recommendation-awaiting-owner-stack-decision":
+        raise RuntimeError("Manager technology recommendation must remain owner-decision pending.")
+    if "Rust" not in str(recommendation.get("core")) or "Tauri" not in str(recommendation.get("laterClient")):
+        raise RuntimeError("Manager recommended stack drifted.")
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict) or any(authorization.values()):
+        raise RuntimeError("Manager ecosystem and stack review must not authorize side effects.")
+
+
+def validate_production_capability_manager_repository_slug_acceptance_event(
+    document: dict[str, object],
+) -> None:
+    """Validate the selected slug without treating a collision check as reservation authority."""
+    expected = {
+        "schema": 1,
+        "id": "production-capability-manager-repository-slug-acceptance-event-2026-07-16",
+        "date": "2026-07-16",
+        "status": "recorded",
+        "decision": "accepted-agent-capability-manager-repository-slug",
+        "authoritySource": "owner-chat-decision",
+        "repositorySlug": "agent-capability-manager",
+        "repositoryIdentity": "github:yiheng8023/agent-capability-manager",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager repository slug acceptance event {key} drifted.")
+    evidence = document.get("namingEvidence")
+    if not isinstance(evidence, dict) or evidence.get("reservationClaimed") is not False:
+        raise RuntimeError("Manager repository slug collision evidence must not claim reservation.")
+    if evidence.get("recheckRequiredBeforeCreationOrPublication") is not True:
+        raise RuntimeError("Manager repository slug must be rechecked before creation or publication.")
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict):
+        raise RuntimeError("Manager repository slug authorization is required.")
+    for key in [
+        "managerRepositoryCreationAuthorized",
+        "managerProductImplementationAuthorized",
+        "packagePublicationAuthorized",
+        "crossRepositoryWriteAuthorized",
+        "commitAuthorized",
+        "remotePushAuthorized",
+    ]:
+        if authorization.get(key) is not False:
+            raise RuntimeError(f"Manager repository slug decision must not authorize {key}.")
+
+
+def validate_agent_capability_manager_stack_and_foundation_authorization_event(
+    document: dict[str, object],
+    foundation_plan: dict[str, object],
+) -> None:
+    """Validate the bounded Rust, dependency, repository, and first-slice authority."""
+    expected = {
+        "schema": 1,
+        "id": "agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16",
+        "date": "2026-07-16",
+        "status": "recorded",
+        "decision": "accepted-rust-stack-and-authorized-foundation-slice",
+        "repositorySlug": "agent-capability-manager",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager stack and foundation authorization event {key} drifted.")
+    stack = document.get("selectedStack")
+    if not isinstance(stack, dict) or stack.get("language") != "Rust" or stack.get("goPrototypeRequired") is not False:
+        raise RuntimeError("Manager stack authorization must select Rust without a duplicate Go prototype.")
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict):
+        raise RuntimeError("Manager stack and foundation authorization is required.")
+    for key in [
+        "necessaryDependencyInstallAuthorized",
+        "managerRepositoryCreationAuthorized",
+        "disposableRootFoundationSliceImplementationAuthorized",
+    ]:
+        if authorization.get(key) is not True:
+            raise RuntimeError(f"Manager stack authorization must authorize {key}.")
+    for key in [
+        "realAgentConfigurationWriteAuthorized",
+        "existingRepositoryCrossWriteAuthorized",
+        "hookEnablementOrMutationAuthorized",
+        "accountConnectionAuthorized",
+        "telemetryAuthorized",
+        "commitAuthorized",
+        "remoteRepositoryCreationAuthorized",
+        "remotePushAuthorized",
+    ]:
+        if authorization.get(key) is not False:
+            raise RuntimeError(f"Manager stack authorization must not authorize {key}.")
+    target = document.get("implementationTarget")
+    if not isinstance(target, dict) or target.get("localPath") != "C:/Projects/agent-capability-manager":
+        raise RuntimeError("Manager foundation implementation target drifted.")
+    if foundation_plan.get("authorizationEvent") != "registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json":
+        raise RuntimeError("Manager foundation plan must reference its authorization event.")
+
+
+def validate_agent_capability_manager_foundation_slice_plan(document: dict[str, object]) -> None:
+    """Validate that the first implementation slice is vertical and disposable-root only."""
+    expected = {
+        "schema": 1,
+        "id": "agent-capability-manager-foundation-slice-plan-2026-07-16",
+        "date": "2026-07-16",
+        "status": "authorized-for-local-repository-and-disposable-root-implementation",
+        "repositorySlug": "agent-capability-manager",
+        "humanPlan": "docs/superpowers/plans/2026-07-16-agent-capability-manager-foundation-slice.md",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager foundation slice plan {key} drifted.")
+    stack = document.get("recommendedStack")
+    if not isinstance(stack, dict) or stack.get("language") != "Rust" or stack.get("decision") != "owner-accepted":
+        raise RuntimeError("Manager foundation slice must use the accepted Rust stack.")
+    vertical = document.get("verticalSlice")
+    if not isinstance(vertical, dict) or vertical.get("name") != "disposable-root-transaction-closure":
+        raise RuntimeError("Manager foundation slice must remain the disposable-root transaction closure.")
+    if len(vertical.get("acceptanceTests", [])) < 9 or len(vertical.get("safetyInvariants", [])) < 6:
+        raise RuntimeError("Manager foundation slice acceptance or safety coverage is incomplete.")
+    authorization = document.get("authorization")
+    if not isinstance(authorization, dict):
+        raise RuntimeError("Manager foundation slice authorization is required.")
+    for key in ["repositoryCreationAuthorized", "implementationAuthorized", "dependencyDownloadAuthorized"]:
+        if authorization.get(key) is not True:
+            raise RuntimeError(f"Manager foundation slice must authorize {key}.")
+    for key in ["realUserConfigurationWriteAuthorized", "crossRepositoryWriteAuthorized", "commitAuthorized", "remotePushAuthorized"]:
+        if authorization.get(key) is not False:
+            raise RuntimeError(f"Manager foundation slice must not authorize {key}.")
+    if document.get("implementationEvidence") != "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json":
+        raise RuntimeError("Manager foundation slice implementation evidence reference drifted.")
+
+
+def validate_agent_capability_manager_foundation_slice_implementation_evidence(
+    document: dict[str, object],
+    foundation_plan: dict[str, object],
+) -> None:
+    """Validate the bounded local proof without upgrading it to production MVP evidence."""
+    expected = {
+        "schema": 1,
+        "id": "agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16",
+        "date": "2026-07-16",
+        "status": "foundation-slice-verified-local-uncommitted",
+        "implementedSlice": "disposable-root-transaction-closure",
+        "humanProjection": "docs/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.md",
+    }
+    for key, value in expected.items():
+        if document.get(key) != value:
+            raise RuntimeError(f"Manager foundation implementation evidence {key} drifted.")
+    if foundation_plan.get("implementationEvidence") != "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json":
+        raise RuntimeError("Manager foundation plan must reference implementation evidence.")
+
+    repository = document.get("repository")
+    expected_repository = {
+        "slug": "agent-capability-manager",
+        "localPath": "C:/Projects/agent-capability-manager",
+        "branch": "main",
+        "commitState": "no-commits",
+        "remoteConfigured": False,
+        "cargoLockSha256": "42daa3d866c107a8f7db2420e3a992fa60d63fae907bacbd86b629d36f507772",
+    }
+    if not isinstance(repository, dict) or any(
+        repository.get(key) != value for key, value in expected_repository.items()
+    ):
+        raise RuntimeError("Manager foundation implementation repository evidence drifted.")
+
+    verification = document.get("verification")
+    if not isinstance(verification, dict) or verification.get("integrationTestCount") != 34:
+        raise RuntimeError("Manager foundation integration test evidence drifted.")
+    minimum = verification.get("minimumSupportedToolchain")
+    if not isinstance(minimum, dict) or minimum != {
+        "rustc": "1.93.1",
+        "cargo": "1.93.1",
+        "host": "x86_64-pc-windows-gnu",
+    }:
+        raise RuntimeError("Manager foundation minimum supported Rust verification drifted.")
+    current = verification.get("defaultToolchain")
+    if not isinstance(current, dict) or current != {
+        "rustc": "1.97.0",
+        "cargo": "1.97.0",
+        "host": "x86_64-pc-windows-gnu",
+    }:
+        raise RuntimeError("Manager foundation current Rust verification drifted.")
+    if verification.get("dependencyTools") != {
+        "cargoAudit": "0.22.2",
+        "cargoDeny": "0.20.2",
+        "actionlint": "1.7.12",
+    }:
+        raise RuntimeError("Manager foundation dependency verification tools drifted.")
+    if verification.get("ciSupplyChainPins") != {
+        "actionsCheckoutV6.0.2": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+        "cargoDenyActionV2.1.1": "3c6349835b2b7b196a839186cb8b78e02f7b5f25",
+        "cargoAudit": "0.22.2",
+    }:
+        raise RuntimeError("Manager foundation CI supply-chain pins drifted.")
+    if verification.get("dependencyPolicyResult") != "advisories ok, bans ok, licenses ok, sources ok":
+        raise RuntimeError("Manager foundation dependency policy result drifted.")
+    if verification.get("rustSecDependencyCount") != 76:
+        raise RuntimeError("Manager foundation RustSec dependency count drifted.")
+    if verification.get("windowsLocalVerificationPassed") is not True:
+        raise RuntimeError("Manager foundation Windows verification must be passed.")
+    if verification.get("ubuntuCiWorkflowDefined") is not True or verification.get("ubuntuCiExecuted") is not False:
+        raise RuntimeError("Manager foundation must distinguish defined from executed Ubuntu CI.")
+    required_commands = {
+        "cargo fmt -- --check",
+        "cargo test --locked --all-targets --all-features",
+        "cargo clippy --locked --all-targets --all-features -- -D warnings",
+        "cargo deny check",
+        "cargo audit",
+        "cargo +1.93.1-x86_64-pc-windows-gnu fmt -- --check",
+        "cargo +1.93.1-x86_64-pc-windows-gnu test --locked --all-targets --all-features",
+        "cargo +1.93.1-x86_64-pc-windows-gnu clippy --locked --all-targets --all-features -- -D warnings",
+        "actionlint .github/workflows/ci.yml",
+        "git diff --check",
+    }
+    if set(verification.get("passedCommands", [])) != required_commands:
+        raise RuntimeError("Manager foundation verification command evidence drifted.")
+
+    authority = document.get("authorityBoundary")
+    if not isinstance(authority, dict):
+        raise RuntimeError("Manager foundation authority boundary is required.")
+    for key in [
+        "realAgentConfigurationWritesObserved",
+        "hookMutationObserved",
+        "crossRepositoryIntegrationObserved",
+        "accountOrTelemetryUseObserved",
+        "thirdPartySkillExecutionObserved",
+        "commitObserved",
+        "remoteCreationOrPushObserved",
+    ]:
+        if authority.get(key) is not False:
+            if key == "realAgentConfigurationWritesObserved":
+                raise RuntimeError("Manager foundation evidence must not claim real Agent writes.")
+            raise RuntimeError(f"Manager foundation evidence must not claim {key}.")
+    if len(document.get("implementedCapabilities", [])) < 8 or len(document.get("limitations", [])) < 3:
+        raise RuntimeError("Manager foundation implementation evidence coverage is incomplete.")
+
+    projection = (ROOT / str(document["humanProjection"])).read_text(encoding="utf-8")
+    for phrase in [
+        "不是完整生产 MVP",
+        "34 项集成测试",
+        "1.93.1",
+        "未写真实 Codex",
+        "尚未执行",
+        "不得写入真实 Agent home",
+    ]:
+        if phrase not in projection:
+            raise RuntimeError(f"Manager foundation implementation projection missing phrase: {phrase}")
+
+
+def validate_production_capability_manager_post_matrix_reintake(
+    document: dict[str, object],
+) -> None:
+    """Validate current topology without rewriting historical gate evidence."""
+    if document.get("schemaVersion") != 1 or document.get("id") != "production-capability-manager-post-matrix-reintake-2026-07-17":
+        raise RuntimeError("Manager post-matrix re-intake identity drifted.")
+    if document.get("asOf") != "2026-07-17":
+        raise RuntimeError("Manager post-matrix re-intake date drifted.")
+    observed = document.get("observedTruth")
+    if not isinstance(observed, dict):
+        raise RuntimeError("Manager post-matrix observed truth is required.")
+    calibration = observed.get("calibrationCorpus")
+    if not isinstance(calibration, dict) or calibration.get("repositoryHead") != "e060a08f05361cb4cc9a67be050236cdbbde1de5":
+        raise RuntimeError("Manager post-matrix CALIBRATION commit drifted.")
+    if calibration.get("sourceSha256") != "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727":
+        raise RuntimeError("Manager post-matrix CALIBRATION source digest drifted.")
+    if calibration.get("sourceBytes") != 62925 or calibration.get("sourceIntegrityMode") != "exact-bytes-binary" or calibration.get("derivedMarkdownIntegrityMode") != "canonical-lf-text":
+        raise RuntimeError("Manager post-matrix CALIBRATION integrity contract drifted.")
+    if observed.get("meridianLocalCheckoutPresent") is not False:
+        raise RuntimeError("Manager post-matrix MERIDIAN checkout observation drifted.")
+    if observed.get("meridianRemoteArchived") is not True:
+        raise RuntimeError("Manager post-matrix MERIDIAN archive observation drifted.")
+    for key in ["resourceRadar", "resourceRadarPublic"]:
+        value = observed.get(key)
+        if not isinstance(value, dict) or value.get("retirementNoticePresent") is not True or value.get("localCheckoutPresent") is not False or value.get("remoteArchived") is not True:
+            raise RuntimeError("Manager post-matrix radar retirement evidence drifted.")
+
+    authority = document.get("authorityModel")
+    if not isinstance(authority, dict) or authority.get("calibrationRole") != "read-only-candidate-evidence-and-research-input":
+        raise RuntimeError("CALIBRATION must remain read-only research input.")
+    if authority.get("calibrationIsProductAuthority") is not False:
+        raise RuntimeError("CALIBRATION must remain read-only research input.")
+    if authority.get("meridianOrRadarControlPlaneRequired") is not False or authority.get("meridianOrRadarDiscoveryPrerequisite") is not False:
+        raise RuntimeError("Manager post-matrix re-intake retains a retired control-plane dependency.")
+    for key in ["curatedRepositoryAuthority", "managerRepositoryAuthority"]:
+        if not isinstance(authority.get(key), list) or len(authority[key]) < 4:
+            raise RuntimeError(f"Manager post-matrix {key} is incomplete.")
+
+    historical = document.get("historicalEvidence")
+    if not isinstance(historical, dict) or historical.get("currentAuthority") is not False:
+        raise RuntimeError("Historical topology evidence must not remain current authority.")
+    current_slice = document.get("currentSlice")
+    if not isinstance(current_slice, dict) or current_slice.get("authorized") is not True:
+        raise RuntimeError("Manager current adapter slice authorization is required.")
+    for key in ["realAgentConfigurationWriteAuthorized", "hookMutationAuthorized", "commitAuthorized", "pushAuthorized"]:
+        if current_slice.get(key) is not False:
+            raise RuntimeError(f"Manager current adapter slice must not authorize {key}.")
+
+
+def validate_agent_capability_manager_codex_readonly_adapter_slice_plan(
+    document: dict[str, object],
+    reintake: dict[str, object],
+) -> None:
+    """Validate the bounded Codex adapter plan before implementation evidence exists."""
+    if document.get("schemaVersion") != 1 or document.get("id") != "agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17":
+        raise RuntimeError("Manager Codex read-only adapter plan identity drifted.")
+    if "production-capability-manager-post-matrix-reintake-2026-07-17" not in document.get("dependsOn", []):
+        raise RuntimeError("Manager Codex adapter plan must depend on post-matrix re-intake.")
+    if reintake.get("id") not in document.get("dependsOn", []):
+        raise RuntimeError("Manager Codex adapter plan re-intake dependency drifted.")
+    authority = document.get("authorityBoundary")
+    if not isinstance(authority, dict):
+        raise RuntimeError("Manager Codex adapter authority boundary is required.")
+    for key in [
+        "realAgentConfigurationReadAuthorized",
+        "realAgentConfigurationWriteAuthorized",
+        "hookReadAuthorized",
+        "hookMutationAuthorized",
+        "commitAuthorized",
+        "pushAuthorized",
+    ]:
+        if authority.get(key) is not False:
+            raise RuntimeError("Manager Codex adapter plan must not authorize real Agent or Hook writes.")
+    contract = document.get("contract")
+    if not isinstance(contract, dict) or contract.get("hostId") != "codex":
+        raise RuntimeError("Manager Codex adapter contract host drifted.")
+    for key, minimum in [("roots", 2), ("observedClasses", 6), ("ownershipClasses", 3), ("previewDecisions", 4), ("invariants", 6)]:
+        if not isinstance(contract.get(key), list) or len(contract[key]) < minimum:
+            raise RuntimeError(f"Manager Codex adapter contract {key} is incomplete.")
+
+
+def validate_agent_capability_manager_codex_readonly_adapter_implementation_evidence(
+    document: dict[str, object],
+    plan: dict[str, object],
+) -> None:
+    """Validate disposable-home adapter evidence without upgrading real-host maturity."""
+    if document.get("schemaVersion") != 1 or document.get("id") != "agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17":
+        raise RuntimeError("Manager Codex adapter implementation evidence identity drifted.")
+    if document.get("status") != "verified-local-uncommitted-disposable-home-only":
+        raise RuntimeError("Manager Codex adapter implementation evidence status drifted.")
+    if plan.get("id") != "agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17":
+        raise RuntimeError("Manager Codex adapter implementation plan reference drifted.")
+    repository = document.get("repository")
+    if not isinstance(repository, dict) or repository.get("cargoLockSha256") != "42daa3d866c107a8f7db2420e3a992fa60d63fae907bacbd86b629d36f507772":
+        raise RuntimeError("Manager Codex adapter repository evidence drifted.")
+    contract = document.get("implementedContract")
+    if not isinstance(contract, dict) or contract.get("hostId") != "codex":
+        raise RuntimeError("Manager Codex adapter implemented contract drifted.")
+    if contract.get("durablePreviewTransactionsCreated") is not False or contract.get("targetMutationDuringInventoryOrPreview") is not False:
+        raise RuntimeError("Manager Codex adapter preview must remain non-mutating.")
+    tdd = document.get("testDrivenEvidence")
+    if not isinstance(tdd, dict) or tdd.get("totalIntegrationTests") != 40 or tdd.get("newAdapterTests") != 6:
+        raise RuntimeError("Manager Codex adapter test evidence drifted.")
+    if len(tdd.get("redObserved", [])) < 3 or len(tdd.get("passedTests", [])) != 6:
+        raise RuntimeError("Manager Codex adapter TDD evidence is incomplete.")
+    verification = document.get("verification")
+    if not isinstance(verification, dict):
+        raise RuntimeError("Manager Codex adapter verification evidence is required.")
+    required_commands = {
+        "cargo fmt -- --check",
+        "cargo test --locked --all-targets --all-features",
+        "cargo clippy --locked --all-targets --all-features -- -D warnings",
+        "cargo +1.93.1-x86_64-pc-windows-gnu fmt -- --check",
+        "cargo +1.93.1-x86_64-pc-windows-gnu test --locked --all-targets --all-features",
+        "cargo +1.93.1-x86_64-pc-windows-gnu clippy --locked --all-targets --all-features -- -D warnings",
+        "cargo audit",
+        "cargo deny check",
+        "actionlint .github/workflows/ci.yml",
+        "git diff --check",
+    }
+    if set(verification.get("passedCommands", [])) != required_commands:
+        raise RuntimeError("Manager Codex adapter verification command evidence drifted.")
+    authority = document.get("authorityBoundary")
+    if not isinstance(authority, dict):
+        raise RuntimeError("Manager Codex adapter implementation authority evidence is required.")
+    for key in [
+        "realAgentHomeReadObserved",
+        "realAgentConfigurationWriteObserved",
+        "hookReadObserved",
+        "hookMutationObserved",
+        "adapterApplyPathImplemented",
+        "crossRepositoryWriteOutsideCuratedAndManagerObserved",
+        "commitObserved",
+        "remoteCreationOrPushObserved",
+    ]:
+        if authority.get(key) is not False:
+            raise RuntimeError("Manager Codex adapter evidence must not claim real Agent home or Hook observation.")
+    projection = " ".join(
+        (ROOT / str(document.get("humanProjection")))
+        .read_text(encoding="utf-8")
+        .split()
+    )
+    for phrase in [
+        "Forty integration tests",
+        "No real Agent home was read",
+        "current Hook was neither read nor modified",
+        "created no durable transaction",
+    ]:
+        if phrase not in projection:
+            raise RuntimeError(f"Manager Codex adapter evidence projection missing phrase: {phrase}")
+
+
+def validate_cc_switch_source_preserving_skill_pool_strategy(
+    document: dict[str, object],
+    program_doc: dict[str, object],
+) -> None:
+    """Validate the current CC Switch reuse and custom Manager retirement decision."""
+    if document.get("schemaVersion") != 1:
+        raise RuntimeError("CC Switch Skill-pool strategy schema drifted.")
+    if document.get("id") != "cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17":
+        raise RuntimeError("CC Switch Skill-pool strategy identity drifted.")
+    if document.get("decision") != "accepted-reuse-cc-switch-and-retire-custom-manager":
+        raise RuntimeError("CC Switch Skill-pool strategy decision drifted.")
+    if document.get("architectureDecision") != "retain-agent-skills-curated-as-agent-neutral-cross-agent-authority":
+        raise RuntimeError("CC Switch Skill-pool cross-Agent authority decision drifted.")
+    if document.get("humanProjection") != "docs/cc-switch-source-preserving-skill-pool-strategy-2026-07-17.md":
+        raise RuntimeError("CC Switch Skill-pool strategy human projection drifted.")
+
+    basis = document.get("decisionBasis")
+    if not isinstance(basis, dict):
+        raise RuntimeError("CC Switch Skill-pool strategy decision basis is required.")
+    if basis.get("ccSwitchVersionObserved") != "3.17.0":
+        raise RuntimeError("CC Switch observed version drifted.")
+    capabilities = " ".join(str(item) for item in basis.get("verifiedExistingCapabilities", [])).lower()
+    for phrase in ["github and zip", "custom source", "sha-256", "cross-application", "backup and restore"]:
+        if phrase not in capabilities:
+            raise RuntimeError(f"CC Switch capability baseline missing phrase: {phrase}")
+
+    strategy = document.get("currentStrategy")
+    if not isinstance(strategy, dict):
+        raise RuntimeError("CC Switch current Skill-pool strategy is required.")
+    expected_strategy_flags = {
+        "operationalSkillManager": "CC Switch",
+        "repositoryRole": "source-preserving-intake-quality-safety-redundancy-and-shortfall-governance",
+        "authorityScope": "agent-neutral-cross-agent-skills-and-chain-contracts",
+        "payloadPolicy": "upstream-exact-no-content-rewrite",
+        "downloadDoesNotAuthorizeExecution": True,
+        "discoveryDoesNotAuthorizeInstallation": True,
+        "adaptationIsDefault": False,
+        "repositoryAuthoringIsLastResort": True,
+    }
+    for key, expected in expected_strategy_flags.items():
+        if strategy.get(key) != expected:
+            raise RuntimeError(f"CC Switch current strategy drifted: {key}")
+    workflow = " ".join(str(item) for item in strategy.get("workflow", [])).lower()
+    for phrase in [
+        "metadata license provenance",
+        "non-active candidate pool",
+        "security quality superiority overlap and redundancy",
+        "unchanged admission to cc switch",
+        "per-agent visibility",
+        "human-ai collaboration shortfall",
+        "reproducible residual gap",
+    ]:
+        if phrase not in workflow:
+            raise RuntimeError(f"CC Switch source-preserving workflow missing phrase: {phrase}")
+
+    chain = document.get("chainBoundary")
+    if not isinstance(chain, dict) or chain.get("directoryIsAdapterEvidenceNotProductArchitecture") is not True:
+        raise RuntimeError("CC Switch strategy must keep directories as adapter evidence.")
+    expected_chain_boundary = {
+        "sharedSkillsAndChainAreAgentNeutral": True,
+        "wholeRepositoryConsolidationIntoCodexUserConfigAllowed": False,
+        "portableCoreAuthority": "agent-skills-curated",
+        "consumerConfigurationRole": "host-specific-installation-runtime-hook-and-rollback-adapter",
+        "consumerConfigurationMayReplacePortableCoreAuthority": False,
+        "hookOwnershipSplit": "portable-policy-and-host-profile-contracts-here-runtime-installation-in-consumer-configuration",
+    }
+    for key, expected in expected_chain_boundary.items():
+        if chain.get(key) != expected:
+            raise RuntimeError(f"CC Switch cross-Agent chain boundary drifted: {key}")
+    if chain.get("conceptualChain") != [
+        "Agent native capability",
+        "scoped instructions or rules",
+        "Skills",
+        "optional Hook",
+        "verification feedback and rollback",
+    ]:
+        raise RuntimeError("CC Switch portable conceptual chain drifted.")
+    path_mapping = " ".join(str(item) for item in chain.get("requiredConsumerAdapterMapping", [])).lower()
+    for phrase in ["agents.md", "skill source and runtime path", "hook path event mode authority and rollback"]:
+        if phrase not in path_mapping:
+            raise RuntimeError(f"Consumer Agent adapter mapping missing phrase: {phrase}")
+
+    retirement = document.get("customManagerRetirement")
+    if not isinstance(retirement, dict):
+        raise RuntimeError("Custom Manager retirement decision is required.")
+    for key, expected in {
+        "initiativeStatus": "superseded",
+        "furtherImplementationAuthorized": False,
+        "historicalEvidencePreserved": True,
+        "localRepositoryDeletionAuthorized": True,
+        "deletionTiming": "after governance rebaseline and full repository verification",
+    }.items():
+        if retirement.get(key) != expected:
+            raise RuntimeError(f"Custom Manager retirement boundary drifted: {key}")
+    inventory = retirement.get("observedLocalRepository")
+    expected_inventory = {
+        "path": "C:/Projects/agent-capability-manager",
+        "branch": "main",
+        "commitCount": 0,
+        "remoteCount": 0,
+        "trackedProjectFileCount": 0,
+        "untrackedSourceAndDocumentationFileCountExcludingGitAndTarget": 18,
+        "untrackedSourceAndDocumentationBytesExcludingGitAndTarget": 119386,
+        "totalBytesIncludingBuildArtifacts": 1306570045,
+    }
+    if inventory != expected_inventory:
+        raise RuntimeError("Custom Manager deletion inventory drifted.")
+
+    expected_execution = {
+        "executedOn": "2026-07-17",
+        "deletedPath": "C:/Projects/agent-capability-manager",
+        "preDeleteCommitCount": 0,
+        "preDeleteRemoteCount": 0,
+        "preDeleteTrackedFileCount": 0,
+        "existsAfterDeletion": False,
+    }
+    if retirement.get("executionEvidence") != expected_execution:
+        raise RuntimeError("Custom Manager retirement execution evidence drifted.")
+
+    authority = document.get("authorityBoundary")
+    if not isinstance(authority, dict) or not authority:
+        raise RuntimeError("CC Switch strategy authority boundary is required.")
+    if any(value is not False for value in authority.values()):
+        raise RuntimeError("CC Switch strategy must not authorize download, install, live mutation, commit, or push.")
+
+    positioning = program_doc.get("strategicPositioning")
+    manager_boundary = positioning.get("managerProductBoundary") if isinstance(positioning, dict) else None
+    if not isinstance(manager_boundary, dict):
+        raise RuntimeError("Program plan must record the superseded Manager boundary.")
+    if manager_boundary.get("status") != "superseded-by-cc-switch-reuse":
+        raise RuntimeError("Program plan did not supersede custom Manager implementation.")
+    if manager_boundary.get("supersedingDecisionEvidence") != "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json":
+        raise RuntimeError("Program plan CC Switch superseding evidence drifted.")
+
+
+def validate_cc_switch_live_source_ownership_reconciliation(
+    document: dict[str, object],
+    strategy_document: dict[str, object],
+    consumer_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate read-only live CC Switch projection and source-lineage evidence."""
+    if document.get("schema") != 1 or document.get("id") != "cc-switch-live-source-ownership-reconciliation-2026-07-18":
+        raise RuntimeError("CC Switch live source reconciliation identity drifted.")
+    if document.get("status") != "partial-live-operational-projection-verified-source-preserving-migration-open":
+        raise RuntimeError("CC Switch live source reconciliation status drifted.")
+
+    shared = document.get("sharedAgentHomeSnapshot", {})
+    if shared.get("path") != "C:/Users/15521/.agents/skills" or (
+        shared.get("skillDirectoryCount") != 73
+        or shared.get("ccSwitchTargetCount") != 43
+        or shared.get("ccSwitchSymbolicLinkCount") != 42
+        or shared.get("ccSwitchJunctionCount") != 1
+        or shared.get("materializedDirectoryCount") != 30
+    ):
+        raise RuntimeError("CC Switch live shared-root counts drifted.")
+    materialized = shared.get("materializedOwnership", {})
+    if materialized != {
+        "larkLockManagedCount": 27,
+        "codexUserConfigExactTreeMatchCount": 3,
+        "codexUserConfigSkills": ["capability-router", "closure-contract", "intent-contract"],
+    }:
+        raise RuntimeError("CC Switch live materialized ownership classification drifted.")
+
+    database = document.get("ccSwitchDatabaseSnapshot", {})
+    if (
+        database.get("path") != "C:/Users/15521/.cc-switch/cc-switch.db"
+        or database.get("mode") != "sqlite-uri-mode-ro"
+        or database.get("volatileLiveDatabaseNotDigestPinned") is not True
+        or database.get("skillRowCount") != 248
+        or database.get("skillRepoRowCount") != 5
+        or database.get("enabledCodexFlagCount") != 248
+        or database.get("enabledFlagIsNotSharedRootProjectionProof") is not True
+    ):
+        raise RuntimeError("CC Switch live database snapshot drifted.")
+    if database.get("activeSharedRootProjectionClassification") != {
+        "localDatabaseRowCount": 42,
+        "sourceBackedDatabaseRowCount": 0,
+        "missingDatabaseRowCount": 1,
+        "missingDatabaseRowSkills": ["obsidian-open-format-knowledge-files"],
+    }:
+        raise RuntimeError("CC Switch active source classification drifted.")
+
+    legacy = document.get("legacyCuratedSlice", {})
+    expected_legacy_skills = {
+        "ci-cd-and-automation", "deprecation-and-migration", "diagnose",
+        "git-guardrails", "grill-with-docs", "handoff",
+        "improve-codebase-architecture", "migrate-to-shoehorn",
+        "observability-and-instrumentation", "performance-optimization",
+        "prototype", "review", "setup-project-skills", "shipping-and-launch",
+        "tdd", "to-issues", "to-prd", "triage", "ubiquitous-language",
+    }
+    if (
+        legacy.get("skillCount") != 19
+        or legacy.get("allSharedRootEntriesTargetCcSwitch") is not True
+        or legacy.get("allCcSwitchDatabaseRowsAreLocal") is not True
+        or legacy.get("databaseRowsWithGitSourceMetadata") != 0
+        or legacy.get("exactTreeMatchesCurrentCuratedRepository") != 19
+        or legacy.get("oldTransactionManifestDriftCount") != 19
+        or legacy.get("currentCuratedReleaseBodyClass") != "reviewed-adapted-derivatives-not-upstream-exact"
+        or legacy.get("upstreamSourceFamilies") != {
+            "github:addyosmani/agent-skills": 5,
+            "github:mattpocock/skills": 14,
+        }
+        or set(legacy.get("skills", [])) != expected_legacy_skills
+    ):
+        raise RuntimeError("CC Switch legacy curated source classification drifted.")
+
+    expected_digests = {
+        "curatedSkillsTransactionSha256": "308b0792205147023f8816309863fd60dc1175696299518908199580e28ed049",
+        "larkSkillLockSha256": "5c34032037f2fc9b72ff270139946c626f2f8c532d323070e156593c041d4061",
+        "capabilityRoutingIndexSha256": "f038f516ba2fd290320b096662ded5189334ccbd76d3c07b5a6720b2e1ab5c6c",
+        "currentReleaseManifestSha256": "2b05bb3397ab31bc2c8556fa42599f7d048b9ff7836e56cd66b59bf42df987f2",
+        "currentSkillsRegistrySha256": "5f591ec32b870fd6d5e6b86153dd7d505edd347c501d58bc0e54ec96fe392969",
+    }
+    if document.get("digestPins") != expected_digests:
+        raise RuntimeError("CC Switch live source reconciliation digest pins drifted.")
+
+    authority = document.get("authorityReconciliation", {})
+    expected_authority = {
+        "ccSwitchOperationalDistributionObserved": True,
+        "ccSwitchSourceRegistrationCapabilityKnown": True,
+        "disposableSourceManagementContractVerified": True,
+        "stockWindowsTestIsolationDefectObserved": True,
+        "currentActiveProjectionSourcePreserving": False,
+        "legacyCuratedBodyAuthority": "agent-skills-curated current release until each Skill is replaced, retained as an explicit derivative, or retired through a reviewed migration",
+        "ccSwitchAuthority": "operational storage, enablement, and distribution for the observed links; not current upstream provenance for the 42 local rows",
+        "oldCuratedTransactionDisposition": "historical install, backup, and routing evidence; not current body authority and not rollback authority while current links and source ownership differ",
+        "unknownOrForeignTakeoverAuthorized": False,
+    }
+    if authority != expected_authority:
+        raise RuntimeError("CC Switch live authority reconciliation drifted.")
+
+    migration = document.get("migrationContract", {})
+    if set(migration.get("perSkillAllowedDispositions", [])) != {
+        "replace-with-reviewed-source-backed-upstream-exact",
+        "retain-as-explicit-adapted-derivative-only-with-supported-residual-gap-and-separate-lineage",
+        "retire-or-supersede",
+    }:
+        raise RuntimeError("CC Switch per-Skill migration disposition set drifted.")
+    for key, expected in {
+        "defaultUntilDisposition": "freeze-current-live-state-and-continue-read-only-review",
+        "bulkReclassificationAllowed": False,
+        "sameNameReplacementAllowedWithoutDiffReview": False,
+        "liveMutationRequiresSeparateAuthority": True,
+        "rollbackToOldTransactionAllowedWithoutOwnershipResolution": False,
+    }.items():
+        if migration.get(key) != expected:
+            raise RuntimeError(f"CC Switch migration boundary drifted: {key}")
+
+    strategy = strategy_document.get("currentStrategy", {})
+    if strategy.get("operationalSkillManager") != "CC Switch" or strategy.get("payloadPolicy") != "upstream-exact-no-content-rewrite":
+        raise RuntimeError("CC Switch live reconciliation lost the accepted target strategy.")
+    consumer_projection = consumer_document.get("liveAgentHomeSnapshot", {}).get("ccSwitchProjection", {})
+    if consumer_projection.get("count") != 43 or consumer_projection.get("sourceBackedDatabaseRowCount") != 0:
+        raise RuntimeError("CC Switch live reconciliation and consumer projection drifted.")
+
+    assessments = {
+        item.get("acceptanceId"): item
+        for item in document.get("acceptanceReconciliation", [])
+        if isinstance(item, dict)
+    }
+    if assessments.get("acceptance.cc-switch-source-preserving-skill-pool", {}).get("to") != "partial":
+        raise RuntimeError("CC Switch source-preserving acceptance was overclaimed.")
+    for acceptance_id in [
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    ]:
+        if assessments.get(acceptance_id, {}).get("to") != "partial":
+            raise RuntimeError(f"CC Switch live evidence overclaimed acceptance: {acceptance_id}")
+
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.cc-switch-live-source-ownership-reconciliation-2026-07-18"
+    for acceptance_id in [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    ]:
+        criterion = criteria.get(acceptance_id, {})
+        if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+            raise RuntimeError(f"CC Switch live evidence acceptance mapping drifted: {acceptance_id}")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json" or set(evidence.get("supports", [])) != {
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    }:
+        raise RuntimeError("CC Switch live evidence program mapping drifted.")
+
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no cc switch database", "no skill body", "no candidate skill source download", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"CC Switch live reconciliation non-action missing: {phrase}")
+    expected_docs = {
+        "docs/cc-switch-live-source-ownership-reconciliation-2026-07-18.md": ["43 active projections", "zero have source-backed", "downgraded from", "stock Windows test-isolation defect"],
+        "docs/cc-switch-live-source-ownership-reconciliation-2026-07-18.zh-CN.md": ["43 个当前投影", "来源仓记录为 0", "降为", "Windows 测试隔离缺陷"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("CC Switch live reconciliation evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"CC Switch live reconciliation doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_cc_switch_disposable_source_management_preview(
+    document: dict[str, object],
+    live_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate the isolated CC Switch source-management evidence boundary."""
+    if document.get("schema") != 1 or document.get("id") != "cc-switch-disposable-source-management-preview-2026-07-18":
+        raise RuntimeError("CC Switch disposable preview identity drifted.")
+    if document.get("status") != "verified-disposable-contract-with-upstream-windows-test-isolation-defect":
+        raise RuntimeError("CC Switch disposable preview status drifted.")
+
+    baseline = document.get("ccSwitchBaseline", {})
+    if (
+        baseline.get("installedVersion") != "3.17.0"
+        or baseline.get("officialRepository") != "farion1231/cc-switch"
+        or baseline.get("officialTag") != "v3.17.0"
+        or baseline.get("tagCommit") != "3d176b98cc0bfd151a42882e88ab59b62083b92f"
+        or baseline.get("sourceArchiveSha256") != "82273F854AB6C969BEC61AA9FB2BFFAB870B2988513071BCA18B3CDEEDFED947"
+    ):
+        raise RuntimeError("CC Switch disposable preview baseline drifted.")
+
+    isolation = document.get("upstreamWindowsIsolationFinding", {})
+    original = isolation.get("originalSkillSyncResult", {})
+    patched = document.get("diagnosticIsolationPatch", {}).get("patchedSkillSyncResult", {})
+    contract = document.get("repositoryOwnedDisposableContractTest", {})
+    if (
+        original.get("passed") != 2
+        or original.get("failed") != 5
+        or isolation.get("realDirectoryMutationObserved") is not False
+        or patched.get("passed") != 7
+        or patched.get("failed") != 0
+        or contract.get("passed") != 1
+        or contract.get("failed") != 0
+    ):
+        raise RuntimeError("CC Switch disposable test evidence drifted.")
+
+    live = document.get("liveStateNonMutationEvidence", {})
+    for key in ["sharedAgentsSkills", "ccSwitchSkills"]:
+        tree = live.get(key, {})
+        if tree.get("fileCountBefore") != tree.get("fileCountAfter") or tree.get("treeSha256Before") != tree.get("treeSha256After"):
+            raise RuntimeError(f"CC Switch disposable live-state non-mutation drifted: {key}")
+    if "registry/cc-switch-disposable-source-management-preview-2026-07-18.json" not in live_document.get("inputs", []):
+        raise RuntimeError("CC Switch live reconciliation must consume disposable preview evidence.")
+    authority = live_document.get("authorityReconciliation", {})
+    if authority.get("disposableSourceManagementContractVerified") is not True or authority.get("stockWindowsTestIsolationDefectObserved") is not True:
+        raise RuntimeError("CC Switch live reconciliation lost disposable evidence.")
+
+    criteria = {item.get("id"): item for item in acceptance_document.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    criterion = criteria.get("acceptance.cc-switch-source-preserving-skill-pool", {})
+    evidence_id = "evidence.cc-switch-disposable-source-management-preview-2026-07-18"
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("CC Switch disposable preview acceptance mapping drifted.")
+    evidence = {item.get("id"): item for item in acceptance_document.get("evidence", []) if isinstance(item, dict)}.get(evidence_id, {})
+    if evidence.get("path") != "registry/cc-switch-disposable-source-management-preview-2026-07-18.json":
+        raise RuntimeError("CC Switch disposable preview evidence path drifted.")
+
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no real cc switch", "no shared agent home", "no candidate skill body execution", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"CC Switch disposable preview non-action missing: {phrase}")
+    expected_docs = {
+        "docs/cc-switch-disposable-source-management-preview-2026-07-18.md": ["CC_SWITCH_TEST_HOME", "seven official", "Acceptance remains partial"],
+        "docs/cc-switch-disposable-source-management-preview-2026-07-18.zh-CN.md": ["CC_SWITCH_TEST_HOME", "官方七项", "验收仍为 partial"],
+    }
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"CC Switch disposable preview doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_cc_switch_disposable_source_update_and_recovery_review(
+    document: dict[str, object],
+    preview_document: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate loopback update, failure recovery, and exact incident cleanup evidence."""
+    if document.get("schema") != 1 or document.get("id") != "cc-switch-disposable-source-update-and-recovery-review-2026-07-18":
+        raise RuntimeError("CC Switch disposable update review identity drifted.")
+    if document.get("status") != "verified-success-and-manual-recovery-contract-automatic-rollback-gap-confirmed":
+        raise RuntimeError("CC Switch disposable update review status drifted.")
+    baseline = document.get("baseline", {})
+    if baseline != {
+        "ccSwitchVersion": "3.17.0",
+        "officialRepository": "farion1231/cc-switch",
+        "tagCommit": "3d176b98cc0bfd151a42882e88ab59b62083b92f",
+        "parentEvidence": "registry/cc-switch-disposable-source-management-preview-2026-07-18.json",
+    }:
+        raise RuntimeError("CC Switch disposable update review baseline drifted.")
+    if preview_document.get("followupEvidence") != "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json":
+        raise RuntimeError("CC Switch disposable preview lost update follow-up evidence.")
+
+    fixture = document.get("loopbackFixture", {})
+    result = fixture.get("result", {})
+    if (
+        fixture.get("sourceIdentity") != "fixture/skills:skills/demo"
+        or fixture.get("versions") != ["v1", "v2"]
+        or fixture.get("testName") != "services::skill::tests::source_update_backup_restore_and_failure_recovery_contract"
+        or result != {"passed": 1, "failed": 0, "filteredOut": 1960}
+        or len(fixture.get("successPathAssertions", [])) != 5
+        or len(fixture.get("failurePathAssertions", [])) != 5
+    ):
+        raise RuntimeError("CC Switch disposable update fixture evidence drifted.")
+    gap = document.get("confirmedProductGap", {})
+    expected_gap = {
+        "backupFailureIsFatal": False,
+        "replacementUsesStagedAtomicSwap": False,
+        "automaticRollbackOnReplacementFailure": False,
+        "manualRecoveryProven": True,
+    }
+    for key, expected in expected_gap.items():
+        if gap.get(key) is not expected:
+            raise RuntimeError(f"CC Switch updater transaction gap drifted: {key}")
+    gap_text = json.dumps(gap, ensure_ascii=False).lower()
+    for phrase in ["ignores create_uninstall_backup errors", "ssot directory missing", "must not be treated as a transaction"]:
+        if phrase not in gap_text:
+            raise RuntimeError(f"CC Switch updater gap missing phrase: {phrase}")
+
+    incident = document.get("isolationIncidentAndCleanup", {})
+    created = incident.get("createdLiveArtifacts", {})
+    if created != {
+        "databaseRows": 3,
+        "skillRows": 2,
+        "repositoryRows": 1,
+        "ssotDirectories": 1,
+        "backupDirectories": 3,
+        "applicationProjections": 0,
+        "fixtureIds": [
+            "fixture/skills:skills/demo",
+            "first/source:duplicate-skill",
+            "example-owner/example-source",
+        ],
+        "directories": ["demo", "duplicate-skill"],
+    }:
+        raise RuntimeError("CC Switch isolation incident inventory drifted.")
+    backups = incident.get("preCleanupDatabaseBackups", [])
+    if backups != [
+        {
+            "path": "C:/tmp/cc-switch-db-before-fixture-cleanup-20260718.sqlite",
+            "sha256": "F0A041FFB6AF2103D5874AFC899CC8808FA863876704A520AE7108232B203C6D",
+            "coveredResidue": "fixture/skills:skills/demo plus its SSOT and three backups",
+        },
+        {
+            "path": "C:/tmp/cc-switch-db-before-second-fixture-cleanup-20260718.sqlite",
+            "sha256": "EF2EE5728842E3BFF594EE328C91AB511C0187F4CDC51475A0286D61C758F209",
+            "coveredResidue": "first/source:duplicate-skill and example-owner/example-source",
+        },
+    ]:
+        raise RuntimeError("CC Switch isolation incident database backup drifted.")
+    post = incident.get("postCleanupVerification", {})
+    if post != {
+        "fixtureDatabaseRows": 0,
+        "fixtureSkillRows": 0,
+        "fixtureRepositoryRows": 0,
+        "fixtureBackupDirectories": 0,
+        "fixtureSsotPresent": False,
+        "fixtureAgentsProjectionPresent": False,
+        "fixtureCodexProjectionPresent": False,
+        "ccSwitchSkillFileCount": 514,
+        "ccSwitchSkillRowCount": 248,
+        "ccSwitchRepositoryRowCount": 5,
+    }:
+        raise RuntimeError("CC Switch isolation incident cleanup evidence drifted.")
+    if incident.get("secondRunAfterIsolationCorrection") != {
+        "passed": 1,
+        "failed": 0,
+        "newFixtureResidueObserved": False,
+    }:
+        raise RuntimeError("CC Switch corrected isolation rerun evidence drifted.")
+
+    gate = document.get("revisedCanaryGate", {})
+    if (
+        gate.get("realMigrationAuthorized") is not False
+        or gate.get("automaticUpdateAllowedForFirstCanary") is not False
+        or gate.get("separateOwnerAuthorizationRequired") is not True
+        or len(gate.get("requiredBeforeState", [])) != 4
+        or len(gate.get("requiredExecutionBoundary", [])) != 4
+        or len(gate.get("requiredFailureRecovery", [])) != 4
+    ):
+        raise RuntimeError("CC Switch revised real-canary gate drifted.")
+    positioning = program_document.get("strategicPositioning", {})
+    manager = positioning.get("managerProductBoundary", {})
+    if (
+        manager.get("disposableSourceUpdateRecoveryEvidence") != "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json"
+        or manager.get("ccSwitchUpdaterTransactionState") != "non-atomic-do-not-use-as-first-canary-rollback-proof"
+    ):
+        raise RuntimeError("Program plan lost CC Switch updater transaction evidence.")
+
+    evidence_id = "evidence.cc-switch-disposable-source-update-and-recovery-review-2026-07-18"
+    criteria = {item.get("id"): item for item in acceptance_document.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    for acceptance_id in [
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    ]:
+        criterion = criteria.get(acceptance_id, {})
+        if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+            raise RuntimeError(f"CC Switch disposable update acceptance mapping drifted: {acceptance_id}")
+    evidence = {item.get("id"): item for item in acceptance_document.get("evidence", []) if isinstance(item, dict)}.get(evidence_id, {})
+    if evidence.get("path") != "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json" or set(evidence.get("supports", [])) != {
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    }:
+        raise RuntimeError("CC Switch disposable update evidence program mapping drifted.")
+
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no real user skill", "no hook", "no upstream issue", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"CC Switch disposable update non-action missing: {phrase}")
+    expected_docs = {
+        "docs/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.md": ["not an atomic transaction", "Isolation incident", "zero test repository rows", "248 Skill rows", "first real canary"],
+        "docs/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.zh-CN.md": ["不是原子事务", "隔离事故", "纯测试来源行为 0", "248 条 Skill", "第一次真实金丝雀"],
+    }
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"CC Switch disposable update doc missing phrase in {doc_path}: {phrase}")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    for text, path in [(readme, "README.md"), (readme_zh, "README.zh-CN.md")]:
+        if "cc-switch-disposable-source-update-and-recovery-review-2026-07-18" not in text:
+            raise RuntimeError(f"{path} must link the CC Switch disposable update review.")
+
+
+def validate_cc_switch_handoff_real_canary_readonly_preview(
+    document: dict[str, object],
+    update_review: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate the decision-ready, no-mutation first real-canary preview."""
+    if document.get("schema") != 1 or document.get("id") != "cc-switch-handoff-real-canary-readonly-preview-2026-07-18":
+        raise RuntimeError("CC Switch handoff canary preview identity drifted.")
+    if document.get("status") != "decision-ready-read-only-preview-live-change-not-authorized":
+        raise RuntimeError("CC Switch handoff canary preview status drifted.")
+
+    candidate = document.get("candidate", {})
+    if candidate != {
+        "liveIdentity": "local:handoff",
+        "targetIdentity": "mattpocock/skills:skills/productivity/handoff",
+        "sourceId": "github:mattpocock/skills",
+        "sourcePath": "skills/productivity/handoff",
+        "sourceBranch": "main",
+        "reviewedRevision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "commitDate": "2026-07-16T10:03:12+01:00",
+        "remoteMainObservedRevision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "remoteMainObservedAt": "2026-07-18",
+        "license": "MIT",
+        "licenseSha256": "4981C5F6A90EB3A969DACABB9350F5A75695FF3910B39B6534952908DFDC5FF7",
+    }:
+        raise RuntimeError("CC Switch handoff canary source pin drifted.")
+
+    selection = document.get("selectionReview", {})
+    if (
+        selection.get("eligibleExactReplacementCandidatesCompared") != 16
+        or selection.get("changedCommonFiles") != ["SKILL.md"]
+        or selection.get("sourceOnlyFiles") != ["agents/openai.yaml"]
+        or selection.get("localOnlyFiles") != []
+        or selection.get("skillMdLineAdds") != 2
+        or selection.get("skillMdLineDeletes") != 1
+        or selection.get("executableSurfaces") != []
+        or len(selection.get("semanticDelta", [])) != 3
+    ):
+        raise RuntimeError("CC Switch handoff canary selection evidence drifted.")
+    selection_text = json.dumps(selection, ensure_ascii=False).lower()
+    for phrase in ["smallest reviewed semantic", "no executable file", "tightens invocation control"]:
+        if phrase not in selection_text:
+            raise RuntimeError(f"CC Switch handoff canary selection judgment missing: {phrase}")
+
+    before = document.get("liveBeforeState", {})
+    row = before.get("row", {})
+    if (
+        before.get("databaseSkillRowCount") != 248
+        or before.get("databaseRepositoryRowCount") != 5
+        or before.get("sourceRepositoryAlreadyRegistered") is not False
+        or before.get("computedSsotTreeSha256") != "478ba7f43732eb37517839d1360c630bc645a1eac6f39737cb3fb38d22a1194b"
+        or before.get("databaseHashMatchesCurrentSsot") is not False
+        or before.get("skillMdSha256") != "D215DD8F2A19BF85FDAF67A3CDB5077641F6B4108F229BA79579414793D7B0A3"
+        or row.get("id") != "local:handoff"
+        or row.get("databaseContentHash") != "fc1c5f618015e58493b5401b6f9962ad3ae27c03f2b35a5554d4e81e5357bb87"
+        or row.get("enabledClaude") is not True
+        or row.get("enabledCodex") is not True
+        or len(before.get("projections", [])) != 2
+    ):
+        raise RuntimeError("CC Switch handoff canary before-state drifted.")
+    for projection in before.get("projections", []):
+        if projection.get("linkType") != "SymbolicLink" or projection.get("skillMdSha256") != before.get("skillMdSha256"):
+            raise RuntimeError("CC Switch handoff canary projection evidence drifted.")
+
+    target = document.get("reviewedTargetState", {})
+    if target.get("treeSha256") != "c97a305f5ca0b6fa21ca82a009ac5a553acd02aab63cf59de939f75ac7797393" or target.get("files") != [
+        {"path": "SKILL.md", "sha256": "57C9F1F392D7352CDC85B1E39CA49EDDC70CE1DC278BD9653FB4F23DFC2560FC"},
+        {"path": "agents/openai.yaml", "sha256": "5C479FD562C691851690E8B18C8501045BEF0943C10743D636B2FAE26ADD1D28"},
+    ]:
+        raise RuntimeError("CC Switch handoff canary target hashes drifted.")
+    expected_row = target.get("expectedRow", {})
+    if (
+        expected_row.get("id") != "mattpocock/skills:skills/productivity/handoff"
+        or expected_row.get("contentHash") != target.get("treeSha256")
+        or expected_row.get("enabledClaude") is not True
+        or expected_row.get("enabledCodex") is not True
+    ):
+        raise RuntimeError("CC Switch handoff canary expected row drifted.")
+    correction = document.get("hashBasisCorrection", {})
+    if correction != {
+        "status": "corrected-after-fail-closed-live-attempt",
+        "originalWindowsCheckoutTreeSha256": "40bb1eacfec8715e1231b2d3feeceb91ffc0f3195e67dbc07e2a3554e0c21745",
+        "ccSwitchInstalledGithubArchiveTreeSha256": "c97a305f5ca0b6fa21ca82a009ac5a553acd02aab63cf59de939f75ac7797393",
+        "difference": "CRLF working-tree bytes versus LF GitHub archive bytes",
+        "semanticAndLineContentEquivalentIgnoringEol": True,
+        "securityOrQualityGateWeakened": False,
+        "executionEvidence": "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+    }:
+        raise RuntimeError("CC Switch handoff canary archive hash correction drifted.")
+
+    limitations = " ".join(str(item) for item in document.get("operationalLimitations", [])).lower()
+    for phrase in ["directory collision", "does not persist the reviewed commit pin", "non-atomic", "database hash is stale"]:
+        if phrase not in limitations:
+            raise RuntimeError(f"CC Switch handoff canary limitation missing: {phrase}")
+    transaction = document.get("transactionPreview", {})
+    if [len(transaction.get(key, [])) for key in ["beforeMutation", "boundedMutation", "acceptanceChecks", "rollback"]] != [5, 4, 5, 5]:
+        raise RuntimeError("CC Switch handoff canary transaction preview drifted.")
+    decision = document.get("decision", {})
+    if decision != {
+        "candidateReadyForOwnerDecision": True,
+        "liveCanaryAuthorized": False,
+        "automaticUpdateAuthorized": False,
+        "bulkMigrationAuthorized": False,
+        "nextGate": "separate owner authorization for this exact one-Skill transaction after reviewing the before-state and rollback preview",
+    }:
+        raise RuntimeError("CC Switch handoff canary decision boundary drifted.")
+    if update_review.get("confirmedProductGap", {}).get("automaticRollbackOnReplacementFailure") is not False:
+        raise RuntimeError("CC Switch handoff canary lost the updater rollback gap linkage.")
+
+    manager = program_document.get("strategicPositioning", {}).get("managerProductBoundary", {})
+    expected_manager = {
+        "firstRealCanaryPreviewEvidence": "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json",
+        "firstRealCanaryPreviewState": "decision-ready-read-only-preview-live-change-not-authorized",
+        "firstRealCanaryCandidate": "handoff",
+        "firstRealCanaryExecutionAuthorized": True,
+        "ccSwitchSourcePinPersistence": "branch-only-external-reviewed-revision-required",
+    }
+    for key, value in expected_manager.items():
+        if manager.get(key) != value:
+            raise RuntimeError(f"Program plan lost CC Switch handoff canary state: {key}")
+
+    evidence_id = "evidence.cc-switch-handoff-real-canary-readonly-preview-2026-07-18"
+    criteria = {item.get("id"): item for item in acceptance_document.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    supports = {
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    }
+    for acceptance_id in supports:
+        criterion = criteria.get(acceptance_id, {})
+        if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+            raise RuntimeError(f"CC Switch handoff canary acceptance mapping drifted: {acceptance_id}")
+    evidence = {item.get("id"): item for item in acceptance_document.get("evidence", []) if isinstance(item, dict)}.get(evidence_id, {})
+    if evidence.get("path") != "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json" or set(evidence.get("supports", [])) != supports:
+        raise RuntimeError("CC Switch handoff canary evidence mapping drifted.")
+
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no cc switch source", "no skill row", "no third-party skill body", "no commit"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"CC Switch handoff canary non-action missing: {phrase}")
+    expected_docs = {
+        "docs/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.md": ["lowest-risk first real-canary", "cannot preserve the commit pin", "Automatic update remains prohibited", "read-only preview"],
+        "docs/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.zh-CN.md": ["风险最低的第一只真实金丝雀", "不能持久保存本次固定", "自动更新继续禁止", "只读预览"],
+    }
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"CC Switch handoff canary doc missing phrase in {doc_path}: {phrase}")
+    for readme_path in ["README.md", "README.zh-CN.md"]:
+        if "cc-switch-handoff-real-canary-readonly-preview-2026-07-18" not in (ROOT / readme_path).read_text(encoding="utf-8"):
+            raise RuntimeError(f"{readme_path} must link the CC Switch handoff canary preview.")
+
+
+def validate_cc_switch_handoff_real_canary_execution(
+    document: dict[str, object],
+    preview_document: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate the owner-authorized local source-backed canary and open boundaries."""
+    if document.get("schema") != 1 or document.get("id") != "cc-switch-handoff-real-canary-execution-2026-07-18":
+        raise RuntimeError("CC Switch handoff canary execution identity drifted.")
+    if document.get("status") != "verified-local-live-source-backed-canary-and-owner-authorized-webdav-sync-fresh-session-invocation-open":
+        raise RuntimeError("CC Switch handoff canary execution status drifted.")
+
+    source_pin = document.get("sourcePin", {})
+    if (
+        source_pin.get("sourceId") != "github:mattpocock/skills"
+        or source_pin.get("reviewedRevision") != "9603c1cc8118d08bc1b3bf34cf714f62178dea3b"
+        or source_pin.get("remoteMainRevision") != source_pin.get("reviewedRevision")
+        or source_pin.get("remoteMainRecheckedBeforeEachAttempt") is not True
+        or source_pin.get("ccSwitchPersistsReviewedRevision") is not False
+        or source_pin.get("ccSwitchPersistedReference") != "main"
+    ):
+        raise RuntimeError("CC Switch handoff canary execution source pin drifted.")
+
+    backup = document.get("quiescenceAndBackup", {})
+    if (
+        backup.get("ccSwitchProcessStoppedBeforeMutation") is not True
+        or backup.get("ccSwitchRestartedAfterMutation") is not False
+        or backup.get("webDavAutoSyncObserved") is not True
+        or backup.get("externalSyncAuthorized") is not False
+        or backup.get("externalSyncPerformedByThisTask") is not False
+        or backup.get("ccSwitchRestorableLocalBackupId") != "20260718_071018_handoff"
+        or backup.get("consistentDatabaseBackup") != {
+            "path": "C:/tmp/cc-switch-handoff-canary-20260718/cc-switch-before.sqlite",
+            "sha256": "4C933A0CDCAF6DA07E237B2AFD03464E56D7E0A145F78929AB23036D86A820FA",
+        }
+    ):
+        raise RuntimeError("CC Switch handoff canary backup or sync boundary drifted.")
+
+    first = document.get("firstAttempt", {})
+    if (
+        first.get("result") != "rejected-and-rolled-back"
+        or first.get("checkoutTreeSha256") != "40bb1eacfec8715e1231b2d3feeceb91ffc0f3195e67dbc07e2a3554e0c21745"
+        or first.get("archiveTreeSha256") != "c97a305f5ca0b6fa21ca82a009ac5a553acd02aab63cf59de939f75ac7797393"
+        or first.get("lineEndingDifferenceOnlyVerified") is not True
+        or first.get("localBackupId") != "20260718_070634_handoff"
+        or first.get("rejectedSourceBackupId") != "20260718_070638_handoff"
+        or any(first.get(key) is not True for key in [
+            "localBodyRestored",
+            "localSourceRegistrationRemoved",
+            "claudeAndCodexProjectionsRestored",
+            "originalInstalledAtAndStoredHashRestoredFromBeforeState",
+        ])
+    ):
+        raise RuntimeError("CC Switch handoff first-attempt rollback evidence drifted.")
+
+    accepted = document.get("acceptedAttempt", {})
+    if (
+        accepted.get("testName") != "services::skill::tests::live_handoff_source_canary_20260718"
+        or accepted.get("passed") != 1
+        or accepted.get("failed") != 0
+        or accepted.get("oldIdentityAbsent") != "local:handoff"
+        or accepted.get("newIdentity") != "mattpocock/skills:skills/productivity/handoff"
+        or accepted.get("skillRowCountBefore") != 248
+        or accepted.get("skillRowCountAfter") != 248
+        or accepted.get("repositoryRowCountBefore") != 5
+        or accepted.get("repositoryRowCountAfter") != 6
+        or accepted.get("ssotTreeSha256") != "c97a305f5ca0b6fa21ca82a009ac5a553acd02aab63cf59de939f75ac7797393"
+        or accepted.get("enabledConsumers") != ["claude", "codex"]
+        or accepted.get("disabledConsumers") != ["gemini", "opencode", "hermes"]
+    ):
+        raise RuntimeError("CC Switch handoff accepted canary evidence drifted.")
+    if accepted.get("files") != {
+        "SKILL.md": "57C9F1F392D7352CDC85B1E39CA49EDDC70CE1DC278BD9653FB4F23DFC2560FC",
+        "agents/openai.yaml": "5C479FD562C691851690E8B18C8501045BEF0943C10743D636B2FAE26ADD1D28",
+    }:
+        raise RuntimeError("CC Switch handoff accepted file hashes drifted.")
+
+    post = document.get("postStateAudit", {})
+    if (
+        post.get("unrelatedSkillRowsUnchanged") is not True
+        or post.get("preexistingSourceRowsUnchanged") is not True
+        or post.get("otherDatabaseTableCountUnchanged") != 14
+        or len(post.get("otherDatabaseTablesUnchanged", [])) != 14
+        or post.get("agentsProjection") != "symbolic-link-to-cc-switch-ssot"
+        or post.get("codexProjection") != "symbolic-link-to-cc-switch-ssot"
+        or post.get("requiredRecoveryBackupIdsPresent") != [
+            "20260718_070634_handoff",
+            "20260718_070638_handoff",
+            "20260718_071018_handoff",
+        ]
+        or post.get("backupDirectoryCountAfter") != 20
+        or post.get("testResidueObserved") is not False
+    ):
+        raise RuntimeError("CC Switch handoff post-state audit drifted.")
+
+    update = document.get("sourceUpdateCheck", {})
+    other_ids = update.get("otherUpdateIds", [])
+    if (
+        update.get("testName") != "services::skill::tests::live_handoff_source_update_check_20260718"
+        or update.get("passed") != 1
+        or update.get("failed") != 0
+        or update.get("handoffUpdateReported") is not False
+        or update.get("otherUpdateSignalCount") != 20
+        or update.get("otherUpdateSource") != "larksuite/cli"
+        or len(other_ids) != 20
+        or len(set(other_ids)) != 20
+        or any(not str(item).startswith("larksuite/cli:lark-") for item in other_ids)
+        or update.get("otherUpdatesExecuted") is not False
+    ):
+        raise RuntimeError("CC Switch handoff source update-check evidence drifted.")
+
+    sync = document.get("postAuthorizationSync", {})
+    sync_delta = sync.get("observedRuntimeDeltas", {})
+    if (
+        sync.get("ownerAuthorized") is not True
+        or sync.get("ccSwitchProcessRunning") is not True
+        or sync.get("ccSwitchReportedLastSyncAt") != "2026-07-18T19:17:44+08:00"
+        or sync.get("handoffSourceBackedStateIntact") is not True
+        or sync.get("unrelatedSkillRowsUnchanged") is not True
+        or sync.get("skillSourceRowsExpected") is not True
+        or sync.get("crossDeviceContentEqualityVerified") is not False
+        or sync_delta != {
+            "removedMcpIds": ["fetch", "sequential-thinking", "time"],
+            "proxyRequestLogsAppendOnly": True,
+            "sessionLogSyncAdvanced": True,
+        }
+    ):
+        raise RuntimeError("CC Switch post-authorization WebDAV sync evidence drifted.")
+
+    claims = document.get("claimLimits", {})
+    if claims != {
+        "localCcSwitchSourceInstallVerified": True,
+        "localCcSwitchNoDeltaUpdateCheckVerified": True,
+        "freshSessionSkillInvocationVerified": False,
+        "webDavSyncVerified": True,
+        "crossDeviceStateVerified": False,
+        "bulkMigrationAuthorized": False,
+        "automaticUpdateAuthorized": False,
+    }:
+        raise RuntimeError("CC Switch handoff execution claim limits drifted.")
+    correction = preview_document.get("hashBasisCorrection", {})
+    if correction.get("executionEvidence") != "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json" or correction.get("ccSwitchInstalledGithubArchiveTreeSha256") != accepted.get("ssotTreeSha256"):
+        raise RuntimeError("CC Switch handoff execution lost preview correction linkage.")
+
+    manager = program_document.get("strategicPositioning", {}).get("managerProductBoundary", {})
+    expected_manager = {
+        "firstRealCanaryExecutionAuthorized": True,
+        "firstRealCanaryExecutionEvidence": "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+        "firstRealCanaryExecutionState": "verified-local-live-source-backed-and-owner-authorized-webdav-sync-fresh-session-invocation-open",
+        "ccSwitchExternalSyncState": "owner-authorized-local-sync-observed-cc-switch-running-cross-device-equality-open",
+        "ccSwitchObservedUnreviewedUpdateSignals": 20,
+        "ccSwitchObservedUpdateSignalSource": "larksuite/cli",
+        "liveSourcePreservingProjectionState": "partial-one-of-43-active-cc-switch-targets-source-backed",
+    }
+    for key, value in expected_manager.items():
+        if manager.get(key) != value:
+            raise RuntimeError(f"Program plan lost CC Switch handoff execution state: {key}")
+
+    evidence_id = "evidence.cc-switch-handoff-real-canary-execution-2026-07-18"
+    supports = {
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.consumer-mapping-evidence",
+        "acceptance.foreign-managed-capability-coexistence",
+    }
+    criteria = {item.get("id"): item for item in acceptance_document.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    for acceptance_id in supports:
+        criterion = criteria.get(acceptance_id, {})
+        if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+            raise RuntimeError(f"CC Switch handoff execution acceptance mapping drifted: {acceptance_id}")
+    evidence = {item.get("id"): item for item in acceptance_document.get("evidence", []) if isinstance(item, dict)}.get(evidence_id, {})
+    if evidence.get("path") != "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json" or set(evidence.get("supports", [])) != supports:
+        raise RuntimeError("CC Switch handoff execution evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/cc-switch-handoff-real-canary-execution-2026-07-18.md": ["converted `local:handoff`", "Fail-closed correction", "20 other update signals", "authorized normal CC Switch WebDAV synchronization"],
+        "docs/cc-switch-handoff-real-canary-execution-2026-07-18.zh-CN.md": ["转换为", "失败关闭", "20 个其他更新信号", "授权 CC Switch 正常执行 WebDAV 同步"],
+    }
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"CC Switch handoff execution doc missing phrase in {doc_path}: {phrase}")
+    for readme_path in ["README.md", "README.zh-CN.md"]:
+        if "cc-switch-handoff-real-canary-execution-2026-07-18" not in (ROOT / readme_path).read_text(encoding="utf-8"):
+            raise RuntimeError(f"{readme_path} must link the CC Switch handoff execution evidence.")
+
+
+def validate_dynamic_runtime_control_gap_review(
+    document: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate native-first runtime control research and carrier boundaries."""
+    if document.get("schema") != 1 or document.get("id") != "dynamic-runtime-control-gap-review-2026-07-18":
+        raise RuntimeError("Dynamic runtime-control review identity drifted.")
+    if document.get("status") != "native-startup-control-verified-hot-switch-and-telemetry-gap-unproven":
+        raise RuntimeError("Dynamic runtime-control review status drifted.")
+
+    local = document.get("codexLocalBaseline", {})
+    if (
+        local.get("cliVersion") != "0.144.5"
+        or local.get("visibleMcpCount") != 13
+        or local.get("visibleMcpEnabledCount") != 13
+        or local.get("dedicatedEnableDisableCommandPresent") is not False
+        or local.get("aggregatedRuntimeControlPlaneComplete") is not False
+    ):
+        raise RuntimeError("Dynamic runtime-control local baseline drifted.")
+    judgment = document.get("currentJudgment", {})
+    expected_judgment = {
+        "staticStartupControlAvailable": True,
+        "midSessionHotEnableDisableProven": False,
+        "alreadyRunningServerUnloadProven": False,
+        "singleCliSurfaceControlsAllDesktopPluginAndRuntimeInjectedServers": False,
+        "skillAloneCanGuaranteeProcessLifecycleControl": False,
+        "hookAloneCanGuaranteeProcessLifecycleControl": False,
+        "residualGapProvenForRepositoryAuthoring": False,
+    }
+    for key, expected in expected_judgment.items():
+        if judgment.get(key) is not expected:
+            raise RuntimeError(f"Dynamic runtime-control judgment drifted: {key}")
+
+    carriers = document.get("instructionCarrierBoundary", {})
+    if (
+        carriers.get("portableRepositoryVersion", {}).get("carrier") != "agent-skills-curated"
+        or carriers.get("privateSelfUseVersion", {}).get("carrier") != "codex-user-config private repository"
+        or carriers.get("publicConsumerVersion", {}).get("defaultDecision") != "no-third-hand-maintained-full-copy"
+        or carriers.get("crossRepositoryWritesAuthorizedNow") is not False
+    ):
+        raise RuntimeError("Dynamic runtime-control instruction-carrier boundary drifted.")
+    future = document.get("futureAdaptiveContract", {})
+    if future.get("modes") != ["off", "auto", "on"] or future.get("separateLayers") != ["observation", "decision", "actuation", "verification", "rollback"]:
+        raise RuntimeError("Dynamic runtime-control adaptive contract drifted.")
+    acceptance_state = document.get("acceptanceState", {})
+    if acceptance_state.get("nativeStaticControl") != "verified" or acceptance_state.get("repositoryAuthoredSkillOrHook") != "not-authorized-residual-gap-not-proven":
+        raise RuntimeError("Dynamic runtime-control acceptance state drifted.")
+
+    criteria = {item.get("id"): item for item in acceptance_document.get("acceptanceCriteria", []) if isinstance(item, dict)}
+    criterion = criteria.get("acceptance.dynamic-runtime-control-gap-research", {})
+    evidence_id = "evidence.dynamic-runtime-control-gap-review-2026-07-18"
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Dynamic runtime-control acceptance mapping drifted.")
+    evidence = {item.get("id"): item for item in acceptance_document.get("evidence", []) if isinstance(item, dict)}.get(evidence_id, {})
+    if evidence.get("path") != "registry/dynamic-runtime-control-gap-review-2026-07-18.json":
+        raise RuntimeError("Dynamic runtime-control evidence path drifted.")
+    plan_text = json.dumps(program_document, ensure_ascii=False)
+    for phrase in ["acceptance.dynamic-runtime-control-gap-research", "no manually maintained full authority copy"]:
+        if phrase not in plan_text:
+            raise RuntimeError(f"Program plan lost dynamic runtime-control boundary: {phrase}")
+
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no mcp", "no server process termination", "no codex-user-config", "no repository-authored skill"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"Dynamic runtime-control non-action missing: {phrase}")
+    expected_docs = {
+        "docs/dynamic-runtime-control-gap-review-2026-07-18.md": ["native startup filtering first", "off`/`auto`/`on", "third manually maintained authority"],
+        "docs/dynamic-runtime-control-gap-review-2026-07-18.zh-CN.md": ["原生启动期过滤", "off`/`auto`/`on", "第三份全文"],
+    }
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Dynamic runtime-control doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_legacy_curated_skill_source_migration_review(
+    document: dict[str, object],
+    live_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    """Validate provisional per-Skill source migration dispositions."""
+    if document.get("schema") != 1 or document.get("id") != "legacy-curated-skill-source-migration-review-2026-07-18":
+        raise RuntimeError("Legacy curated Skill migration review identity drifted.")
+    if document.get("status") != "verified-read-only-provisional-dispositions-migration-not-authorized":
+        raise RuntimeError("Legacy curated Skill migration review status drifted.")
+
+    snapshots = {
+        item.get("sourceId"): item
+        for item in document.get("sourceSnapshots", [])
+        if isinstance(item, dict)
+    }
+    expected_snapshots = {
+        "github:addyosmani/agent-skills": {
+            "license": "MIT",
+            "priorReviewedRevision": "17214a29c429a19f7a9607f2c06f9d650ea87eb0",
+            "currentRevision": "06300e258ef62cdbfbc9b1615ac5b4f58bee05ac",
+            "currentCommitDate": "2026-07-17T23:51:54Z",
+            "commitsSincePriorReview": 91,
+            "mappedSkillCount": 5,
+        },
+        "github:mattpocock/skills": {
+            "license": "MIT",
+            "priorReviewedRevision": "6eeb81b5fcfeeb5bd531dd47ab2f9f2bbea27461",
+            "currentRevision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+            "currentCommitDate": "2026-07-16T09:03:12Z",
+            "commitsSincePriorReview": 176,
+            "mappedSkillCount": 14,
+        },
+    }
+    if set(snapshots) != set(expected_snapshots):
+        raise RuntimeError("Legacy curated Skill source snapshot set drifted.")
+    for source_id, expected in expected_snapshots.items():
+        actual = {key: value for key, value in snapshots[source_id].items() if key != "sourceId"}
+        if actual != expected:
+            raise RuntimeError(f"Legacy curated Skill source snapshot drifted: {source_id}")
+
+    observations = document.get("observations", {})
+    expected_observations = {
+        "legacySkillCount": 19,
+        "wholeTreeExactMatchesToCurrentUpstream": 0,
+        "currentUpstreamActiveReplacementCandidateCount": 16,
+        "retireOrSupersedeCandidateCount": 3,
+        "retainAdaptedDerivativeCandidateCount": 0,
+        "migrationAuthorized": False,
+        "liveCcSwitchMutationPerformed": False,
+        "liveAgentHomeMutationPerformed": False,
+        "sourceBodyExecuted": False,
+    }
+    if observations != expected_observations:
+        raise RuntimeError("Legacy curated Skill migration observation counts drifted.")
+
+    static_review = document.get("currentRevisionStaticReview", {})
+    expected_static_scalars = {
+        "mode": "github-api-exact-revision-body-read-no-execution",
+        "mappedSkillBodyCount": 19,
+        "additionalShellSurfaceCount": 2,
+        "sourceBodyExecuted": False,
+        "addyosmaniSelectedTreeExecutableCount": 0,
+        "mattpocockSelectedShellSurfaceCount": 2,
+        "mattpocockSelectedExecutableModeCount": 1,
+    }
+    if any(static_review.get(key) != value for key, value in expected_static_scalars.items()):
+        raise RuntimeError("Legacy curated Skill current-revision static review counts drifted.")
+    if set(static_review.get("shellSurfaces", [])) != {
+        "skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh",
+        "skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+    }:
+        raise RuntimeError("Legacy curated Skill current-revision shell surfaces drifted.")
+    findings = " ".join(str(item) for item in static_review.get("authorityAndPortabilityFindings", [])).lower()
+    for phrase in ["git push", "throwaway branch", "external tracker", "repository instruction", "host gui", "sub-agent", "claude-specific", "irreversible data", "openai metadata"]:
+        if phrase not in findings:
+            raise RuntimeError(f"Legacy curated Skill static authority finding missing: {phrase}")
+    if "no embedded credential" not in static_review.get("secretHandlingObservation", "").lower():
+        raise RuntimeError("Legacy curated Skill static secret-handling observation drifted.")
+    decision = static_review.get("decision", "").lower()
+    if "provisional and inactive" not in decision or "three retirement dispositions unchanged" not in decision:
+        raise RuntimeError("Legacy curated Skill static review decision drifted.")
+
+    skills = {
+        item.get("skill"): item
+        for item in document.get("skills", [])
+        if isinstance(item, dict)
+    }
+    live_skills = set(live_document.get("legacyCuratedSlice", {}).get("skills", []))
+    if len(skills) != 19 or set(skills) != live_skills:
+        raise RuntimeError("Legacy curated Skill migration scope drifted from live evidence.")
+    replace = {
+        name for name, item in skills.items()
+        if item.get("provisionalDisposition") == "replace-with-reviewed-source-backed-upstream-exact"
+    }
+    retire = {
+        name for name, item in skills.items()
+        if item.get("provisionalDisposition") == "retire-or-supersede"
+    }
+    if len(replace) != 16 or retire != {"git-guardrails", "setup-project-skills", "ubiquitous-language"}:
+        raise RuntimeError("Legacy curated Skill provisional dispositions drifted.")
+    if any(item.get("provisionalDisposition") not in {
+        "replace-with-reviewed-source-backed-upstream-exact", "retire-or-supersede"
+    } for item in skills.values()):
+        raise RuntimeError("Legacy curated Skill migration introduced an unsupported disposition.")
+    if skills["review"].get("currentPath") != "skills/engineering/code-review" or skills["to-issues"].get("currentPath") != "skills/engineering/to-tickets" or skills["to-prd"].get("currentPath") != "skills/engineering/to-spec":
+        raise RuntimeError("Legacy curated Skill renamed upstream identity drifted.")
+    if skills["ubiquitous-language"].get("lifecycle") != "deprecated":
+        raise RuntimeError("Legacy curated deprecated Skill lifecycle drifted.")
+    if skills["diagnose"].get("executableSurfaces") != ["scripts/hitl-loop.template.sh"] or skills["git-guardrails"].get("executableSurfaces") != ["scripts/block-dangerous-git.sh"]:
+        raise RuntimeError("Legacy curated Skill executable-surface inventory drifted.")
+
+    gate = document.get("migrationGate", {})
+    for key, expected in {
+        "bulkReplacementAuthorized": False,
+        "namePreservingForkAllowedByDefault": False,
+        "upstreamExactBodyMayBeEditedInPlace": False,
+        "currentLiveStateFrozenUntilGate": True,
+    }.items():
+        if gate.get(key) != expected:
+            raise RuntimeError(f"Legacy curated Skill migration authority drifted: {key}")
+    required = " ".join(str(item) for item in gate.get("requiredBeforeAnyLiveChange", [])).lower()
+    for phrase in ["license and provenance", "static security", "quality overlap and redundancy", "shortfall coverage", "cc switch preview", "separate user authorization", "post-change source identity"]:
+        if phrase not in required:
+            raise RuntimeError(f"Legacy curated Skill migration gate missing: {phrase}")
+
+    evidence_id = "evidence.legacy-curated-skill-source-migration-review-2026-07-18"
+    criterion = next((item for item in acceptance_document.get("acceptanceCriteria", []) if item.get("id") == "acceptance.cc-switch-source-preserving-skill-pool"), {})
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Legacy curated Skill migration acceptance mapping drifted.")
+    evidence = next((item for item in acceptance_document.get("evidence", []) if item.get("id") == evidence_id), {})
+    if evidence.get("path") != "registry/legacy-curated-skill-source-migration-review-2026-07-18.json" or evidence.get("supports") != ["acceptance.cc-switch-source-preserving-skill-pool"]:
+        raise RuntimeError("Legacy curated Skill migration evidence mapping drifted.")
+
+    expected_docs = {
+        "docs/legacy-curated-skill-source-migration-review-2026-07-18.md": ["None of the 19", "Sixteen", "Three", "No adapted derivative", "without execution", "does not prove cross-Agent portability", "separate user authorization"],
+        "docs/legacy-curated-skill-source-migration-review-2026-07-18.zh-CN.md": ["19 个真实目录", "16 个", "3 个", "没有任何一个适配衍生物", "不执行读取", "不证明跨 Agent 可移植", "单独获得用户授权"],
+    }
+    if set(document.get("evidenceDocs", [])) != set(expected_docs):
+        raise RuntimeError("Legacy curated Skill migration evidence docs drifted.")
+    for doc_path, phrases in expected_docs.items():
+        text = " ".join((ROOT / doc_path).read_text(encoding="utf-8").split())
+        for phrase in phrases:
+            if phrase not in text:
+                raise RuntimeError(f"Legacy curated Skill migration doc missing phrase in {doc_path}: {phrase}")
+
+
+def validate_adaptive_harness_source_suite_and_user_sovereignty(
+    document: dict[str, object],
+    program_doc: dict[str, object],
+) -> None:
+    """Validate selective curation, adaptive Harness, and user-sovereignty policy."""
+    if document.get("schemaVersion") != 1:
+        raise RuntimeError("Adaptive Harness acceptance schema drifted.")
+    if document.get("id") != "adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18":
+        raise RuntimeError("Adaptive Harness acceptance identity drifted.")
+    if document.get("decision") != "owner-accepted-adaptive-harness-selective-curation-and-free-consumption":
+        raise RuntimeError("Adaptive Harness acceptance decision drifted.")
+    if document.get("humanProjection") != "docs/adaptive-harness-source-suite-and-user-sovereignty-2026-07-18.md":
+        raise RuntimeError("Adaptive Harness human projection drifted.")
+
+    value = document.get("valueProposition")
+    expected_value_flags = {
+        "curationIsNotMirroring": True,
+        "strictAdmissionFreeConsumption": True,
+        "upstreamBodiesUnchangedByDefault": True,
+        "mandatoryManagerRequired": False,
+        "mandatoryHookRequired": False,
+        "userMayAddRemoveCombineForkOrModifySkills": True,
+        "consumerModificationPreservesUserFreedom": True,
+        "curatedVerificationAutomaticallyTransfersToModifiedDerivative": False,
+    }
+    if not isinstance(value, dict):
+        raise RuntimeError("Adaptive Harness value proposition is required.")
+    for key, expected in expected_value_flags.items():
+        if value.get(key) != expected:
+            raise RuntimeError(f"Adaptive Harness value proposition drifted: {key}")
+    measures = " ".join(str(item) for item in value.get("successMeasures", [])).lower()
+    for phrase in ["shortfall coverage", "trial cost", "redundant capability", "constraint and context friction", "reversible"]:
+        if phrase not in measures:
+            raise RuntimeError(f"Adaptive Harness success measure missing phrase: {phrase}")
+
+    suite = document.get("sourceSuiteSelection")
+    if not isinstance(suite, dict):
+        raise RuntimeError("Source-suite selection contract is required.")
+    if suite.get("reviewLevels") != ["source", "suite", "component", "capability"]:
+        raise RuntimeError("Source-suite review levels drifted.")
+    for key, expected in {
+        "suiteAtomicityMustBeAssessed": True,
+        "componentAdmissionIsIndependent": True,
+        "hookAdmissionIsIndependentFromSkillAdmission": True,
+        "sourceUpdateDoesNotAutoAdmitNewOrChangedComponents": True,
+        "selectionManifestRequired": True,
+    }.items():
+        if suite.get(key) != expected:
+            raise RuntimeError(f"Source-suite selection boundary drifted: {key}")
+    manifest = " ".join(str(item) for item in suite.get("selectionManifestFields", [])).lower()
+    for phrase in ["immutable revision", "atomicity", "included and excluded", "overlap complement conflict", "hook presence", "re-review trigger"]:
+        if phrase not in manifest:
+            raise RuntimeError(f"Source-suite selection manifest missing phrase: {phrase}")
+    expected_dispositions = {
+        "approve-whole-suite",
+        "approve-selected-unchanged-components",
+        "approve-primary-and-alternative",
+        "approve-complementary-composition",
+        "reference-only",
+        "hold",
+        "reject-redundant",
+        "reject-unsafe-or-incompatible",
+    }
+    if set(suite.get("allowedDispositions", [])) != expected_dispositions:
+        raise RuntimeError("Source-suite allowed dispositions drifted.")
+
+    harness = document.get("adaptiveHarness")
+    if not isinstance(harness, dict) or harness.get("modes") != ["open", "assist", "guarded"]:
+        raise RuntimeError("Adaptive Harness modes drifted.")
+    for key, expected in {
+        "negativeBoundaryFirst": True,
+        "nativeOfficialRuntimeFirst": True,
+        "noSkillIsValid": True,
+        "noHookIsValid": True,
+        "noAdditionalStructureIsValid": True,
+        "automaticModeMustDefaultToAdvisoryOutsideHardSafetyBoundaries": True,
+        "constraintsRequireObservedOrReproducibleFailure": True,
+        "constraintsRequireNetBenefitEvidence": True,
+        "constraintsMustBeReversibleAndReviewable": True,
+        "obsoleteConstraintsMustBeRelaxedOrRetiredAsAgentCapabilityImproves": True,
+    }.items():
+        if harness.get(key) != expected:
+            raise RuntimeError(f"Adaptive Harness proportionality boundary drifted: {key}")
+    posture_text = " ".join(str(harness.get(key, "")) for key in ["openMode", "assistMode", "guardedMode"]).lower()
+    for phrase in ["native reasoning", "without making them universal gates", "authority evidence verification and rollback"]:
+        if phrase not in posture_text:
+            raise RuntimeError(f"Adaptive Harness posture missing phrase: {phrase}")
+
+    authored = document.get("selfAuthoredAdaptiveCapabilities")
+    if not isinstance(authored, dict):
+        raise RuntimeError("Self-authored adaptive capability contract is required.")
+    for key, expected in {
+        "appliesOnlyAfterReproducibleResidualGap": True,
+        "skillsAndHooksMustBeDynamicallyAdaptive": True,
+        "autoModeIsContextualAndAdvisoryOutsideHardBoundaries": True,
+        "onModeIsExplicitPolicyNotUniversalMaximumStrictness": True,
+        "decisionMustBeExplainableAndObservable": True,
+        "userOverrideAllowedOutsideNonWaivableSafetyAndAuthorityFloor": True,
+        "silentCodeOrPolicySelfModificationAllowed": False,
+        "silentPermissionExpansionAllowed": False,
+        "feedbackMayProposeButNotAutoPublishRepositoryChanges": True,
+        "hostSpecificBehaviorRequiresExplicitProfileAndSafeDegradation": True,
+    }.items():
+        if authored.get(key) != expected:
+            raise RuntimeError(f"Self-authored adaptive capability boundary drifted: {key}")
+    if authored.get("hookModes") != ["off", "auto", "on"]:
+        raise RuntimeError("Self-authored adaptive Hook modes drifted.")
+    adaptation_inputs = " ".join(str(item) for item in authored.get("adaptationInputs", [])).lower()
+    for phrase in ["task intent and phase", "risk impact", "permission privacy", "host capability", "user-selected", "friction and failure"]:
+        if phrase not in adaptation_inputs:
+            raise RuntimeError(f"Self-authored adaptation input missing phrase: {phrase}")
+    expected_outcomes = {
+        "native-or-no-skill", "open", "advisory-assist", "structured-assist",
+        "guarded", "human-confirmation", "safe-fallback",
+    }
+    if set(authored.get("allowedRuntimeOutcomes", [])) != expected_outcomes:
+        raise RuntimeError("Self-authored adaptive runtime outcomes drifted.")
+
+    standardization = document.get("standardizationMaturityBoundary")
+    if not isinstance(standardization, dict):
+        raise RuntimeError("Adaptive Harness standardization maturity boundary is required.")
+    for key, expected in {
+        "currentArtifactsAreHardStandards": False,
+        "standardizationDeferredUntilChainMatures": True,
+        "hardStandardRequiresSeparateAuthorityAndAdoptionDecision": True,
+    }.items():
+        if standardization.get(key) != expected:
+            raise RuntimeError(f"Adaptive Harness standardization boundary drifted: {key}")
+    eligibility = " ".join(
+        str(item) for item in standardization.get("eligibilityEvidence", [])
+    ).lower()
+    for phrase in [
+        "independent sources",
+        "cross-agent or cross-host",
+        "task classes and real feedback",
+        "context control and maintenance cost",
+        "simpler-native-path",
+    ]:
+        if phrase not in eligibility:
+            raise RuntimeError(
+                f"Adaptive Harness standardization eligibility missing phrase: {phrase}"
+            )
+
+    loop = " ".join(str(item) for item in document.get("solutionLoop", [])).lower()
+    for phrase in ["broad discovery", "shortfall observation", "without prematurely forcing a skill", "native official runtime", "candidate-pool", "reproducible residual gap", "friction observation", "relax replace or retire"]:
+        if phrase not in loop:
+            raise RuntimeError(f"Adaptive solution loop missing phrase: {phrase}")
+    authority = document.get("authorityBoundary")
+    if not isinstance(authority, dict) or not authority or any(value is not False for value in authority.values()):
+        raise RuntimeError("Adaptive Harness acceptance must not authorize discovery, download, execution, live mutation, commit, or push.")
+
+    positioning = program_doc.get("strategicPositioning")
+    boundary = positioning.get("adaptiveCurationBoundary") if isinstance(positioning, dict) else None
+    if not isinstance(boundary, dict):
+        raise RuntimeError("Program plan adaptive curation boundary is required.")
+    if boundary.get("decisionEvidence") != "registry/adaptive-harness-source-suite-and-user-sovereignty-acceptance-event-2026-07-18.json":
+        raise RuntimeError("Program plan adaptive curation decision evidence drifted.")
+    for key, expected in {
+        "strictAdmissionFreeConsumption": True,
+        "curationIsNotMirroring": True,
+        "selectionManifestRequired": True,
+        "skillAdmissionDoesNotApproveHook": True,
+        "sourceUpdateDoesNotAutoAdmit": True,
+        "userCustomizationAllowed": True,
+        "modifiedDerivativeInheritsCuratedVerification": False,
+        "mandatoryManagerRequired": False,
+        "nativeNoSkillNoHookNoAdditionalStructureAreValid": True,
+        "hiddenSelfModificationAllowed": False,
+        "silentPermissionExpansionAllowed": False,
+        "feedbackMayAutoPublishChanges": False,
+        "hostSpecificAdaptationRequiresProfileAndSafeDegradation": True,
+    }.items():
+        if boundary.get(key) != expected:
+            raise RuntimeError(f"Program plan adaptive curation boundary drifted: {key}")
+    if boundary.get("standardizationState") != "deferred-until-chain-maturity":
+        raise RuntimeError("Program plan adaptive standardization state drifted.")
+    if boundary.get("currentGovernanceArtifactRole") != "correctable-working-hypotheses-and-observation-protocols":
+        raise RuntimeError("Program plan adaptive governance artifact role drifted.")
+    standardization_requirements = " ".join(
+        str(item) for item in boundary.get("standardizationEligibilityRequires", [])
+    ).lower()
+    for phrase in ["independent sources", "cross-agent or cross-host", "real feedback", "maintenance cost", "separate authority"]:
+        if phrase not in standardization_requirements:
+            raise RuntimeError(
+                f"Program plan adaptive standardization requirement missing phrase: {phrase}"
+            )
+
+    human = " ".join(
+        (ROOT / "docs/adaptive-harness-source-suite-and-user-sovereignty-2026-07-18.md")
+        .read_text(encoding="utf-8")
+        .split()
+    ).lower()
+    for phrase in [
+        "strict admission, free consumption",
+        "source, suite, component, and capability",
+        "skill admission never implies hook admission",
+        "open",
+        "assist",
+        "guarded",
+        "dynamically adaptive self-authored capabilities",
+        "must not become hidden self-modification",
+        "standardization is deferred",
+        "working hypotheses",
+        "retain, relax, replace, or retire",
+    ]:
+        if phrase not in human:
+            raise RuntimeError(f"Adaptive Harness human projection missing phrase: {phrase}")
 
 
 def validate_program_acceptance_map(
@@ -1082,6 +6593,520 @@ def validate_program_acceptance_map(
                 raise RuntimeError(
                     f"Program evidence support is not referenced by acceptance {criterion_id}: {evidence_id}"
                 )
+
+
+def validate_custom_manager_retirement_reconciliation(
+    document: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "custom-manager-retirement-reconciliation-2026-07-18":
+        raise RuntimeError("Custom Manager retirement reconciliation identity drifted.")
+    if document.get("status") != "verified-current-governance-migrated-historical-manager-evidence-retained":
+        raise RuntimeError("Custom Manager retirement reconciliation status drifted.")
+    direction = document.get("currentProductDirection")
+    if not isinstance(direction, dict):
+        raise RuntimeError("Custom Manager retirement current product direction is required.")
+    if direction.get("customManagerActive") is not False or direction.get("customManagerInitiativeState") != "superseded-historical-only":
+        raise RuntimeError("Custom Manager retirement state drifted.")
+    if direction.get("portableGovernanceAuthority") != "agent-skills-curated":
+        raise RuntimeError("Custom Manager retirement portable governance authority drifted.")
+    for phrase in ["residual operational-management gap", "failed viable alternatives", "separate owner authority"]:
+        if phrase not in str(direction.get("reactivationRule", "")):
+            raise RuntimeError(f"Custom Manager reactivation gate missing phrase: {phrase}")
+    migrations = document.get("currentIdentityMigration")
+    expected_migrations = {
+        "objective.production-capability-manager": "objective.source-preserving-cross-agent-capability-governance",
+        "acceptance.manager-user-sovereignty": "acceptance.user-sovereign-capability-governance",
+        "acceptance.manager-foreign-skill-coexistence": "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.manager-broad-capability-ecosystem": "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.manager-discovery-reuse-before-authoring": "acceptance.discovery-reuse-before-authoring",
+        "acceptance.manager-hook-mode-chain": "acceptance.optional-hook-mode-chain",
+    }
+    actual_migrations = {
+        item.get("from"): item.get("to")
+        for item in migrations or []
+        if isinstance(item, dict)
+    }
+    if actual_migrations != expected_migrations:
+        raise RuntimeError("Custom Manager current identity migration map drifted.")
+    objectives = {
+        item.get("id"): item
+        for item in program_document.get("strategicObjectives", [])
+        if isinstance(item, dict)
+    }
+    if "objective.production-capability-manager" in objectives:
+        raise RuntimeError("Custom Manager remains a current strategic objective.")
+    current_objective = objectives.get("objective.source-preserving-cross-agent-capability-governance")
+    retirement_objective = objectives.get("objective.custom-manager-retirement-evidence-preservation")
+    if not current_objective or not retirement_objective:
+        raise RuntimeError("Custom Manager replacement and retirement objectives are required.")
+    current_acceptance = set(current_objective.get("acceptanceIds", []))
+    expected_current = {
+        "acceptance.cc-switch-source-preserving-skill-pool",
+        "acceptance.user-sovereign-capability-governance",
+        "acceptance.foreign-managed-capability-coexistence",
+        "acceptance.broad-capability-ecosystem-boundary",
+        "acceptance.discovery-reuse-before-authoring",
+        "acceptance.optional-hook-mode-chain",
+    }
+    if not expected_current <= current_acceptance:
+        raise RuntimeError("Current source-preserving objective acceptance surface drifted.")
+    expected_historical = {
+        "acceptance.manager-design-contract",
+        "acceptance.manager-topology-impact-gate",
+        "acceptance.manager-foundation-transaction-closure",
+        "acceptance.manager-codex-readonly-adapter-preview",
+        "acceptance.custom-manager-retirement-reconciliation",
+    }
+    if set(retirement_objective.get("acceptanceIds", [])) != expected_historical:
+        raise RuntimeError("Custom Manager retirement objective acceptance surface drifted.")
+    manager_initiative = next(
+        item for item in program_document.get("currentInitiatives", [])
+        if isinstance(item, dict) and item.get("id") == "initiative.production-capability-manager-topology-design"
+    )
+    if manager_initiative.get("status") != "superseded" or set(manager_initiative.get("acceptanceIds", [])) != expected_historical:
+        raise RuntimeError("Superseded Manager initiative retains current product requirements.")
+    if manager_initiative.get("retirementReconciliationEvidence") != "registry/custom-manager-retirement-reconciliation-2026-07-18.json":
+        raise RuntimeError("Superseded Manager initiative retirement evidence drifted.")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    for old_id in expected_migrations:
+        if old_id.startswith("acceptance.") and old_id in criteria:
+            raise RuntimeError(f"Retired Manager acceptance id remains current: {old_id}")
+    for criterion_id in expected_current:
+        if criterion_id not in criteria:
+            raise RuntimeError(f"Current product-neutral acceptance id is missing: {criterion_id}")
+    retirement_criterion = criteria.get("acceptance.custom-manager-retirement-reconciliation", {})
+    if retirement_criterion.get("assessment") != "verified" or "evidence.custom-manager-retirement-reconciliation" not in retirement_criterion.get("evidenceIds", []):
+        raise RuntimeError("Custom Manager retirement acceptance mapping drifted.")
+    historical = document.get("historicalEvidenceRetention")
+    if not isinstance(historical, dict) or historical.get("retained") is not True or historical.get("currentExecutionAuthority") is not False:
+        raise RuntimeError("Custom Manager historical evidence retention boundary drifted.")
+    for path in historical.get("artifacts", []):
+        if not isinstance(path, str) or not (ROOT / path).is_file():
+            raise RuntimeError(f"Custom Manager historical artifact is missing: {path}")
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no deletion", "no custom manager implementation", "no cc switch installation", "no live agent", "no candidate execution", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"Custom Manager retirement non-action missing phrase: {phrase}")
+    for doc_path, phrase in {
+        "docs/custom-manager-retirement-reconciliation-2026-07-18.md": "source-preserving cross-Agent capability governance",
+        "docs/custom-manager-retirement-reconciliation-2026-07-18.zh-CN.md": "来源保真的跨 Agent 能力",
+    }.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Custom Manager retirement human projection drifted: {doc_path}")
+
+
+def validate_evidence_backed_release_evolution_reconciliation(
+    document: dict[str, object],
+    program_document: dict[str, object],
+    acceptance_document: dict[str, object],
+    result_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "evidence-backed-release-evolution-reconciliation-2026-07-18":
+        raise RuntimeError("Evidence-backed release evolution reconciliation identity drifted.")
+    if document.get("status") != "verified-no-count-quota-release-evolution-contract":
+        raise RuntimeError("Evidence-backed release evolution reconciliation status drifted.")
+    problem = document.get("problem")
+    replacement = document.get("replacement")
+    if not isinstance(problem, dict) or not isinstance(replacement, dict):
+        raise RuntimeError("Evidence-backed release evolution problem and replacement are required.")
+    if problem.get("retiredObjective") != "objective.evidence-backed-approved-coverage-growth" or problem.get("retiredAcceptance") != "acceptance.approved-release-coverage-growth":
+        raise RuntimeError("Evidence-backed release evolution retired identity drifted.")
+    if replacement != {
+        "objective": "objective.evidence-backed-release-evolution",
+        "acceptance": "acceptance.evidence-backed-release-evolution",
+        "verification": "verification.evidence-backed-release-evolution",
+        "principle": "the approved release evolves only when reviewed evidence produces positive net value; unchanged is a valid result",
+    }:
+        raise RuntimeError("Evidence-backed release evolution replacement identity drifted.")
+    outcomes = {
+        item.get("id")
+        for item in document.get("allowedOutcomes", [])
+        if isinstance(item, dict) and item.get("condition")
+    }
+    if outcomes != {"retain", "add", "replace-or-supersede", "compose-or-route", "deprecate-or-retire"}:
+        raise RuntimeError("Evidence-backed release evolution outcome set drifted.")
+    invariants = " ".join(str(item) for item in document.get("invariants", [])).lower()
+    for phrase in ["not success metrics", "zero supported residual gaps", "unchanged release", "external work may replace", "no additional structure", "migration, rollback"]:
+        if phrase not in invariants:
+            raise RuntimeError(f"Evidence-backed release evolution invariant missing phrase: {phrase}")
+    current = document.get("currentDecision")
+    if not isinstance(current, dict):
+        raise RuntimeError("Evidence-backed release evolution current decision is required.")
+    result_decision = result_document.get("decision", {})
+    if current.get("boundedCoordinateSupportedResidualGapCount") != result_decision.get("supportedResidualGapCount"):
+        raise RuntimeError("Evidence-backed release evolution residual-gap count drifted.")
+    if current.get("candidateApprovedCount") != result_decision.get("candidateApprovedCount"):
+        raise RuntimeError("Evidence-backed release evolution candidate count drifted.")
+    if current.get("releaseChangeRequiredNow") is not False or current.get("releaseMutationAuthorized") is not False or current.get("currentOutcome") != "retain-current-release-and-monitor-evidence":
+        raise RuntimeError("Evidence-backed release evolution current retain decision drifted.")
+    objectives = {
+        item.get("id"): item
+        for item in program_document.get("strategicObjectives", [])
+        if isinstance(item, dict)
+    }
+    if "objective.evidence-backed-approved-coverage-growth" in objectives:
+        raise RuntimeError("Mandatory approved-release growth remains a current objective.")
+    evolution_objective = objectives.get("objective.evidence-backed-release-evolution")
+    if not evolution_objective or evolution_objective.get("acceptanceIds") != ["acceptance.evidence-backed-release-evolution"]:
+        raise RuntimeError("Evidence-backed release evolution objective mapping drifted.")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    if "acceptance.approved-release-coverage-growth" in criteria:
+        raise RuntimeError("Mandatory approved-release growth remains a current acceptance criterion.")
+    criterion = criteria.get("acceptance.evidence-backed-release-evolution", {})
+    if criterion.get("assessment") != "verified" or "evidence.evidence-backed-release-evolution-reconciliation" not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Evidence-backed release evolution acceptance mapping drifted.")
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no candidate approval", "no release-manifest", "no repository-authored skill", "no live agent", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"Evidence-backed release evolution non-action missing phrase: {phrase}")
+    for doc_path, phrase in {
+        "docs/evidence-backed-release-evolution-reconciliation-2026-07-18.md": "An unchanged release is a valid result",
+        "docs/evidence-backed-release-evolution-reconciliation-2026-07-18.zh-CN.md": "发布保持不变就是合法结果",
+    }.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Evidence-backed release evolution human projection drifted: {doc_path}")
+
+
+def validate_layered_reliability_projection_reconciliation(
+    document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "layered-reliability-projection-reconciliation-2026-07-18":
+        raise RuntimeError("Layered reliability projection reconciliation identity drifted.")
+    if document.get("status") != "verified-projection-contract-only":
+        raise RuntimeError("Layered reliability projection reconciliation status drifted.")
+    layer_ids = [
+        item.get("id")
+        for item in document.get("layerOrder", [])
+        if isinstance(item, dict)
+    ]
+    expected_layers = [
+        "instructions-and-rules",
+        "skills-and-recipes",
+        "scripts-schemas-and-validators",
+        "consumer-owned-hooks-ci-and-runtime-controls",
+        "project-owned-hard-standards",
+        "evidence-and-accountable-human-decisions",
+    ]
+    if layer_ids != expected_layers:
+        raise RuntimeError("Layered reliability projection order drifted.")
+    layer_text = " ".join(
+        f"{item.get('role', '')} {item.get('boundary', '')}"
+        for item in document.get("layerOrder", [])
+        if isinstance(item, dict)
+    ).lower()
+    for phrase in [
+        "necessary but not sufficient",
+        "do not raise a model's native capability ceiling",
+        "do not create external authority",
+        "remain consumer-owned",
+        "this repository cannot admit them",
+        "accountable choices",
+    ]:
+        if phrase not in layer_text:
+            raise RuntimeError(f"Layered reliability role boundary missing phrase: {phrase}")
+    invariants = " ".join(str(item) for item in document.get("invariants", [])).lower()
+    for phrase in [
+        "smallest sufficient layer set",
+        "no additional structure",
+        "defers to an admitted project-owned hard standard",
+        "cannot admit a project hard standard",
+        "do not prove cross-host runtime effectiveness",
+        "hard-standard extraction remains deferred",
+    ]:
+        if phrase not in invariants:
+            raise RuntimeError(f"Layered reliability invariant missing phrase: {phrase}")
+    reconciled = {
+        item.get("acceptanceId"): (item.get("from"), item.get("to"), item.get("scope"))
+        for item in document.get("assessmentReconciliation", [])
+        if isinstance(item, dict)
+    }
+    if reconciled != {
+        "acceptance.layered-reliability-model": ("partial", "verified", "projection contract only"),
+        "acceptance.project-standard-precedence": ("partial", "verified", "project-authority precedence boundary only"),
+    }:
+        raise RuntimeError("Layered reliability assessment reconciliation drifted.")
+    kept_open = {
+        item.get("acceptanceId"): item.get("assessment")
+        for item in document.get("keptOpen", [])
+        if isinstance(item, dict) and item.get("reason")
+    }
+    if kept_open != {
+        "acceptance.consumer-mapping-evidence": "partial",
+        "acceptance.standard-candidate-contract": "planned",
+        "acceptance.standard-revalidation-cascade": "partial",
+        "acceptance.optional-hook-mode-chain": "partial",
+    }:
+        raise RuntimeError("Layered reliability kept-open boundary drifted.")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    evidence_id = "evidence.layered-reliability-projection-reconciliation"
+    for criterion_id in [
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence",
+    ]:
+        criterion = criteria.get(criterion_id, {})
+        if criterion.get("assessment") != "verified" or evidence_id not in criterion.get("evidenceIds", []):
+            raise RuntimeError(f"Layered reliability acceptance mapping drifted: {criterion_id}")
+    for criterion_id, assessment in kept_open.items():
+        if criteria.get(criterion_id, {}).get("assessment") != assessment:
+            raise RuntimeError(f"Layered reliability open acceptance was overclaimed: {criterion_id}")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/layered-reliability-projection-reconciliation-2026-07-18.json" or set(evidence.get("supports", [])) != {
+        "acceptance.layered-reliability-model",
+        "acceptance.project-standard-precedence",
+    }:
+        raise RuntimeError("Layered reliability evidence mapping drifted.")
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no skill", "no consumer", "no standard-candidate", "no release-manifest", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"Layered reliability non-action missing phrase: {phrase}")
+    required_phrases = {
+        "docs/curation-harness-model.md": "The layers are not all mandatory for every task",
+        "docs/curation-program-plan.md": "verified at its declared governance-only scope",
+        "docs/layered-reliability-projection-reconciliation-2026-07-18.md": "a governance projection, not a claim of live runtime effectiveness",
+        "docs/layered-reliability-projection-reconciliation-2026-07-18.zh-CN.md": "治理投影，不是实时运行效果证明",
+    }
+    for doc_path, phrase in required_phrases.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Layered reliability human projection drifted: {doc_path}")
+
+
+def validate_decision_ready_consumer_projection_evaluation(
+    document: dict[str, object],
+    acceptance_document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "decision-ready-consumer-projection-evaluation-2026-07-18":
+        raise RuntimeError("Decision-ready consumer projection evaluation identity drifted.")
+    if document.get("status") != "verified-repository-fixture-evaluation-consumer-verification-open":
+        raise RuntimeError("Decision-ready consumer projection evaluation status drifted.")
+    projection = load("generated/routing-index.json")
+    report = load("generated/routing-simulation-report.json")
+    scenarios = load("registry/scenarios.json").get("scenarios", [])
+    current = document.get("currentProjection")
+    if not isinstance(current, dict):
+        raise RuntimeError("Decision-ready consumer current projection is required.")
+    expected_counts = {
+        "capabilityCount": len(projection.get("capabilities", [])),
+        "approvedSkillRouteCount": len(projection.get("routes", [])),
+        "recipeCount": len(projection.get("recipes", [])),
+        "relationCount": len(projection.get("relations", [])),
+        "activeConflictGroupCount": len(projection.get("conflicts", [])),
+        "authoritativeInputDigestCount": len(projection.get("authoritativeInputDigests", {})),
+    }
+    for field, expected in expected_counts.items():
+        if current.get(field) != expected:
+            raise RuntimeError(f"Decision-ready consumer projection count drifted: {field}")
+    decisions = ["native", "runtime", "curated", "recipe", "no-skill", "ask-user", "gap"]
+    result_fields = ["decision", "selectedIds", "exclusions", "confirmationReason", "validation", "fallback"]
+    if current.get("decisionClasses") != decisions or current.get("resultFields") != result_fields:
+        raise RuntimeError("Decision-ready consumer decision contract drifted.")
+    scenario_map = {
+        item.get("id"): item
+        for item in scenarios
+        if isinstance(item, dict)
+    }
+    representatives = document.get("representativeDecisions", [])
+    if not isinstance(representatives, list) or len(representatives) != len(decisions):
+        raise RuntimeError("Decision-ready consumer representative set drifted.")
+    represented = set()
+    for item in representatives:
+        if not isinstance(item, dict):
+            raise RuntimeError("Decision-ready consumer representative entry must be an object.")
+        scenario = scenario_map.get(item.get("scenarioId"))
+        if not scenario:
+            raise RuntimeError("Decision-ready consumer representative scenario is missing.")
+        expected_capabilities = scenario.get("requestedCapabilities", [])
+        expected_skills = scenario.get("expectedSkills", [])
+        if (
+            item.get("expectedDecision") != scenario.get("expectedDecision")
+            or item.get("requestedCapability") not in expected_capabilities
+            or item.get("selectedIdCount") != len(expected_skills)
+        ):
+            raise RuntimeError(f"Decision-ready consumer representative scenario drifted: {item.get('scenarioId')}")
+        represented.add(item.get("expectedDecision"))
+    if represented != set(decisions):
+        raise RuntimeError("Decision-ready consumer representative decisions are incomplete.")
+    fixture = document.get("fixtureResult")
+    if not isinstance(fixture, dict) or fixture != {
+        "scenarioCount": report.get("scenarioCount"),
+        "passed": report.get("passed"),
+        "failed": report.get("failed"),
+        "unclassifiedLifecycleCapabilityCount": len(report.get("unclassifiedLifecycleCapabilities", [])),
+        "allDecisionClassesRepresented": True,
+        "unresolvedConflictDecision": "ask-user",
+    }:
+        raise RuntimeError("Decision-ready consumer fixture result drifted.")
+    if not any(
+        isinstance(item, dict)
+        and item.get("routingFacts", {}).get("unresolvedConflict") is True
+        and item.get("expectedDecision") == "ask-user"
+        for item in scenarios
+    ):
+        raise RuntimeError("Decision-ready consumer unresolved-conflict fixture is missing.")
+    burden = document.get("structuralBurdenProxy")
+    if not isinstance(burden, dict):
+        raise RuntimeError("Decision-ready consumer structural burden proxy is required.")
+    if burden.get("baselineGovernedPayloadEntriesToEnumerate") != expected_counts["approvedSkillRouteCount"] + expected_counts["recipeCount"]:
+        raise RuntimeError("Decision-ready consumer structural baseline drifted.")
+    if burden.get("projectedDecisionClassCountPerRequest") != 1 or burden.get("representativeMaximumSelectedIdCount") != max(item.get("selectedIdCount", -1) for item in representatives) or burden.get("resultFieldCount") != len(result_fields):
+        raise RuntimeError("Decision-ready consumer structural result proxy drifted.")
+    if "structural enumeration proxy only" not in str(burden.get("claimLimit", "")).lower():
+        raise RuntimeError("Decision-ready consumer structural proxy claim limit drifted.")
+    assessment = document.get("acceptanceAssessment")
+    if not isinstance(assessment, dict) or assessment.get("acceptanceId") != "acceptance.decision-ready-consumer-projection" or assessment.get("assessment") != "partial":
+        raise RuntimeError("Decision-ready consumer projection acceptance boundary drifted.")
+    remaining = " ".join(str(item) for item in assessment.get("remainingEvidence", [])).lower()
+    for phrase in ["consumer-owned verification", "context, latency, user-effort", "live capability availability", "real collision evidence"]:
+        if phrase not in remaining:
+            raise RuntimeError(f"Decision-ready consumer remaining evidence missing phrase: {phrase}")
+    criteria = {
+        item.get("id"): item
+        for item in acceptance_document.get("acceptanceCriteria", [])
+        if isinstance(item, dict)
+    }
+    criterion = criteria.get("acceptance.decision-ready-consumer-projection", {})
+    evidence_id = "evidence.decision-ready-consumer-projection-evaluation"
+    if criterion.get("assessment") != "partial" or evidence_id not in criterion.get("evidenceIds", []):
+        raise RuntimeError("Decision-ready consumer acceptance mapping drifted.")
+    evidence = {
+        item.get("id"): item
+        for item in acceptance_document.get("evidence", [])
+        if isinstance(item, dict)
+    }.get(evidence_id, {})
+    if evidence.get("path") != "registry/decision-ready-consumer-projection-evaluation-2026-07-18.json" or evidence.get("supports") != ["acceptance.decision-ready-consumer-projection"]:
+        raise RuntimeError("Decision-ready consumer evidence mapping drifted.")
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no consumer installation", "no live capability probe", "no release-manifest", "no cross-repository write"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"Decision-ready consumer non-action missing phrase: {phrase}")
+    required_phrases = {
+        "docs/decision-ready-consumer-projection-evaluation-2026-07-18.md": "This is a structural proxy only",
+        "docs/decision-ready-consumer-projection-evaluation-2026-07-18.zh-CN.md": "这只是结构代理",
+        "docs/curation-program-plan.md": "measured consumer benefit and consumer-owned verification",
+    }
+    for doc_path, phrase in required_phrases.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"Decision-ready consumer human projection drifted: {doc_path}")
+
+
+def validate_github_repository_configuration_evidence(
+    document: dict[str, object],
+) -> None:
+    if document.get("schema") != 1 or document.get("id") != "github-repository-configuration-evidence-2026-07-18":
+        raise RuntimeError("GitHub repository configuration evidence identity drifted.")
+    if document.get("status") != "remote-metadata-security-and-codeql-verified-local-community-files-unpublished":
+        raise RuntimeError("GitHub repository configuration evidence status drifted.")
+    if document.get("repository") != "github:yiheng8023/agent-skills-curated" or document.get("referenceRepository") != "github:yiheng8023/home-edge-bootstrap-public":
+        raise RuntimeError("GitHub repository configuration target drifted.")
+    metadata = document.get("metadata")
+    if not isinstance(metadata, dict):
+        raise RuntimeError("GitHub repository configuration metadata is required.")
+    if metadata.get("visibility") != "public" or metadata.get("defaultBranch") != "main":
+        raise RuntimeError("GitHub repository visibility or default branch drifted in dated evidence.")
+    features = metadata.get("features")
+    if features != {"issues": True, "projects": True, "wiki": False, "discussions": True}:
+        raise RuntimeError("GitHub repository feature snapshot drifted.")
+    if metadata.get("topics") != [
+        "agent-skills",
+        "ai-agents",
+        "capability-routing",
+        "open-source-governance",
+        "provenance",
+        "skill-governance",
+        "supply-chain",
+    ]:
+        raise RuntimeError("GitHub repository topic snapshot drifted.")
+    merge = document.get("mergePolicy")
+    if not isinstance(merge, dict) or merge.get("matchesReferenceRepository") is not True or merge.get("changedInThisTask") is not False:
+        raise RuntimeError("GitHub repository merge-policy evidence drifted.")
+    security = document.get("securityConfiguration")
+    if not isinstance(security, dict):
+        raise RuntimeError("GitHub repository security evidence is required.")
+    expected_security = {
+        "vulnerabilityAlerts": "enabled",
+        "dependabotSecurityUpdates": "enabled-not-paused",
+        "secretScanning": "enabled",
+        "secretScanningPushProtection": "enabled",
+        "privateVulnerabilityReporting": "enabled",
+        "codeScanningDefaultSetup": "configured",
+        "firstCodeScanningAnalysis": "completed-zero-results-for-recorded-remote-main",
+    }
+    for field, expected in expected_security.items():
+        if security.get(field) != expected:
+            raise RuntimeError(f"GitHub repository security evidence drifted: {field}")
+    if security.get("codeScanningDetectedBeforeEnablement") != ["actions", "python"] or security.get("codeScanningLanguagesReturnedAfterEnablement") != ["actions", "python"]:
+        raise RuntimeError("GitHub repository CodeQL language observation drifted.")
+    if security.get("codeScanningSchedule") != "weekly" or security.get("firstCodeScanningAnalysisRemoteRevision") != "d0955bf7f7852b53955f843b20c69709b31459be":
+        raise RuntimeError("GitHub repository CodeQL schedule or revision evidence drifted.")
+    expected_analyses = {
+        item.get("language"): (item.get("resultsCount"), item.get("rulesCount"))
+        for item in security.get("firstCodeScanningAnalyses", [])
+        if isinstance(item, dict) and item.get("createdAt")
+    }
+    if expected_analyses != {"actions": (0, 17), "python": (0, 43)} or security.get("codeScanningAlertCount") != 0:
+        raise RuntimeError("GitHub repository CodeQL result evidence drifted.")
+    if security.get("firstCodeScanningAnalysisVerificationRequired") is not False or security.get("credentialScopeExpansionPerformed") is not False:
+        raise RuntimeError("GitHub repository CodeQL or credential boundary drifted.")
+    community = document.get("communityAndSponsorship")
+    if not isinstance(community, dict) or community.get("remoteCommunityHealthPercentage") != 85 or community.get("referenceCommunityHealthPercentage") != 100 or community.get("localFilesPublished") is not False:
+        raise RuntimeError("GitHub repository community-health boundary drifted.")
+    required_local = {
+        ".github/FUNDING.yml",
+        ".github/PULL_REQUEST_TEMPLATE.md",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/ISSUE_TEMPLATE/candidate-source.yml",
+        ".github/ISSUE_TEMPLATE/governance-or-verification.yml",
+        "SUPPORT.md",
+        "SUPPORT.zh-CN.md",
+        "SPONSORING.md",
+        "SPONSORING.zh-CN.md",
+    }
+    if set(community.get("localFilesPrepared", [])) != required_local:
+        raise RuntimeError("GitHub repository local community-file inventory drifted.")
+    for path in required_local:
+        if not (ROOT / path).is_file():
+            raise RuntimeError(f"GitHub repository prepared community file is missing: {path}")
+    recheck = document.get("recheck")
+    if not isinstance(recheck, dict) or recheck.get("remoteStateMayDrift") is not True:
+        raise RuntimeError("GitHub repository remote-state recheck boundary drifted.")
+    for field, phrase in {
+        "requiredBeforeClaimingCurrent": "query the GitHub API again",
+        "requiredBeforeClaimingCommunityHealthClosure": "separate commit and push authority",
+        "requiredBeforeClaimingCodeScanningGreen": "exact revision being claimed",
+    }.items():
+        if phrase not in str(recheck.get(field, "")):
+            raise RuntimeError(f"GitHub repository recheck requirement drifted: {field}")
+    non_actions = " ".join(str(item) for item in document.get("nonActions", [])).lower()
+    for phrase in ["no commit or push", "no remote repository file publication", "no branch protection", "no extra authentication scope", "no live agent"]:
+        if phrase not in non_actions:
+            raise RuntimeError(f"GitHub repository non-action missing phrase: {phrase}")
+    required_phrases = {
+        "docs/github-repository-configuration-evidence-2026-07-18.md": "exact-remote-revision result",
+        "docs/github-repository-configuration-evidence-2026-07-18.zh-CN.md": "只覆盖这个远端 revision",
+        "README.md": "zero-result CodeQL analyses",
+        "README.zh-CN.md": "CodeQL 零结果分析",
+    }
+    for doc_path, phrase in required_phrases.items():
+        if phrase not in " ".join((ROOT / doc_path).read_text(encoding="utf-8").split()):
+            raise RuntimeError(f"GitHub repository configuration projection drifted: {doc_path}")
 
 
 def validate_program_control_acceptance_event(
@@ -1338,7 +7363,7 @@ def validate_curation_program_plan(
         raise RuntimeError("Curation program must preserve its internal and external audience.")
     positioning_text = " ".join(str(value) for value in positioning.values()).lower()
     for phrase in [
-        "resource-governance systems",
+        "bounded read-only research inputs",
         "project-owned hard standards",
         "standard candidate",
         "future non-skill terminals",
@@ -1349,39 +7374,105 @@ def validate_curation_program_plan(
     delivery = positioning.get("standardCandidateDelivery")
     expected_delivery = {
         "calibrationRepository": "YIYUAN-CALIBRATION",
-        "calibrationRepositoryRole": "independent-linked-principally-temporary-reference-and-calibration",
+        "calibrationRepositoryRole": "read-only-candidate-evidence-and-research-input",
         "calibrationRepositoryInMeridianMatrix": False,
         "consumerConfigurationRole": "dated-consumption-validation-and-feedback-only",
         "consumerConfigurationMayBeDurableAuthority": False,
-        "finalStandardsCarrier": "YIYUAN-ASSETS",
+        "finalStandardsCarrier": "applicable-project-authority",
         "finalCarrierModes": ["built-in", "knowledge-base"],
-        "projectAdmissionAuthority": "YIYUAN-ASSETS",
+        "projectAdmissionAuthority": "applicable-project-authority",
         "currentTransactionCrossRepositoryWritesAuthorized": False,
     }
     if delivery != expected_delivery:
         raise RuntimeError(
             "Curation program standard candidate delivery must preserve CALIBRATION as an "
-            "independent, linked, principally temporary, matrix-external reference and "
-            "calibration repository; consumer non-authority; ASSETS admission and final "
-            "carriage; and the current no-write boundary."
+            "read-only research input; consumer non-authority; applicable project "
+            "admission and carriage; and the current no-write boundary."
         )
+    portable_authority = positioning.get("portableAuthorityBoundary")
+    expected_portable_authority = {
+        "authorityRepository": "agent-skills-curated",
+        "scope": "agent-neutral-cross-agent-skills-portable-chain-hook-policy-and-host-profile-contracts",
+        "wholeRepositoryConsolidationIntoSingleAgentConsumerAllowed": False,
+        "codexUserConfigRole": "codex-specific-installation-runtime-hook-verification-and-rollback-adapter",
+        "consumerConfigurationMayReplacePortableAuthority": False,
+        "instructionCarrierVersions": {
+            "portableRepository": "product-neutral collaboration invariants dynamic checkpoint contracts Hook modes verification rollback and safe degradation",
+            "privateCodexUserConfig": "owner-specific Codex paths proactive topology and context preferences real Hook wiring verification and rollback",
+            "publicConsumerConfig": "no manually maintained full authority copy; sanitized generated non-authoritative projection only when separately justified",
+        },
+        "consumerAdaptersMustMap": [
+            "instruction carrier and precedence",
+            "Skill source distribution and runtime discovery",
+            "Hook path event off-auto-on mode authority failure behavior verification and rollback",
+        ],
+    }
+    if portable_authority != expected_portable_authority:
+        raise RuntimeError("Curation program portable cross-Agent authority boundary drifted.")
     manager_boundary = positioning.get("managerProductBoundary")
     expected_manager_boundary = {
-        "proposedRepositoryRole": "local-first-production-capability-manager",
-        "repositoryCreationAuthorized": False,
-        "topologyImpactReviewRequired": True,
-        "headlessCoreRequired": True,
-        "productAccountSystemAllowed": False,
-        "defaultTelemetry": "off",
-        "skillsFirstVerticalSlice": True,
-        "approvedReleaseGrowthRequiredForMvp": True,
-        "guiDecision": "pending-bounded-usability-evidence",
+        "status": "superseded-by-cc-switch-reuse",
+        "activeImplementationAuthorized": False,
+        "operationalSkillManager": "CC Switch",
+        "operationalStrategy": "reuse-existing-source-install-update-distribution-backup-and-restore",
+        "sourcePayloadPolicy": "upstream-exact-no-content-rewrite",
+        "candidatePoolActivation": "non-active-until-reviewed-and-separately-authorized",
+        "wholeRepositoryConsolidationIntoCodexUserConfigAllowed": False,
+        "supersedingDecisionEvidence": "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json",
+        "retirementReconciliationEvidence": "registry/custom-manager-retirement-reconciliation-2026-07-18.json",
+        "liveSourceOwnershipEvidence": "registry/cc-switch-live-source-ownership-reconciliation-2026-07-18.json",
+        "legacySkillMigrationReviewEvidence": "registry/legacy-curated-skill-source-migration-review-2026-07-18.json",
+        "disposableSourceManagementPreviewEvidence": "registry/cc-switch-disposable-source-management-preview-2026-07-18.json",
+        "disposableSourceManagementPreviewState": "verified-contract-with-upstream-windows-test-isolation-defect",
+        "disposableSourceUpdateRecoveryEvidence": "registry/cc-switch-disposable-source-update-and-recovery-review-2026-07-18.json",
+        "disposableSourceUpdateRecoveryState": "verified-success-and-manual-recovery-automatic-rollback-gap-confirmed",
+        "ccSwitchUpdaterTransactionState": "non-atomic-do-not-use-as-first-canary-rollback-proof",
+        "firstRealCanaryPreviewEvidence": "registry/cc-switch-handoff-real-canary-readonly-preview-2026-07-18.json",
+        "firstRealCanaryPreviewState": "decision-ready-read-only-preview-live-change-not-authorized",
+        "firstRealCanaryCandidate": "handoff",
+        "firstRealCanaryExecutionAuthorized": True,
+        "firstRealCanaryExecutionEvidence": "registry/cc-switch-handoff-real-canary-execution-2026-07-18.json",
+        "firstRealCanaryExecutionState": "verified-local-live-source-backed-and-owner-authorized-webdav-sync-fresh-session-invocation-open",
+        "ccSwitchSourcePinPersistence": "branch-only-external-reviewed-revision-required",
+        "ccSwitchExternalSyncState": "owner-authorized-local-sync-observed-cc-switch-running-cross-device-equality-open",
+        "ccSwitchObservedUnreviewedUpdateSignals": 20,
+        "ccSwitchObservedUpdateSignalSource": "larksuite/cli",
+        "liveSourcePreservingProjectionState": "partial-one-of-43-active-cc-switch-targets-source-backed",
+        "localManagerExperimentState": "deleted-2026-07-17-after-full-verification",
+        "portableGovernanceAuthority": "agent-skills-curated",
+        "consumerRuntimeAuthority": "consumer-and-accountable-user",
+        "historicalDesignEvidenceRetained": True,
+        "historicalAcceptedRepositorySlug": "agent-capability-manager",
+        "historicalSelectedImplementationStack": "rust-headless-core-cli-ratatui-next-tauri-later",
+        "reactivationRequires": "supported-residual-operational-management-gap-failed-viable-alternatives-and-separate-owner-decision",
+        "currentProductRequirements": [
+            "user-sovereignty",
+            "foreign-managed-capability-coexistence",
+            "broad-capability-ecosystem-boundary",
+            "discovery-reuse-before-authoring",
+            "optional-host-specific-hook-modes",
+            "residual-gap-only-repository-authoring",
+            "source-backed-selected-skills-or-explicit-self-authored-provenance",
+            "authority-classified-multi-root-consistency",
+            "security-quality-superiority-overlap-redundancy-name-collision-gates",
+            "shortfall-and-software-lifecycle-residual-gap-mapping",
+            "three-skill-agents-hook-layout-revalidation",
+            "one-way-consumer-repository-projection-contract",
+        ],
+        "directoryConsistencyModel": "one-authoritative-ssot-governed-projections-and-foreign-roots-inventoried-without-flattening",
+        "repositoryCouplingModel": "agent-skills-curated-portable-authority-to-consumer-config-pinned-one-way-projection-preferred",
+        "selfAuthoredChainReevaluation": "intent-contract-capability-router-closure-contract-agents-and-hooks-may-be-retained-replaced-relocated-composed-or-retired-only-after-residual-gap-evidence",
+        "hookModes": ["off", "auto", "on"],
+        "hookAuthorityClass": "optional-host-specific-chain-layer-without-permission-or-admission-authority",
+        "currentCodexAdvisoryHook": "usable-bounded-existing-chain-slice",
+        "hookExpansionRequiresIndependentContract": True,
     }
     if manager_boundary != expected_manager_boundary:
         raise RuntimeError(
-            "Curation program Manager boundary must preserve topology gating, local-first "
-            "headless operation, no product account, telemetry off, real approved-release "
-            "growth, and the pending GUI decision."
+            "Curation program operational management boundary must supersede custom Manager "
+            "implementation with CC Switch reuse, upstream-exact payloads, a non-active "
+            "candidate pool, no whole-repository Codex-consumer consolidation, and preserved "
+            "historical design constraints."
         )
 
     architecture = document.get("programArchitecture")
@@ -1443,10 +7534,10 @@ def validate_curation_program_plan(
     ]:
         if phrase not in parallel_text:
             raise RuntimeError(f"Curation program safe parallelism missing phrase: {phrase}")
-    radar_boundary = str(execution_semantics.get("upstreamRadarBoundary", "")).lower()
-    for phrase in ["independently", "demand", "source-trust", "acceptance"]:
-        if phrase not in radar_boundary:
-            raise RuntimeError(f"Curation program upstream radar order boundary missing phrase: {phrase}")
+    discovery_boundary = str(execution_semantics.get("discoveryInputBoundary", "")).lower()
+    for phrase in ["bounded read-only discovery inputs", "repository owns disposition", "cannot approve", "write curated state", "product authority"]:
+        if phrase not in discovery_boundary:
+            raise RuntimeError(f"Curation program discovery input boundary missing phrase: {phrase}")
     closeout_join = str(execution_semantics.get("closeoutJoin", "")).lower()
     for phrase in ["initiative", "residual risks", "owner decision", "next candidate-intake"]:
         if phrase not in closeout_join:
@@ -1521,17 +7612,30 @@ def validate_curation_program_plan(
             if not isinstance(triggers, list) or len(triggers) < 4:
                 raise RuntimeError("Curation program lifecycle any-of triggers are incomplete.")
         if lane_id == "lane.standard-extraction-and-calibration-handoff":
-            triggers = lane.get("triggerInputsAnyOf")
-            if not isinstance(triggers, list) or len(triggers) < 4:
-                raise RuntimeError("Curation program standard extraction any-of triggers are incomplete.")
+            triggers = lane.get("triggerInputsAllOf")
+            if triggers != ["chain-maturity evidence", "separate authority decision"]:
+                raise RuntimeError("Curation program standard extraction maturity gate drifted.")
             standard_lane_text = " ".join(
                 [
                     str(lane.get("purpose", "")),
+                    *[str(item) for item in lane.get("requiredInputs", [])],
                     *[str(item) for item in lane.get("allowedOutputs", [])],
                     *[str(item) for item in lane.get("blockedTransitions", [])],
+                    *[str(item) for item in lane.get("verificationSurface", [])],
                 ]
             ).lower()
-            for phrase in ["temporary", "assets", "final authority", "separately authorized"]:
+            for phrase in [
+                "read-only",
+                "chain maturity",
+                "independent sources",
+                "cross-agent or cross-host",
+                "real feedback",
+                "maintenance cost",
+                "separate authority",
+                "product",
+                "final project authority",
+                "project admission",
+            ]:
                 if phrase not in standard_lane_text:
                     raise RuntimeError(
                         f"Curation program standard extraction boundary missing phrase: {phrase}"
@@ -1597,7 +7701,9 @@ def validate_curation_program_plan(
         "gate.repeated-evidence-before-standard-extraction",
         "gate.calibration-before-assets-admission",
         "gate.accepted-standard-before-revalidation",
+        "gate.source-preflight-before-download-or-install",
         "gate.manager-topology-before-repository-creation",
+        "gate.manager-post-matrix-reintake-before-adapter-work",
         "gate.closeout-before-next-intake",
     ]
     sequence_gate_ids = [
@@ -1614,6 +7720,19 @@ def validate_curation_program_plan(
     gate_by_id = {
         gate["id"]: gate for gate in sequence_gates if isinstance(gate, dict)
     }
+    source_preflight_text = " ".join(
+        str(gate_by_id["gate.source-preflight-before-download-or-install"].get(key, ""))
+        for key in ["prerequisite", "blockedUntil", "verification"]
+    ).lower()
+    for phrase in [
+        "metadata license provenance",
+        "executable-surface preflight",
+        "non-active pool",
+        "immutable revision",
+        "non-execution boundary",
+    ]:
+        if phrase not in source_preflight_text:
+            raise RuntimeError(f"Curation program source preflight gate missing phrase: {phrase}")
     manager_gate_text = " ".join(
         str(gate_by_id["gate.manager-topology-before-repository-creation"].get(key, ""))
         for key in ["prerequisite", "blockedUntil", "verification"]
@@ -1621,7 +7740,7 @@ def validate_curation_program_plan(
     for phrase in [
         "owner-reviewed written manager design",
         "meridian topology-impact package",
-        "repository creation or implementation",
+        "completed local manager repository-creation decision",
         "bookmark and radar",
         "public and private",
         "actions",
@@ -1632,6 +7751,17 @@ def validate_curation_program_plan(
     ]:
         if phrase not in manager_gate_text:
             raise RuntimeError(f"Curation program Manager topology gate missing phrase: {phrase}")
+    if gate_by_id["gate.manager-topology-before-repository-creation"].get("status") != "historical-satisfied":
+        raise RuntimeError("Curation program Manager topology gate must be historical.")
+    post_matrix_gate_text = " ".join(
+        str(gate_by_id["gate.manager-post-matrix-reintake-before-adapter-work"].get(key, ""))
+        for key in ["prerequisite", "blockedUntil", "verification"]
+    ).lower()
+    for phrase in ["dated repository truth", "completed disposable adapter preview", "calibration read-only", "historical curated and manager authority", "real agent and hook write prohibition"]:
+        if phrase not in post_matrix_gate_text:
+            raise RuntimeError(f"Curation program Manager post-matrix gate missing phrase: {phrase}")
+    if gate_by_id["gate.manager-post-matrix-reintake-before-adapter-work"].get("status") != "historical-satisfied":
+        raise RuntimeError("Curation program Manager adapter gate must be historical.")
     revalidation_gate_text = " ".join(
         str(gate_by_id["gate.accepted-standard-before-revalidation"].get(key, ""))
         for key in ["prerequisite", "blockedUntil", "verification"]
@@ -1725,7 +7855,18 @@ def validate_curation_program_plan(
     survey_allowed_text = " ".join(
         str(item) for item in capability_survey.get("allowedActions", [])
     ).lower()
-    for phrase in ["child-task delegation", "read-only", "parent reconciliation"]:
+    for phrase in [
+        "child-task delegation",
+        "read-only",
+        "parent reconciliation",
+        "metadata license provenance",
+        "non-active repository-controlled pool",
+        "security quality superiority overlap and redundancy",
+        "source suite atomicity component selection",
+        "selection manifest evidence",
+        "open assist guarded alternative comparison",
+        "shortfall mapping",
+    ]:
         if phrase not in survey_allowed_text:
             raise RuntimeError(f"Curation capability survey missing task boundary: {phrase}")
     survey_result_text = " ".join(
@@ -1745,6 +7886,30 @@ def validate_curation_program_plan(
     ]:
         if phrase not in survey_result_text:
             raise RuntimeError(f"Curation capability survey result package missing phrase: {phrase}")
+    if capability_survey.get("currentResultEvidence") != "registry/round03-capability-survey-result-package-2026-07-18.json":
+        raise RuntimeError("Curation capability survey current result evidence drifted.")
+    if capability_survey.get("currentReconciliationEvidence") != "registry/round03-complete-coordinate-envelope-reconciliation-2026-07-18.json":
+        raise RuntimeError("Curation capability survey current reconciliation evidence drifted.")
+    if capability_survey.get("currentFollowupEvidence") != "registry/loopy-disposable-agent-trial-result-2026-07-18.json":
+        raise RuntimeError("Curation capability survey current follow-up evidence drifted.")
+    current_assessment = capability_survey.get("currentAssessment")
+    if not isinstance(current_assessment, dict) or current_assessment != {
+        "tenComponentPackageAssembled": True,
+        "selectedDemandBatchDecisionReady": True,
+        "wholeCoordinateCorpusDecisionReady": True,
+        "wholeDemandModelClosureClaimed": False,
+        "surveyClosureClaimed": False,
+        "selectedBatchCoordinateCount": 62,
+        "notSelectedUnassessedCoordinateCount": 0,
+        "supportedResidualGapCount": 0,
+        "completedAuthorizedCandidateTrialCount": 1,
+        "loopyTrialDisposition": "reference-only-not-admitted",
+        "candidateApprovedCount": 0,
+        "candidateExecutionAuthorized": False,
+        "operatingMode": "evidence-triggered-monitoring-and-recheck",
+        "nextDecision": "keep demand-model, longitudinal, production, and cross-host evidence limits open; resume bounded discovery or comparison only when a new demand, repeated failure, source drift, host change, cost change, or authority change can alter a disposition",
+    }:
+        raise RuntimeError("Curation capability survey current assessment drifted.")
 
     manager_initiative = next(
         item
@@ -1752,22 +7917,66 @@ def validate_curation_program_plan(
         if isinstance(item, dict)
         and item.get("id") == "initiative.production-capability-manager-topology-design"
     )
-    if manager_initiative.get("status") != "planned":
-        raise RuntimeError("Curation program Manager topology initiative must remain planned.")
+    if manager_initiative.get("status") != "superseded":
+        raise RuntimeError("Curation program Manager initiative must be superseded.")
+    if manager_initiative.get("supersededBy") != "initiative.capability-survey-gap-proof":
+        raise RuntimeError("Curation program Manager supersession target drifted.")
+    if manager_initiative.get("supersedingDecisionEvidence") != "registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json":
+        raise RuntimeError("Curation program Manager superseding decision evidence drifted.")
+    if manager_initiative.get("retirementReconciliationEvidence") != "registry/custom-manager-retirement-reconciliation-2026-07-18.json":
+        raise RuntimeError("Curation program Manager retirement reconciliation evidence drifted.")
+    if manager_initiative.get("localExperimentState") != "deleted-2026-07-17-after-full-verification":
+        raise RuntimeError("Curation program Manager local experiment retirement state drifted.")
+    if manager_initiative.get("designDecisionEvidence") != "registry/production-capability-manager-design-acceptance-event-2026-07-15.json":
+        raise RuntimeError("Curation program Manager design decision evidence drifted.")
+    if manager_initiative.get("topologyImpactPackage") != "registry/production-capability-manager-topology-impact-package-2026-07-15.json":
+        raise RuntimeError("Curation program Manager topology package reference drifted.")
+    if manager_initiative.get("topologyDecisionState") != "owner-accepted":
+        raise RuntimeError("Curation program Manager topology decision must remain owner-accepted.")
+    if manager_initiative.get("topologyDecisionEvidence") != "registry/production-capability-manager-topology-acceptance-event-2026-07-15.json":
+        raise RuntimeError("Curation program Manager topology decision evidence drifted.")
+    if manager_initiative.get("externalEcosystemAndStackReview") != "registry/production-capability-manager-external-ecosystem-and-stack-review-2026-07-15.json":
+        raise RuntimeError("Curation program Manager ecosystem and stack review reference drifted.")
+    if manager_initiative.get("repositorySlugDecisionEvidence") != "registry/production-capability-manager-repository-slug-acceptance-event-2026-07-16.json":
+        raise RuntimeError("Curation program Manager repository slug decision evidence drifted.")
+    if manager_initiative.get("acceptedRepositorySlug") != "agent-capability-manager":
+        raise RuntimeError("Curation program Manager accepted repository slug drifted.")
+    if manager_initiative.get("stackAndFoundationAuthorizationEvidence") != "registry/agent-capability-manager-stack-and-foundation-authorization-event-2026-07-16.json":
+        raise RuntimeError("Curation program Manager stack and foundation authorization evidence drifted.")
+    if manager_initiative.get("foundationImplementationEvidence") != "registry/agent-capability-manager-foundation-slice-implementation-evidence-2026-07-16.json":
+        raise RuntimeError("Curation program Manager foundation implementation evidence drifted.")
+    if manager_initiative.get("postMatrixReintakeEvidence") != "registry/production-capability-manager-post-matrix-reintake-2026-07-17.json":
+        raise RuntimeError("Curation program Manager post-matrix re-intake evidence drifted.")
+    if manager_initiative.get("codexReadonlyAdapterSlicePlan") != "registry/agent-capability-manager-codex-readonly-adapter-slice-plan-2026-07-17.json":
+        raise RuntimeError("Curation program Manager Codex adapter slice plan drifted.")
+    if manager_initiative.get("codexReadonlyAdapterImplementationEvidence") != "registry/agent-capability-manager-codex-readonly-adapter-implementation-evidence-2026-07-17.json":
+        raise RuntimeError("Curation program Manager Codex adapter implementation evidence drifted.")
+    if manager_initiative.get("selectedImplementationStack") != "rust-headless-core-cli-ratatui-next-tauri-later":
+        raise RuntimeError("Curation program Manager selected implementation stack drifted.")
     manager_blocked_text = " ".join(
         str(item) for item in manager_initiative.get("blockedActions", [])
     ).lower()
     for phrase in [
-        "new manager repository creation",
-        "manager implementation",
-        "cross-repository writes",
-        "product account system",
-        "hook enablement",
+        "further manager implementation",
+        "real agent adapter or configuration writes",
+        "existing-repository integration writes",
+        "hook enablement or mutation",
+        "commit",
+        "remote repository creation",
         "remote push",
     ]:
         if phrase not in manager_blocked_text:
             raise RuntimeError(f"Curation program Manager initiative missing blocked action: {phrase}")
-    if "acceptance.approved-release-coverage-growth" in manager_initiative.get("acceptanceIds", []):
+    manager_allowed_text = " ".join(
+        str(item) for item in manager_initiative.get("allowedActions", [])
+    ).lower()
+    for phrase in [
+        "preserve historical design and implementation evidence",
+        "read-only verification that the retired local experiment remains absent",
+    ]:
+        if phrase not in manager_allowed_text:
+            raise RuntimeError(f"Curation program Manager initiative missing allowed action: {phrase}")
+    if "acceptance.evidence-backed-release-evolution" in manager_initiative.get("acceptanceIds", []):
         raise RuntimeError(
             "Curation program Manager topology initiative must not be blocked on future release growth."
         )
@@ -1798,7 +8007,7 @@ def validate_curation_program_plan(
     required_objective_ids = {
         "objective.skills-terminal-mvp",
         "objective.multi-domain-coverage",
-        "objective.evidence-backed-approved-coverage-growth",
+        "objective.evidence-backed-release-evolution",
         "objective.evidence-backed-demand-model",
         "objective.reuse-before-build-gap-proof",
         "objective.full-chain-capability-coverage",
@@ -1808,7 +8017,8 @@ def validate_curation_program_plan(
         "objective.layered-collaboration-reliability",
         "objective.standard-candidate-extraction",
         "objective.lifecycle-metabolism",
-        "objective.production-capability-manager",
+        "objective.source-preserving-cross-agent-capability-governance",
+        "objective.custom-manager-retirement-evidence-preservation",
     }
     missing_objectives = required_objective_ids - set(objective_ids)
     if missing_objectives:
@@ -1819,36 +8029,39 @@ def validate_curation_program_plan(
     upstream_boundary = document.get("upstreamInputBoundary")
     if not isinstance(upstream_boundary, dict):
         raise RuntimeError("Curation program plan upstream input boundary is required.")
-    if upstream_boundary.get("role") != "downstream-consumer-of-broader-resource-governance-inputs":
+    if upstream_boundary.get("role") != "independent-curation-authority-consuming-bounded-read-only-inputs":
         raise RuntimeError("Curation program plan upstream boundary role drifted.")
     entrypoints = upstream_boundary.get("knownUpstreamEntrypoints")
     if not isinstance(entrypoints, list) or not entrypoints:
         raise RuntimeError("Curation program plan upstream entrypoints are required.")
-    yi_entry = next(
+    calibration_entry = next(
         (
             entry for entry in entrypoints
             if isinstance(entry, dict)
-            and entry.get("id") == "github:yiheng8023/YIYUAN-MERIDIAN"
+            and entry.get("id") == "github:yiheng8023/YIYUAN-CALIBRATION"
         ),
         None,
     )
-    if not yi_entry or yi_entry.get("currentHandling") != "recorded-boundary-only":
-        raise RuntimeError("YIYUAN-MERIDIAN must be recorded as boundary-only upstream input.")
-    if yi_entry.get("url") != "https://github.com/yiheng8023/YIYUAN-MERIDIAN":
-        raise RuntimeError("YIYUAN-MERIDIAN upstream URL drifted.")
+    if not calibration_entry or calibration_entry.get("currentHandling") != "pinned-corpus-input-only":
+        raise RuntimeError("YIYUAN-CALIBRATION must be recorded as pinned read-only input.")
+    if calibration_entry.get("repositoryHead") != "e060a08f05361cb4cc9a67be050236cdbbde1de5":
+        raise RuntimeError("YIYUAN-CALIBRATION upstream commit drifted.")
+    if calibration_entry.get("sourceSha256") != "FDC5E4EB1AB7CF01752885BC2C9C335F1C301BE407DDBAD697DFCC21E85C6727":
+        raise RuntimeError("YIYUAN-CALIBRATION source digest drifted.")
     blocked_here = " ".join(str(item) for item in upstream_boundary.get("blockedHere", [])).lower()
     for phrase in [
-        "upstream discovery as approval",
-        "mutating yiyuan-meridian",
-        "global upstream hub",
-        "upstream completeness",
+        "discovery input as approval",
+        "discovery source control over curated disposition",
+        "mutating yiyuan-calibration",
+        "product authority",
+        "ecosystem completeness",
     ]:
         if phrase not in blocked_here:
             raise RuntimeError(f"Curation program plan upstream boundary missing blocked phrase: {phrase}")
     allowed_here = " ".join(str(item) for item in upstream_boundary.get("allowedHere", [])).lower()
     for phrase in [
-        "stable upstream skill candidates",
-        "upstream provenance",
+        "pinned calibration research",
+        "research and upstream provenance",
         "curation and release gates",
     ]:
         if phrase not in allowed_here:
@@ -1875,7 +8088,7 @@ def validate_curation_program_plan(
         "optional-consumer-projection",
         "feedback",
         "metabolize",
-        "extract-standard-candidate-for-calibration",
+        "consider-standardization-only-after-chain-maturity-and-separate-authority",
     ]
     if harness_loop.get("loop") != expected_loop:
         raise RuntimeError("Curation program plan harness loop order drifted.")
@@ -2008,11 +8221,13 @@ def validate_curation_program_plan(
         "cross-cutting",
         "exact source pin",
         "machine-bound current initiative",
-        "thirteen required core objectives",
-        "Planned Production Manager Boundary",
-        "MERIDIAN topology-impact",
+        "fourteen required core objectives",
+        "CC Switch Reuse And Custom Manager Retirement",
+        "source-preserving",
+        "non-active pool",
+        "must not be consolidated wholesale into `codex-user-config`",
         "parent-owned reconciliation gate",
-        "principally a temporary reference and calibration workspace",
+        "read-only candidate, evidence, and research input",
     ]:
         if phrase not in doc:
             raise RuntimeError(f"Curation program plan doc missing phrase: {phrase}")
@@ -2021,8 +8236,8 @@ def validate_curation_program_plan(
     )
     for phrase in [
         "continuous curation harness",
-        "github:yiheng8023/YIYUAN-MERIDIAN",
-        "does not treat upstream discovery as approval",
+        "independent authority for reviewed Skill intake",
+        "do not approve candidates or obtain Skill or Manager product authority",
         "broader resource discovery",
         "standard candidate",
         "YIYUAN-CALIBRATION",
@@ -2040,14 +8255,47 @@ def validate_curation_program_plan(
         "optional branch",
         "cross-cutting",
         "exact source pin",
-        "radar signal does not bypass",
-        "outside the MERIDIAN matrix",
-        "intended final carrier",
+        "No discovery signal bypasses",
+        "candidate, evidence, and research custody only",
+        "applicable project-authority review",
+        "CC Switch is the current operational Skill manager",
+        "A directory is adapter evidence, not product architecture",
+        "must not be consolidated wholesale into the Codex-specific `codex-user-config` consumer",
     ]:
         if phrase not in harness_doc:
             raise RuntimeError(f"Curation harness doc missing phrase: {phrase}")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_zh = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+    current_identity_surfaces = {
+        "README.md": readme,
+        "README.zh-CN.md": readme_zh,
+        "docs/curation-harness-model.md": (
+            ROOT / "docs/curation-harness-model.md"
+        ).read_text(encoding="utf-8"),
+        "docs/public-private-boundary.md": (
+            ROOT / "docs/public-private-boundary.md"
+        ).read_text(encoding="utf-8"),
+        "docs/starred-capability-source-discovery.md": (
+            ROOT / "docs/starred-capability-source-discovery.md"
+        ).read_text(encoding="utf-8"),
+        "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md": (
+            ROOT / "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md"
+        ).read_text(encoding="utf-8"),
+    }
+    for path, content in current_identity_surfaces.items():
+        normalized = content.casefold()
+        for retired_identity_phrase in [
+            "yiyuan-meridian",
+            "resource-radar",
+            "open-resource-governance",
+            "upstream radar",
+            "retired matrix",
+        ]:
+            if retired_identity_phrase in normalized:
+                raise RuntimeError(
+                    f"Current identity surface {path} still depends on retired topology phrase: "
+                    f"{retired_identity_phrase}"
+                )
     if "docs/curation-program-plan.md" not in readme:
         raise RuntimeError("README.md must link curation program plan.")
     if "docs/curation-program-plan.md" not in readme_zh:
@@ -2062,30 +8310,40 @@ def validate_curation_program_plan(
         raise RuntimeError("README.zh-CN.md must link program acceptance map.")
     for phrase in [
         "YIYUAN-CALIBRATION",
-        "outside the MERIDIAN matrix",
-        "principally a temporary",
-        "YIYUAN-ASSETS",
-        "intended final standards carrier",
+        "read-only candidate, evidence, and research input",
+        "not Skill or Manager product authority",
+        "applicable project authority",
+        "each retain a bounded role",
     ]:
         if phrase not in readme:
             raise RuntimeError(f"README.md must preserve the calibration reference boundary: {phrase}")
     for phrase in [
         "YIYUAN-CALIBRATION",
-        "MERIDIAN 矩阵之外",
-        "原则上是 ASSETS 重塑阶段的临时参考和校准仓",
-        "YIYUAN-ASSETS",
-        "标准最终内置或知识库承载的目标仓",
+        "只读候选、证据和研究输入",
+        "不是 Skill 或 Manager 产品权威",
+        "适用的项目权威",
+        "各自保有有边界的职责",
     ]:
         if phrase not in readme_zh:
             raise RuntimeError(f"README.zh-CN.md must preserve the calibration reference boundary: {phrase}")
     manager_design_path = "docs/superpowers/specs/2026-07-15-production-capability-manager-design.md"
     if manager_design_path not in readme or manager_design_path not in readme_zh:
         raise RuntimeError("Both README projections must link the production Manager design.")
+    current_strategy_path = "docs/cc-switch-source-preserving-skill-pool-strategy-2026-07-17.md"
+    if current_strategy_path not in readme or current_strategy_path not in readme_zh:
+        raise RuntimeError("Both README projections must link the current CC Switch Skill-pool strategy.")
+    adaptive_strategy_path = "docs/adaptive-harness-source-suite-and-user-sovereignty-2026-07-18.md"
+    if adaptive_strategy_path not in readme or adaptive_strategy_path not in readme_zh:
+        raise RuntimeError("Both README projections must link the adaptive Harness and user-sovereignty strategy.")
     manager_design = " ".join(
         (ROOT / manager_design_path).read_text(encoding="utf-8").split()
     ).lower()
     for phrase in [
-        "matrix and external topology",
+        "superseded on 2026-07-17",
+        "supersession notice",
+        "cc switch now supplies sufficient operational skill",
+        "historical records; they do not require continued implementation",
+        "external inputs and product authority",
         "no product account system",
         "headless core",
         "telemetry is off by default",
@@ -2094,11 +8352,40 @@ def validate_curation_program_plan(
         "parent task owns experiment design",
         "child task result is an observation",
         "weak-agent floor",
-        "topology-impact package before any new manager repository is created",
+        "multi-agent inventory and foreign-managed coexistence",
+        "narrow collaboration-control chain and broad capability ecosystem",
+        "skills-first does not mean skills-only",
+        "mcp servers",
+        "apps, connectors, external accounts",
+        "broad discovery, selective depth, reuse before authoring",
+        "hook as an optional chain layer",
+        "directly usable bounded advisory chain slice",
+        "additional recall, observation, lifecycle",
+        "independent purpose, event, mode, authority",
+        "`off`",
+        "`auto`",
+        "`on`",
+        "authority and input contract before adapter work",
         "explicit non-authorization",
     ]:
         if phrase not in manager_design:
             raise RuntimeError(f"Production Manager design missing required contract phrase: {phrase}")
+    manager_topology_path = "docs/superpowers/specs/2026-07-15-production-capability-manager-topology-impact.md"
+    manager_topology = " ".join(
+        (ROOT / manager_topology_path).read_text(encoding="utf-8").split()
+    ).lower()
+    for phrase in [
+        "current truth snapshot",
+        "proposed node boundary",
+        "proposed graph edges",
+        "public and private boundary",
+        "actions, versioning, and release",
+        "acceptance, rollback, and retirement",
+        "required future topology updates",
+        "actual drift and limits",
+    ]:
+        if phrase not in manager_topology:
+            raise RuntimeError(f"Production Manager topology package missing phrase: {phrase}")
     for phrase in [
         "multi-domain",
         "reuse before build",
@@ -6160,12 +12447,13 @@ def validate_round03_demand_coordinate_source_contract(
         if isinstance(item, dict)
     }
     criterion = criteria.get("acceptance.demand-coordinate-contract", {})
-    if criterion.get("assessment") != "partial":
-        raise RuntimeError("Demand-coordinate acceptance must remain partial until demand records exist.")
+    if criterion.get("assessment") != "verified":
+        raise RuntimeError("Demand-coordinate acceptance must be verified only at the bounded contract scope.")
     expected_evidence = {
         "evidence.round03-rebaseline",
         "evidence.round03-demand-coordinate-source-contract",
         "evidence.round03-demand-records-batch-01",
+        "evidence.demand-coordinate-contract-reconciliation-2026-07-18",
         "evidence.verify-script",
     }
     if set(criterion.get("evidenceIds", [])) != expected_evidence:
@@ -6497,7 +12785,11 @@ def validate_round03_native_runtime_baseline(
         raise RuntimeError("Round 03 native/runtime acceptance evidence drifted.")
     criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
     criterion = criteria.get("acceptance.native-runtime-baseline", {})
-    if criterion.get("assessment") != "partial" or criterion.get("evidenceIds") != ["evidence.round03-native-runtime-baseline"]:
+    expected_evidence_ids = {
+        "evidence.round03-native-runtime-baseline",
+        "evidence.native-runtime-baseline-evidence-gap-reconciliation-2026-07-18",
+    }
+    if criterion.get("assessment") != "partial" or set(criterion.get("evidenceIds", [])) != expected_evidence_ids:
         raise RuntimeError("Round 03 native/runtime acceptance mapping drifted.")
 
     expected_docs = {
@@ -6644,7 +12936,7 @@ def validate_round03_public_discovery_snapshot(
         raise RuntimeError("Round 03 public discovery acceptance evidence drifted.")
     criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
     criterion = criteria.get("acceptance.discovery-clustering-stop-rule", {})
-    if criterion.get("assessment") != "partial" or "evidence.round03-public-discovery-snapshot" not in criterion.get("evidenceIds", []):
+    if criterion.get("assessment") != "verified" or "evidence.round03-public-discovery-snapshot" not in criterion.get("evidenceIds", []):
         raise RuntimeError("Round 03 public discovery acceptance mapping drifted.")
 
     expected_docs = {
@@ -6778,7 +13070,7 @@ def validate_round03_representative_source_review_batch_01(
         raise RuntimeError("Round 03 representative review acceptance evidence drifted.")
     criteria = {item.get("id"): item for item in acceptance_doc.get("acceptanceCriteria", []) if isinstance(item, dict)}
     criterion = criteria.get("acceptance.discovery-clustering-stop-rule", {})
-    if criterion.get("assessment") != "partial" or "evidence.round03-representative-source-review-batch-01" not in criterion.get("evidenceIds", []):
+    if criterion.get("assessment") != "verified" or "evidence.round03-representative-source-review-batch-01" not in criterion.get("evidenceIds", []):
         raise RuntimeError("Round 03 representative review acceptance mapping drifted.")
 
     expected_docs = {

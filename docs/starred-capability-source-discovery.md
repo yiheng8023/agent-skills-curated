@@ -8,9 +8,29 @@ capability-source intake. It is not approval, not installation, not managed
 inventory, and not an execution path.
 
 Machine-readable candidate-source snapshots live in
-`registry/starred-skill-sources.json`. That registry is a radar input and
+`registry/starred-skill-sources.json`. That registry is a candidate-discovery input and
 non-approval surface only; it does not promote sources into `skills/`, release
 manifests, or runtime installation.
+
+A newer scoped public list was explicitly supplied on 2026-07-18:
+<https://github.com/stars/yiheng8023/lists/skills>. Its 13 visible repositories,
+eight-source overlap with the broad public discovery, and five newly observed
+sources are recorded separately in
+`registry/user-starred-skill-source-list-intake-2026-07-18.json`. This scoped
+list raises review priority but is not a whitelist and does not limit discovery.
+The older table below remains dated historical triage and must not be read as
+current list membership.
+
+The pinned `helloianneo/awesome-claude-code-skills` index was then parsed as a
+source artifact rather than trusted as an executable catalog. It contains 20
+direct `npx skills add` source coordinates; four overlap the broad public
+capture and 16 are new. Read-only tree preflight currently resolves 14 of those
+16. Two coordinates return 404 and are preserved as stale evidence. A possible
+successor is never substituted automatically: it must re-enter with its own
+pin, license, provenance, demand, and review. See
+`registry/user-starred-index-child-source-extraction-2026-07-18.json`,
+`registry/user-starred-index-child-source-preflight-2026-07-18.json`, and
+`registry/user-starred-index-stale-source-resolution-2026-07-18.json`.
 
 GitHub-wide candidate discovery is governed by
 `registry/github-skill-discovery-profile.json` and the scheduled
@@ -93,16 +113,16 @@ No starred source may enter `skills/`, `release-manifest.json`, generated
 routing projections, or a live execution path until it has completed the
 normal intake process.
 
-## Resource Radar Feedback
+## Discovery Disposition Feedback
 
 When a discovered source is explicitly rejected, marked reference-only, or
 otherwise already handled by this curated repository, record the machine-readable
 feedback in `registry/radar-feedback.json`.
 
-This file is a read-only suppression surface for `resource-radar`. It lets the
-radar stop re-recommending already-decided or unsuitable Skill candidates without
-writing back to this repository and without parsing prose. It is not an approval
-surface, not a release manifest, and not runtime inventory.
+This file is a read-only suppression surface for discovery processes. It lets a
+consumer avoid re-recommending already-decided or unsuitable Skill candidates
+without writing back to this repository and without parsing prose. It is not an
+approval surface, not a release manifest, and not runtime inventory.
 
 ## Next Review Slices
 

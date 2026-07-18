@@ -3,12 +3,33 @@
 ## Status
 
 - Access: Public-safe design direction
-- State: Conversational design approved; written-spec review pending
+- State: Superseded on 2026-07-17; historical design and bounded experiment evidence only
 - Date: 2026-07-15
-- Current implementation authority: none
+- Current implementation authority: none; no additional Manager slice is authorized
 - Current repository: `agent-skills-curated`
-- Proposed product boundary: a separately governed Manager application and
-  repository, subject to a MERIDIAN topology-impact gate before creation
+- Product boundary: a separately governed Manager application and repository;
+  the repository now exists locally and host work remains slice-authorized
+- Design acceptance event:
+  `registry/production-capability-manager-design-acceptance-event-2026-07-15.json`
+- Topology-impact package:
+  `registry/production-capability-manager-topology-impact-package-2026-07-15.json`
+- Current topology re-intake:
+  `registry/production-capability-manager-post-matrix-reintake-2026-07-17.json`
+- Superseding strategy:
+  `registry/cc-switch-source-preserving-skill-pool-strategy-acceptance-event-2026-07-17.json`
+
+## Supersession Notice
+
+CC Switch now supplies sufficient operational Skill source, installation,
+update, supported-Agent distribution, backup, and restore management. The owner
+therefore retired the separate custom Manager product direction before live
+Agent integration. This document and its implementation evidence remain dated
+historical records; they do not require continued implementation.
+
+The current path preserves third-party Skill bodies unchanged, screens source,
+license, executable surfaces, safety, quality, superiority, overlap, and
+redundancy, then maps accepted capabilities to human-AI collaboration
+shortfalls. Repository authoring is reserved for reproducible residual gaps.
 
 ## Purpose
 
@@ -61,18 +82,67 @@ future instruction profiles, rule packs, recipes, adapters, and Hook policies.
 10. **Open-source reciprocity:** preserve attribution and licenses, record what
     was borrowed or changed, contribute generally useful improvements upstream
     when practical, and default to zero telemetry.
+11. **Observe before ownership:** Skills installed by a user, Agent, Plugin,
+    App, MCP server, project, or another manager remain foreign-managed by
+    default. Discovery, classification, and conflict detection do not authorize
+    takeover; conversion to Manager control is explicit, previewable, backed
+    up, verified, and reversible.
+12. **Broad discovery, selective depth, reuse before authoring:** public
+    metadata discovery may cast a wide net, while source retrieval, deep
+    review, execution, admission, and installation become progressively
+    narrower. External Skills, existing curated Skills, compositions,
+    non-Skill mechanisms, and the three current repository-authored Skills
+    compete on evidence without a self-authored preference.
 
-## Matrix And External Topology
+## Narrow Collaboration-Control Chain And Broad Capability Ecosystem
 
-`YIYUAN-MERIDIAN` remains the broader matrix and topology-control surface. The
-bookmarks project, resource radar, community submissions, and public discovery
-produce source signals. `agent-skills-curated` governs reviewed external Skill
-content and its abstract topology. The proposed Manager consumes versioned
-governance outputs and owns local user policy, experiments, projections,
-transactions, observations, and rollback.
+The product distinguishes two related scopes.
+
+The narrow Agent collaboration-control chain is:
 
 ```text
-bookmarks + resource radar + community and public discovery
+Agent and model native capability
+-> scoped instructions, `*.md`, and Rules
+-> Skills and Recipes
+-> Hooks and event-driven reevaluation
+-> verification, feedback, and rollback
+```
+
+This is complete for the portable collaboration-control path: it describes how
+an Agent is guided, how reusable paths are packaged, how event boundaries can
+recall or recheck policy, and how outcomes return to evidence. The components
+form a graph rather than a mandatory linear invocation order.
+
+The broad capability ecosystem also includes:
+
+- native and runtime tools;
+- MCP servers and their tools or resources;
+- Plugins and their bundled Skills, Apps, MCP servers, and other surfaces;
+- Apps, Connectors, external accounts, and external data domains;
+- CLIs, scripts, APIs, services, and local executables;
+- project mechanisms, schemas, tests, CI, and hard standards;
+- human authority, approval, domain judgment, and accountable decisions.
+
+The Manager ultimately models and coordinates this broad capability graph:
+identity, ownership, availability, health, permissions, data boundaries,
+costs, relationships, selection, projection, observations, lifecycle, and
+rollback. It does not automatically own or install every node. Skills remain
+the first vertical slice and the narrow control chain remains the first
+portable coordination model. Skills-first does not mean Skills-only, and
+neither scope makes the product a permanent Skill catalog or installer.
+
+## External Inputs And Product Authority
+
+Community submissions, native platform discovery, public discovery, and the
+dated CALIBRATION corpus may supply bounded read-only inputs.
+`agent-skills-curated` owns demand
+mapping, candidate review, adopt/adapt/compose/self-build decisions, curated
+implementation, testing, acceptance, and release. The Manager owns its product,
+adapter contracts, local operational state, implementation, tests, and
+acceptance.
+
+```text
+community + native/public discovery + read-only CALIBRATION evidence
                          |
                          v
                 candidate source signals
@@ -89,8 +159,9 @@ bookmarks + resource radar + community and public discovery
        Codex / Claude / TRAE / WorkBuddy / other hosts
 ```
 
-A new Manager repository changes the MERIDIAN graph. Repository creation is
-therefore downstream of a topology-impact review that names:
+The 2026-07-15 MERIDIAN topology review remains historical gate evidence for
+the local repository-creation decision. It no longer controls current work.
+Every current slice instead binds:
 
 - repository purpose and authority;
 - upstream producers and downstream consumers;
@@ -102,14 +173,10 @@ therefore downstream of a topology-impact review that names:
 - README, index, graph, and public projection updates;
 - retirement or merge conditions if the new boundary proves unnecessary.
 
-`YIYUAN-CALIBRATION` is not a MERIDIAN matrix node. It is an independent but
-linked, principally temporary calibration and reference repository created to
-support `YIYUAN-ASSETS` reshaping. Bounded standard-candidate packages are
-intended for delivery there through separately authorized transactions.
-`YIYUAN-ASSETS` is the intended final carrier for accepted project standards as
-built-in mechanisms or knowledge.
-Public-safe reusable lessons may return to MERIDIAN only through a separate
-reviewed projection; no private product truth flows back automatically.
+`YIYUAN-CALIBRATION` provides the current human-AI collaboration-shortfalls
+corpus as read-only candidate, evidence, and research input. It is not Skills
+or Manager product authority and receives no write from this slice. Project
+admission remains with the applicable project authority.
 
 Human-AI collaboration shortfalls are general, not ASSETS-local. A standard
 can therefore have universal semantic applicability while using different
@@ -247,6 +314,34 @@ after a supported residual gap and the same provenance, ownership, security,
 portability, overlap, testing, and approval discipline applied to external
 content.
 
+Discovery breadth and review depth are deliberately different:
+
+```text
+broad public metadata collection
+-> source and license normalization
+-> clustering, duplicate suppression, and quality triage
+-> demand-coordinate prioritization
+-> source-pinned representative deep review
+-> native / external / curated / composed / non-Skill comparison
+-> adopt / adapt / compose / supersede / reject
+-> repository authoring only for a supported residual gap
+```
+
+Broad discovery is not bulk trust, download, execution, or admission. It is a
+low-cost way to avoid closed-world design and to find mature work before
+building locally. Deep review remains bounded by source trust, license,
+security, portability, overlap, maintenance, permission, data, and
+verification evidence.
+
+The current `intent-contract`, `capability-router`, and `closure-contract`
+Skills are candidates and control-group implementations, not privileged final
+answers. A materially better external Skill may be adopted directly, adapted,
+composed, or used to supersede one of them. Such a decision preserves source,
+license, comparative evidence, migration, rollback, aliases, and lifecycle
+history. Repository authoring is justified only when a named collaboration
+shortfall remains materially uncovered after all reasonable alternatives have
+been compared.
+
 ## Self-Authored Skill Semantic Design
 
 Negative boundary, semantic modeling, and event-driven routing are design
@@ -281,6 +376,12 @@ The headless core is the product authority for application behavior. It owns:
 - projection compilation and host-adapter contracts;
 - transaction planning, backup, atomic apply, verification, and rollback;
 - migrations, audit records, and structured diagnostics.
+
+Its capability model is broad enough to represent native/runtime capabilities,
+instructions and Rules, Skills and Recipes, Hooks, MCP servers, Plugins, Apps,
+Connectors, tools, scripts, services, project mechanisms, hard standards, and
+human authority without collapsing their different owners or permission
+models.
 
 Clients are replaceable projections:
 
@@ -338,6 +439,38 @@ CC Switch, user-local, and other foreign-managed capabilities are observed and
 classified but not silently hidden or replaced. An optional strict profile may
 apply an allowlist only to the Manager-controlled surface.
 
+## Multi-Agent Inventory And Foreign-Managed Coexistence
+
+A user may run several Agents, and each Agent or its surrounding ecosystem may
+install Skills independently. The Manager therefore maintains an
+adapter-scoped observed inventory rather than assuming one universal Skill
+directory or one installer.
+
+Every observed projection is classified at least as:
+
+- host-native or official;
+- Plugin, App, MCP, package-manager, or other ecosystem managed;
+- Agent-installed;
+- user-installed;
+- project-local;
+- Manager-managed;
+- foreign-managed with a known owner;
+- unknown ownership.
+
+The default for every non-Manager installation is observe-only. The Manager
+may report source, revision, digest, freshness, overlap, collision, security,
+and projection drift, but it may not rename, replace, update, unlink, disable,
+or delete the artifact. It may offer explicit choices: leave external,
+register as an observed dependency, create a managed copy, convert to a managed
+subscription, project temporarily, or resolve a named collision.
+
+Opt-in conversion records the prior owner and state, previews the change,
+backs up affected controlled paths, verifies the new projection, and retains a
+rollback path. Later out-of-band edits reopen ownership reconciliation instead
+of being silently overwritten. Cross-Agent consistency means shared identity,
+lineage, policy intent, and evidence are traceable; it does not require every
+host to use the same physical copy or adapter projection.
+
 ## Distribution Modes
 
 The product supports three explicit modes inspired by proven external
@@ -369,6 +502,47 @@ The first release never auto-admits a new source or Skill. A user may later
 approve `auto-within-policy` for low-risk updates to an already admitted,
 unchanged source identity. Repeated decisions may generate an automation-policy
 proposal but do not silently expand authority.
+
+## Hook As An Optional Chain Layer
+
+Hooks are one optional event-driven link between policy and host behavior.
+They may improve recall, observation, or bounded enforcement when a supported
+residual gap and a real host event justify their persistent cost. They are not
+evidence, admission authority, installation authority, permission grants, or
+a replacement for the headless policy and transaction core.
+
+Portable Hook policy exposes three explicit modes:
+
+- `off`: no Hook action and no Hook-derived receipt;
+- `auto`: evaluate the declared event and policy, acting only when the bounded
+  criteria match;
+- `on`: run the declared Hook action for every eligible supported event within
+  its configured scope.
+
+Mode changes are user-controlled, previewable, adapter-specific, and
+reversible. `auto` does not mean autonomous permission expansion or silent
+installation. Unsupported or unhealthy advisory Hooks fail open; an
+enforcement Hook requires its own fail-safe design and stronger acceptance.
+Hook invocation, emitted output, host consumption, downstream capability use,
+behavioral outcome, and acceptance remain separate evidence levels.
+
+The existing Codex `UserPromptSubmit` capability-recall Hook is a directly
+usable bounded advisory chain slice. It already models `off`, `auto`, and `on`,
+advisory context injection, no external transmission, no permission grant, and
+fail-open behavior. It may continue to be used within that declared scope and
+may be improved incrementally.
+
+The later isolated install, migration, receipt, rollback, and concurrency work
+is a separate unfinished enhancement track. Its incomplete closeout does not
+invalidate the current lightweight Hook, but those stronger transaction and
+observability claims require fresh review and full regression before adoption.
+
+The Hook carrier is extensible: additional recall, observation, lifecycle,
+drift, safety, handoff, or other policy families may be added when concrete
+needs justify them. Each policy family keeps an independent purpose, event,
+mode, authority, data, failure, evidence, cost, and rollback contract. Adding a
+policy is not authorized merely because the carrier exists, and a larger Hook
+bundle must not become a hidden second policy engine beside the headless core.
 
 ## External Benchmarks And Open-Source Reciprocity
 
@@ -427,7 +601,9 @@ replacement where supported, explicit residue checks, and idempotent recovery.
 
 The model is host-neutral; claims are adapter-specific.
 
-- Codex is the first full read/plan/apply/verify/rollback evidence target.
+- Codex is the first read-only inventory and preview contract target; any real
+  home read or full apply/verify/rollback maturity requires separate evidence
+  and authority.
 - common Agent Skills filesystem conventions may receive a bounded portable
   adapter after contract tests;
 - Claude begins with source and live read-only mapping before write support is
@@ -504,7 +680,13 @@ The production baseline includes:
 - weak-floor and strong-adjudication behavior evidence;
 - adapter contract suites without cross-host inference;
 - reproducible build, dependency, release, and supply-chain checks;
-- TUI/GUI/CLI/JSON client parity around the same core decisions.
+- TUI/GUI/CLI/JSON client parity around the same core decisions;
+- multi-Agent inventories, foreign-owner preservation, explicit opt-in
+  conversion, out-of-band drift, and rollback fixtures;
+- Hook `off`/`auto`/`on`, unsupported-host, unhealthy-handler, invocation versus
+  consumption, privacy, install, migration, disablement, and rollback fixtures;
+- multiple Hook-policy isolation, ordering, shared-state, failure-propagation,
+  cost, independent disablement, and no-hidden-authority fixtures.
 
 Passing deterministic tests never proves live host behavior. A live pass is
 scoped to its recorded environment and does not prove future or cross-host
@@ -527,8 +709,8 @@ accepted standard -> affected-source and projection query
 -> verification -> new baseline -> old projection deprecation
 ```
 
-The current project and necessary MERIDIAN links must be reshaped when an
-accepted standard applies. Unaffected surfaces are not rewritten for ceremony.
+The current project and its affected governed consumers must be reshaped when
+an accepted standard applies. Unaffected surfaces are not rewritten for ceremony.
 Cross-repository mutation and ASSETS admission remain separately authorized.
 
 ## MVP Acceptance Boundary
@@ -554,8 +736,15 @@ The MVP is usable and production-grade, not a mock catalog. It requires:
 - weak-Agent floor evidence without relaxed safety conditions;
 - native task orchestration for bounded experiments where a host supports it,
   with read-only sharing and isolated-write contracts;
-- a topology-impact package before any new Manager repository is created;
-- a standard-driven revalidation contract for later debt settlement.
+- preserved historical repository-creation gate evidence plus a dated current
+  authority and input contract before adapter work;
+- a standard-driven revalidation contract for later debt settlement;
+- broad metadata discovery with selective deep review and evidence-based reuse,
+  adaptation, composition, supersession, rejection, or last-resort authoring;
+- multi-Agent inventory and foreign-managed Skill coexistence with observe-only
+  defaults and explicit reversible opt-in management;
+- an optional adapter-specific Hook layer with `off`, `auto`, and `on` modes,
+  without Hook-based authority expansion.
 
 The MVP does not require universal shortfall coverage, every host adapter, a
 cloud service, automatic new-source admission, automatic Hook enablement, or a
@@ -563,9 +752,9 @@ final GUI decision.
 
 ## Explicit Non-Authorization
 
-This design does not authorize creation of the proposed repository, third-party
-code execution, installation, live environment mutation, Hook enablement,
+This design authorizes no action by itself. Current separate authority covers
+only the local foundation and Codex read-only adapter contract against a marked
+disposable Agent Home. Third-party code execution, installation, real Agent
+home reads or writes, adapter apply paths, Hook inspection or mutation,
 cross-repository writes, standard promotion, GUI implementation, release,
-remote push, or implementation work. Those actions require the approved
-written spec, a topology-impact decision where applicable, an implementation
-plan, and the relevant bounded authority.
+commit, and remote push require their own bounded authority.

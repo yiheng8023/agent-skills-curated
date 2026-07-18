@@ -51,10 +51,10 @@ of exposing the private repo. The public version should contain:
 
 The public template must not claim to be a live configuration, must not include the maintainer's personal settings, and must not be consumed as a source of truth by this curated Skill repository.
 
-`open-resource-governance` may serve as the public-safe hub for explaining the
-repository family, roadmap, promotion material, and public/private boundaries.
-It does not own this repository's Skill bodies, intake decisions, release
-manifests, or runtime installation.
+Public explanation surfaces may describe the repository family, roadmap, and
+public/private boundaries. They remain documentation and navigation surfaces;
+this repository alone owns its Skill bodies, intake decisions, and release
+manifests, while consumer environments own runtime installation.
 
 ## Declassification checklist
 
@@ -69,6 +69,10 @@ Before making the repository public, verify:
 7. the repository license has been explicitly chosen by the owner;
 8. downstream consumers are described as private or separate consumers, not bundled public state.
 
-## Relationship to resource-radar
+## Discovery Input Boundary
 
-`resource-radar` may suggest candidate sources. This repository owns Skill intake and release decisions. Radar output is advisory and cannot approve, install, release, or mutate curated content by itself.
+Public discovery, community submissions, private research, and other source
+signals may suggest candidates. They are read-only advisory inputs to this
+repository: they cannot approve, install, release, or mutate curated content.
+Machine-readable disposition records may suppress already-decided candidates
+without granting the discovery process write access or product authority.

@@ -5,13 +5,14 @@ agent-neutral Skills. It is the first terminal MVP in a broader resource system,
 not the whole upstream ecosystem, not a one-time collection task, and not a
 claim that every useful resource should become a Skill.
 
-## Position In The Larger Funnel
+## Position And Input Boundary
 
-One known upstream entrypoint is `github:yiheng8023/YIYUAN-MERIDIAN`.
-`resource-radar` and other upstream systems may discover broad GitHub resources,
-including but not limited to Skills. Their candidate signals remain advisory.
-This repository does not mutate upstream systems and does not treat upstream
-discovery as approval.
+This repository is the independent authority for reviewed Skill intake,
+disposition, implementation, testing, acceptance, and release. Native and
+public discovery, community submissions, and the pinned
+`YIYUAN-CALIBRATION/common/human-ai-collaboration-shortfalls/` corpus may
+provide bounded read-only evidence. Discovery sources and CALIBRATION custody
+do not approve candidates or obtain Skill or Manager product authority.
 
 The core stable decision path is:
 
@@ -31,22 +32,58 @@ That core path is a dependency graph, not a linear execution order for every
 artifact. Consumer projection is an optional branch from an approved release.
 Lifecycle metabolism is cross-cutting and may start from governed candidate,
 release, upstream, community, validation, or consumer evidence. Standard
-extraction is a conditional branch from repeated evidence and still requires a
-separately authorized `YIYUAN-CALIBRATION` handoff.
+extraction is a conditional branch from repeated evidence. CALIBRATION may be
+referenced as read-only source evidence; any cross-repository handoff remains
+separately authorized.
 
 Native baselines may run in parallel by bounded host context, and representative
 reviews may run in parallel by independent cluster before joining at alternative
 comparison. Third-party deep review requires an exact source pin and license or
 provenance boundary; inspecting instructions or executable surfaces is not code
-execution. Broad radar discovery may run independently upstream, but a radar
-signal does not bypass this repository's demand, baseline, source-trust, review,
-and acceptance gates.
+execution. No discovery signal bypasses this repository's demand, baseline,
+source-trust, review, and acceptance gates.
 
 Skills are a useful first terminal because they have a low integration burden,
 work across many Agent environments, and may contain guidance, resources,
 templates, scripts, TypeScript, JavaScript, and validators. Executable payload
 raises security, dependency, permission, and supply-chain requirements; low
 integration burden is not permission to skip review.
+
+## Operational Management And Paths
+
+CC Switch is the current operational Skill manager for source registration,
+installation, updates, supported-Agent distribution, backup, and restore. This
+repository does not duplicate those functions. It governs which unchanged
+upstream payloads are safe and worthwhile, which candidates are redundant or
+inferior, and which human-AI collaboration shortfalls remain after the pool is
+evaluated.
+
+A directory is adapter evidence, not product architecture. Each Agent may use
+its own instruction, Skill, and Hook paths. The shared Skills and portable chain
+remain Agent-neutral authority in this repository and must not be consolidated
+wholesale into the Codex-specific `codex-user-config` consumer. Each consumer
+adapter must explicitly map its instruction carrier, Skill source and runtime
+paths, and Hook events, modes, authority, verification, and rollback.
+
+The Harness is adaptive rather than universally structural. Open work preserves
+native reasoning and divergence; assist mode offers proportional Skills,
+checkpoints, and verification; guarded mode requires authority, evidence, and
+rollback for high-impact operations. No Skill, no Hook, and no additional
+structure are valid outcomes. Outside hard safety and authority boundaries,
+automatic intervention is advisory and must show net benefit over its friction.
+
+Strict admission coexists with free consumption. Upstream suites are reviewed
+at source, suite, component, and capability levels; atomicity is checked before
+selective admission; Skill approval does not approve a bundled Hook; and source
+updates do not auto-admit changed components. Users may customize freely, while
+modified derivatives remain outside the original curated digest and verification
+claim unless separately reviewed.
+
+Any future residual-gap repository-authored Skill or Hook must expose a
+dynamically adaptive policy over task phase, risk, permission, host capability,
+user posture, and feedback. Runtime selection must remain explainable and safely
+degradable; it may not silently modify code or policy, expand permission, or
+auto-publish feedback as a trusted update.
 
 Future terminals may include other governed capability or knowledge projections.
 They can reuse broader discovery and governance evidence, but their bodies,
@@ -130,8 +167,10 @@ generic Skill guidance must defer to that project-owned authority.
 
 ## Multi-Agent Consumer Boundary
 
-Codex and Claude are currently characterized examples, not universal runtime
-models. Trae, WorkBuddy, cc Switch, and future consumers may use different
+Codex and Claude are currently described examples with different evidence
+states, not accepted current mappings or universal runtime models. Codex has
+historical partial and dated static evidence; Claude remains conceptual here.
+Trae, WorkBuddy, cc Switch, and future consumers may use different
 instruction names, Skill roots, precedence, built-in packages, plugin surfaces,
 and restore behavior. Instruction surfaces may be named `AGENTS.md`,
 `CLAUDE.md`, rules, or another runtime-specific form, and may exist at global,
@@ -150,26 +189,27 @@ cross-project research and standard candidates.
 
 ## Standard Candidate Boundary
 
-Repeated external and self-built Skill evidence may expose a stable reusable
-rule. This repository may package that evidence as a non-authoritative standard
-candidate with provenance, scope, counterexamples, verification, versioning,
-migration, and authority metadata. The intended custody flow is:
+Standardization is not a current delivery target. The chain must first show
+stable repeated value across independent sources, Agents or hosts, task
+classes, and real feedback cycles, with benefit greater than context, control,
+and maintenance cost. Only after that maturity evidence and a separate
+authority decision may repeated external and self-built Skill evidence become
+a non-authoritative standard candidate with provenance, scope, counterexamples,
+verification, versioning, migration, and authority metadata. The possible
+future custody flow is:
 
 ```text
-consumer-side research, runtime evidence, and feedback
+read-only CALIBRATION research plus consumer/runtime evidence and feedback
 -> bounded standard candidate package
--> separately authorized YIYUAN-CALIBRATION reference and calibration handoff
--> YIYUAN-ASSETS admission and final standards carriage
+-> applicable project-authority review
+-> accepted project carrier
 ```
 
-`YIYUAN-CALIBRATION` is independent but linked, outside the MERIDIAN matrix,
-and principally a temporary reference and calibration workspace for ASSETS
-reshaping. `YIYUAN-ASSETS` is the intended final carrier through built-in policy
-or governed knowledge. This repository does not itself admit or publish a
-CALIBRATION or ASSETS standard. Writing a handoff package into another
-repository is a distinct, separately authorized transaction. This transaction
-boundary must not be misread as permission to leave research and standards
-indefinitely in a user configuration repository.
+`YIYUAN-CALIBRATION` is candidate, evidence, and research custody only. It
+does not admit or publish a Skill or Manager standard. Writing any handoff
+package into another repository is a distinct, separately authorized
+transaction. This boundary must not be misread as permission to leave research
+and standards indefinitely in a user configuration repository.
 
 ## Delivery Standard
 
